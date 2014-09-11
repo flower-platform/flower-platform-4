@@ -20,8 +20,14 @@ package org.flowerplatform.core.session;
  */
 public interface ISessionListener {
 
+	/**
+	 *@author see class
+	 **/
 	void sessionCreated(String sessionId);
 	
+	/**
+	 *@author see class
+	 **/
 	void sessionRemoved(String sessionId);	
 		
 }

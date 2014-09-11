@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  */
 public class LoadCustomFileServlet extends ResourcesServlet {
 
-	protected static final Logger logger = LoggerFactory.getLogger(LoadCustomFileServlet.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(LoadCustomFileServlet.class);
 
 	private static final long serialVersionUID = 1L;
 	
@@ -39,8 +39,8 @@ public class LoadCustomFileServlet extends ResourcesServlet {
 			if (file == null || !FileControllerUtils.getFileAccessController().exists(file)) {
 				return;
 			}			
-			if (logger.isTraceEnabled()) {
-				logger.trace("Resource requested: {}", FileControllerUtils.getFileAccessController().getPath(file));
+			if (LOGGER.isTraceEnabled()) {
+				LOGGER.trace("Resource requested: {}", FileControllerUtils.getFileAccessController().getPath(file));
 			}
 			
 			out = resp.getOutputStream();

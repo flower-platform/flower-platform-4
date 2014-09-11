@@ -19,8 +19,8 @@ import java.util.List;
 
 
 /**
- * 
- */
+ *@author Mariana Gheorghe
+ **/
 public class DiffContextMenuEntry {
 
 	private String label;
@@ -51,8 +51,8 @@ public class DiffContextMenuEntry {
 		return isRight;
 	}
 
-	public void setRight(boolean isRight) {
-		this.isRight = isRight;
+	public void setRight(boolean isRightValue) {
+		this.isRight = isRightValue;
 	}
 
 	public int getColor() {

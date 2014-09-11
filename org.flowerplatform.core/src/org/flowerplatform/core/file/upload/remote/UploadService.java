@@ -55,16 +55,24 @@ public class UploadService implements ISessionListener {
 	
 	private Map<String, UploadInfo> uploadIdToUploadInfo = new ConcurrentHashMap<String, UploadInfo>();
 	
+	/**
+	 *@author see class
+	 **/
 	public UploadService() {
 		CorePlugin.getInstance().addSessionListener(this);
 		
 		deleteTemporaryUploadDirectory();
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	public UploadInfo getUploadInfo(String uploadId) {
 		return uploadIdToUploadInfo.get(uploadId);
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public File getTemporaryUploadDirectory() {		
 		File tempFolder = new File(UtilConstants.TEMP_FOLDER + "/" + UPLOAD_TEMP_FOLDER_NAME);
 		if (!tempFolder.exists()) {

@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 
-	private final static Logger logger = LoggerFactory.getLogger(AbstractFlowerJavaPlugin.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFlowerJavaPlugin.class);
 	
 	private BundleContext bundleContext;
 	
@@ -51,7 +51,9 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 	protected String getMessagesFilePath() {
 		return getBundleContext().getBundle().getSymbolicName() + "/" + UtilConstants.PUBLIC_RESOURCES_DIR + "/" + UtilConstants.MESSAGES_FILE;
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	public void registerMessageBundle() throws Exception {
 		String messageFilePath = getMessagesFilePath();
 		URL messagesFileUrl;
@@ -62,14 +64,17 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 			inputStream = messagesFileUrl.openStream();
 			resourceBundle = new PropertyResourceBundle(inputStream);
 		} catch (IOException e) {
-			logger.warn(String.format("For bundle %s cannot find (or we had exception while loading) corresponding resources bundle/file %s", getBundleContext().getBundle().getSymbolicName(), messageFilePath), e);
+			LOGGER.warn(String.format("For bundle %s cannot find (or we had exception while loading) corresponding resources bundle/file %s", 
+					getBundleContext().getBundle().getSymbolicName(), messageFilePath), e);
 		} finally {
 			if (inputStream != null) {
 				inputStream.close();
 			}
 		}
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	protected void setupExtensionPointsAndExtensions() throws Exception {
 		// nothing to do here (yet)
 	}
@@ -86,7 +91,9 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 	public void stop(BundleContext context) throws Exception {
 		this.bundleContext = null;
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	public String getMessage(String messageKey, Object... substitutions) {
 		String message = resourceBundle.getString(messageKey);
 		if (substitutions.length == 0) {
@@ -95,11 +102,12 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 			return MessageFormat.format(message, substitutions);
 		}
 	}
-
+	/**
+	 *@author see class
+	 **/
 	public String getResourceUrl(String resource) {
-		return UtilConstants.PUBLIC_RESOURCES_SERVLET + "/" + 
-				getBundleContext().getBundle().getSymbolicName() + "/" +
-				resource;
+		return UtilConstants.PUBLIC_RESOURCES_SERVLET + "/" 
+				+ getBundleContext().getBundle().getSymbolicName() + "/" + resource;
 	}
 	
 	/**

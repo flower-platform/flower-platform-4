@@ -1,23 +1,33 @@
 package org.flowerplatform.tests.codesync;
 
+/**
+ * @author Alexandra Topoloaga
+ */
 public class Test {
 
+	/**
+	 * @author Alexandra Topoloaga
+	 */
 	public void testMethod() {
 		
 	}
-	
-	public void testAddedMethod(){
+	/**
+	 * @author Alexandra Topoloaga
+	 */
+	public void testAddedMethod() {
 		
 	}
 	
 	/**
 	 * param modified
 	 */
-	public void testDocWillBeChangedMethod(){
+	public void testDocWillBeChangedMethod() {
 		
 	}
-	
-	public void testBodyWillBeChangedMethod(){
+	/**
+	 * @author Alexandra Topoloaga
+	 */
+	public void testBodyWillBeChangedMethod() {
 		//modified body
 		String modifiedBody = "Body Modified";
 	}

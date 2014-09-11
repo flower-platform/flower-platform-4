@@ -30,6 +30,9 @@ public class ComposedModelAdapterSet implements IModelAdapterSet {
 
 	private List<IModelAdapterSet> modelAdapterSets = new ArrayList<IModelAdapterSet>();
 	
+	/**
+	 *@author see class
+	 **/
 	public ComposedModelAdapterSet addModelAdapterSet(IModelAdapterSet modelAdapterSet) {
 		modelAdapterSets.add(modelAdapterSet);
 		return this;

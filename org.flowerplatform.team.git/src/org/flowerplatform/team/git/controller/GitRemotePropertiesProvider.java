@@ -50,7 +50,8 @@ public class GitRemotePropertiesProvider extends AbstractController implements I
 			List<String> push = new ArrayList<String>();
 			List<String> uris = new ArrayList<String>();
 
-			RemoteConfig config = new RemoteConfig(GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(node.getNodeUri()))).getConfig(), name);
+			RemoteConfig config = new RemoteConfig(GitUtils.getRepository(FileControllerUtils.getFileAccessController()
+					.getFile(Utils.getRepo(node.getNodeUri()))).getConfig(), name);
 
 			for (RefSpec spec : config.getFetchRefSpecs()) {
 				fetch.add(spec.toString());

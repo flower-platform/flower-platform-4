@@ -44,6 +44,9 @@ public class ControllerEntry<T> {
 		this.cachedValue = cachedValue;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public boolean wasCached() {
 		return wasCached;
 	}

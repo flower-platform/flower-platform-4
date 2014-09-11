@@ -28,6 +28,9 @@ public class MemberOfChildCategoryDescriptor extends AbstractController {
 
 	private String childCategory;
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public MemberOfChildCategoryDescriptor(String childCategory) {
 		setChildCategory(childCategory);
 		setSharedControllerAllowed(true);

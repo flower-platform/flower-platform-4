@@ -28,16 +28,25 @@ public class GitRef implements Comparable<GitRef> {
 	
 	private String type;
 	
+	/**
+	 *@author see class
+	 **/
 	public GitRef() {
 		super();
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public GitRef(String name, String type) {
 		this();
 		this.name = name;
 		this.type = type;
 	}
 
+	/**
+	 *@author see class
+	 **/
 	public GitRef(String name, String type, String fullName) {
 		this(name, type);		
 		this.fullName = fullName;

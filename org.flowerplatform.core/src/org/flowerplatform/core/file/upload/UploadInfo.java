@@ -39,6 +39,7 @@ public class UploadInfo {
 		return location;
 	}
 
+	//CHECKSTYLE:OFF
 	public UploadInfo setLocation(String location) {
 		this.location = location;
 		return this;
@@ -52,31 +53,42 @@ public class UploadInfo {
 		this.tmpLocation = tmpLocation;
 		return this;
 	}
+	//CHECKSTYLE:ON
 
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public boolean unzipFile() {
 		return unzipFile;
 	}
-
+	
+	//CHECKSTYLE:OFF
 	public UploadInfo setUnzipFile(boolean unzipFile) {
 		this.unzipFile = unzipFile;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	public long getTimestamp() {
 		return timestamp;
 	}
-
+	
+	//CHECKSTYLE:OFF
 	public UploadInfo setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 	public String getSessionId() {
 		return sessionId;
 	}
 
-	public UploadInfo setSessionId(String sessionId) {
-		this.sessionId = sessionId;
+	/**
+	 *@author Cristina Constantinescu
+	 **/
+	public UploadInfo setSessionId(String sessionIdentifier) {
+		this.sessionId = sessionIdentifier;
 		return this;
 	}
 

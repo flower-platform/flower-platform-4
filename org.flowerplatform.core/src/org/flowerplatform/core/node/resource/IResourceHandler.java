@@ -22,8 +22,14 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public interface IResourceHandler {
 
+	/**
+	 *@author see class
+	 **/
 	String getResourceUri(String nodeUri);
 	
+	/**
+	 *@author see class
+	 **/
 	Object getRawNodeDataFromResource(String nodeUri, Object resourceData);
 	
 	/**
@@ -32,12 +38,24 @@ public interface IResourceHandler {
 	 */
 	Node createNodeFromRawNodeData(String nodeUri, Object rawNodeData);
 
+	/**
+	 *@author see class
+	 **/
 	Object load(String resourceUri) throws Exception;
 	
+	/**
+	 *@author see class
+	 **/
 	void save(Object resourceData) throws Exception;
 	
+	/**
+	 *@author see class
+	 **/
 	boolean isDirty(Object resourceData);
 	
+	/**
+	 *@author see class
+	 **/
 	void unload(Object resourceData) throws Exception;
 	
 }

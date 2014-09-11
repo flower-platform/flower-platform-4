@@ -15,8 +15,13 @@
  */
 package org.flowerplatform.codesync.sdiff;
 
-public class CodeSyncSdiffConstants {
+/**
+ *@author Mariana Gheorghe
+ **/
+public final class CodeSyncSdiffConstants {
 
+	private CodeSyncSdiffConstants() {
+	}
 	//////////////////////////////////
 	// Node types and categories
 	//////////////////////////////////

@@ -46,10 +46,12 @@ public class PropertyUpdate extends Update {
 		this.key = key;
 	}
 
+	//CHECKSTYLE:OFF
 	public PropertyUpdate setKeyAs(String key) {
 		this.key = key;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	public Object getValue() {
 		return value;
@@ -59,10 +61,12 @@ public class PropertyUpdate extends Update {
 		this.value = value;
 	}
 
-	public PropertyUpdate setValueAs(Object value) {
-		this.value = value;
+	//CHECKSTYLE:OFF
+	public PropertyUpdate setValueAs(Object properyUpdateValue) {
+		this.value = properyUpdateValue;
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 	public Object getOldValue() {
 		return oldValue;
@@ -73,8 +77,8 @@ public class PropertyUpdate extends Update {
 	 * 
 	 * @author Claudiu Matei
 	 */
-	public PropertyUpdate setOldValueAs(Object oldValue) {
-		this.oldValue = oldValue;
+	public PropertyUpdate setOldValueAs(Object propertyOldValue) {
+		this.oldValue = propertyOldValue;
 		return this;
 	}
 
@@ -87,10 +91,12 @@ public class PropertyUpdate extends Update {
 	 * 
 	 * @author Claudiu Matei
 	 */
+	//CHECKSTYLE:OFF
 	public PropertyUpdate setHasOldValueAs(boolean hasOldValue) {
 		this.hasOldValue = hasOldValue;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	public boolean getIsUnset() {
 		return isUnset;
@@ -100,11 +106,17 @@ public class PropertyUpdate extends Update {
 		this.isUnset = isUnset;
 	}
 		
+	//CHECKSTYLE:OFF
 	public PropertyUpdate setUnsetAs(boolean isUnset) {
 		this.isUnset = isUnset;
 		return this;
+		//CHECKSTYLE:ON
+		
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public PropertyUpdate() {
 		super();
 		this.setType(CoreConstants.UPDATE_PROPERTY);

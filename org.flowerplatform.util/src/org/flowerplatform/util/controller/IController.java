@@ -15,6 +15,9 @@
  */
 package org.flowerplatform.util.controller;
 
+/**
+ *@author Mariana Gheorghe
+ **/
 public interface IController extends Comparable<IController> {
 
 	/**

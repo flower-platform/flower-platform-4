@@ -70,10 +70,16 @@ public class DownloadService implements ISessionListener {
 	
 	private ScheduledExecutorService scheduler = CorePlugin.getInstance().getScheduledExecutorServiceFactory().createScheduledExecutorService();
 
+	/**
+	 *@author see class
+	 **/
 	class ClearDownloadInfoRunnable implements Runnable {
 		
 		private ScheduledExecutorService parentScheduler;
 		
+		/**
+		 *@author see class
+		 **/
 		public ClearDownloadInfoRunnable(ScheduledExecutorService parentScheduler) {			
 			this.parentScheduler = parentScheduler;
 		}
@@ -81,7 +87,8 @@ public class DownloadService implements ISessionListener {
 		@Override
 		public void run() {
 			for (Map.Entry<String, DownloadInfo> entry : downloadIdToDownloadInfo.entrySet()) {	
-				if (entry.getValue().getTimestamp()/100 < System.currentTimeMillis()/100 - Integer.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER))) {
+				if (entry.getValue().getTimestamp() / 100 < System.currentTimeMillis() / 100 - Integer.valueOf(CorePlugin.getInstance()
+						.getFlowerProperties().getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER))) {
 					removeDownloadInfo(entry.getKey());
 				}
 			}
@@ -89,16 +96,24 @@ public class DownloadService implements ISessionListener {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public DownloadService() {
 		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddIntegerProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER, PROP_DEFAULT_DOWNLOAD_CLEAN_SCHEDULER));
-		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddBooleanProperty(PROP_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT, PROP_DEFAULT_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT));
+		CorePlugin.getInstance().getFlowerProperties()
+			.addProperty(new AddBooleanProperty(PROP_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT, PROP_DEFAULT_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT));
 				
 		CorePlugin.getInstance().addSessionListener(this);
 		
 		deleteTemporaryDownloadFolder();
-		scheduler.schedule(new ClearDownloadInfoRunnable(scheduler), Integer.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER)), TimeUnit.SECONDS);
+		scheduler.schedule(new ClearDownloadInfoRunnable(scheduler), Integer.valueOf(CorePlugin.getInstance().getFlowerProperties()
+				.getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER)), TimeUnit.SECONDS);
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public DownloadInfo getDownloadInfo(String downloadId) {
 		return downloadIdToDownloadInfo.get(downloadId);
 	}

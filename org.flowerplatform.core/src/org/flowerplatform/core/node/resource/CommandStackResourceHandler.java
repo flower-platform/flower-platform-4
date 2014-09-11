@@ -45,20 +45,29 @@ public class CommandStackResourceHandler implements IResourceHandler {
 		// nothing to do
 	}
 
+	/**
+	 * @author Claudiu Matei
+	 */
 	public Node createCommandStackNode(String resourceSet) {
 		String commandStackUri = Utils.getUri(CoreConstants.COMMAND_STACK_SCHEME, resourceSet);
 		Node commandStackNode = new Node(commandStackUri, CoreConstants.COMMAND_STACK_TYPE);
 		return commandStackNode;
 	}
 	
+	/**
+	 * @author Claudiu Matei
+	 */
 	public Node createCommandNode(String resourceSet, String commandId) {
 		String commandUri = Utils.getUri(CoreConstants.COMMAND_STACK_SCHEME, resourceSet, commandId);
 		Node commandNode = new Node(commandUri, CoreConstants.COMMAND_TYPE);
 		return commandNode;
 	}
 
+	/**
+	 * @author Claudiu Matei
+	 */
 	public String getResourceSetFromCommandStackNode(Node node) {
-		return node.getNodeUri().substring(CoreConstants.COMMAND_STACK_SCHEME.length()+1);
+		return node.getNodeUri().substring(CoreConstants.COMMAND_STACK_SCHEME.length() + 1);
 	}
 
 }

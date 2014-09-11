@@ -30,11 +30,17 @@ public class PropertyWrapper {
 		this.value = value;
 	}
 
-	public PropertyWrapper setValueAs(Object value) {
-		setValue(value);
+	/**
+	 *@author see class
+	 **/
+	public PropertyWrapper setValueAs(Object givenValue) {
+		setValue(givenValue);
 		return this;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public PropertyWrapper() {
 		super();
 	}	

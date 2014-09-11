@@ -26,11 +26,20 @@ public interface IProjectAccessController {
 	 */
 	Object getFile(Object project, String path);
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	Object getContainingProjectForFile(Object file);
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	String getPathRelativeToProject(Object file);
 	
 	//needed for synchronization. because in Eclipse we can't use project.findMember(path) (it return null if resource dosn't exist). We use instead .getFile/getFolder
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	Object getFolder(Object project, String path);
 	
 }

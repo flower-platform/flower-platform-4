@@ -34,12 +34,18 @@ public class ScheduledExecutorServiceFactory {
 	
 	private Collection<ScheduledExecutorService> executorServices = Collections.synchronizedList(new ArrayList<ScheduledExecutorService>());
 
+	/**
+	 *@author see class
+	 **/
 	public ScheduledExecutorService createScheduledExecutorService() {
 		ScheduledExecutorService executorService =  Executors.newScheduledThreadPool(1);
 		executorServices.add(executorService);
 		return executorService;
 	}
 
+	/**
+	 *@author see class
+	 **/
 	public void dispose() {
 		for (ScheduledExecutorService executorService : executorServices) { 
 			executorService.shutdownNow();

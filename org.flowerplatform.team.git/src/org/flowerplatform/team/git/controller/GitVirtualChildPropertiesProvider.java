@@ -15,6 +15,9 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.AbstractController;
 
+/**
+ * @author Eduard Cojocea
+ */
 public class GitVirtualChildPropertiesProvider extends AbstractController implements IPropertiesProvider {
 
 	@Override

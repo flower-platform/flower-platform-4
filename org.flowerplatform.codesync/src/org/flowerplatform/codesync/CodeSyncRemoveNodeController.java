@@ -28,6 +28,9 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class CodeSyncRemoveNodeController extends AbstractController implements IRemoveNodeController {
 	
+	/**
+	 *@author see class
+	 **/
 	public CodeSyncRemoveNodeController() {
 		// must be executed before others.
 		setOrderIndex(-100000);

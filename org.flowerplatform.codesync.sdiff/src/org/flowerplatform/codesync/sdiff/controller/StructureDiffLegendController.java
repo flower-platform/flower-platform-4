@@ -44,6 +44,9 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class StructureDiffLegendController extends AbstractController implements IChildrenProvider, IPropertiesProvider {
 
+	/**
+	 *@author see class
+	 **/
 	public StructureDiffLegendController() {
 		setOrderIndex(-1000);
 	}

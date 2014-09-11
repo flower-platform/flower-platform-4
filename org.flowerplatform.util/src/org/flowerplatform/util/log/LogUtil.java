@@ -32,10 +32,15 @@ import ch.qos.logback.core.pattern.color.ANSIConstants;
  * 
  * @author Cristi
  */
-public class LogUtil {
+public final class LogUtil {
 	
-	public static final Logger logger = LoggerFactory.getLogger(LogUtil.class);
-
+	private LogUtil() {
+		
+	}
+	public static final Logger LOGGER = LoggerFactory.getLogger(LogUtil.class);
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public static class FlowerHighlightingCompositeConverter extends HighlightingCompositeConverter {
 
 		@Override
@@ -49,6 +54,9 @@ public class LogUtil {
 		
 	}
 	
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public static class FlowerHighlightingCompositeConverterDefaultYellow extends HighlightingCompositeConverter {
 
 		@Override

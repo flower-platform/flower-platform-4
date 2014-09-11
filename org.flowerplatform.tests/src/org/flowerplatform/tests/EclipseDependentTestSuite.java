@@ -17,9 +17,10 @@ package org.flowerplatform.tests;
 
 import org.flowerplatform.tests.codesync.CodeSyncSdiffTest;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-
+/**
+ *@author Mariana Gheorghe
+ **/
 @RunWith(EclipseDependentSuite.class)
 @SuiteClasses({ 
 	EclipseDependentTest.class,

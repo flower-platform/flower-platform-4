@@ -19,7 +19,6 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
-import org.eclipse.jdt.core.dom.Modifier;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
@@ -32,6 +31,9 @@ import org.flowerplatform.core.CoreConstants;
  */
 public class JavaAnnotationTypeMemberDeclarationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public JavaAnnotationTypeMemberDeclarationModelAdapter() {
 		valueFeatures.add(CodeSyncJavaConstants.DOCUMENTATION);
 		valueFeatures.add(CodeSyncJavaConstants.TYPED_ELEMENT_TYPE);

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RegexConfiguration {
 
-	private static final Logger logger = LoggerFactory.getLogger(RegexConfiguration.class); 
+	private static final Logger LOGGER = LoggerFactory.getLogger(RegexConfiguration.class); 
 
 	protected List<AbstractRegexWithAction> regexes = new ArrayList<AbstractRegexWithAction>();
 	
@@ -40,23 +40,31 @@ public class RegexConfiguration {
 	
 	protected boolean useUntilFoundThisIgnoreAll = true;
 	
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	protected RegexProcessingSession createSessionInstance() {
 		return new RegexProcessingSession();
 	}
 	
-	public RegexConfiguration setTargetNestingForMatches(int targetNestingForMatches) {
-		this.targetNestingForMatches = targetNestingForMatches;
+	/**
+	 *@author Cristina Constantinescu
+	 **/
+	public RegexConfiguration setTargetNestingForMatches(int targetNestingForMatchesParameter) {
+		this.targetNestingForMatches = targetNestingForMatchesParameter;
 		return this;
 	}
 	
 	/**
 	 * Option needed if the configuration does not need any filtering before returning output 
 	 */
-	public RegexConfiguration setUseUntilFoundThisIgnoreAll(boolean useUntilFoundThisIgnoreAll) {
-		this.useUntilFoundThisIgnoreAll = useUntilFoundThisIgnoreAll;
+	public RegexConfiguration setUseUntilFoundThisIgnoreAll(boolean useUntilFoundThisIgnoreAllParameter) {
+		this.useUntilFoundThisIgnoreAll = useUntilFoundThisIgnoreAllParameter;
 		return this;
 	}
-
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public RegexConfiguration add(AbstractRegexWithAction regex) {
 		regexes.add(regex);
 		return this;
@@ -82,8 +90,8 @@ public class RegexConfiguration {
 	 * 
 	 */
 	public RegexConfiguration compile(int flags) {
-		if (logger.isTraceEnabled()) {
-			logger.trace("Compiling configuration...");
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.trace("Compiling configuration...");
 		}
 		
 		createCaptureGroupToRegexMappingArray();
@@ -95,8 +103,9 @@ public class RegexConfiguration {
 		
 			AbstractRegexWithAction regex = regexes.get(i);
 			
-			if (logger.isTraceEnabled()) {
-				logger.trace("Adding to capture group = {} regex = {} having {} capture groups", new Object[] { nextCaptureGroupIndex, regex.getRegex(), regex.getNumberOfCaptureGroups()});
+			if (LOGGER.isTraceEnabled()) {
+				LOGGER.trace("Adding to capture group = {} regex = {} having {} capture groups", new Object[] { nextCaptureGroupIndex, regex.getRegex(), 
+						regex.getNumberOfCaptureGroups()});
 			}
 			
 			composedRegex.append(regex.getRegex());
@@ -109,8 +118,8 @@ public class RegexConfiguration {
 			nextCaptureGroupIndex += 1 + regex.getNumberOfCaptureGroups();
 		}
 		
-		if (logger.isTraceEnabled()) {
-			logger.trace("Composed regex = {} having {} capture groups. Compiling pattern...", composedRegex.toString(), nextCaptureGroupIndex - 1);
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.trace("Composed regex = {} having {} capture groups. Compiling pattern...", composedRegex.toString(), nextCaptureGroupIndex - 1);
 		}
 		
 		pattern = Pattern.compile(composedRegex.toString(), flags);

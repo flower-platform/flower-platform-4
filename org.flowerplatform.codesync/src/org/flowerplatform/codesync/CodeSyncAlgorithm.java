@@ -40,9 +40,12 @@ import org.flowerplatform.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ *@author Mariana Gheorghe
+ **/
 public class CodeSyncAlgorithm {
 	
-	private final static Logger logger = LoggerFactory.getLogger(CodeSyncAlgorithm.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CodeSyncAlgorithm.class);
 	
 	protected IModelAdapterSet modelAdapterSetLeft;
 	protected IModelAdapterSet modelAdapterSetRight;
@@ -83,12 +86,18 @@ public class CodeSyncAlgorithm {
 		return filesToDelete;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public void initializeModelAdapterSets(List<String> leftTechnologies, List<String> rightTechnologies, List<String> ancestorTechnologies) {
 		modelAdapterSetLeft = getModelAdapterSet(leftTechnologies);
 		modelAdapterSetRight = getModelAdapterSet(rightTechnologies);
 		modelAdapterSetAncestor = getModelAdapterSet(ancestorTechnologies);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public void initializeFeatureProvider(Side side) {
 		featureProviderSide = side;
 	}
@@ -118,7 +127,7 @@ public class CodeSyncAlgorithm {
 		boolean isChildrenSync = true;
 		boolean isSync = true;
 
-		logger.debug("Generate diff for {}", match);
+		LOGGER.debug("Generate diff for {}", match);
 
 		beforeOrAfterFeaturesProcessed(match, true);
 		FeatureProvider featureProvider = getFeatureProvider(match);
@@ -214,19 +223,25 @@ public class CodeSyncAlgorithm {
 		}
 		
 		if (before) {
-			if (ancestorAdapter != null)
+			if (ancestorAdapter != null) {
 				ancestorAdapter.beforeFeaturesProcessed(ancestor, right, this);
-			if (leftAdapter != null)
+			}
+			if (leftAdapter != null) {
 				leftAdapter.beforeFeaturesProcessed(left, right, this);
-			if (rightAdapter != null)
+			}
+			if (rightAdapter != null) {
 				rightAdapter.beforeFeaturesProcessed(right, null, this);
+			}
 		} else {
-			if (ancestorAdapter != null)
+			if (ancestorAdapter != null) {
 				ancestorAdapter.featuresProcessed(ancestor, this);
-			if (leftAdapter != null)
+			}
+			if (leftAdapter != null) {
 				leftAdapter.featuresProcessed(left, this);
-			if (rightAdapter != null)
+			}
+			if (rightAdapter != null) {
 				rightAdapter.featuresProcessed(right, this);
+			}
 		}
 	}
 	
@@ -241,7 +256,7 @@ public class CodeSyncAlgorithm {
 		boolean isChildrenSync = true;
 		Pair<Boolean, Boolean> conflitSyncPair = new Pair<Boolean, Boolean>(false, true);
 		
-		logger.debug("Process containment feature {} for {}", feature, match);
+		LOGGER.debug("Process containment feature {} for {}", feature, match);
 		
 		// cache the model adapters for children to avoid
 		// a lot of calls to the model adapter factory; we are
@@ -369,7 +384,7 @@ public class CodeSyncAlgorithm {
 	 * @return true - if the match has a conflict, false - otherwise
 	 */
 	public Boolean processValueFeature(Object feature, Match match) {
-		logger.debug("Process value feature {} for {}", feature, match);
+		LOGGER.debug("Process value feature {} for {}", feature, match);
 		
 		Diff diff = null;
 		
@@ -377,10 +392,11 @@ public class CodeSyncAlgorithm {
 		Object left = match.getLeft();
 		Object right = match.getRight();
 		
-		if (ancestor == null && left == null || 
-				ancestor == null && right == null ||
-				left == null && right == null)
+		if (ancestor == null && left == null 
+				|| ancestor == null && right == null 
+				|| left == null && right == null) {
 			return false; // for 1-Match, don't do anything
+		}
 		
 		Object ancestorValue = null;
 		Object leftValue = null;
@@ -447,19 +463,25 @@ public class CodeSyncAlgorithm {
 		return false;
 	}
 	
+	/**
+	 *@author Valentina Bojan
+	 **/
 	public boolean synchronize(Match match) {
 		return synchronize(match, null);
 	}
 	
+	/**
+	 *@author Valentina Bojan
+	 **/
 	public boolean synchronize(Match match, DiffAction action) {
 		boolean isSync = true;
 
 		if (match.isConflict() || match.isChildrenConflict()) {
-			logger.debug("Conflict for {}", match);
+			LOGGER.debug("Conflict for {}", match);
 			return false;
 		}
 
-		logger.debug("Perform sync for {}", match);
+		LOGGER.debug("Perform sync for {}", match);
 
 		// sync match
 
@@ -514,6 +536,9 @@ public class CodeSyncAlgorithm {
 		return isSync;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected DiffAction getDiffActionToApplyForMatch(Match match) {
 		if (Match.MatchType._1MATCH_LEFT.equals(match.getMatchType())) {
 			return new MatchActionAddLeftToRight(false);
@@ -529,6 +554,9 @@ public class CodeSyncAlgorithm {
 		return null;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public void save(Match match, boolean shouldRecurse) {
 		boolean saveSubMatches = false;
 		
@@ -552,6 +580,9 @@ public class CodeSyncAlgorithm {
 		}
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public String getElementTypeForMatch(Match match) {
 		if (match.getLeft() != null) {
 			return modelAdapterSetLeft.getType(match.getLeft(), this);
@@ -562,6 +593,9 @@ public class CodeSyncAlgorithm {
 		}
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public FeatureProvider getFeatureProvider(Match match) {
 		if (featureProviderSide == null) {
 			throw new RuntimeException("No feature provider side registered for algorithm");
@@ -597,6 +631,8 @@ public class CodeSyncAlgorithm {
 			model = match.getAncestor();
 			modelAdapter = modelAdapterSetAncestor.getModelAdapterForType(type);
 			break;
+		default:
+			break;
 		}
 		
 		FeatureProvider featureProvider = new FeatureProvider(modelAdapter, this); 
@@ -608,11 +644,11 @@ public class CodeSyncAlgorithm {
 				delegateSide = featureProviderSide;
 			}
 			switch (delegateSide) {
-			case LEFT: {
+			case LEFT:
 				name = (String) getModelAdapterSetLeft().getModelAdapterForType(type)
 						.getValueFeatureValue(match.getLeft(), NAME, null, this);
 				break;
-			}
+			
 			case RIGHT:
 				name = (String) getModelAdapterSetRight().getModelAdapterForType(type)
 						.getValueFeatureValue(match.getRight(), NAME, null, this);
@@ -620,6 +656,8 @@ public class CodeSyncAlgorithm {
 			case ANCESTOR:
 				name = (String) getModelAdapterSetAncestor().getModelAdapterForType(type)
 						.getValueFeatureValue(match.getAncestor(), NAME, null, this);
+				break;
+			default:
 				break;
 			}
 			int index = name.lastIndexOf(".");
@@ -631,18 +669,30 @@ public class CodeSyncAlgorithm {
 		return featureProvider;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public IModelAdapter getRightModelAdapter(Object right) {
 		return modelAdapterSetRight.getModelAdapter(right, this);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public IModelAdapter getAncestorModelAdapter(Object ancestor) {
 		return modelAdapterSetAncestor.getModelAdapter(ancestor, this);
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public IModelAdapter getLeftModelAdapter(Object left) {
 		return modelAdapterSetLeft.getModelAdapter(left, this);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public enum Side {
 		LEFT, 
 		RIGHT,

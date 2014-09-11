@@ -25,9 +25,13 @@ import org.eclipse.core.runtime.Assert;
 import org.flowerplatform.core.CorePlugin;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
+/**
+ * @author Mariana Gheorghe
+ */
 public class EclipseDependentTest extends EclipseDependentTestSuiteBase {
-
+	/**
+	 * @author Alexandra Topoloaga
+	 */
 	@BeforeClass
 	public static void beforeClass() {
 		HttpServletRequest request = mock(HttpServletRequest.class);
@@ -36,7 +40,9 @@ public class EclipseDependentTest extends EclipseDependentTestSuiteBase {
 		when(httpSession.getId()).thenReturn("mockId");
 		CorePlugin.getInstance().getRequestThreadLocal().set(request);
 	}
-	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	@Test
 	public void test() {
 		Assert.isNotNull(CorePlugin.getInstance(), "CorePlugin not started");

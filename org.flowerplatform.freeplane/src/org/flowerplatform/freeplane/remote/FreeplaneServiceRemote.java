@@ -30,6 +30,9 @@ import org.freeplane.features.styles.MapStyleModel;
  */
 public class FreeplaneServiceRemote {
 
+	/**
+	 *@author see class
+	 **/
 	public List<String> getStyles(String fullNodeId) {		
 		MapModel mapModel = ((NodeModel) CorePlugin.getInstance().getResourceService().getNode(fullNodeId).getRawNodeData()).getMap();
 			
@@ -38,7 +41,7 @@ public class FreeplaneServiceRemote {
 			return null;
 		}
 		List<String> children = new ArrayList<String>();
-		for(IStyle style : styles) {
+		for (IStyle style : styles) {
 			children.add(style.toString());
 		}		
 		return children;		

@@ -54,8 +54,11 @@ public class UploadServlet extends HttpServlet {
 
 	public static final String UPLOAD_SERVLET_NAME = "/servlet/upload";
 	
-	private static final Logger logger = LoggerFactory.getLogger(UploadServlet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UploadServlet.class);
 	
+	/**
+	 *@author see class
+	 **/
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		if (!isMultipart) {
@@ -70,7 +73,7 @@ public class UploadServlet extends HttpServlet {
 			return;
 		}
 		
-		logger.trace("Uploading {}", uploadInfo);
+		LOGGER.trace("Uploading {}", uploadInfo);
 		
 		// create temporary upload location file for archive that needs to be unzipped after
 		File file = new File(uploadInfo.getTmpLocation());

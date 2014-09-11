@@ -42,6 +42,9 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class RegexMatchesChildrenProvider extends AbstractController implements IChildrenProvider {
 
+	/**
+	 *@author see class
+	 **/
 	public RegexMatchesChildrenProvider() {
 		// invoked before the persistence providers
 		setOrderIndex(-10000);

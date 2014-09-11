@@ -26,6 +26,9 @@ import org.flowerplatform.util.file.FileHolder;
  */
 public class FileHolderAccessController implements IFileAccessController {
 
+	/**
+	 *@author see class
+	 **/
 	protected FileHolder getFileHolder(Object file) {
 		return (FileHolder) file;
 	}

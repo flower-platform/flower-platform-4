@@ -24,6 +24,9 @@ package org.flowerplatform.util.log;
  */
 public interface IAuditAppender {
 
-	public void append(AuditDetails auditDetails);
+	/**
+	 *@author see class
+	 **/
+	void append(AuditDetails auditDetails);
 	
 }

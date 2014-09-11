@@ -40,7 +40,8 @@ public class JavaModifierModelAdapter extends JavaAbstractAstNodeModelAdapter {
 	}
 
 	@Override
-	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, 
+			IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.MODIFIERS.equals(feature)) {
 			if (!(parent instanceof BodyDeclaration || parent instanceof SingleVariableDeclaration)) {
 				throw new RuntimeException("Cannot create modifier for " + parent);

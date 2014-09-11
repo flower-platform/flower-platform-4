@@ -22,10 +22,15 @@ import org.flowerplatform.codesync.Diff;
 import org.flowerplatform.codesync.Match;
 
 /**
- * 
+ * @author Mariana Gheorghe
  */
 public class DiffActionRegistry {
 	
+	/**
+	 * 
+	 * @author see class
+	 *
+	 */
 	public enum ActionType {
 		
 		ACTION_TYPE_COPY_LEFT_RIGHT(new DiffActionCopyLeftToRight()),
@@ -50,11 +55,18 @@ public class DiffActionRegistry {
 			this.diffAction = action;
 		}
 	}
-	
+	/**
+	 * 
+	 * @author see class
+	 *
+	 */
 	public class ActionEntries {
 		public List<DiffActionEntry> entries;
 		public int defaultAction;
 		
+		/**
+		 *@author see class
+		 */
 		public ActionEntries(List<DiffActionEntry> entries, int defaultAction) {
 			super();
 			this.entries = entries;
@@ -64,28 +76,33 @@ public class DiffActionRegistry {
 	
 	public static final DiffActionRegistry INSTANCE = new DiffActionRegistry();
 
+	/**
+	 *@author see class
+	 */
 	public ActionEntries getActionEntriesForUI(Match match, Diff diff, boolean returnOnlyDefaultActions) {
 		List<DiffActionEntry> result = null;
-		if (!returnOnlyDefaultActions)
+		if (!returnOnlyDefaultActions) {
 			result = new ArrayList<DiffActionEntry>();
+		}
 		int defaultAction = -1;
 
 		DiffActionEntry ae;
 		if (diff != null) {
 			
-			if (diff.isLeftModified() && !diff.isRightModified())
+			if (diff.isLeftModified() && !diff.isRightModified()) {
 				defaultAction = ActionType.ACTION_TYPE_COPY_LEFT_RIGHT.ordinal();
-			else if (!diff.isLeftModified() && diff.isRightModified()) 
+			} else if (!diff.isLeftModified() && diff.isRightModified()) {
 				defaultAction = ActionType.ACTION_TYPE_COPY_RIGHT_LEFT.ordinal();
+			}
 			
 			if (!returnOnlyDefaultActions) {
 				ae = new DiffActionEntry();
 				ae.setLabel("Copy Left -> Right");
 				ae.setActionType(ActionType.ACTION_TYPE_COPY_LEFT_RIGHT.ordinal());
 				ae.setDiffIndex(match.getDiffs().indexOf(diff));
-				ae.setEnabled(match.getRight() != null &&
-						(diff.isLeftModified() && !diff.isRightModified() ||
-						diff.isLeftModified() && diff.isRightModified() && diff.isConflict()));
+				ae.setEnabled(match.getRight() != null 
+						&& (diff.isLeftModified() && !diff.isRightModified() 
+						|| diff.isLeftModified() && diff.isRightModified() && diff.isConflict()));
 	//			ae.setDefault1(diff.isLeftModified() && !diff.isRightModified());
 				result.add(ae);
 				
@@ -93,9 +110,9 @@ public class DiffActionRegistry {
 				ae.setLabel("Copy Left <- Right");
 				ae.setActionType(ActionType.ACTION_TYPE_COPY_RIGHT_LEFT.ordinal());
 				ae.setDiffIndex(match.getDiffs().indexOf(diff));
-				ae.setEnabled(match.getLeft() != null && 
-						(!diff.isLeftModified() && diff.isRightModified() ||
-						diff.isLeftModified() && diff.isRightModified() && diff.isConflict()));
+				ae.setEnabled(match.getLeft() != null 
+						&& (!diff.isLeftModified() && diff.isRightModified() 
+						|| diff.isLeftModified() && diff.isRightModified() && diff.isConflict()));
 	//			ae.setDefault1(!diff.isLeftModified() && diff.isRightModified());
 				result.add(ae);
 				
@@ -111,8 +128,9 @@ public class DiffActionRegistry {
 			if (match.getAncestor() == null && match.getRight() == null) {
 				if (!(match.getParentMatch().getAncestor() == null && match.getParentMatch().getRight() == null)) {
 					// 1-match-left; only the "top" one
-					if (match.getParentMatch().getRight() != null)
+					if (match.getParentMatch().getRight() != null) {
 						defaultAction = ActionType.ACTION_TYPE_1_MATCH_LEFT_ADD_SAME_ON_OPPOSITE.ordinal();
+					}
 					
 					if (!returnOnlyDefaultActions) {
 					
@@ -143,8 +161,9 @@ public class DiffActionRegistry {
 			} else if (match.getAncestor() == null && match.getLeft() == null) {
 				if (!(match.getParentMatch().getAncestor() == null && match.getParentMatch().getLeft() == null)) {
 					// 1-match-right; only the "top" one
-					if (match.getParentMatch().getLeft() != null)
+					if (match.getParentMatch().getLeft() != null) {
 						defaultAction = ActionType.ACTION_TYPE_1_MATCH_RIGHT_ADD_SAME_ON_OPPOSITE.ordinal();
+					}
 					
 					if (!returnOnlyDefaultActions) {
 						ae = new DiffActionEntry();
@@ -266,10 +285,13 @@ public class DiffActionRegistry {
 			}
 		}
 		
-		if (!returnOnlyDefaultActions && defaultAction != -1) 
-			for (DiffActionEntry entry : result)
-				if (entry.getActionType() == defaultAction)
+		if (!returnOnlyDefaultActions && defaultAction != -1) {
+			for (DiffActionEntry entry : result) {
+				if (entry.getActionType() == defaultAction) {
 					entry.setDefault1(true);
+				}
+			}
+		}
 		
 		return new ActionEntries(result, defaultAction);
 	}

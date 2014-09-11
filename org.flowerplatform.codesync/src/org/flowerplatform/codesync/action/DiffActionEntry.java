@@ -17,8 +17,8 @@ package org.flowerplatform.codesync.action;
 
 
 /**
- * 
- */
+ *@author Mariana Gheorghe
+ **/
 public class DiffActionEntry {
 	private int actionType = -1;
 	

@@ -78,9 +78,11 @@ public abstract class AbstractController implements IController {
 	public void setOrderIndex(int orderIndex) {
 		this.orderIndex = orderIndex;
 	}
-
-	public IController setOrderIndexAs(int orderIndex) {
-		setOrderIndex(orderIndex);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	public IController setOrderIndexAs(int orderIndexParam) {
+		setOrderIndex(orderIndexParam);
 		return this;
 	}
 	
@@ -89,7 +91,7 @@ public abstract class AbstractController implements IController {
 	 */
 	@Override
 	public void setTypeDescriptor(TypeDescriptor typeDescriptor) {
-		if (!sharedControllerAllowed && this.typeDescriptor !=null && this.typeDescriptor != typeDescriptor) {
+		if (!sharedControllerAllowed && this.typeDescriptor != null && this.typeDescriptor != typeDescriptor) {
 			throw new IllegalStateException(String.format("This instance of %s cannot be registered for type '%s'. It is is already registered for type '%s'.", 
 					this.getClass(), typeDescriptor.getType(), this.typeDescriptor.getType()));
 		}

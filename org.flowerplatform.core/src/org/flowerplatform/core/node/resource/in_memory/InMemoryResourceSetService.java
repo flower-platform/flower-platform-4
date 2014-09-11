@@ -69,7 +69,7 @@ public class InMemoryResourceSetService extends ResourceSetService {
 	 */
 	@Override
 	public void addUpdate(String resourceSet, Update update) {
-		logger.debug("Adding update {} for resource set {}", update, resourceSet);
+		LOGGER.debug("Adding update {} for resource set {}", update, resourceSet);
 		update.setId(UUID.randomUUID().toString());
 		ResourceSetInfo info = resourceSetInfos.get(resourceSet);
 		if (info != null) {
@@ -232,7 +232,9 @@ public class InMemoryResourceSetService extends ResourceSetService {
 		// Most (99.99%) of the calls will only iterate a few elements at the end of the list
 		for (int i = allCommands.size() - 1; i >= 0; i--) {
 			Command command = allCommands.get(i);			
-			if (command.getId().equals(commandId)) break;
+			if (command.getId().equals(commandId)) {
+				break;
+			}
 			commands.add(0, command);
 			allCommands.remove(i);
 		}
@@ -350,8 +352,9 @@ public class InMemoryResourceSetService extends ResourceSetService {
 			if (rightCommandIndex == null && command.getId().equals(rightCommandId)) {
 				rightCommandIndex = i;
 			}
-			if (leftCommandIndex != null && rightCommandIndex != null)
+			if (leftCommandIndex != null && rightCommandIndex != null) {
 				break;
+			}
 		}
 
 		if (leftCommandIndex == null || rightCommandIndex == null) {

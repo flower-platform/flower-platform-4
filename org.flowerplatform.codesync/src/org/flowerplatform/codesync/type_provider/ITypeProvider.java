@@ -22,6 +22,9 @@ import org.flowerplatform.codesync.CodeSyncAlgorithm;
  */
 public interface ITypeProvider {
 
-	public String getType(Object object, CodeSyncAlgorithm codeSyncAlgorithm);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	String getType(Object object, CodeSyncAlgorithm codeSyncAlgorithm);
 	
 }

@@ -25,6 +25,9 @@ import org.flowerplatform.util.controller.IController;
  */
 public interface IRemoveNodeController extends IController {
 
+	/**
+	 *@author see class
+	 **/
 	void removeNode(Node node, Node child, ServiceContext<NodeService> context);
 	
 }

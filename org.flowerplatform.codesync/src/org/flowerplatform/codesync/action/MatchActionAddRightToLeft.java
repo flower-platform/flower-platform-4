@@ -21,26 +21,41 @@ import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 
 
 /**
- * 
- */
+ *@author Mariana Gheorghe
+ **/
 public class MatchActionAddRightToLeft extends MatchActionAddLateralAbstract {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public MatchActionAddRightToLeft(boolean processDiffs) {
 		super(processDiffs);
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected Object getThis(Match match) {
 		return match.getRight();
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected Object getOpposite(Match match) {
 		return match.getLeft();
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected IModelAdapter getThisModelAdapter(Match match) {
 		return match.getCodeSyncAlgorithm().getRightModelAdapter(getThis(match));
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected IModelAdapter getOppositeModelAdapter(Match match) {
 		return match.getCodeSyncAlgorithm().getLeftModelAdapter(getOpposite(match));
 	}
@@ -55,6 +70,9 @@ public class MatchActionAddRightToLeft extends MatchActionAddLateralAbstract {
 		return match.getCodeSyncAlgorithm().getModelAdapterSetLeft();
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected void setOpposite(Match match, Object elment) {
 		match.setLeft(elment);
 	}

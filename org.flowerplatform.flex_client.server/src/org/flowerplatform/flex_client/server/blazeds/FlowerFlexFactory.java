@@ -78,17 +78,30 @@ public class FlowerFlexFactory implements FlexFactory {
 		return factoryInstance.lookup();
 	}
 
+	/**
+	 *@author see class
+	 **/
 	static class FlowerFactoryInstance extends FactoryInstance {
+		
+		/**
+		 *@author see class
+		 **/
 		FlowerFactoryInstance(FlowerFlexFactory factory, String id,
 				ConfigMap properties) {
 			super(factory, id, properties);
 		}
 
+		/**
+		 *@author see class
+		 **/
 		public String toString() {
 			return "FlowerFactory instance for id=" + getId() + " source="
 					+ getSource() + " scope=" + getScope();
 		}
 
+		/**
+		 *@author see class
+		 **/
 		public Object lookup() {
 			return CorePlugin.getInstance().getServiceRegistry()
 					.getService(getSource());

@@ -25,7 +25,6 @@ import java.util.Map;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.util.Utils;
 
 /**
@@ -48,6 +47,9 @@ public class Node implements Externalizable {
 
 	private Object rawNodeData;
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public Node(String nodeUri, String type) {
 		setNodeUri(nodeUri);
 		setType(type);
@@ -123,6 +125,9 @@ public class Node implements Externalizable {
 		this.rawNodeData = rawNodeData;
 	}
 		
+	/**
+	 *@author see class
+	 **/
 	public Object getPropertyValue(String property) {
 		Object propertyObj = getPropertyValueOrWrapper(property);
 		if (propertyObj instanceof PropertyWrapper) {
@@ -131,6 +136,9 @@ public class Node implements Externalizable {
 		return propertyObj;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public Object getPropertyValueOrWrapper(String property) {
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
 		if (!getOrPopulateProperties(context).containsKey(property)) {

@@ -22,9 +22,6 @@ import java.lang.reflect.Proxy;
 
 import javax.servlet.ServletContext;
 
-import flex.messaging.HttpFlexSession;
-import flex.messaging.MessageBrokerServlet;
-
 /**
  * Maintains a reference to the actual {@link ServletContext} from the servlet container, wrapped in 
  * a ServletContextAdaptor by OSGi, in order to set and remove attributes from its attributes map.
@@ -51,6 +48,9 @@ public class ServletContextAdaptorInvocationHandler implements InvocationHandler
 	 */
 	private ServletContext context;
 	
+	/**
+	 *@author see class
+	 **/
 	public ServletContextAdaptorInvocationHandler(ServletContext proxy) {
 		super();
 		this.proxy = proxy;
@@ -76,13 +76,15 @@ public class ServletContextAdaptorInvocationHandler implements InvocationHandler
 	 * invoked on the context from the servlet container.
 	 */
 	@Override
-	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+	public Object invoke(Object proxyObject, Method method, Object[] args) throws Throwable {
 		Object result = method.invoke(this.proxy, args);
 		switch (method.getName()) {
 		case "setAttribute":
 		case "removeAttribute":
 			// also invoke this method on the internal context
 			method.invoke(context, args);
+			break;
+		default:
 			break;
 		}
 		return result;

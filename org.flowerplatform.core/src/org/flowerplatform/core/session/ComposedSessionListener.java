@@ -32,6 +32,9 @@ public class ComposedSessionListener implements HttpSessionListener {
 	
 	private Set<ISessionListener> sessionListeners = new HashSet<>();
 	
+	/**
+	 *@author see class
+	 **/
 	public void add(ISessionListener listener) {
 		sessionListeners.add(listener);
 	}

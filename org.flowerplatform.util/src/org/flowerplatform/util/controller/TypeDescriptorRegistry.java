@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TypeDescriptorRegistry {
 
-	private final static Logger logger = LoggerFactory.getLogger(TypeDescriptorRegistry.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TypeDescriptorRegistry.class);
 	
 	/**
 	 * Package visibility, so that {@link TypeDescriptor} can change it.
@@ -55,7 +55,9 @@ public class TypeDescriptorRegistry {
 	}
 
 	private Map<String, TypeDescriptor> typeDescriptors = new HashMap<String, TypeDescriptor>();
-	
+	/**
+	 *@author see class
+	 **/
 	public TypeDescriptor getOrCreateTypeDescriptor(String type) {
 		if (type.startsWith(UtilConstants.CATEGORY_PREFIX)) {
 			throw new IllegalArgumentException("Please use getOrCreateCategoryTypeDescriptor()");
@@ -94,25 +96,31 @@ public class TypeDescriptorRegistry {
 	public TypeDescriptor getExpectedTypeDescriptor(String type) {
 		TypeDescriptor result = typeDescriptors.get(type);
 		if (result == null) {
-			logger.warn("Operation invoked for nodeType = {}, but there is no associated descriptor registered! Aborting operation.", type);
+			LOGGER.warn("Operation invoked for nodeType = {}, but there is no associated descriptor registered! Aborting operation.", type);
 			return null;
 		}
 		return result;
 	}
 		
 	private List<IDynamicCategoryProvider> dynamicCategoryProviders;
-	
+	/**
+	 *@author see class
+	 **/
 	public List<IDynamicCategoryProvider> getDynamicCategoryProviders() {
 		if (dynamicCategoryProviders == null) {
 			dynamicCategoryProviders = new ArrayList<IDynamicCategoryProvider>();			
 		}
 		return dynamicCategoryProviders;
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	public void addDynamicCategoryProvider(IDynamicCategoryProvider provider) {
 		getDynamicCategoryProviders().add(provider);
 	}
-
+	/**
+	 *@author see class
+	 **/
 	public TypeDescriptorRegistry() {
 		super();
 		addDynamicCategoryProvider(new AllDynamicCategoryProvider());

@@ -76,15 +76,18 @@ import org.osgi.framework.BundleContext;
  */
 public class CodeSyncAsPlugin extends AbstractFlowerJavaPlugin {
 
-protected static CodeSyncAsPlugin INSTANCE;
+protected static CodeSyncAsPlugin instance;
 	
 	public static CodeSyncAsPlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
-		INSTANCE = this;
+		instance = this;
 		
 		CodeSyncPlugin.getInstance().addTechnologyForExtension(EXTENSION_AS, ACTIONSCRIPT);
 		CodeSyncPlugin.getInstance().addTechnologyForExtension(EXTENSION_MXML, ACTIONSCRIPT);
@@ -162,7 +165,7 @@ protected static CodeSyncAsPlugin INSTANCE;
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		super.stop(bundleContext);
-		INSTANCE = null;
+		instance = null;
 	}
 
 	@Override

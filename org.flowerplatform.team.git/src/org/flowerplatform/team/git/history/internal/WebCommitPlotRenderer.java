@@ -51,12 +51,17 @@ public class WebCommitPlotRenderer extends AbstractPlotRenderer<WebLane, String>
 		return specialMessage;
 	}
 
+	/**
+	 *@author Bogdan Manica
+	 **/
 	public WebCommitPlotRenderer(String nodeUri, WebCommit commit) {		
 		this.commit = commit;
-		drawings = new Node(nodeUri,null);
+		drawings = new Node(nodeUri, null);
 		specialMessage = "";
 	}
-
+	/**
+	 *@author Bogdan Manica
+	 **/
 	public void paint() {
 		paintCommit(commit, 23);
 	}
@@ -69,7 +74,7 @@ public class WebCommitPlotRenderer extends AbstractPlotRenderer<WebLane, String>
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void drawLine(String color, int x1, int y1, int x2, int y2, int width) {
-		ArrayList<Object> existingLine = (ArrayList<Object>)drawings.getProperties().get(GitConstants.DRAW_LINE_LIST);
+		ArrayList<Object> existingLine = (ArrayList<Object>) drawings.getProperties().get(GitConstants.DRAW_LINE_LIST);
 		if (existingLine == null) {
 			ArrayList<Object> line = new ArrayList<Object>();		
 			line.add(GitConstants.DRAW_LINE);

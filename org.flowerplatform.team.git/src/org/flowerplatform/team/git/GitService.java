@@ -102,6 +102,9 @@ import org.flowerplatform.util.Utils;
  */
 public class GitService {
 
+	/**
+	 *@author see class
+	 **/
 	public Node createStructureDiffFromGitCommits(String oldHash, String newHash, String repoPath, String sdiffOutputPath) {
 		IFileContentProvider fileContentProvider = new GitFileContentProvider(newHash, oldHash, repoPath);
 		OutputStream patch = new ByteArrayOutputStream();
@@ -130,6 +133,9 @@ public class GitService {
 
 	private static final int NETWORK_TIMEOUT_MSEC = 15000;
 	
+	/**
+	 *@author see class
+	 **/
 	public boolean validateHash(String hash, String repositoryPath) {
 		try {
 			// testing if hash is valid
@@ -165,7 +171,7 @@ public class GitService {
 		FastForwardMode fastForwardMode = FastForwardMode.FF;
 		
 		// set the parameters for Fast Forward options 
-		switch (fastForwardOptions){
+		switch (fastForwardOptions) {
 			case 0:
 				fastForwardMode = FastForwardMode.FF;
 				break;
@@ -175,6 +181,8 @@ public class GitService {
 			case 2:
 				fastForwardMode = FastForwardMode.FF_ONLY;
 				break;
+		default:
+			break;
 		}
 		
 		// call merge operation 
@@ -234,7 +242,8 @@ public class GitService {
 	 * Creates new branch
 	 * 
 	 */
-	public void createBranch(String parentUri, String name, String startPoint, boolean configureUpstream, boolean track, boolean setUpstream, boolean checkoutBranch, String commitId) throws Exception {
+	public void createBranch(String parentUri, String name, 
+			String startPoint, boolean configureUpstream, boolean track, boolean setUpstream, boolean checkoutBranch, String commitId) throws Exception {
 		String repoPath = Utils.getRepo(parentUri);
 		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		
@@ -554,8 +563,8 @@ public class GitService {
 
 		RemoteConfig config = new RemoteConfig(repository.getConfig(), remoteName);
 
-		List<URIish> URIs = config.getURIs();
-		if (URIs.size() == 0) {
+		List<URIish> uriList = config.getURIs();
+		if (uriList.size() == 0) {
 			config.addURI(new URIish(remoteUri));
 		}
 
@@ -608,14 +617,15 @@ public class GitService {
 		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 
 		StoredConfig config = repository.getConfig();
-		config.unsetSection("remote", (String)child.getPropertyValue(GitConstants.NAME));
+		config.unsetSection("remote", (String) child.getPropertyValue(GitConstants.NAME));
 		config.save();
 		
 		/* refresh parent node */
 		CorePlugin.getInstance().getNodeService().removeChild(
 			    parent,
 			    child, 
-			    new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+			    new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections
+			    		.singletonList(UpdateController.class)));
 	}
 	
 	/**
@@ -671,7 +681,7 @@ public class GitService {
 		Node node = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		
 		if (node.getType().equals(GitConstants.GIT_REMOTE_TYPE)) {
-			return pushInternal(repository, GitUtils.getName(nodeUri), ((ArrayList<String>)node.getPropertyValue(GitConstants.REMOTE_URIS)).get(0), null);
+			return pushInternal(repository, GitUtils.getName(nodeUri), ((ArrayList<String>) node.getPropertyValue(GitConstants.REMOTE_URIS)).get(0), null);
 		}
 		List<RefSpec> specsList = new ArrayList<RefSpec>();
 		if (pushRefMappings != null)  {
@@ -857,6 +867,8 @@ public class GitService {
 								ResourcesPlugin.getInstance().getResourceUrl("images/team.git/unstaged.gif")));
 						unstagedNodes.add(nodeModify);
 						break;
+				default:
+					break;
 				}
 			}
 		}
@@ -902,6 +914,8 @@ public class GitService {
 									ResourcesPlugin.getInstance().getResourceUrl("images/team.git/staged.gif")));
 							stagedNodes.add(nodeModify);
 							break;
+					default:
+						break;
 					}
 				}
 			}
@@ -919,7 +933,8 @@ public class GitService {
 			RevWalk rw = new RevWalk(repo);
 			RevCommit previousCommit = rw.parseCommit(headId);				
 			rw.dispose();
-			authorInfoNode.getProperties().put(PREVIOUS_AUTHOR, String.format("%s <%s>", previousCommit.getAuthorIdent().getName(), previousCommit.getAuthorIdent().getEmailAddress()));
+			authorInfoNode.getProperties().put(PREVIOUS_AUTHOR, String.format("%s <%s>", previousCommit.getAuthorIdent()
+					.getName(), previousCommit.getAuthorIdent().getEmailAddress()));
 			authorInfoNode.getProperties().put(PREVIOUS_COMMIT_MESSAGE, previousCommit.getFullMessage());
 		}
 		
@@ -955,7 +970,7 @@ public class GitService {
 
 		RemoteConfig config = GitUtils.getConfiguredRemote(repo);
 		if (config != null) {
-			return pushInternal(repo, config.getName(),config.getURIs().get(0).toString(), config.getPushRefSpecs());
+			return pushInternal(repo, config.getName(), config.getURIs().get(0).toString(), config.getPushRefSpecs());
 		}
 		return null;
 	}

@@ -22,7 +22,9 @@ package org.flowerplatform.util.regex;
 public class RegexException extends Exception {
 
 	private static final long serialVersionUID = 1L;
-	
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public RegexException(String log) {
 		super(log);		
 	}

@@ -19,15 +19,25 @@ package org.flowerplatform.util.regex;
  * @author Cristina Constantinescu
  */
 public abstract class AbstractRegexWithAction {
-		
+	/**
+	 *@author see class
+	 **/	
 	public abstract String getRegex();
-	
+	/**
+	 *@author see class
+	 **/
 	public abstract String getName();
-
+	/**
+	 *@author see class
+	 **/
 	public abstract RegexAction getRegexAction();
-	
+	/**
+	 *@author see class
+	 **/
 	public abstract int getNumberOfCaptureGroups();
-	
+	/**
+	 *@author see class
+	 **/
 	public abstract void executeAction(RegexProcessingSession session);
 	
 }

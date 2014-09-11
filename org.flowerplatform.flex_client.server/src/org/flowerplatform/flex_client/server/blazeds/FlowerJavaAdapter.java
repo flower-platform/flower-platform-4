@@ -30,6 +30,10 @@ import flex.messaging.services.remoting.adapters.JavaAdapter;
  */
 public class FlowerJavaAdapter extends JavaAdapter {
 
+	/**
+	 * @author Cristian Spiescu
+	 *@author see class
+	 **/
 	public Object invoke(Message message) {
 		RemotingMessage remoteMessage = (RemotingMessage) message;
 		RemoteMethodInvocationInfo remoteMethodInvocationInfo = new RemoteMethodInvocationInfo();

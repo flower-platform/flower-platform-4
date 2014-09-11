@@ -20,6 +20,12 @@ package org.eclipse.equinox.servletbridge.flower;
  * @author Cristian Spiescu
  */
 public interface ServletConfigWrapper {
+	/**
+	 *@author see class
+	 **/
 	ServletContextWrapper getServletContext();
+	/**
+	 *@author see class
+	 **/
 	String 	getInitParameter(String name);
 }

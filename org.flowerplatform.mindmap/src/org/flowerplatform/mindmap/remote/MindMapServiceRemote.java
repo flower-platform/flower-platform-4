@@ -17,6 +17,9 @@ import org.flowerplatform.core.file.IFileAccessController;
  */
 public class MindMapServiceRemote {
 		
+	/**
+	 *@author see class
+	 **/
 	public List<String> getRepositoryCustomIcons(String path) throws Exception {
 		IFileAccessController fac = FileControllerUtils.getFileAccessController();
 		List<String> results = new ArrayList<>();

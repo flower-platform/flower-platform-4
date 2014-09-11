@@ -43,6 +43,9 @@ import org.flowerplatform.util.controller.AbstractController;
 public class UpdateController extends AbstractController
 		implements IAddNodeController, IRemoveNodeController, IPropertySetter {
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public UpdateController() {
 		// must be invoked last; otherwise the modification may not be fully/correctly recorded
 		setOrderIndex(100000);
@@ -97,7 +100,7 @@ public class UpdateController extends AbstractController
 	}
 	
 	@Override
-	public void setProperties(Node node, Map<String,Object> properties, ServiceContext<NodeService> context) {	
+	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {	
 		for (String key : properties.keySet()) {
 			setUnsetProperty(node, key, properties.get(key), false, context);
 		}
@@ -135,7 +138,7 @@ public class UpdateController extends AbstractController
 		update.setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getNodeUri());
 		
 		@SuppressWarnings("unchecked")
-		HashMap<String, Object> oldValues = (HashMap<String,Object>)context.getContext().get(CoreConstants.OLD_VALUES);
+		HashMap<String, Object> oldValues = (HashMap<String, Object>) context.getContext().get(CoreConstants.OLD_VALUES);
 		if (oldValues.containsKey(key)) {
 			update.setHasOldValueAs(true);
 			update.setOldValueAs(oldValues.get(key));

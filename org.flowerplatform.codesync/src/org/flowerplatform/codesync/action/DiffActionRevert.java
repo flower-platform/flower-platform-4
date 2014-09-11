@@ -21,8 +21,8 @@ import org.flowerplatform.codesync.adapter.IModelAdapter;
 
 
 /**
- * 
- */
+ *@author Mariana Gheorghe
+ **/
 public class DiffActionRevert extends DiffAction {
 
 	@Override
@@ -30,11 +30,13 @@ public class DiffActionRevert extends DiffAction {
 		Diff diff = match.getDiffs().get(diffIndex);
 		IModelAdapter ancestorModelAdapter = match.getCodeSyncAlgorithm().getAncestorModelAdapter(match.getAncestor());
 		IModelAdapter leftModelAdapter = null;
-		if (diff.isLeftModified())
+		if (diff.isLeftModified()) {
 			leftModelAdapter = match.getCodeSyncAlgorithm().getLeftModelAdapter(match.getLeft());
+		}
 		IModelAdapter rightModelAdapter = null;
-		if (diff.isRightModified())
+		if (diff.isRightModified()) {
 			rightModelAdapter = match.getCodeSyncAlgorithm().getRightModelAdapter(match.getRight());
+		}
 		
 		Object value = ancestorModelAdapter.getValueFeatureValue(match.getAncestor(), diff.getFeature(), null, match.getCodeSyncAlgorithm());
 		if (diff.isLeftModified()) {

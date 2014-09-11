@@ -34,6 +34,9 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class CommandStackPropertiesProvider extends AbstractController implements IPropertiesProvider {
 
+	/**
+	 * @author Claudiu Matei
+	 */
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		node.getProperties().put(NAME, node.getNodeUri());
 //		node.getProperties().put(CoreConstants.RESOURCE_SET, node.getNodeUri());

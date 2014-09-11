@@ -47,21 +47,23 @@ import org.osgi.framework.BundleContext;
  */
 public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 
-	protected static CodeSyncSdiffPlugin INSTANCE;
+	protected static CodeSyncSdiffPlugin instance;
 	
 	private StructureDiffService sDiffService = new StructureDiffService();
 	
 	public static CodeSyncSdiffPlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 	
 	public StructureDiffService getSDiffService() {
 		return sDiffService;
 	}
-	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
-		INSTANCE = this;
+		instance = this;
 		
 		CorePlugin.getInstance().getServiceRegistry().registerService("structureDiffService", sDiffService);
 		
@@ -94,9 +96,12 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTIES_PROVIDER, new StructureDiffCommentController());
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public void stop(BundleContext bundleContext) throws Exception {
 		super.stop(bundleContext);
-		INSTANCE = null;
+		instance = null;
 	}
 
 	@Override

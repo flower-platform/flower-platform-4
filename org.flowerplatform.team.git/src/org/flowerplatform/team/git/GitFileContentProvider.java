@@ -38,6 +38,9 @@ public class GitFileContentProvider implements IFileContentProvider {
 
 	private String repositoryPath;
 
+	/**
+	 *@author see class
+	 **/
 	public GitFileContentProvider(String newHash, String oldHash, String repositoryPath) {
 		this.newHash = newHash;
 		this.oldHash = oldHash;

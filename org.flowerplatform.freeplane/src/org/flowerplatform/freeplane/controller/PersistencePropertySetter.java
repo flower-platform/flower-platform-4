@@ -35,7 +35,7 @@ import org.freeplane.features.map.NodeModel;
 public class PersistencePropertySetter extends AbstractController implements IPropertySetter, IPersistenceController {
 
 	@Override
-	public void setProperties(Node node, Map<String,Object> properties, ServiceContext<NodeService> context) {
+	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 		
 		for (String property : properties.keySet()) {

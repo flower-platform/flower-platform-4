@@ -20,12 +20,34 @@ import java.util.Iterator;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
 
+/**
+ *@author Mariana Gheorghe
+ **/
 public abstract class MatchActionRemoveAbstract extends DiffAction {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected abstract Object getThis(Match match);
+	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected abstract Object getOpposite(Match match);
+	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected abstract IModelAdapter getModelAdapter(Match match);
+	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected abstract IModelAdapter getOppositeModelAdapter(Match match);
+	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected abstract void unsetThis(Match match);
 	
 	/**
@@ -65,10 +87,14 @@ public abstract class MatchActionRemoveAbstract extends DiffAction {
 		}
 		
 		
-		actionPerformed(parentMatch, getModelAdapter(parentMatch), getThis(parentMatch), getOppositeModelAdapter(parentMatch), getOpposite(parentMatch), match.getFeature(), result);
+		actionPerformed(parentMatch, getModelAdapter(parentMatch), getThis(parentMatch), getOppositeModelAdapter(parentMatch), getOpposite(parentMatch), match
+				.getFeature(), result);
 		return result;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected void recurseUpdateFieldsAndFlags(Match match) {
 		// clear diffs and flags
 		match.getDiffs().clear();

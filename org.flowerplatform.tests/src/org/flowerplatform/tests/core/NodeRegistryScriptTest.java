@@ -36,7 +36,9 @@ public class NodeRegistryScriptTest {
 	public static final String DIR = TestUtil.getResourcesDir(NodeRegistryScriptTest.class);
 	
 	ScriptEngine engine;
-	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	class NodeChangedListener implements INodeChangedListener {
 		
 		@Override
@@ -44,7 +46,9 @@ public class NodeRegistryScriptTest {
 			Assert.assertEquals(node.getType(), "newType");
 		}		
 	}
-	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	@Test
 	public void runJavaScriptFunction() {
 		try {

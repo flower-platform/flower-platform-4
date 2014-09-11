@@ -30,9 +30,11 @@ public class StylePropertyWrapper extends PropertyWrapper {
 		this.isDefault = isDefault;
 	}
 	
+	//CHECKSTYLE:OFF
 	public StylePropertyWrapper setIsDefaultAs(boolean isDefault) {
 		setIsDefault(isDefault);
 		return this;
+		//CHECKSTYLE:ON
 	}
 	
 }

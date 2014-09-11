@@ -42,11 +42,15 @@ import org.junit.Test;
  */
 public class NodeServiceTest {
 	private static NodeService nodeService;
-
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		
+		/**
+		 *@author Mariana Gheorghe
+		 **/	
 		class MockChildProvider extends AbstractController implements IChildrenProvider {
 			@SuppressWarnings("rawtypes")
 			@Override

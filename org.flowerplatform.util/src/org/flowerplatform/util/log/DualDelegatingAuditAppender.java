@@ -23,14 +23,18 @@ public class DualDelegatingAuditAppender implements IAuditAppender {
 	protected IAuditAppender appender1;
 	
 	protected IAuditAppender appender2;
-	
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public DualDelegatingAuditAppender(IAuditAppender appender1,
 			IAuditAppender appender2) {
 		super();
 		this.appender1 = appender1;
 		this.appender2 = appender2;
 	}
-
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public void append(AuditDetails auditDetails) {
 		if (appender1 != null) {
 			appender1.append(auditDetails);

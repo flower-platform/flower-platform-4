@@ -83,10 +83,16 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		}
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected String getName(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return (String) getMatchKey(element, codeSyncAlgorithm);
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	@SuppressWarnings("unchecked")
 	protected void addModifier(ASTNode parent, IExtendedModifier modifier) {
 		if (parent instanceof BodyDeclaration) {
@@ -143,6 +149,9 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		}
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected String getJavaDoc(Object element) {
 		if (element instanceof BodyDeclaration) {
 			BodyDeclaration node = (BodyDeclaration) element;
@@ -153,6 +162,9 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		return null;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	@SuppressWarnings({ "rawtypes" })
 	protected void setJavaDoc(Object element, String docComment) {
 		if (element instanceof BodyDeclaration) {
@@ -188,6 +200,9 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		return (Expression) ASTNode.copySubtree(ast, node);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected String getStringFromExpression(Expression expression) {
 		if (expression == null) {
 			return null;
@@ -216,6 +231,9 @@ public abstract class JavaAbstractAstNodeModelAdapter extends AstModelElementAda
 		return (Type) ASTNode.copySubtree(ast, declaration.getType());
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected String getStringFromType(Type type) {
 		if (type == null) {
 			return null;

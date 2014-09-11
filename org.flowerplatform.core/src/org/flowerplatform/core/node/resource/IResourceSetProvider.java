@@ -22,6 +22,9 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public interface IResourceSetProvider {
 
+	/**
+	 *@author see class
+	 **/
 	void setResourceSet(Node node);
 	
 }

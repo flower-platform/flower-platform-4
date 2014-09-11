@@ -20,10 +20,13 @@ import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
 
 /**
- * 
+ * @author Mariana Gheorghe
  */
 public abstract class DiffAction {
 	
+	/**
+	 *@author see class
+	 **/
 	public abstract ActionResult execute(Match match, int diffIndex);
 	
 	/**

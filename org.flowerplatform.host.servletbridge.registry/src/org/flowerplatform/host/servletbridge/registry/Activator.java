@@ -34,6 +34,9 @@ public class Activator implements BundleActivator {
 		
 	private HttpServiceServlet httpServiceServlet;
 	
+	/**
+	 *@author see class
+	 **/
 	public void start(BundleContext bundleContext) throws Exception {
 		httpServiceServlet = new HttpServiceServlet();
 		BridgeServlet.registerServletDelegate(httpServiceServlet);
@@ -56,7 +59,8 @@ public class Activator implements BundleActivator {
 		 */
 		String instanceManagerClass = "org.apache.tomcat.InstanceManager";
 		if (Class.forName(instanceManagerClass) == null) {
-			throw new RuntimeException("The application is not running in a Tomcat servlet container! Please contact the Flower team if you need support for other servlet containers.");
+			throw new RuntimeException("The application is not running in a Tomcat servlet container! Please contact the Flower team if you "
+					+ "need support for other servlet containers.");
 		}
 		ServletUtils.addServletContextAdditionalAttributes(instanceManagerClass, httpServiceServlet.getServletContext().getAttribute(instanceManagerClass));
 		
@@ -68,6 +72,9 @@ public class Activator implements BundleActivator {
 		}
 	}
 
+	/**
+	 *@author see class
+	 **/
 	public void stop(BundleContext bundleContext) throws Exception {
 		BridgeServlet.unregisterServletDelegate(httpServiceServlet);
 		httpServiceServlet = null;

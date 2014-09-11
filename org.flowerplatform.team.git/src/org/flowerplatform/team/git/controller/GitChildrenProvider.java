@@ -45,15 +45,15 @@ public class GitChildrenProvider extends AbstractController implements IChildren
 	
 			String repo = Utils.getRepo(node.getNodeUri());
 		
-			if(GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(node.getNodeUri()))) != null){
+			if (GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(node.getNodeUri()))) != null) {
 				children.add(CorePlugin.getInstance().getResourceService().getResourceHandler(node.getScheme())
-				.createNodeFromRawNodeData(GitUtils.getNodeUri(repo, GIT_LOCAL_BRANCHES_TYPE),null));
+				.createNodeFromRawNodeData(GitUtils.getNodeUri(repo, GIT_LOCAL_BRANCHES_TYPE), null));
 				children.add(CorePlugin.getInstance().getResourceService().getResourceHandler(node.getScheme())
-				.createNodeFromRawNodeData(GitUtils.getNodeUri(repo, GIT_REMOTE_BRANCHES_TYPE),null));
+				.createNodeFromRawNodeData(GitUtils.getNodeUri(repo, GIT_REMOTE_BRANCHES_TYPE), null));
 				children.add(CorePlugin.getInstance().getResourceService().getResourceHandler(node.getScheme())
-				.createNodeFromRawNodeData(GitUtils.getNodeUri(repo, GIT_TAGS_TYPE),null));
+				.createNodeFromRawNodeData(GitUtils.getNodeUri(repo, GIT_TAGS_TYPE), null));
 				children.add(CorePlugin.getInstance().getResourceService().getResourceHandler(node.getScheme())
-				.createNodeFromRawNodeData(GitUtils.getNodeUri(repo, GIT_REMOTES_TYPE),null));
+				.createNodeFromRawNodeData(GitUtils.getNodeUri(repo, GIT_REMOTES_TYPE), null));
 			}
 			
 			return children;
@@ -66,7 +66,7 @@ public class GitChildrenProvider extends AbstractController implements IChildren
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
 		try {
 			return GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(node.getNodeUri()))) != null;
-		}catch (Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

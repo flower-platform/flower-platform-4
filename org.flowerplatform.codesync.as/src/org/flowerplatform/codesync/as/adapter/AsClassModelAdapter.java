@@ -26,8 +26,6 @@ import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VISIBILITY;
 import java.util.Arrays;
 
 import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
-import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 
 /**
@@ -38,6 +36,9 @@ import org.flowerplatform.codesync.CodeSyncAlgorithm;
  */
 public class AsClassModelAdapter extends AsTypeModelAdapter {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public AsClassModelAdapter() {
 		valueFeatures.add(SUPER_CLASS);
 		valueFeatures.add(DOCUMENTATION);
@@ -70,6 +71,9 @@ public class AsClassModelAdapter extends AsTypeModelAdapter {
 		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected IClassDefinition getClassDefinition(Object element) {
 		return (IClassDefinition) element;
 	}

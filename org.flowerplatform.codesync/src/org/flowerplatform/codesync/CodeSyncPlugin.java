@@ -95,9 +95,9 @@ import org.slf4j.LoggerFactory;
  */
 public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
-	protected static CodeSyncPlugin INSTANCE;
+	protected static CodeSyncPlugin instance;
 	
-	private final static Logger logger = LoggerFactory.getLogger(CodeSyncPlugin.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CodeSyncPlugin.class);
 
 //	protected List<DependentFeature> dependentFeatures;
 //	
@@ -133,7 +133,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	protected boolean useUIDs = true;
 
 	public static CodeSyncPlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 	
 //	public CodeSyncTypeCriterionDispatcherProcessor getCodeSyncTypeCriterionDispatcherProcessor() {
@@ -208,26 +208,41 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		return inplaceEditorExtensions;
 //	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public boolean useUIDs() {
 		return useUIDs;
 	}
 	
 	private Map<String, ModelAdapterSet> modelAdapterSets = new HashMap<String, ModelAdapterSet>();
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public void addModelAdapterSet(String technology, ModelAdapterSet modelAdapterSet) {
 		modelAdapterSets.put(technology, modelAdapterSet);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public ModelAdapterSet getModelAdapterSet(String technology) {
 		return modelAdapterSets.get(technology);
 	}
 	
 	protected Map<String, String> extensionToTechnology = new HashMap<String, String>();
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public void addTechnologyForExtension(String extension, String technology) {
 		extensionToTechnology.put(extension, technology);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public String getTechnologyForExtension(String extension) {
 		return extensionToTechnology.get(extension);
 	}
@@ -240,7 +255,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		INSTANCE = this;
+		instance = this;
 		
 		CorePlugin.getInstance().getServiceRegistry().registerService("codeSyncOperationsService", new CodeSyncOperationsService());
 		
@@ -299,11 +314,15 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_TYPE).setReadOnlyAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_FEATURE).setReadOnlyAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_MODEL_ELEMENT_TYPE).setReadOnlyAs(true))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_MODIFIED_LEFT).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_MODIFIED_RIGHT).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_MODIFIED_LEFT).setReadOnlyAs(true)
+					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_MODIFIED_RIGHT)
+					.setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_CONFLICT).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_MODIFIED_LEFT).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_MODIFIED_RIGHT).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_MODIFIED_LEFT)
+					.setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor()
+					.setNameAs(MATCH_DIFFS_MODIFIED_RIGHT).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_CONFLICT).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_BODY_MODIFIED).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
 			.addSingleController(PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CODESYNC_ICONS).setOrderIndexAs(-1000));
@@ -390,14 +409,14 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //								
 //				getInplaceEditorExtensions().add(new InplaceEditorExtension_Default());
 //				getInplaceEditorExtensions().add(new InplaceEditorExtension_Note());
-//				
+//CHECKSTYLE:OFF			
 //				// processors
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("edge", new RelationDiagramProcessor());
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.wizardElement", new ChildrenUpdaterDiagramProcessor());				
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.wizardElement.wizardAttribute", new TopLevelElementChildProcessor());
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.wizardElement.wizardAttribute", new RelationsChangesDiagramProcessor());
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.wizardElement", new RelationsChangesDiagramProcessor());
-//							
+//CHECKSTYLE:ON							
 //				getCodeSyncTypeCriterionDispatcherProcessor().addProcessor(WIZARD_ATTRIBUTE, new WizardChildrenPropagatorProcessor());
 //				getCodeSyncTypeCriterionDispatcherProcessor().addProcessor(WIZARD_ATTRIBUTE, new WizardElementKeyFeatureChangedProcessor());
 //				getCodeSyncTypeCriterionDispatcherProcessor().addProcessor(WIZARD_ELEMENT, new WizardElementKeyFeatureChangedProcessor());
@@ -552,6 +571,9 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		}
 //	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public Node getCodeSyncMappingRoot(Object project) {
 		Node root = getResource(project);
 //		if (!EditorPlugin.getInstance().getFileAccessController().exists(codeSyncElementMappingFile)) {

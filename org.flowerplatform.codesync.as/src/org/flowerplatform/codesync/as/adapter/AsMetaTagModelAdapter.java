@@ -20,7 +20,6 @@ import static org.flowerplatform.codesync.as.CodeSyncAsConstants.META_TAG_ATTRIB
 import java.util.Arrays;
 
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
-import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.adapter.file.AstModelElementAdapter;
 import org.flowerplatform.core.CoreConstants;
@@ -32,6 +31,9 @@ import org.flowerplatform.core.CoreConstants;
  */
 public class AsMetaTagModelAdapter extends AstModelElementAdapter {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public AsMetaTagModelAdapter() {
 		containmentFeatures.add(META_TAG_ATTRIBUTES);
 	}
@@ -57,6 +59,9 @@ public class AsMetaTagModelAdapter extends AstModelElementAdapter {
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected IMetaTag getMetaTag(Object element) {
 		return (IMetaTag) element;
 	}

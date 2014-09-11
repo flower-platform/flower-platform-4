@@ -52,7 +52,7 @@ import org.flowerplatform.util.controller.AbstractController;
 public class GitRefPropertiesProvider extends AbstractController implements IPropertiesProvider  {
 	
 	@Override
-	public void populateWithProperties(Node node,ServiceContext<NodeService> context) {
+	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		try {
 			Repository repo = null;
 			String repoPath = Utils.getRepo(node.getNodeUri());
@@ -66,7 +66,7 @@ public class GitRefPropertiesProvider extends AbstractController implements IPro
 			message = commit.getShortMessage();
 			
 			StoredConfig config = repo.getConfig();
-			String configRemote = config.getString(ConfigConstants.CONFIG_BRANCH_SECTION, name,ConfigConstants.CONFIG_KEY_REMOTE);
+			String configRemote = config.getString(ConfigConstants.CONFIG_BRANCH_SECTION, name, ConfigConstants.CONFIG_KEY_REMOTE);
 			if (configRemote == null) {
 				configRemote = "";
 			}
@@ -76,7 +76,7 @@ public class GitRefPropertiesProvider extends AbstractController implements IPro
 				configUpstreamBranch = "";
 			}
 		
-			Boolean configRebase = config.getBoolean(ConfigConstants.CONFIG_BRANCH_SECTION, name,ConfigConstants.CONFIG_KEY_REBASE, false);
+			Boolean configRebase = config.getBoolean(ConfigConstants.CONFIG_BRANCH_SECTION, name, ConfigConstants.CONFIG_KEY_REBASE, false);
 			boolean isCheckedOut = GitUtils.isRefCheckedOut(repo, (Ref) node.getRawNodeData());
 			node.getProperties().put(NAME, name);
 			node.getProperties().put(FULL_NAME, ((Ref) node.getRawNodeData()).getName());
@@ -87,11 +87,14 @@ public class GitRefPropertiesProvider extends AbstractController implements IPro
 			node.getProperties().put(IS_CHECKEDOUT, isCheckedOut);
 			node.getProperties().put(COMMIT_ID, repo.getRef(name).getObjectId().name());
 			node.getProperties().put(COMMIT_MESSAGE, message);
-		} catch (Exception e){	
+		} catch (Exception e) {	
 			 throw new RuntimeException(e);
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public String setIcon(Node node, boolean isCheckedOut) {
 		String icon = null;	
 		String type = GitUtils.getType(node.getNodeUri());
@@ -109,6 +112,8 @@ public class GitRefPropertiesProvider extends AbstractController implements IPro
 			case GIT_REMOTE_TYPE :
 				icon = ResourcesPlugin.getInstance().getResourceUrl("/images/team.git/remote.gif");
 				break;
+		default:
+			break;
 		}
 		
 		if (isCheckedOut) {

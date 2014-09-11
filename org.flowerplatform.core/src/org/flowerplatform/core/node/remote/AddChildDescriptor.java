@@ -57,8 +57,9 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 		this.icon = icon;
 	}
 	
-	public AddChildDescriptor setChildTypeAs(String childType) {
-		this.childType = childType;
+	//CHECKSTYLE:OFF
+	public AddChildDescriptor setChildTypeAs(String childTypeValue) {
+		this.childType = childTypeValue;
 		return this;
 	}
 
@@ -76,6 +77,7 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 		setOrderIndex(orderIndex);
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 	/**
 	 * @author Claudiu Matei

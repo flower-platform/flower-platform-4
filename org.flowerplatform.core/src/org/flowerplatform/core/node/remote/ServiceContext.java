@@ -35,6 +35,9 @@ public class ServiceContext<T> {
 		this.service = service;
 	}
 
+	/**
+	 *@author see class
+	 **/
 	public Map<String, Object> getContext() {
 		if (context == null) {
 			context = new HashMap<>();
@@ -46,21 +49,36 @@ public class ServiceContext<T> {
 		this.context = context;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public ServiceContext() {	
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public ServiceContext(T service) {
 		this.service = service;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public boolean getBooleanValue(String key) {
 		return getContext().containsKey(key) && (boolean) getContext().get(key);
 	}
 
+	/**
+	 *@author see class
+	 **/
 	public Object get(String key) {
 		return getContext().get(key);
 	}
 		
+	/**
+	 *@author see class
+	 **/
 	public ServiceContext<T> add(String key, Object value) {		
 		getContext().put(key, value);
 		return this;

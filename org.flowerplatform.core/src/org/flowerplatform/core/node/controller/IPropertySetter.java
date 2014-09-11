@@ -29,8 +29,14 @@ public interface IPropertySetter extends IController {
 	
 //	public abstract void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context);
 
-	public abstract void setProperties(Node node, Map<String,Object> properties, ServiceContext<NodeService> context);
+	/**
+	 *@author see class
+	 **/
+	void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context);
 	
-	public abstract void unsetProperty(Node node, String property, ServiceContext<NodeService> context);
+	/**
+	 *@author see class
+	 **/
+	void unsetProperty(Node node, String property, ServiceContext<NodeService> context);
 	
 }

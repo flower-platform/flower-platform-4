@@ -31,8 +31,11 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class SessionService implements ISessionListener {
 
-	protected final static Logger logger = LoggerFactory.getLogger(SessionService.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(SessionService.class);
 	
+	/**
+	 *@author see class
+	 **/
 	public SessionService() {
 		CorePlugin.getInstance().addSessionListener(this);
 	}
@@ -44,7 +47,7 @@ public abstract class SessionService implements ISessionListener {
 			// request doesn't come from FlowerMessageBrokerServlet, ignore it
 			return;
 		}
-		logger.debug("Session created {}", sessionId);
+		LOGGER.debug("Session created {}", sessionId);
 		
 		doSessionCreated(sessionId);
 		
@@ -55,11 +58,14 @@ public abstract class SessionService implements ISessionListener {
 		updateSessionProperty(sessionId, "ip", ipAddress);
 	}
 
+	/**
+	 *@author see class
+	 **/
 	protected abstract void doSessionCreated(String sessionId);
 	
 	@Override
 	public void sessionRemoved(String sessionId) {
-		logger.debug("Session removed {}", sessionId);
+		LOGGER.debug("Session removed {}", sessionId);
 		
 		List<String> resources = getResourcesSubscribedBySession(sessionId);
 		for (int i = resources.size() - 1; i >= 0; i--) {
@@ -72,10 +78,19 @@ public abstract class SessionService implements ISessionListener {
 		doSessionRemoved(sessionId);
 	}
 
+	/**
+	 *@author see class
+	 **/
 	protected abstract void doSessionRemoved(String sessionId);
 	
+	/**
+	 *@author see class
+	 **/
 	public abstract void updateSessionProperty(String sessionId, String property, Object value);
 	
+	/**
+	 *@author see class
+	 **/
 	public abstract Object getSessionProperty(String sessionId, String property);
 	
 	/**
@@ -88,7 +103,13 @@ public abstract class SessionService implements ISessionListener {
 	 */
 	public abstract void sessionUnsubscribedFromResource(String sessionId, String resourceUri, ServiceContext<SessionService> context);
 	
+	/**
+	 *@author see class
+	 **/
 	public abstract List<String> getSubscribedSessions();
 	
+	/**
+	 *@author see class
+	 **/
 	public abstract List<String> getResourcesSubscribedBySession(String sessionId);
 }

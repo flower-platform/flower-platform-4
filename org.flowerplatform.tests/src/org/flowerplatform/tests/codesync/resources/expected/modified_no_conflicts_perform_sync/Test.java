@@ -17,6 +17,9 @@ import javax.persistence.OneToMany;
 
 import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
 
+/**
+ *@author Mariana Gheorghe
+ **/
 @Deprecated
 public class Test extends SuperClassFromModel implements IFromSource, IFromModel {
 
@@ -28,16 +31,24 @@ public class Test extends SuperClassFromModel implements IFromSource, IFromModel
 	
 	private int z = 3;
 	
-	@OneToMany(mappedBy="modified_by_model", orphanRemoval = true)
-	static private int test(final String st) {
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	@OneToMany(mappedBy = "modified_by_model", orphanRemoval = true)
+	private static int test(final String st) {
 		return x;
 	}
 
-	@OverrideAnnotationOf(x+y)
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	@OverrideAnnotationOf(x + y)
 	public Test getTest(int a) {
 		return x;
 	}
-
+	/**
+	 *@author Mariana Gheorghe
+	 **/	
 	public enum ActionType {
 		
 		ACTION_TYPE_COPY_LEFT_RIGHT(new Test()) {
@@ -52,13 +63,25 @@ public class Test extends SuperClassFromModel implements IFromSource, IFromModel
 		}
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public @interface AnnotationTest {
 		
+		/**
+		 *@author Mariana Gheorghe
+		 **/
 		boolean value1() default true;
+		
+		/**
+		 *@author Mariana Gheorghe
+		 **/
 		boolean value2() default false;
 		
 	}
-	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public class InternalClsFromSource {
 		private int x;
 	}

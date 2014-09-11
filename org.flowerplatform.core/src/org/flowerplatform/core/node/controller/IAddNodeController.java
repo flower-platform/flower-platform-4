@@ -25,6 +25,9 @@ import org.flowerplatform.util.controller.IController;
  */
 public interface IAddNodeController extends IController {
 
+	/**
+	 *@author see class
+	 **/
 	void addNode(Node node, Node child, ServiceContext<NodeService> context);
 	
 }

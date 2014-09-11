@@ -23,7 +23,9 @@ import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.IController;
-
+/**
+ *@author Solomon Sebastian
+ **/
 public class PropertyDescriptorDefaultPropertyValueProvider extends AbstractController implements IDefaultPropertyValueProvider {
 
 	@Override

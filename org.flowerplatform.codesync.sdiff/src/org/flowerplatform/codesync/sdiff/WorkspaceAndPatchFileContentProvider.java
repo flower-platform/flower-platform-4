@@ -56,14 +56,14 @@ public class WorkspaceAndPatchFileContentProvider implements IFileContentProvide
 		// get old file content using new file content and patch
 		FilePatch2 filePatch = (FilePatch2) patch;
 		
-		switch (filePatch.getDiffType(false)){
+		switch (filePatch.getDiffType(false)) {
 		case 1:
 			oldFileContent = null;
 			break;
 		default:
 			PatchConfiguration configuration = new PatchConfiguration();
 			configuration.setReversed(true);
-			IFilePatchResult result = ((FilePatch2)patch).apply(new StringReaderCreator(newFileContent),
+			IFilePatchResult result = ((FilePatch2) patch).apply(new StringReaderCreator(newFileContent),
 																configuration,
 																null);
 			try {
@@ -75,11 +75,16 @@ public class WorkspaceAndPatchFileContentProvider implements IFileContentProvide
 		
 		return new FileContent(oldFileContent, newFileContent);
 	}
-
+	/**
+	 *@author Valentina Bojan
+	 **/
 	class StringReaderCreator extends ReaderCreator {
 
 		private String content;
 
+		/**
+		 *@author Alexandra Topoloaga
+		 **/
 		public StringReaderCreator(String content) {
 			if (content == null) {
 				content = "";

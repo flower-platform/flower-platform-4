@@ -78,8 +78,7 @@ public class FreeplaneHeadlessStarter extends org.freeplane.main.headlessmode.Fr
 
 			NodeHistory.install(controller);
 			return controller;
-		}
-		catch (final Exception e) {
+		} catch (final Exception e) {
 			LogUtils.severe(e);
 			throw new RuntimeException(e);
 		}

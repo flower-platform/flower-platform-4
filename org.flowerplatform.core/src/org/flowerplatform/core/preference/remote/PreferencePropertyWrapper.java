@@ -16,7 +16,6 @@
 package org.flowerplatform.core.preference.remote;
 
 import org.flowerplatform.core.node.remote.PropertyWrapper;
-import org.flowerplatform.core.preference.PreferencePropertiesProvider;
 
 /**
  * @see PreferencePropertiesProvider
@@ -34,11 +33,16 @@ public class PreferencePropertyWrapper extends PropertyWrapper {
 		this.isUsed = isUsed;
 	}
 	
+	//CHECKSTYLE:OFF
 	public PreferencePropertyWrapper setIsUsedAs(boolean isUsed) {
 		setIsUsed(isUsed);
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
+	/**
+	 *@author see class
+	 **/
 	public PreferencePropertyWrapper() {
 		super();
 	}	

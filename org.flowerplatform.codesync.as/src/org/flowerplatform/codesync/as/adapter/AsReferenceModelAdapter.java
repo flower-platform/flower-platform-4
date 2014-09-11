@@ -40,6 +40,9 @@ public class AsReferenceModelAdapter extends AstModelElementAdapter {
 		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected IReference getReference(Object element) {
 		return (IReference) element;
 	}

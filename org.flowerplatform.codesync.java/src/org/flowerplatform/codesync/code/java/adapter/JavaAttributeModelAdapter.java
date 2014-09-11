@@ -19,7 +19,6 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
-import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.VariableDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
@@ -35,6 +34,9 @@ import org.flowerplatform.core.CoreConstants;
  */
 public class JavaAttributeModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public JavaAttributeModelAdapter() {
 		valueFeatures.add(CodeSyncJavaConstants.DOCUMENTATION);
 		valueFeatures.add(CodeSyncJavaConstants.TYPED_ELEMENT_TYPE);

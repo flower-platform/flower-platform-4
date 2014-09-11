@@ -28,6 +28,9 @@ public class ComposedLineProvider implements ILineProvider {
 
 	private List<ILineProvider> lineProviders = new ArrayList<ILineProvider>();
 	
+	/**
+	 *@author see class
+	 **/
 	public void addLineProvider(ILineProvider provider) {
 		lineProviders.add(provider);
 	}

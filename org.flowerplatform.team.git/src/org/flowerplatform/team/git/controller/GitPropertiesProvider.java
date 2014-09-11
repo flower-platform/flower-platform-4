@@ -64,7 +64,7 @@ public class GitPropertiesProvider extends AbstractController implements IProper
 					}
 				}				
 			}					
-		} catch (Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

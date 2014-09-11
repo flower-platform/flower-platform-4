@@ -35,6 +35,9 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class FileSystemNodeController extends AbstractController implements IPropertiesProvider {
 
+	/**
+	 *@author see class
+	 **/
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		node.getProperties().put(NAME, ResourcesPlugin.getInstance().getMessage("file.fileSystem"));
 		

@@ -24,6 +24,9 @@ public class BaseResourceHandler implements IResourceHandler {
 
 	protected String type;
 	
+	/**
+	 *@author see class
+	 **/
 	public BaseResourceHandler(String type) {
 		this.type = type;
 	}

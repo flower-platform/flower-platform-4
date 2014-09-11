@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IGetterDefinition;
-import org.apache.flex.compiler.definitions.IParameterDefinition;
 import org.apache.flex.compiler.definitions.ISetterDefinition;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.as.CodeSyncAsConstants;
@@ -39,6 +38,9 @@ import org.flowerplatform.codesync.as.CodeSyncAsConstants;
  */
 public class AsFunctionModelAdapter extends AsAbstractAstModelAdapter {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public AsFunctionModelAdapter() {
 		valueFeatures.add(DOCUMENTATION);
 		valueFeatures.add(TYPED_ELEMENT_TYPE);
@@ -80,6 +82,9 @@ public class AsFunctionModelAdapter extends AsAbstractAstModelAdapter {
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected IFunctionDefinition getFunction(Object element) {
 		return (IFunctionDefinition) element;
 	}

@@ -77,7 +77,7 @@ public class GitRefsChildrenProvider extends AbstractController implements IChil
 			}		
 			
 			return children;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}

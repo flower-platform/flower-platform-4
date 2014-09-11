@@ -37,7 +37,9 @@ public class WebCommitList extends PlotCommitList<WebLane> {
 	private ArrayList<String> allColors;
 
 	private LinkedList<String> availableColors;
-	
+	/**
+	 *@author Bogdan Manica
+	 **/
 	public WebCommitList() {
 		allColors = new ArrayList<String>(COMMIT_HEX.length);
 		for (String hex : COMMIT_HEX) {

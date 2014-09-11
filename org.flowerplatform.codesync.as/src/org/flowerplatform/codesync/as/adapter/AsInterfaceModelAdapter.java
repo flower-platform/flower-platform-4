@@ -24,7 +24,6 @@ import static org.flowerplatform.codesync.as.CodeSyncAsConstants.VISIBILITY;
 
 import java.util.Arrays;
 
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IInterfaceDefinition;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 
@@ -35,6 +34,9 @@ import org.flowerplatform.codesync.CodeSyncAlgorithm;
  */
 public class AsInterfaceModelAdapter extends AsTypeModelAdapter {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public AsInterfaceModelAdapter() {
 		valueFeatures.add(DOCUMENTATION);
 		valueFeatures.add(VISIBILITY);
@@ -58,6 +60,9 @@ public class AsInterfaceModelAdapter extends AsTypeModelAdapter {
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected IInterfaceDefinition getInterface(Object element) {
 		return (IInterfaceDefinition) element;
 	}

@@ -47,6 +47,9 @@ public class HeadlessMapViewController extends org.freeplane.main.headlessmode.H
 		return null;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public void setTitle() {
 	}
 	

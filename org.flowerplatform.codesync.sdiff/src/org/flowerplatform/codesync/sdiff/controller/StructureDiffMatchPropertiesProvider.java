@@ -49,6 +49,9 @@ import org.flowerplatform.util.controller.AbstractController;
 public class StructureDiffMatchPropertiesProvider extends AbstractController implements IPropertiesProvider,
 		IPropertySetter {
 
+	/**
+	 *@author see class
+	 **/
 	public StructureDiffMatchPropertiesProvider() {
 		// invoke after the persistence providers
 		// so the properties are populate
@@ -132,6 +135,8 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 				color = MATCH_COLOR_BODY_MODIFIED;
 			}
 			break;
+		default:
+			break;
 		}
 
 		// set color
@@ -149,8 +154,8 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 	private void setText(Node node) {
 		String name = (String) node.getProperties().get(CoreConstants.NAME);
 		String textPath = (String) node.getProperties().get(CodeSyncConstants.MATCH_PATH);
-		if (textPath != null ) {
-			node.getProperties().put(MindMapConstants.TEXT, "<html><head>" + name + "</head><br><body><font size=9>"+ textPath + "</font></body></html>");
+		if (textPath != null) {
+			node.getProperties().put(MindMapConstants.TEXT, "<html><head>" + name + "</head><br><body><font size=9>" + textPath + "</font></body></html>");
 		} else {
 			node.getProperties().put(MindMapConstants.TEXT, name);
 		}
@@ -162,7 +167,7 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 	}
 
 	@Override
-	public void setProperties(Node node, Map<String,Object> properties, ServiceContext<NodeService> context) {
+	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		for (String property : properties.keySet()) {
 			if (ICONS.equals(property)) {
 				node.getOrPopulateProperties(context);

@@ -21,8 +21,8 @@ import org.flowerplatform.codesync.adapter.IModelAdapter;
 
 
 /**
- * 
- */
+ *@author Mariana Gheorghe
+ **/
 public class DiffActionCopyRightToLeft extends DiffAction {
 
 	@Override

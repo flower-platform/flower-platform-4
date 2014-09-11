@@ -6,8 +6,14 @@ package org.flowerplatform.core;
  */
 public interface ILockManager {
 
-	public void lock(String key);
+	/**
+	 *@author see class
+	 **/
+	void lock(String key);
 
-	public void unlock(String key);
+	/**
+	 *@author see class
+	 **/
+	void unlock(String key);
 
 }

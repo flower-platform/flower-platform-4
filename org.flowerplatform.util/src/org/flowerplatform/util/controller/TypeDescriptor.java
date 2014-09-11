@@ -70,7 +70,9 @@ public class TypeDescriptor {
 	public String getType() {
 		return type;
 	}
-
+	/**
+	 *@author see class
+	 **/
 	public TypeDescriptor(TypeDescriptorRegistry registry, String type) {
 		super();
 		this.registry = registry;
@@ -145,16 +147,16 @@ public class TypeDescriptor {
 		// else => let's scan now the categories
 		T controller = (T) entry.getSelfValue();
 		
-		List<String> categories =  new ArrayList<String>();
-		categories.addAll(getCategories());
+		List<String> categoryList =  new ArrayList<String>();
+		categoryList.addAll(getCategories());
 		if (includeDynamicCategoryProviders) {
 			for (IDynamicCategoryProvider categoryProvider : getRegistry().getDynamicCategoryProviders()) {
-				categories.addAll(categoryProvider.getDynamicCategories(object));
+				categoryList.addAll(categoryProvider.getDynamicCategories(object));
 			}
 		}
 		
 		// iterate categories to cache the controller
-		for (String category : categories) {
+		for (String category : categoryList) {
 			TypeDescriptor categoryDescriptor = getRegistry().getExpectedTypeDescriptor(category);
 			if (categoryDescriptor == null) {
 				// semi-error; a WARN is logged
@@ -193,21 +195,21 @@ public class TypeDescriptor {
 	 * 
 	 * @return <code>this</code>, cf. builder pattern.
 	 */
-	public TypeDescriptor addSingleController(String type, IController controller) {
+	public TypeDescriptor addSingleController(String typeParameter, IController controller) {
 		if (!getRegistry().isConfigurable()) {
 			throw new IllegalStateException("Trying to add a new single controller to a non-configurable registry");
 		}
 		controller.setTypeDescriptor(this);
-		ControllerEntry<IController> entry = getSingleControllerEntry(type);
+		ControllerEntry<IController> entry = getSingleControllerEntry(typeParameter);
 		entry.setSelfValue(controller);
 		return this;
 	}
 	
-	private ControllerEntry<IController> getSingleControllerEntry(String type) {
-		ControllerEntry<IController> entry = singleControllers.get(type);
+	private ControllerEntry<IController> getSingleControllerEntry(String typeParam) {
+		ControllerEntry<IController> entry = singleControllers.get(typeParam);
 		if (entry == null) {
 			entry = new ControllerEntry<IController>();
-			singleControllers.put(type, entry);
+			singleControllers.put(typeParam, entry);
 		}
 		return entry;
 	}
@@ -231,7 +233,9 @@ public class TypeDescriptor {
 	 * @see #singleControllers
 	 */
 	protected Map<String, ControllerEntry<List<? extends IController>>> additiveControllers = new HashMap<String, ControllerEntry<List<? extends IController>>>();
-
+	/**
+	 *@author see class
+	 **/
 	public <T extends IController> List<T> getAdditiveControllers(String controllerType, Object object) {
 		return getCachedAdditiveControllers(controllerType, object, true, true);
 	}
@@ -255,15 +259,15 @@ public class TypeDescriptor {
 		List<T> controllers = new ArrayList<T>();
 		controllers.addAll((Collection<? extends T>) entry.getSelfValue());
 		
-		List<String> categories =  new ArrayList<String>();
-		categories.addAll(getCategories());
+		List<String> categoryList =  new ArrayList<String>();
+		categoryList.addAll(getCategories());
 		if (includeDynamicCategoryProviders) {
 			for (IDynamicCategoryProvider categoryProvider : getRegistry().getDynamicCategoryProviders()) {
-				categories.addAll(categoryProvider.getDynamicCategories(object));
+				categoryList.addAll(categoryProvider.getDynamicCategories(object));
 			}
 		}
 		// iterate categories to cache the controllers
-		for (String category : categories) {
+		for (String category : categoryList) {
 			TypeDescriptor categoryDescriptor = getRegistry().getExpectedTypeDescriptor(category);
 			if (categoryDescriptor == null) {
 				// semi-error; a WARN is logged
@@ -292,22 +296,22 @@ public class TypeDescriptor {
 	 * @return <code>this</code>, cf. builder pattern.
 	 */
 	@SuppressWarnings("unchecked")
-	public TypeDescriptor addAdditiveController(String type, IController controller) {
+	public TypeDescriptor addAdditiveController(String typeParameter, IController controller) {
 		if (!getRegistry().isConfigurable()) {
 			throw new IllegalStateException("Trying to add a new additive controller to a non-configurable registry");
 		}
 		controller.setTypeDescriptor(this);
-		ControllerEntry<List<? extends IController>> entry = getAdditiveControllersEntry(type);
+		ControllerEntry<List<? extends IController>> entry = getAdditiveControllersEntry(typeParameter);
 		((List<IController>) entry.getSelfValue()).add(controller);
 		return this;
 	}
 	
-	private ControllerEntry<List<? extends IController>> getAdditiveControllersEntry(String type) {
-		ControllerEntry<List<? extends IController>> entry = additiveControllers.get(type);
+	private ControllerEntry<List<? extends IController>> getAdditiveControllersEntry(String typeParameter) {
+		ControllerEntry<List<? extends IController>> entry = additiveControllers.get(typeParameter);
 		if (entry == null) {
 			entry = new ControllerEntry<List<? extends IController>>();
 			entry.setSelfValue(new ArrayList<IController>());
-			additiveControllers.put(type, entry);
+			additiveControllers.put(typeParameter, entry);
 		}
 		return entry;
 	}

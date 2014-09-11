@@ -25,16 +25,54 @@ import java.util.Set;
  * @author Cristian Spiescu
  */
 public interface ServletContextWrapper {
+	
+	/**
+	 *@author see class
+	 **/
 	String getTempDir();
 	
+	/**
+	 *@author see class
+	 **/
 	URL getResource(java.lang.String path) throws MalformedURLException;
+	/**
+	 *@author see class
+	 **/
 	void log(String msg);
+	/**
+	 *@author see class
+	 **/
 	void log(String msg, Throwable throwable);
+	/**
+	 *@author see class
+	 **/
 	Object getAttribute(String name);
+	/**
+	 *@author see class
+	 **/
 	int getMajorVersion();
+	/**
+	 *@author see class
+	 **/
 	int getMinorVersion();
+	
+	/**
+	 *@author see class
+	 **/
 	Set<String> getResourcePaths(String path);
+	
+	/**
+	 *@author see class
+	 **/
 	InputStream getResourceAsStream(String path);
+	
+	/**
+	 *@author see class
+	 **/
 	String getRealPath(String path);
+	
+	/**
+	 *@author see class
+	 **/
 	String getContextPath();
 }

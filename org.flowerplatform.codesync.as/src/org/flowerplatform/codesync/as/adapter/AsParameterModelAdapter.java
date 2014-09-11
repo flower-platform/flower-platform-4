@@ -30,6 +30,9 @@ import org.flowerplatform.codesync.CodeSyncAlgorithm;
  */
 public class AsParameterModelAdapter extends AsVariableModelAdapter {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public AsParameterModelAdapter() {
 		valueFeatures.add(TYPED_ELEMENT_TYPE);
 		valueFeatures.add(PARAMETER_IS_REST);
@@ -54,6 +57,9 @@ public class AsParameterModelAdapter extends AsVariableModelAdapter {
 		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected IParameterDefinition getParameter(Object element) {
 		return (IParameterDefinition) element;
 	}

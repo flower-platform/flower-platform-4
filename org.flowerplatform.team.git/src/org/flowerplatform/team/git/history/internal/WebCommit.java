@@ -31,6 +31,9 @@ public class WebCommit extends PlotCommit<WebLane> {
 	
 	private RevWalk walk;
 	
+	/**
+	 * @author Bogdan Manica
+	 */
 	WebCommit(final AnyObjectId id, RevWalk walk) {
 		super(id);
 		this.walk = walk;
@@ -42,6 +45,9 @@ public class WebCommit extends PlotCommit<WebLane> {
 		super.reset();
 	}
 
+	/**
+	 *@author see class
+	 **/
 	public void parseBody() throws IOException {
 		if (getRawBuffer() == null) {
 			walk.parseBody(this);

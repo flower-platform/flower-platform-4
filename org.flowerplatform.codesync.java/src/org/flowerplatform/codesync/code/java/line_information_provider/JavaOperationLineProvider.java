@@ -42,10 +42,16 @@ public class JavaOperationLineProvider implements ILineProvider {
 				cu.getLineNumber(startOffset + node.getBody().getLength()));
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected MethodDeclaration getNode(Object model) {
 		return (MethodDeclaration) model;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected CompilationUnit getRoot(ASTNode node) {
 		return (CompilationUnit) node.getRoot();
 	}

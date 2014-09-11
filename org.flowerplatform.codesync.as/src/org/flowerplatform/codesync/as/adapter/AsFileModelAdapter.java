@@ -16,7 +16,6 @@
 package org.flowerplatform.codesync.as.adapter;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,6 +51,9 @@ import org.flowerplatform.util.Pair;
  */
 public class AsFileModelAdapter extends AbstractFileModelAdapter {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public AsFileModelAdapter() {
 		containmentFeatures.add(CodeSyncAsConstants.STATEMENTS);
 	}

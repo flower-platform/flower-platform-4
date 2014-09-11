@@ -16,7 +16,7 @@
 package org.flowerplatform.codesync.action;
 
 /**
- * 
+ * @author Mariana Gheorghe
  */
 public class ActionResult {
 	
@@ -38,6 +38,9 @@ public class ActionResult {
 	 */
 	public boolean childAdded;
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public ActionResult(boolean conflict, boolean modifiedLeft, boolean modifiedRight) {
 		super();
 		this.conflict = conflict;

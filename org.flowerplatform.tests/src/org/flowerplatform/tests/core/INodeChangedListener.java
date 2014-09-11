@@ -21,7 +21,9 @@ import org.flowerplatform.core.node.remote.Node;
  * @author Cristina Constantinescu
  */
 public interface INodeChangedListener {
-
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	void nodeChanged(Node node);
 	
 }

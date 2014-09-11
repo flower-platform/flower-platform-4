@@ -60,13 +60,17 @@ public class CodeSyncSdiffTest {
 	public static ArrayList<Map<String, Object>> properties;
 	
 	public static int i = 0;
-	
+	/**
+	 * @author Alexandra Topoloaga
+	 */
 	@BeforeClass 
 	public static void beforeClass() {
 		 String from = DIR + INITIAL_TO_BE_COPIED + "/" + INITIAL_SDIFF;
 		 TestUtil.copyFilesAndCreateProject(from, PROJECT);
 	}
-	
+	/**
+	 * @author Alexandra Topoloaga
+	 */
 	public static void assertTest(Node node) {
 		i++;
 		assertTrue("The node has too many descendants! Expected: " + properties.size() + ", found: " + i , i < properties.size());
@@ -84,7 +88,8 @@ public class CodeSyncSdiffTest {
 		String patchName = PROJECT + "/" + filePatch;
 		File patch = CodeSyncTestSuite.getFile(patchName);
 		String sdiffOutputPath = "sdiffs/test.sdiff";
-		Node node = CodeSyncSdiffPlugin.getInstance().getSDiffService().createStructureDiff(TestUtil.readFile(patch.toString()), PROJECT, sdiffOutputPath, new WorkspaceAndPatchFileContentProvider());
+		Node node = CodeSyncSdiffPlugin.getInstance().getSDiffService().createStructureDiff(TestUtil
+				.readFile(patch.toString()), PROJECT, sdiffOutputPath, new WorkspaceAndPatchFileContentProvider());
 		i = -1;
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
 		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(node, context);
@@ -95,38 +100,44 @@ public class CodeSyncSdiffTest {
 		assertTrue("The node has too many descendants! Expected: 1, found:" + children.size(), children.size() == 1);
 		assertTest(children.get(0));	
 	}
-		
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	@Test
 	public void testFileShouldBeAdded() {
 		properties = new ArrayList<Map<String, Object>>();
 		Map<String, Object> propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._1MATCH_RIGHT.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);
-		for (int i = 1; i <= 3; i++) {		
+		for (int k = 1; k <= 3; k++) {		
 			properties.add(propertiesMap);
 		}
 		test(PATCH_FILE_ADDED);
 	}
-	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	@Test
 	public void testFileShouldBeRemoved() {
 		properties = new ArrayList<Map<String, Object>>();
 		Map<String, Object> propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._2MATCH_ANCESTOR_LEFT.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);
-		for (int i = 1; i <= 3; i++) {		
+		for (int k = 1; k <= 3; k++) {		
 			properties.add(propertiesMap);
 		}
 		test(PATCH_FILE_REMOVED);
 	}
-	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	@Test
 	public void testFileShouldBeModified() {
 		properties = new ArrayList<Map<String, Object>>();
 		Map<String, Object> propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put(MATCH_TYPE, MatchType._3MATCH.toString());
 		propertiesMap.put(MATCH_CHILDREN_MODIFIED_RIGHT, true);
-		for (int i = 1; i <= 2; i++) {		
+		for (int k = 1; k <= 2; k++) {		
 			properties.add(propertiesMap);
 		}
 		

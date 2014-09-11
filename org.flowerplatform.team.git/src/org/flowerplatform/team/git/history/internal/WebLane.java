@@ -29,6 +29,9 @@ public class WebLane extends PlotLane {
 	
 	String color;
 	
+	/**
+	 * @author Bogdan Manica
+	 */
 	public WebLane(String color) {
 		this.color = color;
 	}

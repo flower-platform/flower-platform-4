@@ -13,6 +13,9 @@ import org.flowerplatform.core.node.update.Command;
 import org.flowerplatform.util.controller.AbstractController;
 
 
+/**
+ * @author Claudiu Matei
+ */
 public class CommandStackChildrenProvider extends AbstractController implements IChildrenProvider {
 
 	@Override

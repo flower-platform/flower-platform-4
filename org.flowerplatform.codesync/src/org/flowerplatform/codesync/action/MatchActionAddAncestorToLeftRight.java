@@ -19,8 +19,8 @@ import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
 
 /**
- * 
- */
+ *@author Mariana Gheorghe
+ **/
 public class MatchActionAddAncestorToLeftRight extends DiffAction {
 
 	@Override

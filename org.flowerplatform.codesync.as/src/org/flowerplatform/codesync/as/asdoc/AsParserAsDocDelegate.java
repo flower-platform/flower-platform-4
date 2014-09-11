@@ -46,8 +46,8 @@ public class AsParserAsDocDelegate implements IASParserASDocDelegate {
 	}
 
 	@Override
-	public void setCurrentASDocToken(Token asDocToken) {
-		this.asDocToken = asDocToken;
+	public void setCurrentASDocToken(Token docToken) {
+		this.asDocToken = docToken;
 	}
 
 	@Override

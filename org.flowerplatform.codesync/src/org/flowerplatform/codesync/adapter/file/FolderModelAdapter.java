@@ -35,6 +35,9 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public class FolderModelAdapter extends AstModelElementAdapter {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public FolderModelAdapter() {
 		containmentFeatures.add(CodeSyncConstants.CHILDREN);
 	}
@@ -52,6 +55,9 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 		return getName(element, codeSyncAlgorithm.getFileAccessController());
 	}
 
+	/**
+	 *@author Valentina Bojan
+	 **/
 	protected String getName(Object element, IFileAccessController fileAccessController) {
 		return fileAccessController.getName(getFolder(element));
 	}
@@ -102,6 +108,9 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected List<?> getChildren(Object modelElement, IFileAccessController fileAccessController) {
 		Object[] files = fileAccessController.listFiles(getFolder(modelElement));
 		if (files == null) {
@@ -152,6 +161,9 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 		// folders don't have UUIDs
 	}
 	
+	/**
+	 *@author Valentina Bojan
+	 **/
 	protected Object getFolder(Object element) {
 		return ((CodeSyncFile) element).getFile();
 	}

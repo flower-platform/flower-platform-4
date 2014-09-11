@@ -14,11 +14,15 @@
  * license-end
  */
 package org.flowerplatform.tests;
-
+/**
+ *@author Mariana Gheorghe
+ **/
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-
+/**
+ *@author Mariana Gheorghe
+ **/
 @RunWith(Suite.class)
 @SuiteClasses({ 
 	EclipseIndependentTestSuite.class,
