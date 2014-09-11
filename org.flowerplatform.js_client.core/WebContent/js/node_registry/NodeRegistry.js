@@ -134,7 +134,7 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 		}
 		return;
 	}
-			
+//	throw updates.length;
 	for (var i = updates.length - 1; i >= 0; i--) {
 		var update = updates.getItemAt(i);
 		var nodeFromRegistry = this.getNodeById(update.fullNodeId);	
@@ -142,12 +142,12 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 			continue;
 		}
 		
-		switch (update.type) {
+		switch (String(update.type)) {
 			case "UPDATED":
 				var propertyUpdate = update;
-				
 				if (propertyUpdate.isUnset) {
-					delete this.nodeFromRegistry.properties[propertyUpdate.key];						
+//					throw "remove property " + propertyUpdate.key;
+					delete nodeFromRegistry.properties[propertyUpdate.key];						
 				} else {
 					this.setPropertyValue(nodeFromRegistry, propertyUpdate.key, propertyUpdate.value);						
 				}	
@@ -189,6 +189,7 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 				this.refresh(nodeFromRegistry);
 				break;
 			default:
+				throw update.type;
 				update.apply(this, nodeFromRegistry);		
 		}						
 	}			
@@ -277,8 +278,7 @@ NodeRegistry.prototype.refreshHandler = function(node, nodeWithVisibleChildren) 
 		for (i = 0; i < currentChildren.length; i++) {	
 			var exists = false;
 			currentChildNode = currentChildren.getItemAt(i);
-			for (var j = 0; j < nodeWithVisibleChildren.children.length(); j++) {
-//			for (var newChildWithVisibleChildren in nodeWithVisibleChildren.children) {
+			for (var j = 0; j < nodeWithVisibleChildren.children.length; j++) {
 				newChildWithVisibleChildren = nodeWithVisibleChildren.children.getItemAt(j);
 				if (currentChildNode.nodeUri == newChildWithVisibleChildren.node.nodeUri) {
 					exists = true;
@@ -389,7 +389,6 @@ NodeRegistry.prototype.setNodeProperties = function(node, newProperties) {
 		this.setPropertyValue(node, property, newProperties[property]);
 	}
 	// remove anything that is not in newProperties
-//	throw newProperties["propertyB"];
 	for(var property in node.properties){
 		if(!(property in newProperties)){
 			delete node.properties[property];
