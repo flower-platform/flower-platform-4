@@ -3,8 +3,8 @@
 	<div class="user-panel">
 		<div class="user-panel-name">
 			<h4>
-				<img src="../js_client.users/images/user-image.png">
-					{{userName}}
+				<img src="../js_client.users/images/user-image.png"/>
+				{{currentUser}}
 			</h4>
 		</div>
 		
@@ -22,12 +22,12 @@
 			    </div>
 			    <div class="collapse navbar-collapse">
 			      <ul class="nav navbar-nav">
-			      	<li><a>Logout</a></li>
-			        <li><a ng-href="#/users/{{userID}}">Profile</a></li>
+			      	<li><a ng-click="logout()">Logout</a></li>
+<!-- 			        <li><a ng-href="#/users/{{currentUser.messageResult.nodeUri}}">Profile</a></li> -->
 			        <hr>
-			        <li><a ng-class="{hidden:!{{isAdmin}}}">{{repo}}</a>
-			        <li><a ng-class="{hidden:!{{isAdmin}}}">{{repo}}</a>
- 			        <li><a ng-href="#/users/" ng-class="{hidden:!{{isAdmin}}}">Users</a>
+<!-- 			        <li><a ng-class="{hidden: !currentUser.messageResult.properties.isAdmin}">{{repo}}</a> -->
+<!-- 			        <li><a ng-class="{hidden: !currentUser.messageResult.properties.isAdmin}">{{repo}}</a> -->
+<!--  			        <li><a ng-href="#/users/" ng-class="{hidden: !currentUser.messageResult.properties.isAdmin}">Users</a> -->
 			      </ul>
 			    </div>
 			  </div>

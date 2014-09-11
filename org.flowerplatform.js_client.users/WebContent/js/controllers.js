@@ -2,25 +2,57 @@
 
 logger.debug('init user controllers');
 
-flowerProject.lazy.controller('UserSideMenuCtrl', ['$scope', '$location', '$route', 'Login', 
-  	function($scope, $location, $route, Login) {
+flowerProject.lazy.controller('UserSideMenuCtrl', ['$scope', '$location', '$route', 'Auth', 
+  	function($scope, $location, $route, Auth) {
   	
-  		// Side Menu
   		$scope.currentPath = $location.path();
-  		
-  		$scope.userID = Login.userID;
-  		$scope.userName = Login.userName;
-  		$scope.isAdmin = Login.isAdmin;
-  		$scope.repo = Login.repo;
   		$scope.content = $route.current.scope.template_sideMenuContentTemplate.url;
+  		
+  		$scope.currentUser = Auth.currentUser();
+  		
+  		$scope.logout = function() {
+  			Auth.performLogout().$promise.then(function() {
+  				// success on logout => clear current user
+  				logger.debug('logout ' + $scope.currentUser);
+  				Auth.currentUser(null);
+  				$route.reload();
+  			});
+  		};
   	
-  }]);
+}]);
+
+flowerProject.lazy.controller('AuthCtrl',  ['$scope', '$location', 'Auth',
+	function($scope, $location, Auth) {
+	
+		var redirectToMain = function() {
+			$location.path("/");
+		}
+	
+		// there is a user logged in => redirect to main
+		if (Auth.currentUser() != null) {
+			redirectToMain();
+		}
+	
+		var keepLogin = function(user) {
+			logger.debug('login ' + user.messageResult.properties.login);
+			Auth.currentUser(user.messageResult.properties.login);
+			redirectToMain();
+		};
+	
+		// bound to form view
+		$scope.loginInfo = {};
+	
+		$scope.performLogin = function() {
+			Auth.performLogin($scope.loginInfo).$promise.then(keepLogin);
+		}
+ 	
+}]);
 
 flowerProject.lazy.controller('UserListCtrl', ['$scope', '$location', 'User', 'Template', 
-	function($scope, $location, User, Template) {
-	
-		$scope.users = User.query();
-	
+   	function($scope, $location, User, Template) {
+   	
+  		$scope.users = User.query();
+   	
 }]);
 
 flowerProject.lazy.controller('UserFormCtrl', ['$scope', '$routeParams', '$location', '$http', 'User', 
@@ -72,15 +104,15 @@ flowerProject.lazy.controller('UserFormCtrl', ['$scope', '$routeParams', '$locat
  		
  }]);
 
-flowerProject.lazy.controller('UserAccountSettingsCtrl',  ['$scope', '$routeParams', 'User' , 'Login' ,
-	function($scope, $routeParams, User, Login) {
+flowerProject.lazy.controller('UserAccountSettingsCtrl',  ['$scope', '$routeParams', 'User', 'Auth',
+	function($scope, $routeParams, User, Auth) {
 	
 		/**
 		 * Get the user from the server, or create new user for this $scope.
 		 */
-		$scope.login = Login.login;
+		$scope.login = Auth.login;
 		$scope.changePassword = function(oldPassword, newPassword) {
-			var user = { nodeUri : Login.nodeUri , 
+			var user = { nodeUri : Auth.nodeUri , 
 			properties: { 
 				'oldPassword': oldPassword, 
 				'newPassword': newPassword
@@ -121,8 +153,8 @@ flowerProject.lazy.controller('UserAccountSettingsCtrl',  ['$scope', '$routePara
  		 * Delete user
  		 */
  		$scope.deleteAccount = function() {
- 			//var user = {nodeUri : Login.nodeUri};
- 			User.remove({ id :Login.nodeUri }).$promise.then(function(result) {
+ 			//var user = {nodeUri : Auth.nodeUri};
+ 			User.remove({ id: Auth.nodeUri }).$promise.then(function(result) {
  				$scope.alert = {
  					message: 'User was deleted',
  					visible: true,

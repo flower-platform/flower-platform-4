@@ -13,7 +13,7 @@
    	<!-- For more details about channel definition configuration check http://livedocs.adobe.com/livecycle/8.2/programLC/programmer/lcds/help.html?content=lcconfig_3.html. -->
     <channels>
         <channel-definition id="remoting-amf" class="mx.messaging.channels.AMFChannel">
-            <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/remoting-amf" class="flex.messaging.endpoints.AMFEndpoint"/>
+            <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/remoting-amf" class="org.flowerplatform.flex_client.server.blazeds.FlowerAMFEndpoint"/>
             <properties>
                 <polling-enabled>false</polling-enabled>
 				<serialization>

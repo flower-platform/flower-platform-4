@@ -1,7 +1,9 @@
 package org.flowerplatform.core.users;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -12,6 +14,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
@@ -22,10 +25,12 @@ public class UserService {
 
 	private List<Node> users = new ArrayList<Node>();
 	
+	private UserValidator userValidator = new UserValidator();
+	
 	public UserService() {
-		users.add(newTestUser("John"));
-		users.add(newTestUser("Jane"));
-		users.add(newTestUser("Jim"));
+		users.add(newTestUser("john"));
+		users.add(newTestUser("jane"));
+		users.add(newTestUser("jim"));
 	}
 	
 	private Node newTestUser(String login) {
@@ -82,6 +87,40 @@ public class UserService {
 				break;
 			}
 		}
+	}
+	
+	@GET @Path("/login")
+	public Node getCurrentUser() {
+		Principal userPrincipal = userValidator.getCurrentUserPrincipal(
+				CorePlugin.getInstance().getRequestThreadLocal().get().getSession());
+		if (userPrincipal == null) {
+			return null;
+		}
+		for (Node user : users) {
+			if (user.getNodeUri().endsWith(userPrincipal.getName())) {
+				return user;
+			}
+		}
+		throw new RuntimeException("User not found");
+	}
+	
+	@POST @Path("/login")
+	public Node login(Map<String, String> loginInfo) {
+		String username = loginInfo.get("username");
+		for (Node user : users) {
+			if (user.getNodeUri().endsWith(username)) {
+				userValidator.setCurrentUserPrincipal(
+						CorePlugin.getInstance().getRequestThreadLocal().get().getSession(), 
+						userValidator.validateUser(username, null));
+				return user;
+			}
+		}
+		throw new RuntimeException("User not found");
+	}
+	
+	@POST @Path("/logout")
+	public void logout() {
+		userValidator.clearCurrentUserPrincipal(CorePlugin.getInstance().getRequestThreadLocal().get().getSession());
 	}
 	
 }

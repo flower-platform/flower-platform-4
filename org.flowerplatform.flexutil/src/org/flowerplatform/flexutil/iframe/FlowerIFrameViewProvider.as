@@ -20,6 +20,7 @@ package org.flowerplatform.flexutil.iframe {
 		public function createView(viewLayoutData:ViewLayoutData):UIComponent {
 			var view:IFlowerIFrame = createFlowerIFrame();
 			view.url = viewLayoutData.customData;
+			view.addCallback("syncCookies", syncCookies);
 			return UIComponent(view);
 		}
 		
@@ -32,6 +33,13 @@ package org.flowerplatform.flexutil.iframe {
 			} else {
 				return new FlowerIFrame();
 			}
+		}
+		
+		protected function syncCookies():Object {
+			var cookies:Object = FlexUtilGlobals.getInstance().cookiesForJs;
+			// clear; sync only on first open
+			FlexUtilGlobals.getInstance().cookiesForJs = {};
+			return cookies;
 		}
 		
 		public function getTitle(viewLayoutData:ViewLayoutData=null):String {

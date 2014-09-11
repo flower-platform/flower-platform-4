@@ -220,4 +220,14 @@ public class CoreConstants {
 	
 	public static final String LOAD_FILE_SERVLET = UtilConstants.SERVLET + "/load";
 	
+	//////////////////////////////////
+	// Login and users
+	//////////////////////////////////
+	
+	/**
+	 * This attribute will be set in the sessions to store the user principal.
+	 */
+	public static final String USER_PRINCIPAL = "userPrincipal";
+	
+	public static final String LOGIN_METHOD = "loginMethod";
 }

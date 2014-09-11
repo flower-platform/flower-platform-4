@@ -14,10 +14,9 @@
  * license-end
  */
 package org.flowerplatform.flexutil.iframe {
+	
 	import flash.display.DisplayObjectContainer;
 	import flash.external.ExternalInterface;
-	
-	import mx.controls.Alert;
 	
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.Utils;
@@ -26,7 +25,7 @@ package org.flowerplatform.flexutil.iframe {
 	
 	/**
 	 * <code>IFrame</code> code was copied from here:
-	 * http://code.google.com/p/flex-iframe
+	 * https://github.com/flex-users/flex-iframe
 	 * 
 	 * <p>
 	 * This class adds specific flower behavior and styles.

@@ -1,18 +1,3 @@
-/* license-start
- * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation version 3.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
- * 
- * license-end
- */
 /**
  * Copyright (c) 2007-2011 flex-iframe contributors
  * 
@@ -72,7 +57,7 @@ package org.flowerplatform.flexutil.iframe
                         "newDiv.style.backgroundColor = '#FFFFFF';" + 
                         "newDiv.style.border = '0px';" +
                         "newDiv.style.overflow = overflowAssignment;" +
-                        "newDiv.style.display = 'inline';" +
+                        "newDiv.style.display = 'none';" +
                         "bodyID.appendChild(newDiv);" +
                     "}" +
                 "}" +
@@ -235,7 +220,7 @@ package org.flowerplatform.flexutil.iframe
                             "\"<iframe id='\"+iframeID+\"' " + 
                                       "src='\"+url+\"' " + 
                                       "name='\"+iframeID+\"' " + 
-                                      "onLoad='\"+embedID+\".\"+frameID+\"_load();' " +
+                                      "onLoad='\"+embedID+\".\"+iframeID+\"_load();' " +
                                       "scrolling='\"+scrollPolicy+\"' " +
                                       "frameborder='0'>" + 
                               "</iframe>\";" + 
@@ -423,7 +408,7 @@ package org.flowerplatform.flexutil.iframe
          * unless there is no new 'resize' event in the next 10 milliseconds. This is to prevent
          * unexpected behaviours with *beloved* Internet Explorer sending bursts of events.
          */
-        public static function INSERT_FUNCTION_SETUP_RESIZE_EVENT_LISTENER(frameId:String):String
+        public static function INSERT_FUNCTION_SETUP_RESIZE_EVENT_LISTENER(frameId:String, iframeId:String):String
         {
             return "document.insertScript = function ()" +
                    "{ " +
@@ -451,7 +436,7 @@ package org.flowerplatform.flexutil.iframe
                        "{ " +
                            "notify" + frameId + "Resize = function() " + 
                            "{ " + 
-                               "document.getElementById('" + IFrame.applicationId + "')." + frameId + "_resize(); " +
+                               "document.getElementById('" + IFrame.applicationId + "')." + iframeId + "_resize(); " +
                            "} " +
                        "} " + 
                    "} ";
@@ -543,29 +528,6 @@ package org.flowerplatform.flexutil.iframe
                    "}" +
                 "}" +
             "}";
-		
-		
-		
-		/**
-		 * The name of the JavaScript function that hides a Div.
-		 */
-		public static var FUNCTION_GET_SOURCE:String = "getSource";
-
-		
-		/**
-		 * The Javascript code to call to insert the function that returns the IFrame's source.
-		 */
-		public static var INSERT_FUNCTION_GET_SOURCE:String =
-			"document.insertScript = function () " +
-			"{ " +
-				"if (document." + FUNCTION_GET_SOURCE + "==null) " +
-				"{ " +
-					FUNCTION_GET_SOURCE + " = function(iframeID) " + 
-					"{ " + 
-						"return document.getElementById(iframeID).contentDocument.URL; " +
-					"} " +
-				"} " + 
-			"}";
 
     }
 }

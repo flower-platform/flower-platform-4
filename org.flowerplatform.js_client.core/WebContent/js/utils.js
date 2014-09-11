@@ -50,3 +50,7 @@ function getURLParam(name) {
 		return results[1];
 	}
 }
+
+function callFlexCallback() {
+	// nothing to do
+}

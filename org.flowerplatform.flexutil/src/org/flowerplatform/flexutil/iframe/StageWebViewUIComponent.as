@@ -23,8 +23,9 @@ package org.flowerplatform.flexutil.iframe {
 	import flash.events.Event;
 	import flash.events.LocationChangeEvent;
 	import flash.geom.Rectangle;
+	import flash.utils.Dictionary;
 	
-	import mx.controls.Alert;
+	import mx.collections.ArrayCollection;
 	import mx.core.UIComponent;
 	
 	import es.xperiments.media.StageWebViewBridge;
@@ -34,7 +35,6 @@ package org.flowerplatform.flexutil.iframe {
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
-	import org.flowerplatform.flexutil.iframe.IFlowerIFrame;
 	
 	[Event(name="complete", type="flash.events.Event")]
 	[Event(name="locationChanging", type="flash.events.LocationChangeEvent")]
@@ -44,6 +44,7 @@ package org.flowerplatform.flexutil.iframe {
 	 * A <code>StageWebViewBridge</code> wrapped in an <code>UIComponent</code>.
 	 * 
 	 * @author Cristina Constantinescu
+	 * @author Mariana Gheorghe
 	 */
 	public class StageWebViewUIComponent extends UIComponent implements IFlowerIFrame {
 		
@@ -52,6 +53,8 @@ package org.flowerplatform.flexutil.iframe {
 		protected var myStage:Stage;
 		private var _url:String;
 		private var _text:String;
+		private var _viewCompleteHandlers:ArrayCollection = new ArrayCollection();
+		private var _callbacks:Dictionary = new Dictionary();
 		
 		private var _stageWebView:StageWebViewBridge;
 		
@@ -64,6 +67,7 @@ package org.flowerplatform.flexutil.iframe {
 			percentWidth = 100;
 			addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
 			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
+			addEventListener("dispose", disposeHandler);
 		}
 		
 		public function set url(url:String):void {
@@ -96,23 +100,32 @@ package org.flowerplatform.flexutil.iframe {
 		public function addCallback(name:String, callback:Function):void {
 			if (_stageWebView) {
 				_stageWebView.addCallback(name, callback);
+			} else {
+				_callbacks[name] = callback;
 			}
 		}
 		
 		public function addViewCompleteHandler(handler:Function):void {
 			if (_stageWebView) {
 				_stageWebView.addEventListener(StageWebViewBridgeEvent.DEVICE_READY, handler);
+			} else {
+				_viewCompleteHandlers.addItem(handler);
 			}
 		}
 		
 		public function dispose():void {
 			_stageWebView.visible = false;
 			_stageWebView.dispose();
+			_stageWebView = null;
 		}
 		
 		protected function addedToStageHandler(event:Event):void {
+			if (_stageWebView != null) {
+				_stageWebView.visible = true;
+				return;
+			}
+			
 			myStage = event.currentTarget.document.stage;
-			removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
 			
 			StageWebViewDisk.initialize(myStage);
 			
@@ -123,17 +136,37 @@ package org.flowerplatform.flexutil.iframe {
 			_stageWebView.addEventListener(ErrorEvent.ERROR, errorHandler);
 			_stageWebView.addEventListener(LocationChangeEvent.LOCATION_CHANGING, locationChangingHandler);
 			_stageWebView.addEventListener(LocationChangeEvent.LOCATION_CHANGE, locationChangeHandler);
+			
+			// add view complete handlers
+			for each (var handler:Function in _viewCompleteHandlers) {
+				_stageWebView.addEventListener(StageWebViewBridgeEvent.DEVICE_READY, handler);
+			}
+			
+			// add callbacks
+			for (var name:String in _callbacks) {
+				_stageWebView.addCallback(name, _callbacks[name]);
+			}
+			
+			// load page
 			if (_url) {
 				_stageWebView.loadURL(_url);
 			} else if (_text) {
 				_stageWebView.loadString(_text);
 			}
+			
+			addCallback("trace", function(msg:String):void {
+				trace(msg);
+			});
 		}
 		
 		protected function removedFromStageHandler(event:Event):void {
-			removeEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
-			
-			_stageWebView.dispose();
+			if (_stageWebView != null) {
+				_stageWebView.visible = false;
+			}
+		}
+		
+		protected function disposeHandler(event:Event):void {
+			dispose();
 		}
 		
 		protected function completeHandler(event:Event):void {

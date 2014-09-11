@@ -14,6 +14,7 @@
  * license-end
  */
 package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
+	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	
 	import mx.collections.ArrayCollection;
@@ -92,6 +93,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 		}
 			
 		public function closeView(view:IEventDispatcher, shouldDispatchEvent:Boolean = true, canPreventDefault:Boolean = true):void {
+			view.dispatchEvent(new Event("dispose"));
 			closeViews(new ArrayCollection([view]), shouldDispatchEvent, canPreventDefault);
 		}
 		

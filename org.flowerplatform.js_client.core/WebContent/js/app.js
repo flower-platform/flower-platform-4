@@ -26,7 +26,7 @@ loadScripts(plugins, function() {
 	angular.bootstrap(document, ['flowerProject']);
 });
 
-flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', function($routeProvider, $provide, $controllerProvider) {
+flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', '$httpProvider', function($routeProvider, $provide, $controllerProvider, $httpProvider) {
 
 	logger.debug('do config');
 	
@@ -37,6 +37,42 @@ flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', funct
         service: 	$provide.service,
         decorator: 	$provide.decorator
 	};
+	
+	// Add jsessionid header for the first API call
+	$provide.factory('flowerHttpInterceptor', function($q) {
+		return {
+			'request' : function(config) {
+				if (config.url.indexOf('../ws-dispatcher') != 0) {
+					// not an API call
+					return config;
+				}
+				var jsessionid = $.cookie('jsessionid');
+				if (jsessionid != null) {
+					// first call => clear cookie and add header
+					$.removeCookie('jsessionid');
+					logger.debug('get from cookie ' + jsessionid);
+					config.headers.JSESSIONID = jsessionid;
+				}
+				return config;
+			}
+		} 
+	});
+	
+	$httpProvider.interceptors.push('flowerHttpInterceptor');
+	 
+	var syncCookies = function($q) {
+		var deferred = $q.defer();
+		logger.debug('sync cookies');
+		var map = callFlexCallback('syncCookies', function(map) {
+			logger.debug(map);
+			$.each(map, function(key, value) {
+				logger.debug('set cookie ' + key + value);
+				$.cookie(key, value);
+			});
+			deferred.resolve(0);
+		});
+		return deferred.promise;
+	}
 	
 	var loadRouteDependencies = function($q, $rootScope, routeConfig) {
 		logger.debug('resolve route' + routeConfig.path);
@@ -55,9 +91,12 @@ flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', funct
 		routeConfig.route.resolve.deps = function($q, $rootScope) {
 			return loadRouteDependencies($q, $rootScope, routeConfig);
 		};
+		routeConfig.route.resolve.syncCookies = function($q) {
+			return syncCookies($q);
+		};
 		// add route
 		$routeProvider.when(routeConfig.path, routeConfig.route);
-		logger.debug('route added' + routeConfig.path);
+		logger.debug('route added ' + routeConfig.path);
 	});
 	
 }]);

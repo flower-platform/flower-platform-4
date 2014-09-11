@@ -78,8 +78,8 @@
 			import es.xperiments.media.StageWebviewDiskEvent;
 			
 			import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
-			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.user.UserAuthenticationManager;
 			import org.flowerplatform.flex_client.host_app.mobile.view_content_host.WorkbenchMobileSplitViewHost;
 			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.CommunicationErrorView;
 			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.EditServerAccountView;
@@ -141,23 +141,6 @@
 				for each (plugin in plugins) {					
 					plugin.start();
 				}
-				
-				var isAndroid:Boolean = true;
-				if (isAndroid) {
-					CorePlugin.getInstance().serviceLocator.invoke("coreService.getSessionId", null, function(sessionId:String):void {
-						StageWebViewDisk.addEventListener(StageWebviewDiskEvent.END_DISK_PARSING, function onDiskCacheEnd(e:StageWebviewDiskEvent):void {
-							var jsBridge:StageWebViewBridge = new StageWebViewBridge();
-							jsBridge.addEventListener(StageWebViewBridgeEvent.DOM_LOADED, function(event:StageWebViewBridgeEvent):void {
-								jsBridge.call("setSessionId", null, sessionId);
-								jsBridge.call("login");
-							});
-							jsBridge.loadURL(FlexUtilGlobals.getInstance().createAbsoluteUrl("login.html?isMobile=true"));
-						});
-						
-						//
-						StageWebViewDisk.initialize(MainMobile.mainApp.stage);
-					});
-				}
 			}
 			
 			/**
@@ -179,8 +162,6 @@
 				FlexUtilGlobals.getInstance().messageBoxFactory = new AlertPopupMessageBoxFactory();
 				FlexUtilGlobals.getInstance().progressMonitorHandlerFactory = new ProgressMonitorSpinnerHandlerFactory();
 				
-				
-				navigator.pushView(WorkbenchMobileSplitViewHost);
 				FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new ServerAccountsViewProvider());
 				FlexUtilGlobals.getInstance().clientCommunicationErrorViewContent = CommunicationErrorView;
 				var serverAccounts:ArrayCollection = ServerAccountsView.getSharedObject().data.serverAccounts;
@@ -188,9 +169,10 @@
 				if (serverAccounts == null || serverAccounts.length == 0 ) {
 					// add FP hub
 					var hub:ServerAccount = new ServerAccount();
-					hub.host = "http://hub.flower-platform.com/";
+					hub.host = "http://csp41:8080/org.flowerplatform.host.web_app/";
 					hub.friendlyName = "Flower Platform Hub";
-					hub.user = "";
+					hub.user = "Jim";
+					hub.password = "a";
 					hub.isDefault = true;
 					if (serverAccounts == null) {
 						serverAccounts = new ArrayCollection();
@@ -259,8 +241,11 @@
 					
 					//TODO add user/password
 					FlexUtilGlobals.getInstance().rootUrl = result.host;
-					
 					startPlugins();
+					
+					CorePlugin.getInstance().userAuthenticationManager.login(result.user, result.password, function():void {
+						navigator.pushView(WorkbenchMobileSplitViewHost);
+					}); 
 				}
 			}
 			

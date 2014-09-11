@@ -1,19 +1,26 @@
-/* license-start
- * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation version 3.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
- * 
- * license-end
+/**
+ * Copyright (c) 2007-2011 flex-iframe contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
-package org.flowerplatform.flexutil.iframe {
+package org.flowerplatform.flexutil.iframe
+{
     import flash.display.DisplayObject;
     import flash.display.DisplayObjectContainer;
     import flash.events.Event;
@@ -21,9 +28,7 @@ package org.flowerplatform.flexutil.iframe {
     import flash.geom.Point;
     import flash.utils.Dictionary;
     import flash.utils.getQualifiedClassName;
-    
-    import mx.containers.ViewStack;
-    import mx.controls.Alert;
+
     import mx.controls.ToolTip;
     import mx.core.Application;
     import mx.core.Container;
@@ -39,11 +44,8 @@ package org.flowerplatform.flexutil.iframe {
     import mx.logging.targets.TraceTarget;
     import mx.managers.ISystemManager;
     import mx.utils.URLUtil;
-    
-    import org.flowerplatform.flexutil.FlexUtilGlobals;
 
     /**
-	 * 
      * The event dispatched when the IFrame is loaded.
      *
      * @eventType flash.events.Event
@@ -58,8 +60,6 @@ package org.flowerplatform.flexutil.iframe {
 //    [IconFile("assets/flex-iframe-logo-16.png")]
 
     /**
-	 * Initial code: https://github.com/flex-users/flex-iframe.
-	 * 
      * An IFrame which you can embed into Flex applications to show an HTML page.
      *
      * <p><b>Usage:</b><br/>
@@ -139,7 +139,7 @@ package org.flowerplatform.flexutil.iframe {
         {
             // Call super class constructor
             super();
-			
+
             // Assign the unique id
             if (id != null)
             {
@@ -282,10 +282,9 @@ package org.flowerplatform.flexutil.iframe {
             // Check the external interface availability
             if (!ExternalInterface.available)
             {
-			
                 throw new Error("ExternalInterface is not available in this container. Internet " + "Explorer ActiveX, Firefox, Mozilla 1.7.5 and greater, or other " + "browsers that support NPRuntime are required.");
             }
-			
+
             // Resolve the top level Flex application.
             if(Application.application != null)
             {
@@ -449,7 +448,7 @@ package org.flowerplatform.flexutil.iframe {
             }
 
             _frameAdded = true;
-           updateFrameVisibility(true);
+            updateFrameVisibility(true);
         }
 
         /**
@@ -461,14 +460,13 @@ package org.flowerplatform.flexutil.iframe {
         {
             logger.debug("The component for the IFrame with id '{0}' has been removed from the stage.", _frameId);
 
-			
             // Remove systemManager hooks for overlay detection
             if (overlayDetection)
             {
                 systemManager.removeEventListener(Event.ADDED, systemManager_addedHandler);
                 systemManager.removeEventListener(Event.REMOVED, systemManager_removedHandler);
             }
-				
+            
             _frameAdded = false;
             updateFrameVisibility(false);
         }
@@ -479,13 +477,18 @@ package org.flowerplatform.flexutil.iframe {
          *
          * @param event Event trigger
          */
-        protected function handleChange(event:Event):void {
+        protected function handleChange(event:Event):void
+        {
             var target:Object=event.target;
 
-			if (target is ViewStack && ViewStack(target).selectedIndex != -1) {					
-				var result:Boolean=updateFrameVisibility(checkDisplay(target, ViewStack(target).selectedIndex));
-				logger.debug("Frame {0} set visible to {1} on ValueCommit", _frameId, result);
-			}
+            if (event is IndexChangedEvent)
+            {
+                var changedEvent:IndexChangedEvent=IndexChangedEvent(event);
+                var newIndex:Number=changedEvent.newIndex;
+
+                var result:Boolean=updateFrameVisibility(checkDisplay(target, newIndex));
+                logger.debug("Frame {0} set visible to {1} on IndexChangedEvent", _frameId, result);
+            }
         }
 
         /**
@@ -516,14 +519,7 @@ package org.flowerplatform.flexutil.iframe {
                 logger.debug("frame id {0} calling queued function {1}", _frameId, queuedCall.functionName);
                 this.callIFrameFunction(queuedCall.functionName, queuedCall.args, queuedCall.callback);
             }
-			
-			var newSource:String = getBrowserSource();
-			if (newSource && newSource != "" && newSource != source) {
-				_source = newSource;
-				dispatchEvent(new Event("browserSourceChanged"));
-			}
-
-			dispatchEvent(new Event("frameLoad"));
+            dispatchEvent(new Event("frameLoad"));
 
             invalidateDisplayList();
         }
@@ -544,7 +540,6 @@ package org.flowerplatform.flexutil.iframe {
 		protected function checkDisplay(target:Object = null, newIndex:Number = -1):Boolean
 		{
 
-			buildContainerList();
 			if (target is Container)
 			{
 
@@ -602,7 +597,6 @@ package org.flowerplatform.flexutil.iframe {
             if (source)
             {
                 _source=source;
-				dispatchEvent(new Event("browserSourceChanged"));
 
                 // mark unloaded now so calls in this frame will be queued
                 _frameLoaded=false;
@@ -616,7 +610,6 @@ package org.flowerplatform.flexutil.iframe {
         /**
          * Return url of frame contents
          */
-		[Bindable (event="browserSourceChanged")]
         public function get source():String
         {
             return _source;
@@ -651,7 +644,6 @@ package org.flowerplatform.flexutil.iframe {
          */
         protected function updateFrameVisibility(value:Boolean):Boolean
         {
-			
             logger.debug("IFrame with id '{0}' visibility set to '{1}'", _frameId, value);
 
 			// Check that this frame should currently be visible
@@ -769,12 +761,8 @@ package org.flowerplatform.flexutil.iframe {
                         containerDict[current]=childIndex;
                         settingDict[current]=current.hasOwnProperty("selectedIndex") ? current["selectedIndex"] : childIndex;
 
-						current.removeEventListener(FlexEvent.VALUE_COMMIT, handleChange);
-						current.removeEventListener(MoveEvent.MOVE, handleMove);
-						current.removeEventListener(FlexEvent.SHOW, handleShowHide);
-						current.removeEventListener(FlexEvent.HIDE, handleShowHide);
-						
-						current.addEventListener(FlexEvent.VALUE_COMMIT, handleChange);
+                        // Tag on a change listener
+                        current.addEventListener(IndexChangedEvent.CHANGE, handleChange);
                         current.addEventListener(MoveEvent.MOVE, handleMove);
                         current.addEventListener(FlexEvent.SHOW, handleShowHide);
                         current.addEventListener(FlexEvent.HIDE, handleShowHide);
@@ -1171,26 +1159,25 @@ package org.flowerplatform.flexutil.iframe {
         {
             if (applicationId == null)
             {
-//                try
-//                {	
-					applicationId = FlexGlobals.topLevelApplication.id;
-//                    randomIdentificationString=Math.ceil(Math.random() * 9999 * 1000);
-//                    ExternalInterface.addCallback('checkObjectId', checkObjectId);
-//                    var result:Object=ExternalInterface.call(IFrameExternalCalls.FUNCTION_ASK_FOR_EMBED_OBJECT_ID, randomIdentificationString.toString());
-//                    if (result != null)
-//                    {
-//                        applicationId=String(result);
-//                        logger.info("Resolved the SWF embed object id to '{0}'.", applicationId);
-//                    }
-//                    else
-//                    {
-//                        logger.error('Could not resolve the SWF embed object Id.');
-//                    }
-//                }
-//                catch (error:Error)
-//                {
-//                    logger.error(error.errorID + ": " + error.name + " - " + error.message);
-//                }
+                try
+                {
+                    randomIdentificationString=Math.ceil(Math.random() * 9999 * 1000);
+                    ExternalInterface.addCallback('checkObjectId', checkObjectId);
+                    var result:Object=ExternalInterface.call(IFrameExternalCalls.FUNCTION_ASK_FOR_EMBED_OBJECT_ID, randomIdentificationString.toString());
+                    if (result != null)
+                    {
+                        applicationId=String(result);
+                        logger.info("Resolved the SWF embed object id to '{0}'.", applicationId);
+                    }
+                    else
+                    {
+                        logger.error('Could not resolve the SWF embed object Id.');
+                    }
+                }
+                catch (error:Error)
+                {
+                    logger.error(error.errorID + ": " + error.name + " - " + error.message);
+                }
             }
         }
 
@@ -1230,19 +1217,18 @@ package org.flowerplatform.flexutil.iframe {
             ExternalInterface.call(IFrameExternalCalls.INSERT_FUNCTION_PRINT_IFRAME);
             ExternalInterface.call(IFrameExternalCalls.INSERT_FUNCTION_HISTORY_BACK);
             ExternalInterface.call(IFrameExternalCalls.INSERT_FUNCTION_HISTORY_FORWARD);
-			ExternalInterface.call(IFrameExternalCalls.INSERT_FUNCTION_GET_SOURCE);
 
             // Resolve the SWF embed object id in the DOM.
             ExternalInterface.call(IFrameExternalCalls.INSERT_FUNCTION_ASK_FOR_EMBED_OBJECT_ID);
             resolveEmbedObjectId();
 
             // Register a uniquely-named load event callback for this frame.
-            ExternalInterface.addCallback(_frameId + "_load", handleFrameLoad);
+            ExternalInterface.addCallback(_iframeId + "_load", handleFrameLoad);
 
             // Setup the browser resize event listener.
-            ExternalInterface.call(IFrameExternalCalls.INSERT_FUNCTION_SETUP_RESIZE_EVENT_LISTENER(_frameId));
+            ExternalInterface.call(IFrameExternalCalls.INSERT_FUNCTION_SETUP_RESIZE_EVENT_LISTENER(_frameId, _iframeId));
             setupBrowserResizeEventListener();
-            ExternalInterface.addCallback(_frameId + "_resize", function():void
+            ExternalInterface.addCallback(_iframeId + "_resize", function():void
                 {
                     adjustPosition(true);
                 });
@@ -1355,20 +1341,6 @@ package org.flowerplatform.flexutil.iframe {
             }
             return new Number(0);
         }
-		
-		/**
-		 * Get the browser source.
-		 */
-		protected function getBrowserSource():String 
-		{
-			logger.info("Get browser source.");
-			var result:Object = ExternalInterface.call(IFrameExternalCalls.FUNCTION_GET_SOURCE, _iframeId);
-			if (result != null)
-			{
-				return result as String;
-			}
-			return "";
-		}
 
         /**
          * Setup the Browser resize event listener.

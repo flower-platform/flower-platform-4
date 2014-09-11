@@ -19,9 +19,11 @@ package org.flowerplatform.flex_client.core {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
+	import mx.controls.Alert;
 	import mx.core.UIComponent;
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
+	import mx.rpc.AsyncToken;
 	
 	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
@@ -66,6 +68,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flex_client.core.shortcut.AssignHotKeyAction;
+	import org.flowerplatform.flex_client.core.user.UserAuthenticationManager;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
@@ -127,6 +130,8 @@ package org.flowerplatform.flex_client.core {
 		
 		public var channelSet:ChannelSet;
 		
+		public var userAuthenticationManager:UserAuthenticationManager = new UserAuthenticationManager();
+		
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
@@ -182,7 +187,7 @@ package org.flowerplatform.flex_client.core {
 			var resourceOperationsHandler:ResourceOperationsHandler = new ResourceOperationsHandler();
 			_nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IServiceInvocator(serviceLocator), new NodeExternalInvocator());
 			
- 			updateTimer = new UpdateTimer(5000);
+ 			updateTimer = new UpdateTimer(0);
 			
 			FlexUtilGlobals.getInstance().registerAction(RemoveNodeAction);
 			FlexUtilGlobals.getInstance().registerAction(RenameAction);
@@ -381,8 +386,33 @@ package org.flowerplatform.flex_client.core {
 					.setHeight(250)
 					.show();
 				}));			
+			
+			registerActionToGlobalMenu(new ActionBase()
+				.setLabel("Show Current User")
+				.setParentId(CoreConstants.DEBUG)
+				.setFunctionDelegate(function():void {
+					if (FlexUtilGlobals.getInstance().isMobile) {
+						trace("Current User: " + userAuthenticationManager.currentUser);
+					} else {
+						Alert.show("Current User: " + userAuthenticationManager.currentUser);
+					}
+				}));
+			
+			registerActionToGlobalMenu(new ActionBase()
+				.setLabel("Login")
+				.setParentId(CoreConstants.DEBUG)
+				.setFunctionDelegate(function():void {
+					CorePlugin.getInstance().userAuthenticationManager.login("test abd", "sd");
+				}));
+			
+			registerActionToGlobalMenu(new ActionBase()
+				.setLabel("Logout")
+				.setParentId(CoreConstants.DEBUG)
+				.setFunctionDelegate(function():void {
+					userAuthenticationManager.logout();
+				}));
 		}
-				
+		
 		override protected function registerClassAliases():void {		
 			super.registerClassAliases();
 			registerClassAliasFromAnnotation(Node);

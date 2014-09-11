@@ -14,13 +14,11 @@
  * license-end
  */
 package org.flowerplatform.flexutil.service {
-	import mx.collections.ArrayCollection;
 	import mx.rpc.IResponder;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -49,6 +47,12 @@ package org.flowerplatform.flexutil.service {
 		}
 		
 		public function result(data:Object):void {
+			if (data is ResultEvent) {
+				var evt:ResultEvent = ResultEvent(data);
+				for (var key:String in evt.message.headers) {
+					FlexUtilGlobals.getInstance().cookiesForJs[key] = evt.message.headers[key];
+				}
+			}
 			serviceLocator.resultHandler(ResultEvent(data), this);
 		}
 		

@@ -5,32 +5,34 @@ import java.util.List;
 
 import javax.servlet.ServletConfig;
 
-import org.flowerplatform.core.users.UserPrincipal;
+import org.flowerplatform.core.users.UserValidator;
 
 import flex.messaging.FlexContext;
 import flex.messaging.security.LoginCommand;
 
-public class FlowerLoginCommand implements LoginCommand{
+/**
+ * @author Valentina-Camelia Bojan
+ * @author Mariana Gheorghe
+ */
+public class FlowerLoginCommand implements LoginCommand {
 
-	@Override
-	public void start(ServletConfig config) {}
-
-	@Override
-	public void stop() {}
+	private UserValidator userValidator = new UserValidator();
 
 	@Override
 	public Principal doAuthentication(String username, Object credentials) {
-		
-		// TODO VB: Verify the credentials for authentication and set it
-		// TODO VB: in the opened session. If success, return the current principal.
-		if(username.equals("user") && credentials.equals("password")) {
-			FlexContext.getHttpRequest().getSession().setAttribute("userPrincipal", new UserPrincipal(username));
-			return new UserPrincipal(username);			
-		} else {
-			return null;
+		// TODO check if same username??
+		Principal principal = userValidator.getCurrentUserPrincipal(FlexContext.getHttpRequest().getSession());
+		if (principal == null) {
+			principal = userValidator.validateUser(username, credentials.toString());
+			if (principal != null) {
+				userValidator.setCurrentUserPrincipal(FlexContext.getHttpRequest().getSession(), principal);
+			}
 		}
+		
+		return principal;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean doAuthorization(Principal principal, List roles) {
 		return true;
@@ -40,4 +42,13 @@ public class FlowerLoginCommand implements LoginCommand{
 	public boolean logout(Principal principal) {
 		return true;
 	}
+
+	@Override
+	public void start(ServletConfig config) {
+	}
+
+	@Override
+	public void stop() {
+	}
+
 }

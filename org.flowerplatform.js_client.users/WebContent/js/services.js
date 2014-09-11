@@ -19,17 +19,34 @@ flowerProject.lazy.factory('User', ['$resource', function($resource) {
 	
 }]);
 
-flowerProject.lazy.factory('Login', [function() {
+flowerProject.lazy.factory('Auth', ['$resource', function($resource) {
 	
-	return {
-		userID: 'user:test|John',
-		userName: 'John Johnson',
-		login: 'John',
-		nodeUri: 'user:test|John',
-		isAdmin: true,
-		repo: 'Repository'
+	var f = $resource('../ws-dispatcher/users/:op', {}, {
+		performLogin: 	{ method: 'POST', params: { op: 'login' } },
+		performLogout: 	{ method: 'POST', params: { op: 'logout' } }
+	});
+	
+	var key_currentUser = 'currentUser';
+	
+	/**
+	 * Getter/setter for current user cookie.
+	 */
+	f.currentUser = function(val) { 
+		if (val !== undefined) {
+			// set
+			if (val == null) {
+				$.removeCookie(key_currentUser);
+			} else {
+				$.cookie(key_currentUser, val);
+			}
+		} else {
+			// get
+			return $.cookie(key_currentUser);
+		}
 	};
 	
+	return f;
+
 }]);
 
 /**

@@ -1,44 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" 
-			   close="PopUpManager.removePopUp(this)"
-			   title="Login">
+<!--
+	@author Valentina-Camelia Bojan
+	@author Mariana Gheorghe
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent">
 	<fx:Script>
 		<![CDATA[
-			import mx.controls.Alert;
-			import mx.managers.PopUpManager;
-			import mx.rpc.AsyncResponder;
-			import mx.rpc.AsyncToken;
-			import mx.rpc.events.FaultEvent;
-			import mx.rpc.events.ResultEvent;
-			
 			import org.flowerplatform.flex_client.core.CorePlugin;
-			  
-			private function ROLogin():void { 
-				// TODO VB: Login and handle authentication success or failure.
-				var token:AsyncToken = CorePlugin.getInstance().channelSet.login(username.text, password.text); 
-				// Add result and fault handlers. 
-				token.addResponder(new AsyncResponder(LoginResultEvent, LoginFaultEvent));  
-			} 
-			 
-			private function LoginResultEvent(event:ResultEvent, token:Object=null):void  { 
-				// TODO VB: Handle successful login.
-				switch(event.result) { 
-					case "success": 
-						PopUpManager.removePopUp(this);
-						WebPlugin.getInstance().enterApplication();						
-						break;
-				} 
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.view_content_host.IViewContent;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			private function loginSuccessHandler():void {
+				WebPlugin.getInstance().enterApplication();
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 			}
 			
-			private function LoginFaultEvent(event:FaultEvent, token:Object=null):void { 
-				// TODO VB: Handle login failure. 
-				switch(event.fault.faultCode) { 
-					default:
-						Alert.show("Login failure: " + event.fault.faultString); 
-				} 
-			}			
+			public function set viewHost(viewHost:IViewHost):void {
+				// nothing to do
+			}
+			
+			public function additionalCloseHandler():void {
+				// nothing to do
+			}
 		]]>
 	</fx:Script>
 	
@@ -46,23 +33,20 @@
 		<s:VerticalLayout/>
 	</s:layout>
 	
-	<s:HGroup height="100" paddingTop="20" paddingLeft="20" verticalAlign="middle" gap="30">
+	<s:HGroup height="100" gap="30" paddingLeft="20" paddingTop="20" verticalAlign="middle">
 		<s:Form>
 			<s:FormItem label="Username:" required="true">
 				<s:TextInput id="username"/>					
 			</s:FormItem>
-			<s:FormItem label="Password:" required="true" >
-				<s:TextInput id="password" displayAsPassword="true"/>					
-			</s:FormItem>		
-		</s:Form>	
+			<s:FormItem label="Password:" required="true">
+				<s:TextInput id="password" displayAsPassword="true"/>
+			</s:FormItem>
+		</s:Form>
 	</s:HGroup>
-	<s:HGroup width="390"
-			  paddingBottom="20" gap="15"
-			  horizontalAlign="center">
+	<s:HGroup width="390" gap="15" horizontalAlign="center" paddingBottom="20">
 		<s:Button id="ok" label="Login"
-				  click="ROLogin()"/>
-		<s:Button label="Cancel"
-				  click="PopUpManager.removePopUp(this)"/>
+				  click="{CorePlugin.getInstance().userAuthenticationManager.login(username.text, password.text, loginSuccessHandler)}"/>
+		<s:Button label="Cancel"/>
 	</s:HGroup>
 	
-</s:TitleWindow>
+</s:Group>

@@ -2,13 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.equinox.http.registry.filters">
-      <filter
-            alias="/js_client.core"
-            class="org.flowerplatform.js_client.server.LoginFilter">
-      </filter>
-   </extension>
-   <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/ws-dispatcher"
@@ -22,7 +15,7 @@
    <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
-            alias="/authenticate/loginUser"
+            alias="/login"
             class="org.flowerplatform.js_client.server.UserValidatorServlet">
       </servlet>
    </extension>

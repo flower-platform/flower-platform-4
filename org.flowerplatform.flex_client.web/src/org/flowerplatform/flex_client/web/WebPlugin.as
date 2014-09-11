@@ -14,13 +14,11 @@
  * license-end
  */
 package org.flowerplatform.flex_client.web {
-	import flash.display.DisplayObject;
 	import flash.events.EventDispatcher;
 	import flash.external.ExternalInterface;
 	
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElementContainer;
-	import mx.managers.PopUpManager;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -62,9 +60,10 @@ package org.flowerplatform.flex_client.web {
 			
 			// TODO VB: Make sure that the user is not already logged in.
 			if (CorePlugin.getInstance().channelSet.authenticated == false) {
-				var loginForm:LoginForm = new LoginForm();
-				PopUpManager.addPopUp(loginForm, DisplayObject(FlexGlobals.topLevelApplication), true);
-				PopUpManager.centerPopUp(loginForm);
+				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+					.setViewContent(new LoginForm())
+					.setTitle("Login")
+					.show();
 			} else {
 				enterApplication();
 			}

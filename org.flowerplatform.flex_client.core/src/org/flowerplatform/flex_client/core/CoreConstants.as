@@ -153,5 +153,12 @@ package org.flowerplatform.flex_client.core {
 		
 		public static const FLOWER_PLATFORM:String = "flower-platform";
 		
+		//////////////////////////////////
+		// Users
+		//////////////////////////////////
+		
+		public static const CURRENT_USER:String = "currentUser";
+		public static const JSESSIONID:String = "jsessionid";
+		
 	}
 }

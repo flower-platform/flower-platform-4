@@ -97,6 +97,8 @@ package org.flowerplatform.flexutil {
 		 */
 		public var imageContentCache:ContentCache;
 		
+		public var cookiesForJs:Object = {};
+		
 		public function createAbsoluteUrl(url:String):String {
 			if (rootUrl.length > 0) {
 				return LoaderUtil.createAbsoluteURL(rootUrl, url);

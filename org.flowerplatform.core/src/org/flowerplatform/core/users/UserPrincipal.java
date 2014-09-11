@@ -2,6 +2,9 @@ package org.flowerplatform.core.users;
 
 import java.security.Principal;
 
+/**
+ * @author Valentina-Camelia Bojan
+ */
 public class UserPrincipal implements Principal { 
     private String username;
     
