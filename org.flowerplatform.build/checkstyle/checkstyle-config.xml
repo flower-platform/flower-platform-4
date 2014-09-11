@@ -8,7 +8,10 @@
 
 	<!-- Filters:  http://checkstyle.sourceforge.net/config.html-->
 	<module name="SuppressionCommentFilter"/>
-
+	
+	<module name="SuppressionFilter">
+	    <property name="file" value="suppressions.xml"/>
+	</module>
     
     <!-- Checks whether files end with a new line.                        -->
     <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
