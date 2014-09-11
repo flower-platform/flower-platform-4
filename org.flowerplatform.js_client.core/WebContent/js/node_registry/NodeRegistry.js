@@ -134,27 +134,27 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 		}
 		return;
 	}
-//	throw updates.length;
+
 	for (var i = updates.length - 1; i >= 0; i--) {
 		var update = updates.getItemAt(i);
 		var nodeFromRegistry = this.getNodeById(update.fullNodeId);	
 		if (nodeFromRegistry == null) { // node not registered, probably it isn't visible for this client
 			continue;
 		}
-		
 		switch (String(update.type)) {
 			case "UPDATED":
 				var propertyUpdate = update;
 				if (propertyUpdate.isUnset) {
-//					throw "remove property " + propertyUpdate.key;
-					delete nodeFromRegistry.properties[propertyUpdate.key];						
+					delete nodeFromRegistry.properties[propertyUpdate.key];
 				} else {
-					this.setPropertyValue(nodeFromRegistry, propertyUpdate.key, propertyUpdate.value);						
+					this.setPropertyValue(nodeFromRegistry, propertyUpdate.key, propertyUpdate.value);
 				}	
 				break;
 			case "ADDED":
 				var targetNodeInRegistry = this.getNodeById(update.targetNode.nodeUri);	
-				
+				if(nodeFromRegistry.children == null){
+					this.setPropertyValue(nodeFromRegistry, "hasChildren", true);
+				}
 				if (nodeFromRegistry.children != null && !nodeFromRegistry.children.contains(targetNodeInRegistry)) {
 					var index = -1; // -> add it last
 					if (update.fullTargetNodeAddedBeforeId != null) {
@@ -163,8 +163,8 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 						if (targetNodeAddedBeforeInRegistry != null) { // exists, get its index in children list
 							index = nodeFromRegistry.children.getItemIndex(targetNodeAddedBeforeInRegistry);	
 						}
-					}								
-					this.registerNode(update.targetNode, nodeFromRegistry, index);								
+					}
+					this.registerNode(update.targetNode, nodeFromRegistry, index);
 				} else {
 					// child already added, probably after refresh
 					// e.g. I add a children, I expand => I get the list with the new children; when the
@@ -172,24 +172,30 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 					// NOTE: since the instant notifications for the client that executed => this doesn't apply
 					// for him; but for other clients yes
 							
-					// Nothing to do								
+					// Nothing to do
 				}		
 				break;
 			case "REMOVED":
 				var targetNodeInRegistry = this.getNodeById(update.targetNode.nodeUri);	
-				
 				if (targetNodeInRegistry != null) {
-					this.unregisterNode(targetNodeInRegistry, nodeFromRegistry);								
+//					throw "before unregister " + nodeFromRegistry.children;
+//					throw "unregister" + update.targetNode.nodeUri;
+					this.unregisterNode(targetNodeInRegistry, nodeFromRegistry);
+//					throw "after unregister " + nodeFromRegistry.children;
 				} else {
 					// node not registered, probably it isn't visible for this client
 					// Nothing to do
 				}
+				
+				if(nodeFromRegistry.children == null){
+					this.setPropertyValue(nodeFromRegistry, "hasChildren", false);
+				}
+
 				break;
 			case "REQUEST_REFRESH":
 				this.refresh(nodeFromRegistry);
 				break;
 			default:
-				throw update.type;
 				update.apply(this, nodeFromRegistry);		
 		}						
 	}			
