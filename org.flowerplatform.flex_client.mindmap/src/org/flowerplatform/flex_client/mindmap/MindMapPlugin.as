@@ -102,7 +102,6 @@ package org.flowerplatform.flex_client.mindmap {
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapConstants.MINDMAP_NODE_TYPE)
 				.addSingleController(MindMapConstants.NODE_SIDE_PROVIDER, new GenericValueProviderFromDescriptor(MindMapConstants.PROPERTY_FOR_SIDE_DESCRIPTOR))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(EditNodeDetailsInDialogAction.ID))
-
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(EditNoteInDialogAction.ID));
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapConstants.MINDMAP_NODE_TYPE_1)

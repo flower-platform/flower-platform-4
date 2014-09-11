@@ -14,19 +14,23 @@
 * license-end
 */
 package org.flowerplatform.flex_client.mindmap.renderer {
+	import mx.collections.ArrayCollection;
 	import mx.events.PropertyChangeEvent;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapNodeRenderer;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
 
 	/**
 	 * @author Alexandra Topoloaga
 	 */ 
 	public class MindMapNodeRenderer1 extends AbstractMindMapNodeRenderer {
+		
+		public static const DEFAULT_PATH:String = "/images/mindmap/icons/";
 		
 		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 			
@@ -43,11 +47,11 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				if (event == null || event.property == "depth") {
 					depth = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "depth");	
 				}
-				if (event == null || event.property == "cloudColor") {
-					cloudColor =  Utils.convertValueToColor(data.getPropertyValue(MindMapConstants.CLOUD_COLOR));
+				if (event == null || event.property == "cloud.COLOR") {
+					cloudColor =  Utils.convertValueToColor(data.getPropertyValue("cloud.COLOR")); 
 				}			
-				if (event == null || event.property == "cloudType") {
-					cloudType = data.getPropertyValue(MindMapConstants.CLOUD_SHAPE);
+				if (event == null || event.property == "cloud.SHAPE") {
+					cloudType = data.getPropertyValue("cloud.SHAPE"); 
 				}
 				if (event == null || event.property == "expandedWidth") {
 					invalidateDisplayList();
@@ -56,43 +60,46 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			
 			// else used as a renderer in a plain Flex component
 			
-			if (event == null || event.property == "font.NAME") { //fontFamily
-				fontFamily = data.getPropertyValue(MindMapConstants.FONT_FAMILY);
+			if (event == null || event.property == "font.NAME") {
+				fontFamily = data.getPropertyValue("font.NAME");
 			} 
 			if (event == null || event.property == "font.SIZE") {
-				fontSize = 12; //data.getPropertyValue(MindMapConstants.FONT_SIZE);
+				fontSize = data.getPropertyValue("font.SIZE"); 
 			} 
 			if (event == null || event.property == "font.BOLD") {
-				fontWeight = data.getPropertyValue(MindMapConstants.FONT_BOLD);
+				fontWeight = data.getPropertyValue("font.BOLD");
 			} 
 			if (event == null || event.property == "font.ITALIC") {
-				fontStyle = data.getPropertyValue(MindMapConstants.FONT_ITALIC);
+				fontStyle = data.getPropertyValue("font.ITALIC");
 			}
-			if (event == null || event.property == "node.TEXT") {
-				text = data.getPropertyValue("node.TEXT");
+			if (event == null || event.property == "TEXT") {
+				text = data.getPropertyValue("TEXT"); 
 			}
-			if (event == null || event.property == "textColor") {
-				textColor =  Utils.convertValueToColor(data.getPropertyValue(MindMapConstants.COLOR_TEXT));
+			if (event == null || event.property == "COLOR") {
+				textColor =  Utils.convertValueToColor(data.getPropertyValue("COLOR")); 
 			}
-			if (event == null || event.property == "background") {
+			if (event == null || event.property == "BACKGROUND_COLOR") {
 				invalidateDisplayList();
-				background =  0xFFFFFFFF; //Utils.convertValueToColor(data.getPropertyValue(MindMapConstants.COLOR_BACKGROUND));
+				background = Utils.convertValueToColor(data.getPropertyValue("BACKGROUND_COLOR"));
 			}
-//			var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(mindMapDiagramShell.registry, node);
-//			var iconsProperty:String = iconsProvider.getPropertyNameFromGenericDescriptor(node);
-//			if (event == null || event.property == iconsProperty) {
-//				var iconsValue:String = iconsProvider.getValue(node) as String;
-//				if (node.properties.note != null && String(node.properties.note).length > 0) {				 
-//					iconsValue = Resources.getResourceUrl("/images/mindmap/knotes.png") + (iconsValue == null ? "" : (Utils.ICONS_SEPARATOR + iconsValue));
-//					icons = new FlowerArrayList(iconsValue.split(Utils.ICONS_SEPARATOR));
-//				} else {
-//					if (iconsValue != null) {
-//						icons = new FlowerArrayList(iconsValue.split(Utils.ICONS_SEPARATOR));
-//					} else {
-//						icons = null;
-//					}	
-//				}
-//			}
+			if (event == null || event.property == "icons") {
+				var iconList:ArrayCollection = data.getPropertyValue("icons");
+				var list: FlowerArrayList = new FlowerArrayList();
+				var iconsValue:String;
+				if (iconList != null) {
+					for (var i:int = 0; i < iconList.length; i++) {
+						iconsValue = (iconsValue == null ? "" : (iconsValue + Utils.ICONS_SEPARATOR)) + Resources.getResourceUrl(DEFAULT_PATH + iconList.getItemAt(i) +".png");
+					}
+				}
+				if (node.getPropertyValue("richcontent(TYPE=NOTE)_content") != null && String(node.getPropertyValue("richcontent(TYPE=NOTE)_content")).length > 0) {		
+					iconsValue = Resources.getResourceUrl("/images/mindmap/knotes.png") + (iconsValue == null ? "" : (Utils.ICONS_SEPARATOR + iconsValue));
+					icons = new FlowerArrayList(iconsValue.split(Utils.ICONS_SEPARATOR));
+				} else if (iconsValue != null) {
+					icons =  new FlowerArrayList(iconsValue.split(Utils.ICONS_SEPARATOR));	
+				} else {
+					icons = null;
+				}
+			}
 		}
 		
 		protected function get node():Node {

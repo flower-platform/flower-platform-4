@@ -22,8 +22,6 @@ package org.flowerplatform.flexdiagram.mindmap {
 	import mx.collections.IList;
 	import mx.core.DPIClassification;
 	import mx.core.FlexGlobals;
-	import mx.core.IFlexDisplayObject;
-	import mx.core.ILayoutElement;
 	import mx.core.UIComponent;
 	import mx.events.CollectionEvent;
 	import mx.events.PropertyChangeEvent;
@@ -57,15 +55,15 @@ package org.flowerplatform.flexdiagram.mindmap {
 			
 		protected static const TEXT_COLOR_DEFAULT:uint = 0x000000;
 		
-		protected static const FONT_STYLE_DEFAULT:String = "SansSerif";
+		protected static const FONT_FAMILY_DEFAULT:String = "SansSerif";
 		
 		protected static const SCREEN_DPI:Number = (Capabilities.screenDPI == 72 ? 96 : Capabilities.screenDPI) / 72;
 		
-		public static const CLOUD_TYPE_NONE:String = "cloudTypeNone";
+		public static const CLOUD_TYPE_NONE:String = "ARC";
 		
-		public static const CLOUD_TYPE_RECTANGLE:String = "cloudTypeRectangle";
+		public static const CLOUD_TYPE_RECTANGLE:String = "RECT";
 		
-		public static const CLOUD_TYPE_ROUNDED_RECTANGLE:String = "cloudTypeRoundedRectangle";
+		public static const CLOUD_TYPE_ROUNDED_RECTANGLE:String = "ROUND_RECT";
 				
 		protected var _label:FocusableRichText;
 		
@@ -92,7 +90,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		public function set fontFamily(value:String):void {
 			if (value == null) {
-				value = FONT_STYLE_DEFAULT;
+				value = FONT_FAMILY_DEFAULT;
 			}
 			_label.setStyle("fontFamily", Utils.getSupportedFontFamily(value));
 		}
@@ -114,6 +112,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		public function set textColor(value:uint):void {
 			if (value == 0) {
+				value = TEXT_COLOR_DEFAULT;
 			} 
 			_label.setStyle("color", value);
 		}
@@ -133,15 +132,16 @@ package org.flowerplatform.flexdiagram.mindmap {
 		public function set cloudType(value:String):void {
 			switch (value) {
 				case "No shape": 
-					_cloudType = CLOUD_TYPE_NONE;
+					value = CLOUD_TYPE_NONE;
 					break;
 				case "Rectangle shape": 
-					_cloudType = CLOUD_TYPE_RECTANGLE;
+					value = CLOUD_TYPE_RECTANGLE;
 					break;
 				case "Rounded rectangle shape": 
-					_cloudType = CLOUD_TYPE_ROUNDED_RECTANGLE;
+					value = CLOUD_TYPE_ROUNDED_RECTANGLE;
 					break;
 			}
+			_cloudType = value;
 			invalidateDisplayList();
 		}
 		

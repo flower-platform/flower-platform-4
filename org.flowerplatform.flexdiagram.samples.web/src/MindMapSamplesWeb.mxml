@@ -84,10 +84,10 @@
 					formPanel.visible = true;
 					propertiesForm.visible = true;
 					} else {
-					listofChildrenPanel.visible = false;
-					formPanel.visible = false;
-					propertiesForm.visible = false;
-				}
+						listofChildrenPanel.visible = false;
+						formPanel.visible = false;
+						propertiesForm.visible = false;
+					}
 			}
 			
 			public function onFontSizeChange():void {

@@ -2,7 +2,7 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeRenderer2"/>
-    <classEntry path="org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeWithDetailsRenderer1"/>
+    <classEntry path="org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeWithDetailsRenderer2"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

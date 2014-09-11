@@ -17,7 +17,7 @@
 package org.flowerplatform.flex_client.mindmap.controller  {
 	import flash.geom.Rectangle;
 	
-	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeWithDetailsRenderer1;
+	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeWithDetailsRenderer2;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutRectangleController;
@@ -36,12 +36,12 @@ package org.flowerplatform.flex_client.mindmap.controller  {
 			var dynamicObject:Object = diagramShell.getDynamicObject(context, model);
 			var nodeRenderer:Object = dynamicObject.renderer;
 			
-			if (nodeRenderer != null && nodeRenderer is MindMapNodeWithDetailsRenderer1) {
+			if (nodeRenderer != null && nodeRenderer is MindMapNodeWithDetailsRenderer2) {
 				return new Rectangle(
 					diagramShell.getPropertyValue(context, model, "x"), 
 					diagramShell.getPropertyValue(context, model, "y"), 
 					diagramShell.getPropertyValue(context, model, "width"), 
-					MindMapNodeWithDetailsRenderer1(nodeRenderer).getEmbeddedRenderer().height);
+					MindMapNodeWithDetailsRenderer2(nodeRenderer).getEmbeddedRenderer().height);
 			} else {
 				return super.getBounds(context, model);
 			}
