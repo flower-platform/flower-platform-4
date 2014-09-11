@@ -7,7 +7,9 @@
 	<property name="severity" value="warning"/>
 
 	<!-- Filters:  http://checkstyle.sourceforge.net/config.html-->
-	<module name="SuppressionCommentFilter"/>
+	<module name="SuppressionCommentFilter">
+		<suppress files="[\\/]resources[\\/]" checks="[a-zA-Z0-9]*"/>
+	</module>
     
     <!-- Checks whether files end with a new line.                        -->
     <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
