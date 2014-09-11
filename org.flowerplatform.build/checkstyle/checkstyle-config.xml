@@ -7,11 +7,8 @@
 	<property name="severity" value="warning"/>
 
 	<!-- Filters:  http://checkstyle.sourceforge.net/config.html-->
-	<module name="SuppressionCommentFilter">
-		 <suppressions>
-       	 <suppress checks="[a-zA-Z0-9]*" files="[\\/]resources[\\/]" />
-    	</suppressions>
-	</module>
+	<module name="SuppressionCommentFilter"/>
+
     
     <!-- Checks whether files end with a new line.                        -->
     <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
@@ -45,11 +42,7 @@
 
     <module name="TreeWalker">
         <property name="tabWidth" value="4"/>
-<module name="SuppressionCommentFilter">
-		 <suppressions>
-       	 <suppress checks="[a-zA-Z0-9]*" files="[\\/]resources[\\/]" />
-    	</suppressions>
-	</module>
+
 		<!-- Filters : see http://checkstyle.sourceforge.net/config.html -->
 		<module name="FileContentsHolder"/>
         
