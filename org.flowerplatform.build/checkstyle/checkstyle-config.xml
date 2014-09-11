@@ -8,7 +8,9 @@
 
 	<!-- Filters:  http://checkstyle.sourceforge.net/config.html-->
 	<module name="SuppressionCommentFilter">
-		<suppress files="[\\/]resources[\\/]" checks="[a-zA-Z0-9]*"/>
+		 <suppressions>
+       	 <suppress checks="[a-zA-Z0-9]*" files="[\\/]resources[\\/]" />
+    	</suppressions>
 	</module>
     
     <!-- Checks whether files end with a new line.                        -->
@@ -43,7 +45,11 @@
 
     <module name="TreeWalker">
         <property name="tabWidth" value="4"/>
-
+<module name="SuppressionCommentFilter">
+		 <suppressions>
+       	 <suppress checks="[a-zA-Z0-9]*" files="[\\/]resources[\\/]" />
+    	</suppressions>
+	</module>
 		<!-- Filters : see http://checkstyle.sourceforge.net/config.html -->
 		<module name="FileContentsHolder"/>
         
