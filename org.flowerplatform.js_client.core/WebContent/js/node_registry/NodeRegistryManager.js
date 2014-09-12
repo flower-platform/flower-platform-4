@@ -19,11 +19,11 @@ var NodeRegistryManager = function(resourceOperationsHandler, serviceInvocator, 
 	this.serviceInvocator = serviceInvocator;
 	this.externalInvocator = externalInvocator;
 	
-	this.resourceSetToNodeRegistries = {};		
-
+	this.resourceSetToNodeRegistries = {};
+	
 	this.resourceSetToResourceUris = {};
 	this.resourceUriToResourceSet = {};
-
+	
 	this.listeners = [];
 };
 
@@ -33,12 +33,12 @@ NodeRegistryManager.prototype.createNodeRegistry = function() {
 
 NodeRegistryManager.prototype.addListener = function(listener) {
 	this.listeners.push(listener);
-};		
+};
 
 NodeRegistryManager.prototype.removeListener = function(listener) {
-	var i = this.listeners.indexOf(listener);	
-	if (i != -1) {	
-		this.listeners.splice(i, 1);		
+	var i = this.listeners.indexOf(listener);
+	if (i != -1) {
+		this.listeners.splice(i, 1);
 	}
 };
 
@@ -54,13 +54,13 @@ NodeRegistryManager.prototype.getNodeRegistriesForResourceSet = function(resourc
 	var nodeRegistries = this.resourceSetToNodeRegistries[resourceSet];
 	if (nodeRegistries == null) {
 		nodeRegistries = [];
-	}	
+	}
 	return nodeRegistries;
 };
 
 NodeRegistryManager.prototype.getResourceUrisForNodeRegistry = function(nodeRegistry) {
 	var resourceUris = [];
-	for (var resourceUri in this.resourceUriToResourceSet) {	
+	for (var resourceUri in this.resourceUriToResourceSet) {
 		var nodeRegistries = this.resourceSetToNodeRegistries[this.resourceUriToResourceSet[resourceUri]];
 		if (this.contains(nodeRegistries, nodeRegistry)) {
 			resourceUris.push(resourceUri);	
@@ -139,8 +139,8 @@ NodeRegistryManager.prototype.unlinkResourceNodeFromNodeRegistry = function(reso
 	
 	// remove resourceUri from registry
 	resourceUris = this.getResourceUrisForNodeRegistry(nodeRegistry);
-	if (resourceUris != null) {		
-		resourceUris.splice(resourceUris.indexOf(resourceUri), 1);			
+	if (resourceUris != null) {
+		resourceUris.splice(resourceUris.indexOf(resourceUri), 1);
 		if (resourceNodeFromRegistry.nodeUri != nodeRegistry.getRootNodeUri() && 
 			resourceNodeFromRegistry.parent == null && resourceUris.indexOf(resourceUri) < 0) {
 			nodeRegistry.unregisterNode(resourceNodeFromRegistry);
@@ -151,7 +151,7 @@ NodeRegistryManager.prototype.unlinkResourceNodeFromNodeRegistry = function(reso
 	var nodeRegistries = this.resourceSetToNodeRegistries[resourceSet];
 	if (nodeRegistries != null) {
 		nodeRegistries.splice(nodeRegistries.indexOf(nodeRegistry), 1);
-		if (nodeRegistries.length == 0 && this.resourceSetToResourceUris[resourceSet] == null) {			
+		if (nodeRegistries.length == 0 && this.resourceSetToResourceUris[resourceSet] == null) {
 			delete this.resourceSetToNodeRegistries[resourceSet];
 			delete this.resourceUriToResourceSet[resourceUri];		
 		}
@@ -160,13 +160,16 @@ NodeRegistryManager.prototype.unlinkResourceNodeFromNodeRegistry = function(reso
 
 NodeRegistryManager.prototype.expand = function(nodeRegistry, node, context) {
 	if (node == null || !node.properties[Constants.AUTO_SUBSCRIBE_ON_EXPAND]) {
+//		if (node.nodeUri == "file:user/repo|resourceNode3") throw "My special exception ****" + node.properties[Constants.AUTO_SUBSCRIBE_ON_EXPAND];
 		nodeRegistry.expand(node, context);
 	} else {
 		var subscribableResources = node == null ? null : node.properties[Constants.SUBSCRIBABLE_RESOURCES];
+//		throw "My special exception" + subscribableResources.length;
 		if (subscribableResources != null && subscribableResources.length > 0) {
 			// a subscribable node => subscribe to the first resource
 			var subscribableResource = subscribableResources.getItemAt(0);
 			this.subscribe(subscribableResource.a, nodeRegistry, function(rootNode, resourceNode) {
+//				throw "My special exception" + subscribableResources;
 				nodeRegistry.expand(node, context);
 			});
 		}
@@ -180,10 +183,10 @@ NodeRegistryManager.prototype.collapse = function(nodeRegistry, node) {
 	
 	this.getResourceUrisForSubTree(node, nodeRegistry, dirtyResourceUris, savedResourceUris);
 	
-	if (dirtyResourceUris.length > 0) { // at least one dirty resourceNode found -> show dialog			
+	if (dirtyResourceUris.length > 0) { // at least one dirty resourceNode found -> show dialog
 		this.resourceOperationsManager.showSaveDialog([this], this.getResourceSetsForResourceUris(dirtyResourceUris), 
 			function() {
-				// wait for server response before collapse	
+				// wait for server response before collapse
 				this.collapseHandler(node, nodeRegistry, dirtyResourceUris, savedResourceUris);
 			}
 		);
@@ -193,7 +196,7 @@ NodeRegistryManager.prototype.collapse = function(nodeRegistry, node) {
 };
 
 NodeRegistryManager.prototype.collapseHandler = function(node, nodeRegistry, dirtyResourceUris, savedResourceUris) {
-	for (var i=0; i < dirtyResourceUris.length; i++) {	
+	for (var i=0; i < dirtyResourceUris.length; i++) {
 		this.unlinkResourceNodeFromNodeRegistry(dirtyResourceUris[i], nodeRegistry);
 	}
 	for (var i=0; i < savedResourceUris.length; i++) {	
@@ -209,7 +212,7 @@ NodeRegistryManager.prototype.getResourceUrisForSubTree = function(node, nodeReg
 	var subscribableResources = node.properties[Constants.SUBSCRIBABLE_RESOURCES];
 	if (subscribableResources != null) {	
 		for (var i = 0; i < subscribableResources.length; i++){
-			var resourceUri = subscribableResources.getItemAt(i).a;				
+			var resourceUri = subscribableResources.getItemAt(i).a;
 			var resourceNode = nodeRegistry.getNodeById(resourceUri);
 			if (resourceNode != null) {
 				if (resourceNode.properties[Constants.IS_DIRTY]) {
@@ -223,7 +226,7 @@ NodeRegistryManager.prototype.getResourceUrisForSubTree = function(node, nodeReg
 	
 	// recurse
 	if (node.children != null) {
-		for (var i = 0; i < node.children.length; i++){	
+		for (var i = 0; i < node.children.length; i++){
 			this.getResourceUrisForSubTree(node.children.getItemAt(i), nodeRegistry, dirtyResourceUris, savedResourceUris);
 		}
 	}
@@ -234,7 +237,7 @@ NodeRegistryManager.prototype.hasSubscribableResource = function(node, resourceU
 	if (subscribableResources == null || subscribableResources.length == 0) {
 		return false;
 	}
-	for (var i = 0; i < subscribableResources.length; i++) {		
+	for (var i = 0; i < subscribableResources.length; i++) {
 		if (subscribableResources.getItemAt[i].a == resourceUri) {
 			return true;
 		}
@@ -253,18 +256,18 @@ NodeRegistryManager.prototype.subscribe = function(nodeId, nodeRegistry, subscri
 	var self = this;
 	this.serviceInvocator.invoke("resourceService.subscribeToParentResource", [nodeId], 
 		function (subscriptionInfo) {
-			subscriptionInfo.rootNode = nodeRegistry.mergeOrRegisterNode(subscriptionInfo.rootNode);			
-			if (subscriptionInfo.resourceNode != null) {				
-				subscriptionInfo.resourceNode = nodeRegistry.mergeOrRegisterNode(subscriptionInfo.resourceNode);				
+			subscriptionInfo.rootNode = nodeRegistry.mergeOrRegisterNode(subscriptionInfo.rootNode);
+			if (subscriptionInfo.resourceNode != null) {
+				subscriptionInfo.resourceNode = nodeRegistry.mergeOrRegisterNode(subscriptionInfo.resourceNode);
 				self.linkResourceNodeWithNodeRegistry(subscriptionInfo.resourceNode.nodeUri, subscriptionInfo.resourceSet, nodeRegistry);
-			}			
+			}
 			if (subscribeResultCallback != null) {
 				subscribeResultCallback.call(null, subscriptionInfo.rootNode, subscriptionInfo.resourceNode);
 			}
 		},
 		function(fault) {
 			self.externalInvocator.showMessageBox("editor.error.subscribe.title", "editor.error.subscribe.message", [fault.faultString]);
-					
+			
 			if (subscribeFaultCallback != null) {
 				subscribeFaultCallback.call(null, fault);
 			}
@@ -274,11 +277,11 @@ NodeRegistryManager.prototype.subscribe = function(nodeId, nodeRegistry, subscri
 /**
  * Closes all editors without dispatching events and updates global state for save actions.
  */ 
-NodeRegistryManager.prototype.removeNodeRegistries = function(nodeRegistries) {			
+NodeRegistryManager.prototype.removeNodeRegistries = function(nodeRegistries) {
 	for (var i = 0; i < nodeRegistries.length; i++) {
 		var nodeRegistry = nodeRegistries[i];
 		var resourceUris = this.getResourceUrisForNodeRegistry(nodeRegistry);
-		for (var j=0; j < resourceUris.length; j++) {		
+		for (var j=0; j < resourceUris.length; j++) {
 			this.unlinkResourceNodeFromNodeRegistry(resourceUris[j], nodeRegistry);
 		}		
 		for (var j=0; j < this.listeners.length; j++) {
@@ -304,7 +307,7 @@ NodeRegistryManager.prototype.getResourceSetsForResourceUris = function(resource
  * @param dirtyResourceNodeHandler function will be executed each time a dirty resourceNode is found.
  * @return all dirty resourceUris found in <code>nodeRegistries</code>, without duplicates.
  */ 
-NodeRegistryManager.prototype.getDirtyResourceSetsFromNodeRegistries = function(nodeRegistries, dirtyResourceNodeHandler) {			
+NodeRegistryManager.prototype.getDirtyResourceSetsFromNodeRegistries = function(nodeRegistries, dirtyResourceNodeHandler) {
 	var dirtyResourceSets = [];
 	for (var i = 0; i < nodeRegistries.length; i++) {	
 		var nodeRegistry = nodeRegistries[i];
@@ -316,7 +319,7 @@ NodeRegistryManager.prototype.getDirtyResourceSetsFromNodeRegistries = function(
 				if (dirtyResourceNodeHandler != null) {
 					dirtyResourceNodeHandler(resourceSet);
 				}
-				dirtyResourceSets.push(resourceSet);						
+				dirtyResourceSets.push(resourceSet);
 			}
 		}
 	}
@@ -331,27 +334,27 @@ NodeRegistryManager.prototype.getDirtyResourceSetsFromNodeRegistries = function(
 NodeRegistryManager.prototype.getAllDirtyResourceSets = function(returnIfAtLeastOneDirtyResourceNodeFound, dirtyResourceNodeHandler) {
 	var dirtyResourceSets = [];
 	var nodeRegistries = this.getNodeRegistries();
-	for (var i = 0; i < nodeRegistries.length; i++) {	
+	for (var i = 0; i < nodeRegistries.length; i++) {
 		var resourceUris = this.getResourceUrisForNodeRegistry(nodeRegistries[i]);
 		for (var j = 0; j < resourceUris.length; j++) {
 			var resourceSet = this.resourceUriToResourceSet[resourceUris[j]];
 			if (this.isResourceNodeDirty(resourceUris[j], nodeRegistries[i]) && dirtyResourceSets.indexOf(resourceSet) == -1) {
 				if (returnIfAtLeastOneDirtyResourceNodeFound) {
 					return [resourceSet];
-				}											
+				}
 				if (dirtyResourceNodeHandler != null) {
 					dirtyResourceNodeHandler(resourceSet);
 				}
-				dirtyResourceSets.push(resourceSet);						
+				dirtyResourceSets.push(resourceSet);
 			}
-		}		
+		}
 	}
 	return dirtyResourceSets;
 };
 		
 NodeRegistryManager.prototype.processUpdates = function(resourceNodeIdToUpdates) {
 	for (var resourceNodeId in resourceNodeIdToUpdates) {
-		var updates = resourceNodeIdToUpdates[resourceNodeId];			
+		var updates = resourceNodeIdToUpdates[resourceNodeId];
 		var nodeRegistries = this.getNodeRegistriesForResourceSet(resourceNodeId);
 		for (var i = 0; i < nodeRegistries.length; i++) {
 			nodeRegistries[i].processUpdates(updates);
@@ -368,11 +371,11 @@ NodeRegistryManager.prototype.processUpdates = function(resourceNodeIdToUpdates)
  */
 NodeRegistryManager.prototype.unlinkResourceNodesForcefully = function(resourceUris) {
 	var idsList = "";
-	for (var i = 0; i < resourceUris.length; i++) {	
-		var nodeRegistries = this.getNodeRegistriesForResourceSet(resourceUris[i]);		
-		for (var j = 0; j < nodeRegistries.length; j++) {					
+	for (var i = 0; i < resourceUris.length; i++) {
+		var nodeRegistries = this.getNodeRegistriesForResourceSet(resourceUris[i]);
+		for (var j = 0; j < nodeRegistries.length; j++) {
 			this.unlinkResourceNodeFromNodeRegistry(resourceUris[i], nodeRegistries[j]);
-			for (var k = 0; k < this.listeners.length; k++) {			
+			for (var k = 0; k < this.listeners.length; k++) {
 				this.listeners[k].resourceNodeRemoved(resourceUris[i], nodeRegistries[j]);
 			}
 		}
@@ -382,12 +385,12 @@ NodeRegistryManager.prototype.unlinkResourceNodesForcefully = function(resourceU
 };
 
 NodeRegistryManager.prototype.isResourceNodeDirty = function(resourceNodeId, nodeRegistry) {
-	var node = nodeRegistry.getNodeById(resourceNodeId);	
+	var node = nodeRegistry.getNodeById(resourceNodeId);
 	return node == null ? false : node.properties[Constants.IS_DIRTY];
 };
-			
-NodeRegistryManager.prototype.resourceNodeUpdated = function(event) {		
-	if (event.property == Constants.IS_DIRTY) {				
+
+NodeRegistryManager.prototype.resourceNodeUpdated = function(event) {
+	if (event.property == Constants.IS_DIRTY) {
 		_nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler.updateGlobalDirtyState(event.newValue);
 	}
 };
@@ -397,7 +400,7 @@ NodeRegistryManager.prototype.contains = function(list, obj) {
 		if (list[i] == obj) {
 			return true;
 		}
-	}	
+	}
 	return false;
 };
 

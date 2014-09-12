@@ -60,7 +60,7 @@ public class JsClientNodeRegistryTest {
 		ClientNode child1 = JSClientJavaTestUtils.createClientNode("child1");
 		ClientNode child2 = JSClientJavaTestUtils.createClientNode("child2");
 		ClientNode child3 = JSClientJavaTestUtils.createClientNode("child3");
-				
+		
 		JsList<ClientNode> list = new JsList<ClientNode>();
 		list.add(child1);
 		list.add(child2);
@@ -96,6 +96,11 @@ public class JsClientNodeRegistryTest {
 		verify(listener).nodeAdded(child3);
 	}
 	
+	
+	/**
+	 * @author Elena Posea
+	 * @throws Exception
+	 */
 	@Test
 	public void register() throws Exception {
 		ClientNode parent = JSClientJavaTestUtils.createClientNode("parent");
@@ -134,6 +139,11 @@ public class JsClientNodeRegistryTest {
 		assertNotNull(JsClientJavaUtils.invokeJsFunction(nodeRegistry, "getNodeById", child.getNodeUri()));
 	}
 	
+	
+	/**
+	 * @author Elena Posea
+	 * @throws Exception
+	 */
 	@Test
 	public void unregister() throws Exception {
 		ClientNode grandParent = JSClientJavaTestUtils.createClientNode("grandParent");
@@ -180,7 +190,12 @@ public class JsClientNodeRegistryTest {
 		assertNull(JsClientJavaUtils.invokeJsFunction(nodeRegistry, "getNodeById", child2.getNodeUri()));
 		
 	}
-
+	
+	
+	/**
+	 * @author Elena Posea
+	 * @throws Exception
+	 */
 	@Test
 	public void collapse() throws Exception {
 		ClientNode grandParent = JSClientJavaTestUtils.createClientNode("grandParent");
@@ -227,7 +242,8 @@ public class JsClientNodeRegistryTest {
 	}
 
 	/**
-	 *  new node is only different in what it concerns its properties
+	 * @author Elena Posea
+	 * new node is only different in what it concerns its properties
 	 * @throws Exception
 	 */
 	@Test
@@ -267,7 +283,8 @@ public class JsClientNodeRegistryTest {
 	}
 
 	/**
-	 *  new node doesn't have any children => collapse
+	 * @author Elena Posea
+	 * new node doesn't have any children => collapse
 	 * @throws Exception
 	 */
 	@Test
@@ -306,6 +323,10 @@ public class JsClientNodeRegistryTest {
 		assertNull("list of children for updated node should be null", node.getChildren());
 	}
 	
+	/**
+	 * @author Elena Posea
+	 * @throws Exception
+	 */
 	private boolean sameMap(Map<String, Object> properties, Map<String, Object> newProperties) {
 		for (Object key: properties.keySet()) {
 			if (!newProperties.containsKey(key)) {
@@ -327,10 +348,11 @@ public class JsClientNodeRegistryTest {
 	}
 
 	/**
-	 *  new node has a different list of nodes than node.
-	 *  if you find the same node with the same index => keep it
-	 *  if you find same node with different index => remove/unregister it and register again with new index
-	 *  if you find new node, add it  
+	 * @author Elena Posea
+	 * new node has a different list of nodes than node.
+	 * if you find the same node with the same index => keep it
+	 * if you find same node with different index => remove/unregister it and register again with new index
+	 * if you find new node, add it  
 	 * @throws Exception
 	 */
 	@Test
@@ -394,7 +416,8 @@ public class JsClientNodeRegistryTest {
 		assertEquals("doesn't have the right children after refresh", expectedChildren, node.getChildren());
 	}
 
-	/**
+	/** 
+	 * @author Elena Posea
 	 * no updates to process => call refresh for root
 	 * @throws Exception
 	 */
@@ -444,7 +467,8 @@ public class JsClientNodeRegistryTest {
 		assertNotNull(refreshGotExecuted);
 	}
 	
-	/**
+	/** 
+	 * @author Elena Posea
 	 * node not found => don't process the updates
 	 * @throws Exception
 	 */
@@ -489,7 +513,8 @@ public class JsClientNodeRegistryTest {
 		// node not found TODO: should I check for anything? if nothing throws any exception, it should be fine
 	}
 
-	/**
+	/** 
+	 * @author Elena Posea
 	 * node found, update or remove the property, notify listeners
 	 * @throws Exception
 	 */
@@ -560,6 +585,7 @@ public class JsClientNodeRegistryTest {
 	}
 	
 	/** 
+	 * @author Elena Posea
 	 * node found, child added
 	 */
 	@Test
@@ -619,7 +645,8 @@ public class JsClientNodeRegistryTest {
 		verify(listener).nodeAdded(targetNodeSecondChild);
 	}
 	
-	/** 
+	/**
+	 * @author Elena Posea
 	 * node found, child removed
 	 * one node, 2 registered children on it; when the first one is removed, we expect nodeRemoved to be called once, and we expect no nodeUpdated
 	 * on the other hand, when the second one is removed, we expect also a nodeUpdated for hasChildren and false to be sent 

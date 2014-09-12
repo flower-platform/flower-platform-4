@@ -5,6 +5,7 @@ import org.flowerplatform.js_client.java.ClientNodeWithChildren;
 import org.flowerplatform.js_client.java.ServiceInvocator;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
+import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 
 /**
@@ -38,6 +39,13 @@ public class JSClientJavaTestUtils {
 		node.setType("type");
 		return node;
 	}
+	
+	public static ClientNode createResourceClientNode(String fragment) {
+		ClientNode node = new ClientNode();
+		node.setNodeUri(String.format("file:user/repo|%s", fragment));
+		node.setType("type");
+		return node;
+	}
 
 	public static ClientNodeWithChildren createClientNodeWithChildren(String fragment) {
 		ClientNodeWithChildren node = new ClientNodeWithChildren();
@@ -46,5 +54,4 @@ public class JSClientJavaTestUtils {
 		node.setType("type");
 		return node;
 	}
-
 }
