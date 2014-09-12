@@ -72,28 +72,28 @@ public class JsClientNodeRegistryTest {
 				new RecordingServiceInvocator().setExpectedResults(new Object[] {list}), 
 				new JsExternalInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
-					
+		
 		// create nodeRegistry
 		Scriptable nodeRegistry = (Scriptable) ctx.evaluateString(scope, "_nodeRegistryManager.createNodeRegistry();", null, 1, null);
-
-		INodeChangeListener listener = mock(INodeChangeListener.class);					
+		
+		INodeChangeListener listener = mock(INodeChangeListener.class);
 		// add NodeChangedListener in nodeRegistry
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "addNodeChangeListener", listener);
-	
+		
 		// register parent node
-		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", parent, null, -1);		
+		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", parent, null, -1);
 		verify(listener).nodeAdded(parent);
 		
 		// expand parent node
 		JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "expand", nodeRegistry, parent, null);
-				
+		
 		// verify children
-		assertNotNull(parent.getChildren());	
+		assertNotNull(parent.getChildren());
 		assertEquals(3, parent.getChildren().length);
 		
 		verify(listener).nodeAdded(child1);
 		verify(listener).nodeAdded(child2);
-		verify(listener).nodeAdded(child3);			
+		verify(listener).nodeAdded(child3);
 	}
 	
 	@Test
@@ -107,27 +107,27 @@ public class JsClientNodeRegistryTest {
 				new RecordingServiceInvocator(), 
 				new JsExternalInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
-					
+		
 		// create nodeRegistry
 		Scriptable nodeRegistry = (Scriptable) ctx.evaluateString(scope, "_nodeRegistryManager.createNodeRegistry();", null, 1, null);
 		
-		INodeChangeListener listener = mock(INodeChangeListener.class);					
+		INodeChangeListener listener = mock(INodeChangeListener.class);
 		// add NodeChangedListener in nodeRegistry
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "addNodeChangeListener", listener);
 		
 		// register parent node
-		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", parent, null, -1);		
+		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", parent, null, -1);
 		verify(listener).nodeAdded(parent);
 		
 		// register child node
-		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", child, parent, -1);		
+		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", child, parent, -1);
 		verify(listener).nodeAdded(child);
 		
 		// verify parent
-		assertNotNull(child.getParent());	
-
+		assertNotNull(child.getParent());
+		
 		// verify children
-		assertNotNull(parent.getChildren());	
+		assertNotNull(parent.getChildren());
 		assertEquals(1, parent.getChildren().length);
 		
 		// verify getNodeById is not null/ node is registered
@@ -151,22 +151,22 @@ public class JsClientNodeRegistryTest {
 		// create nodeRegistry
 		Scriptable nodeRegistry = (Scriptable) ctx.evaluateString(scope, "_nodeRegistryManager.createNodeRegistry();", null, 1, null);
 		
-		INodeChangeListener listener = mock(INodeChangeListener.class);					
+		INodeChangeListener listener = mock(INodeChangeListener.class);
 		// add NodeChangedListener in nodeRegistry
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "addNodeChangeListener", listener);
 		
 		// register grandParent node
-		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", grandParent, null, -1);		
-
+		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", grandParent, null, -1);
+		
 		// register parent node
-		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", parent, grandParent, -1);		
+		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", parent, grandParent, -1);
 		
 		// register child1 & child2 node
-		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", child1, parent, -1);		
-		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", child2, parent, -1);		
+		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", child1, parent, -1);
+		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", child2, parent, -1);
 
 		// remove parent
-		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "unregisterNode", parent, grandParent, -1);		
+		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "unregisterNode", parent, grandParent, -1);
 		verify(listener).nodeRemoved(parent);
 		verify(listener).nodeRemoved(child1);
 		verify(listener).nodeRemoved(child2);
@@ -194,7 +194,7 @@ public class JsClientNodeRegistryTest {
 				new RecordingServiceInvocator(), 
 				new JsExternalInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
-					
+		
 		// create nodeRegistry
 		Scriptable nodeRegistry = (Scriptable) ctx.evaluateString(scope, "_nodeRegistryManager.createNodeRegistry();", null, 1, null);
 		
@@ -288,7 +288,7 @@ public class JsClientNodeRegistryTest {
 					
 		// create nodeRegistry
 		Scriptable nodeRegistry = (Scriptable) ctx.evaluateString(scope, "_nodeRegistryManager.createNodeRegistry();", null, 1, null);
-
+		
 		// register node
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", node, null, -1);	
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", child1, node, -1);	
@@ -305,7 +305,7 @@ public class JsClientNodeRegistryTest {
 		
 		assertNull("list of children for updated node should be null", node.getChildren());
 	}
-
+	
 	private boolean sameMap(Map<String, Object> properties, Map<String, Object> newProperties) {
 		for (Object key: properties.keySet()) {
 			if (!newProperties.containsKey(key)) {
@@ -400,12 +400,16 @@ public class JsClientNodeRegistryTest {
 	 */
 	@Test
 	public void onUpdateNoUpdateToProcess() throws Exception {
-
+		
 		ClientNode root = JSClientJavaTestUtils.createClientNode("root");
 		ClientNode child1 = JSClientJavaTestUtils.createClientNode("child1");
 		ClientNode child2 = JSClientJavaTestUtils.createClientNode("child2");
 		
 		ClientNodeWithChildren rootWithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("root");
+		
+		NativeObject properties = new NativeObject(); // it's something like a Map<,>, but gets translated in JavaScript
+		properties.put("flagToCheckRefreshGotExecuted", properties, true); 
+		rootWithChildren.getNode().setProperties(properties);
 		
 		JsList<ClientNodeWithChildren> children = new JsList<ClientNodeWithChildren>();
 		ClientNodeWithChildren child1WithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("child1");
@@ -424,7 +428,7 @@ public class JsClientNodeRegistryTest {
 		
 		// create nodeRegistry
 		Scriptable nodeRegistry = (Scriptable) ctx.evaluateString(scope, "_nodeRegistryManager.createNodeRegistry();", null, 1, null);
-
+		
 		// register node
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", root, null, -1);	
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", child1, root, -1);	
@@ -436,16 +440,17 @@ public class JsClientNodeRegistryTest {
 		// try to update this node
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "processUpdates", new Object[] {null}); // try to process no updates
 		
-		// TODO: check refresh on root
+		Boolean refreshGotExecuted = (Boolean)((NativeObject)root.getProperties()).get("flagToCheckRefreshGotExecuted");
+		assertNotNull(refreshGotExecuted);
 	}
-
+	
 	/**
 	 * node not found => don't process the updates
 	 * @throws Exception
 	 */
 	@Test
 	public void onUpdateIfNodeNotFoundDoNotProcessUpdate() throws Exception {
-
+		
 		ClientNode root = JSClientJavaTestUtils.createClientNode("root");
 		ClientNode child1 = JSClientJavaTestUtils.createClientNode("child1");
 		ClientNode child2 = JSClientJavaTestUtils.createClientNode("child2");
@@ -481,7 +486,7 @@ public class JsClientNodeRegistryTest {
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "addNodeChangeListener", listener);
 		// try to update this node
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "processUpdates", root); // try to process one update
-		// node not found TODO: should I check for anything? if nothign throws any exception, it should be fine
+		// node not found TODO: should I check for anything? if nothing throws any exception, it should be fine
 	}
 
 	/**
@@ -512,7 +517,7 @@ public class JsClientNodeRegistryTest {
 		Scriptable nodeRegistry = (Scriptable) ctx.evaluateString(scope, "_nodeRegistryManager.createNodeRegistry();", null, 1, null);
 		// register node
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", node, null, -1);
-
+		
 		INodeChangeListener listener = mock(INodeChangeListener.class);
 		// add NodeChangedListener in nodeRegistry
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "addNodeChangeListener", listener);
@@ -544,16 +549,16 @@ public class JsClientNodeRegistryTest {
 		updates.add(puRemoveOldPropertyToBeRemoved);
 		
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "processUpdates", updates);
-
+		
 		NativeObject afterUpdateProperties = (NativeObject) node.getProperties();
 		// after update the node will have the right properties
 		assertTrue(sameMap(afterUpdateProperties, newProperties));
-
+		
 		// verify listeners
 		verify(listener).nodeUpdated(node, "oldProperty", "oldValueForOldProperty", "newValueForOldProperty");
 		verify(listener).nodeUpdated(node, "newProperty", null, "valueForNewProperty");
 	}
-
+	
 	/** 
 	 * node found, child added
 	 */
@@ -572,7 +577,7 @@ public class JsClientNodeRegistryTest {
 		Scriptable nodeRegistry = (Scriptable) ctx.evaluateString(scope, "_nodeRegistryManager.createNodeRegistry();", null, 1, null);
 		// register node
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", node, null, -1);
-
+		
 		INodeChangeListener listener = mock(INodeChangeListener.class);
 		// add NodeChangedListener in nodeRegistry
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "addNodeChangeListener", listener);
@@ -584,10 +589,19 @@ public class JsClientNodeRegistryTest {
 		ClientNode targetNodeFirstChild = JSClientJavaTestUtils.createClientNode("targetNode1");
 		childrenUpdateAdd.setTargetNode(targetNodeFirstChild);
 		
+		PropertyUpdate sendChildrenFlag = new PropertyUpdate();
+		sendChildrenFlag.setFullNodeId(node.getNodeUri());
+		sendChildrenFlag.setType("UPDATED");
+		sendChildrenFlag.setIsUnset(false);
+		sendChildrenFlag.setValue(true);
+		sendChildrenFlag.setKey("hasChildren");
+		
 		JsList<Update> updates = new JsList<Update>();
+		updates.add(sendChildrenFlag);
 		updates.add(childrenUpdateAdd);
+		
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "processUpdates", updates);
-
+		
 		// verify listeners: for first child it should be added on server, but not expanded
 		verify(listener, never()).nodeAdded(targetNodeFirstChild);
 		// it should also set hasChildren on true/ send updates 
@@ -595,12 +609,12 @@ public class JsClientNodeRegistryTest {
 		
 		// register that node, and then add another one (which won't be the first)
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", targetNodeFirstChild, node, -1);
-
+		
 		ClientNode targetNodeSecondChild = JSClientJavaTestUtils.createClientNode("targetNode2");
 		childrenUpdateAdd.setTargetNode(targetNodeSecondChild);
-
+		
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "processUpdates", updates);
-
+		
 		// this time, this second node should be added on client
 		verify(listener).nodeAdded(targetNodeSecondChild);
 	}
@@ -629,7 +643,7 @@ public class JsClientNodeRegistryTest {
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", node, null, -1);
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", firstChild, node, -1);
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", secondChild, node, -1);
-
+		
 		INodeChangeListener listener = mock(INodeChangeListener.class);
 		// add NodeChangedListener in nodeRegistry
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "addNodeChangeListener", listener);
@@ -639,24 +653,34 @@ public class JsClientNodeRegistryTest {
 		childrenUpdateRemove1.setFullNodeId(node.getNodeUri());
 		childrenUpdateRemove1.setType("REMOVED");
 		childrenUpdateRemove1.setTargetNode(firstChild);
-
+		
 		ClientChildrenUpdate childrenUpdateRemove2 = new ClientChildrenUpdate();
 		childrenUpdateRemove2.setFullNodeId(node.getNodeUri());
 		childrenUpdateRemove2.setType("REMOVED");
 		childrenUpdateRemove2.setTargetNode(secondChild);
-
+		
+		PropertyUpdate sendChildrenFlag = new PropertyUpdate();
+		sendChildrenFlag.setFullNodeId(node.getNodeUri());
+		sendChildrenFlag.setType("UPDATED");
+		sendChildrenFlag.setIsUnset(false);
+		sendChildrenFlag.setValue(false);
+		sendChildrenFlag.setKey("hasChildren");
+		
 		JsList<Update> updates = new JsList<Update>();
+		// this update we send here in tests by hand; in real code, this update is automatically send by server when it send an remove update for the last child
+		updates.add(sendChildrenFlag);
 		updates.add(childrenUpdateRemove2);
 		updates.add(childrenUpdateRemove1);
 		
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "processUpdates", updates);
-
+		
 		// expected behavior for the first child: - remove child
 		verify(listener).nodeRemoved(firstChild);
 		// - don't send any updates for hasChildren flag; it was not the last child
 		
 		// expected behavior for the last child: - remove the last child
 		verify(listener).nodeRemoved(secondChild);
+		
 		// send an update for hasChildren flag: it should be now on false
 		verify(listener).nodeUpdated(node, "hasChildren", null, false);
 		

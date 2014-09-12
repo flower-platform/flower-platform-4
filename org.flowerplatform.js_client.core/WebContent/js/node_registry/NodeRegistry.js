@@ -152,9 +152,9 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 				break;
 			case "ADDED":
 				var targetNodeInRegistry = this.getNodeById(update.targetNode.nodeUri);	
-				if(nodeFromRegistry.children == null){
-					this.setPropertyValue(nodeFromRegistry, "hasChildren", true);
-				}
+//				if(nodeFromRegistry.children == null){
+//					this.setPropertyValue(nodeFromRegistry, "hasChildren", true);
+//				}
 				if (nodeFromRegistry.children != null && !nodeFromRegistry.children.contains(targetNodeInRegistry)) {
 					var index = -1; // -> add it last
 					if (update.fullTargetNodeAddedBeforeId != null) {
@@ -187,9 +187,9 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 					// Nothing to do
 				}
 				
-				if(nodeFromRegistry.children == null){
-					this.setPropertyValue(nodeFromRegistry, "hasChildren", false);
-				}
+//				if(nodeFromRegistry.children == null){
+//					this.setPropertyValue(nodeFromRegistry, "hasChildren", false);
+//				}
 
 				break;
 			case "REQUEST_REFRESH":
