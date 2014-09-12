@@ -23,10 +23,10 @@ package org.flowerplatform.flex_client.properties {
 	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
-	import org.flowerplatform.flex_client.properties.action.AddNodeAction;
 	import org.flowerplatform.flex_client.properties.action.NewComposedAction;
 	import org.flowerplatform.flex_client.properties.action.ShowPreferencesAction;
 	import org.flowerplatform.flex_client.properties.action.ShowPropertiesAction;
+	import org.flowerplatform.flex_client.properties.action.SiblingComposedAction;
 	import org.flowerplatform.flex_client.properties.controllers.PreferencePropertyDescriptorProvider;
 	import org.flowerplatform.flex_client.properties.controllers.PropertyDescriptorProvider;
 	import org.flowerplatform.flex_client.properties.controllers.RawPropertyDescriptorProvider;
@@ -81,11 +81,13 @@ package org.flowerplatform.flex_client.properties {
 		
 			FlexUtilGlobals.getInstance().registerAction(ShowPropertiesAction);			
 			FlexUtilGlobals.getInstance().registerAction(NewComposedAction);
+			FlexUtilGlobals.getInstance().registerAction(SiblingComposedAction);
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ShowPropertiesAction.ID));
 			
 			CorePlugin.getInstance().getEditorClassFactoryActionProvider().addActionClass(NewComposedAction);
+			CorePlugin.getInstance().getEditorClassFactoryActionProvider().addActionClass(SiblingComposedAction);
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new PreferencesViewProvider());
 			CorePlugin.getInstance().registerActionToGlobalMenu(new ShowPreferencesAction());

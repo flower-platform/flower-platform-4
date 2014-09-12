@@ -40,15 +40,25 @@ package org.flowerplatform.flex_client.properties.action {
 		
 		public var childType:String;
 		
-		public function AddNodeAction(descriptor:AddChildDescriptor = null)	{
+		public var asSibling:Boolean;
+		
+		public var childNodeUri:String;
+		
+		public function AddNodeAction(descriptor:AddChildDescriptor = null, asSibling:Boolean = false, childNodeUri:String = null) {
 			super();
 			
 			childType = descriptor.childType;
-				
+					
 			label = descriptor.label;
 			icon = descriptor.icon;
 			orderIndex = descriptor.orderIndex;
-			parentId = NewComposedAction.ID;
+			if (asSibling == true) {
+				this.asSibling = true;
+				this.childNodeUri = childNodeUri;
+				parentId = SiblingComposedAction.ID;
+			} else {
+				parentId = NewComposedAction.ID;				
+			}
 		}
 		
 		override public function get visible():Boolean {			
@@ -62,8 +72,12 @@ package org.flowerplatform.flex_client.properties.action {
 		override public function run():void {
 			var context:ServiceContext = new ServiceContext();
 			context.add("type", childType);
-			
-			var parentNode:Node = Node(selection.getItemAt(0));
+			if (asSibling == true) {
+				context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, childNodeUri);
+				parentNode =  Node(selection.getItemAt(0)).parent;
+			} else {
+				var parentNode:Node = Node(selection.getItemAt(0));
+			}
 			
 			var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
 				.getExpectedTypeDescriptor(childType).getAdditiveControllers(CoreConstants.PROPERTY_DESCRIPTOR, null);
