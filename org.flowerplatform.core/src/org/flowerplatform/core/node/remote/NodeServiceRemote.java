@@ -41,7 +41,8 @@ public class NodeServiceRemote {
 		if (context == null) {
 			context = new ServiceContext<NodeService>(getNodeService());
 		} else {
-			context.setService(getNodeService());
+			context.setContext(context);
+			context.setService(getNodeService());			
 		}
 		return getNodeService().getChildren(CorePlugin.getInstance().getResourceService().getNode(nodeUri), context);		
 	}

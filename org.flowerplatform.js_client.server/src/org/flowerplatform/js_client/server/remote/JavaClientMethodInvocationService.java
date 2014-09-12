@@ -2,6 +2,7 @@ package org.flowerplatform.js_client.server.remote;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.ws.rs.POST;
@@ -63,7 +64,7 @@ public class JavaClientMethodInvocationService {
 			throw new RuntimeException(String.format("The service with id='%s' doesn't contain the method '%s'", serviceName, methodName));
 		}
 		// invoke the method
-		return foundMethod.invoke(service, parameters);
+		return foundMethod.invoke(service, parameters != null ? parameters : null);
 	}
 	
 }

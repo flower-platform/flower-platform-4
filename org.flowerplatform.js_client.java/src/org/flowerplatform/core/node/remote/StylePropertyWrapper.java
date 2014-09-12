@@ -13,22 +13,30 @@
  * 
  * license-end
  */
-package org.flowerplatform.tests.js_client.java;
-
-import org.flowerplatform.tests.EclipseIndependentTestSuite;
-import org.flowerplatform.tests.core.NodeRegistryScriptTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+package org.flowerplatform.core.node.remote;
 
 /**
  * @author Cristina Constantinescu
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-//	JsClientNodeRegistryTest.class,
-	NodeRegistryScriptTest.class
-})
-public class JsClientJavaTestSuite extends EclipseIndependentTestSuite {
-		
+public class StylePropertyWrapper extends PropertyWrapper {
+
+	private boolean isDefault;
+
+	public boolean getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(boolean isDefault) {
+		this.isDefault = isDefault;
+	}
+	
+	public StylePropertyWrapper setIsDefaultAs(boolean isDefault) {
+		setIsDefault(isDefault);
+		return this;
+	}
+
+	public StylePropertyWrapper() {
+		super();		
+	}	
+	
 }

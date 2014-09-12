@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * @author Cristina Constantinescu
  */
-public class ServiceContext<T> {
+public class ServiceContext<T> extends HashMap<String, Object> {
 
 	private T service;
 	

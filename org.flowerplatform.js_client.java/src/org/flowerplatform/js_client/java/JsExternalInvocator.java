@@ -1,5 +1,8 @@
 package org.flowerplatform.js_client.java;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.flowerplatform.core.node.remote.FullNodeIdWithChildren;
 import org.flowerplatform.core.node.remote.ServiceContext;
 
@@ -19,8 +22,8 @@ public class JsExternalInvocator {
 		return new FullNodeIdWithChildren();
 	}
 
-	public ServiceContext<?> getServiceContextInstance() {
-		return new ServiceContext<>();
+	public ServiceContext getServiceContextInstance() {
+		return new ServiceContext();
 	}
 
 	public void showMessageBox(String titleKeyMessage, String textKeyMessage, String[] textParams) {

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.js_client.java.IFunctionInvoker;
 import org.flowerplatform.js_client.java.INodeChangeListener;
 import org.flowerplatform.js_client.java.INodeRegistryManagerListener;
@@ -26,15 +27,15 @@ public class NodeRegistryScriptTest {
 	class NodeChangedListener implements INodeChangeListener {
 		@Override
 		public void nodeRemoved(Object node) {
-			System.out.println(String.format("nodeRemoved -> %s", ((NativeObject) node).get("nodeUri")));
+			System.out.println(String.format("nodeRemoved -> %s", ((Node) node).getProperties()));
 		}
 		@Override
 		public void nodeAdded(Object node) {
-			System.out.println(String.format("nodeAdded -> %s", ((NativeObject) node).get("nodeUri")));
+			System.out.println(String.format("nodeAdded -> %s", ((Node) node).getChildren()));
 		}
 		@Override
 		public void nodeUpdated(Object node, String property, Object oldValue, Object newValue) {
-			System.out.println(String.format("nodeUpdated -> %s, property=%s, oldValue=%s, newValue=%s", ((NativeObject) node).get("nodeUri"), property, oldValue, newValue));
+			System.out.println(String.format("nodeUpdated -> %s, property=%s, oldValue=%s, newValue=%s", node, property, oldValue, newValue));
 		}		
 	}
 	
@@ -88,7 +89,7 @@ public class NodeRegistryScriptTest {
 				new IFunctionInvoker() {
 					@Override
 					public void call(Object instance, Object... params) {
-						System.out.println("subscribeOKCallback -> " + params);						
+						System.out.println("subscribeOKCallback -> " + ((Node)params[0]).getProperties());						
 					}
 				}, 
 				new IFunctionInvoker() {
@@ -99,12 +100,12 @@ public class NodeRegistryScriptTest {
 				});
 
 			// get root node
-			NativeObject node = (NativeObject) JsClientJavaUtils.invokeJsFunction(nodeRegistry, "getNodeById", "fpm:user1/repo-1|tt.mm");
+			Object node = (Object) JsClientJavaUtils.invokeJsFunction(nodeRegistry, "getNodeById", "fpm:user1/repo-1|tt.mm");
 			
 			// expand root node
-			JsClientJavaUtils.invokeJsFunction(nodeRegistry, "expand", nodeRegistry, node, null);
+			JsClientJavaUtils.invokeJsFunction(nodeRegistry, "expand", node, null);
 			
-			System.out.println(node.get("children"));
+			System.out.println(node);
 		} finally {
 		    Context.exit();
 		}

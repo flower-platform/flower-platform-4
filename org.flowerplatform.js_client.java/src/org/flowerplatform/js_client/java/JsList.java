@@ -66,7 +66,6 @@ public class JsList<E> extends ArrayList<E> {
 		boolean flag = super.remove(o);
 		length = size();
 		return flag;
-	}
-	
+	}	
 	
 }

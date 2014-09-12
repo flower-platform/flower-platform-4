@@ -3,6 +3,8 @@ package org.flowerplatform.js_client.java;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.flowerplatform.core.node.remote.Node;
+
 /**
  * @author Cristina Constantinescu
  */
@@ -16,7 +18,7 @@ public class ClientNode {
 	
 	private JsList<ClientNode> children;
 	
-	private Map<String, Object> properties;
+	private Object properties;
 		
 	public ClientNode() {
 		properties = new HashMap<>();
@@ -50,7 +52,7 @@ public class ClientNode {
 		return properties;
 	}
 
-	public void setProperties(Map<String, Object> properties) {
+	public void setProperties(Object properties) {
 		this.properties = properties;
 	}
 

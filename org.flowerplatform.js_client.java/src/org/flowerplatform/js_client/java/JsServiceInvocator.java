@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
-import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.node.remote.SubscriptionInfo;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
@@ -72,24 +72,25 @@ public class JsServiceInvocator extends ServiceInvocator {
 				}
 			}
 		} else if (resultCallback != null) {	
-			// get result
+			// get result						
+//			String node1 = response.readEntity(String.class);
 			HashMap<?, ?> node = response.readEntity(HashMap.class);
-			Object result = node.get(CoreConstants.MESSAGE_RESULT);
+			Object result = node.get("messageResult");
 			
 			Context cx = Context.enter();			
 			Scriptable scope = cx.initStandardObjects();		
 			try {
-				// convert result to json
-				String json = new ObjectMapper().writeValueAsString(result);
-				
-				// convert json to js compatible object
-				Object jsonObj = NativeJSON.parse(cx, scope, json, new Callable() {					
-					@Override
-					public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {					
-						return args[1];
-					}
-				});
-				resultCallback.call(cx, scope, scope, new Object[] {jsonObj});
+//				// convert result to json
+//				String json = new ObjectMapper().writeValueAsString(result);
+//				
+//				// convert json to js compatible object
+//				Object jsonObj = NativeJSON.parse(cx, scope, json, new Callable() {					
+//					@Override
+//					public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {					
+//						return args[1];
+//					}
+//				});
+				resultCallback.call(cx, scope, scope, new Object[] {result});
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}

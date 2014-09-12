@@ -13,22 +13,22 @@
  * 
  * license-end
  */
-package org.flowerplatform.tests.js_client.java;
+package org.flowerplatform.core.node.remote;
 
-import org.flowerplatform.tests.EclipseIndependentTestSuite;
-import org.flowerplatform.tests.core.NodeRegistryScriptTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.HashMap;
 
 /**
  * @author Cristina Constantinescu
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-//	JsClientNodeRegistryTest.class,
-	NodeRegistryScriptTest.class
-})
-public class JsClientJavaTestSuite extends EclipseIndependentTestSuite {
-		
+public class ServiceContext extends HashMap<String, Object> {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4379432176883270799L;
+
+	public void add(String key, Object value) {		
+		put(key, value);		
+	}
+
 }

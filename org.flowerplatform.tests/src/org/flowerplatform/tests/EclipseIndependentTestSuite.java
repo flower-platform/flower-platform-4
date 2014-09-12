@@ -29,13 +29,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
-import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.resources.ResourcesPlugin;
-import org.flowerplatform.tests.codesync.CodeSyncTestSuite;
-import org.flowerplatform.tests.controllers.FileSystemControllersTest;
-import org.flowerplatform.tests.core.CommandStackTest;
-import org.flowerplatform.tests.core.CoreTestSuite;
 import org.flowerplatform.tests.js_client.java.JsClientJavaTestSuite;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.junit.BeforeClass;
@@ -51,17 +45,17 @@ import org.osgi.framework.BundleContext;
 @SuppressWarnings("restriction")
 @RunWith(Suite.class)
 @SuiteClasses({ 
-	CodeSyncTestSuite.class,
-	FileSystemControllersTest.class,
-	CommandStackTest.class,
-	CoreTestSuite.class,
+//	CodeSyncTestSuite.class,
+//	FileSystemControllersTest.class,
+//	CommandStackTest.class,
+//	CoreTestSuite.class,
 	JsClientJavaTestSuite.class
 })
 public class EclipseIndependentTestSuite {
 	
 	public static String WORKSPACE_LOCATION = "workspace";
 	
-	public static NodeService nodeService;
+//	public static NodeService nodeService;
 	
 	public static String sessionId = "mockSessionId";
 	
@@ -71,14 +65,14 @@ public class EclipseIndependentTestSuite {
 		FrameworkProperties.getProperties().put("FLOWER_PLATFORM_HOME", new File("").getAbsolutePath());
 		
 		startPlugin(new ResourcesPlugin());
-		startPlugin(new CorePlugin());
-		nodeService = CorePlugin.getInstance().getNodeService();
+//		startPlugin(new CorePlugin());
+//		nodeService = CorePlugin.getInstance().getNodeService();
 		
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		HttpSession session = mock(HttpSession.class);
 		when(req.getSession()).thenReturn(session);
 		when(session.getId()).thenReturn(sessionId);
-		CorePlugin.getInstance().getRequestThreadLocal().set(req);
+//		CorePlugin.getInstance().getRequestThreadLocal().set(req);
 	}
 	
 	/**

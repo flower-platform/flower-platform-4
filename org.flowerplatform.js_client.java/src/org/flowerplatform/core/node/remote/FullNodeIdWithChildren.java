@@ -13,22 +13,34 @@
  * 
  * license-end
  */
-package org.flowerplatform.tests.js_client.java;
+package org.flowerplatform.core.node.remote;
 
-import org.flowerplatform.tests.EclipseIndependentTestSuite;
-import org.flowerplatform.tests.core.NodeRegistryScriptTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.List;
 
 /**
+ * @see NodeServiceRemote#refresh(FullNodeIdWithChildren)
  * @author Cristina Constantinescu
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-//	JsClientNodeRegistryTest.class,
-	NodeRegistryScriptTest.class
-})
-public class JsClientJavaTestSuite extends EclipseIndependentTestSuite {
-		
+public class FullNodeIdWithChildren {
+
+	private String fullNodeId;
+	
+	private List<FullNodeIdWithChildren> visibleChildren;
+
+	public String getFullNodeId() {
+		return fullNodeId;
+	}
+
+	public void setFullNodeId(String fullNodeId) {
+		this.fullNodeId = fullNodeId;
+	}
+
+	public List<FullNodeIdWithChildren> getVisibleChildren() {
+		return visibleChildren;
+	}
+
+	public void setVisibleChildren(List<FullNodeIdWithChildren> visibleChildren) {
+		this.visibleChildren = visibleChildren;
+	}
+	
 }

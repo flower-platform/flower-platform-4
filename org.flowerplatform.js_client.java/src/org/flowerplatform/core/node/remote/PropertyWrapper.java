@@ -13,22 +13,30 @@
  * 
  * license-end
  */
-package org.flowerplatform.tests.js_client.java;
-
-import org.flowerplatform.tests.EclipseIndependentTestSuite;
-import org.flowerplatform.tests.core.NodeRegistryScriptTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+package org.flowerplatform.core.node.remote;
 
 /**
  * @author Cristina Constantinescu
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-//	JsClientNodeRegistryTest.class,
-	NodeRegistryScriptTest.class
-})
-public class JsClientJavaTestSuite extends EclipseIndependentTestSuite {
-		
+public class PropertyWrapper {
+
+	private Object value;
+
+	public Object getValue() {
+		return value;
+	}
+
+	public void setValue(Object value) {
+		this.value = value;
+	}
+
+	public PropertyWrapper setValueAs(Object value) {
+		setValue(value);
+		return this;
+	}
+	
+	public PropertyWrapper() {
+		super();
+	}	
+	
 }

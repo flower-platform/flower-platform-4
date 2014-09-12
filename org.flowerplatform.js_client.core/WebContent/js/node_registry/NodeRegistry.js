@@ -65,7 +65,7 @@ NodeRegistry.prototype.unregisterNode = function(node, parent) {
 	}
 };
 
-NodeRegistry.prototype.collapse = function(node, refreshChildren) {
+NodeRegistry.prototype.collapse = function(node) {
 	if (!(node.nodeUri in this.registry)) {
 		return;
 	}
@@ -77,8 +77,8 @@ NodeRegistry.prototype.collapse = function(node, refreshChildren) {
 	}			
 };
 
-NodeRegistry.prototype.expand = function(node, context) {		
-	if (!(node.nodeUri in this.registry)) {
+NodeRegistry.prototype.expand = function(node, context) {	
+	if (!(node.nodeUri in this.registry)) {		
 		return;
 	}
 	
@@ -373,7 +373,7 @@ NodeRegistry.prototype.unregisterNode = function(node, parent) {
 };
 
 NodeRegistry.prototype.setPropertyValue = function(node, property, newValue) {
-	var oldValue = (property in node.properties) ? node.properties[property] : null;
+	var oldValue = (property in node.properties) ? node.properties[property] : null;	
 	node.properties[property] = newValue;
 		
 	for (var i = 0; i < this.nodeChangeListeners.length; i++){
