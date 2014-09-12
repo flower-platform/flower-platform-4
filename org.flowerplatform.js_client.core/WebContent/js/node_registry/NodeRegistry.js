@@ -285,7 +285,7 @@ NodeRegistry.prototype.refreshHandler = function(node, nodeWithVisibleChildren) 
 			var exists = false;
 			currentChildNode = currentChildren.getItemAt(i);
 			for (var j = 0; j < nodeWithVisibleChildren.children.length; j++) {
-				newChildWithVisibleChildren = nodeWithVisibleChildren.children.getItemAt(j);
+				var newChildWithVisibleChildren = nodeWithVisibleChildren.children.getItemAt(j);
 				if (currentChildNode.nodeUri == newChildWithVisibleChildren.node.nodeUri) {
 					exists = true;
 					break;
