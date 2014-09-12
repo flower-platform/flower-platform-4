@@ -23,6 +23,7 @@ import static org.flowerplatform.core.CoreConstants.NAME;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,10 +61,12 @@ public class RegexController extends AbstractController implements IPropertiesPr
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
-		if (property.equals(REGEX_WITH_MACROS)) {
-			node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService()));
-			context.getService().setProperty(node, FULL_REGEX, node.getPropertyValue(FULL_REGEX), new ServiceContext<NodeService>(context.getService()).add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+	public void setProperties(Node node, Map<String,Object> properties, ServiceContext<NodeService> context) {
+		for (String property : properties.keySet()) {
+			if (property.equals(REGEX_WITH_MACROS)) {
+				node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService()));
+				context.getService().setProperty(node, FULL_REGEX, node.getPropertyValue(FULL_REGEX), new ServiceContext<NodeService>(context.getService()).add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+			}
 		}
 	}
 

@@ -20,6 +20,7 @@ import static org.flowerplatform.core.CoreConstants.DONT_PROCESS_OTHER_CONTROLLE
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -78,9 +79,9 @@ public class DelegateToResourceController extends AbstractController implements
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
+	public void setProperties(Node node, Map<String,Object> properties, ServiceContext<NodeService> context) {
 		for (AbstractController controller : getControllers(node, CoreConstants.PROPERTY_SETTER)) {
-			((IPropertySetter) controller).setProperty(node, property, value, context);
+			((IPropertySetter) controller).setProperties(node, properties, context);
 		}
 	}
 

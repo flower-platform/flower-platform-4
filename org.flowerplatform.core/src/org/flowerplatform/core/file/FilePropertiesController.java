@@ -104,27 +104,32 @@ public class FilePropertiesController extends AbstractController implements IPro
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
+	public void setProperties(Node node, Map<String,Object> properties, ServiceContext<NodeService> context) {
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
-		if (CoreConstants.NAME.equals(property)) {
-			Object file;
-			if (!node.getPropertyValue(CoreConstants.NAME).equals(value)) {
-				try {
-					throw new UnsupportedOperationException();
-//					file = fileAccessController.getFile(node.getIdWithinResource());
-//					String parentPath = fileAccessController.getParent(file);
-//					Object parent = fileAccessController.getFile(parentPath);
-//					Object dest = fileAccessController.getFile(parent, value.getPropertyValue().toString());
-//					if (fileAccessController.exists(dest)) {
-//						throw new RuntimeException("There is already a file with the same name in this location.");
-//					}
-//					if (!fileAccessController.rename(file, dest)) {
-//						throw new RuntimeException("The filename, directory name, or volume label syntax is incorrect");
-//					}
-//					node.getProperties().put(NAME, value.getPropertyValue());
-//					node.setIdWithinResource(fileAccessController.getAbsolutePath(dest));
-				} catch (Exception e) {
-					throw new RuntimeException(e);
+		
+		for (String property : properties.keySet()) {
+			Object value = properties.get(property);
+			
+			if (CoreConstants.NAME.equals(property)) {
+				Object file;
+				if (!node.getPropertyValue(CoreConstants.NAME).equals(value)) {
+					try {
+						throw new UnsupportedOperationException();
+	//					file = fileAccessController.getFile(node.getIdWithinResource());
+	//					String parentPath = fileAccessController.getParent(file);
+	//					Object parent = fileAccessController.getFile(parentPath);
+	//					Object dest = fileAccessController.getFile(parent, value.getPropertyValue().toString());
+	//					if (fileAccessController.exists(dest)) {
+	//						throw new RuntimeException("There is already a file with the same name in this location.");
+	//					}
+	//					if (!fileAccessController.rename(file, dest)) {
+	//						throw new RuntimeException("The filename, directory name, or volume label syntax is incorrect");
+	//					}
+	//					node.getProperties().put(NAME, value.getPropertyValue());
+	//					node.setIdWithinResource(fileAccessController.getAbsolutePath(dest));
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
 				}
 			}
 		}
