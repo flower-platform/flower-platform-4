@@ -51,7 +51,6 @@ public final class GitConstants {
 	/////////////////////////////////////////////////////////////
 	
 	public static final String GIT_SCHEME = "git";
-	public static final String DOT_GIT_SCHEME = ".git";
 	
 	/////////////////////////////////////////////////////////////
 	// Git Node Properties
@@ -76,7 +75,9 @@ public final class GitConstants {
 	public static final String COMMIT_MESSAGE = "commitMessage";
 
 	public static final String AUTHOR = "author";
+	public static final String AUTHOR_EMAIL = "author_email";
 	public static final String COMMITTER = "committer";
+	public static final String COMMITTER_EMAIL = "committer_email";
 	public static final String PREVIOUS_AUTHOR = "previous_author";
 	public static final String PREVIOUS_COMMIT_MESSAGE = "previous_commitMessage";
 
@@ -113,13 +114,9 @@ public final class GitConstants {
 	
 	public static final String LONG_MESSAGE = "longMessage";
 	
-	public static final String AUTHOR_EMAIL = "AuthorEmail";
-	
 	public static final String AUTHORED_DATE = "AuthoredDate";
 	
-	public static final String COMMITTER_EMAIL = "CommitterEmail";
-	
-	public static final String COMMITER_DATE = "CommitteredDate";
+	public static final String COMMITTER_DATE = "CommitteredDate";
 	
 	public static final String SPECIAL_MESSAGE = "SpecialMessage";
 	
@@ -139,9 +136,9 @@ public final class GitConstants {
 	
 	public static final String IMG = "img";
 	
-	public static final String PARENT = "parent";
+	public static final String PARENTS = "parents";
 	
-	public static final String CHILD = "child";
+	public static final String CHILDREN = "children";
 	
 	public static final String BRANCHES = "branches";
 	

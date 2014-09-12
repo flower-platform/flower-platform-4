@@ -103,15 +103,15 @@ package org.flowerplatform.flex_client.team.git {
 		
 		public static const SHORT_MESSAGE:String = "shortMessage";
 		
+		public static const AUTHOR_EMAIL:String = "author_email";
+		
+		public static const COMMITTER_EMAIL:String = "committer_email";
+		
 		public static const LONG_MESSAGE:String = "longMessage";
-		
-		public static const AUTHOR_EMAIL:String = "AuthorEmail";
-		
+
 		public static const AUTHORED_DATE:String = "AuthoredDate";
 		
-		public static const COMMITTER_EMAIL:String = "CommitterEmail";
-		
-		public static const COMMITER_DATE:String = "CommitteredDate";
+		public static const COMMITTER_DATE:String = "CommitteredDate";
 		
 		public static const SPECIAL_MESSAGE:String = "SpecialMessage";
 		
@@ -131,9 +131,9 @@ package org.flowerplatform.flex_client.team.git {
 		
 		public static const IMG:String = "img";
 		
-		public static const PARENT:String = "parent";
+		public static const PARENTS:String = "parents";
 		
-		public static const CHILD:String = "child";		
+		public static const CHILDREN:String = "children";		
 		
 		public static const BRANCHES:String = "branches";
 		
@@ -148,7 +148,7 @@ package org.flowerplatform.flex_client.team.git {
 		public static const TAGS:String = "tags";
 		
 		public static const COLORS:ArrayCollection = new ArrayCollection(new Array( 
-			"#C78639", "#839662", "#C57B7F", "#308790", "#BE5D42", "#6565D9",
+			"#0003CC", "#9C0000", "#308790", "#1BC282", "#A4B300", "#6565D9",
 			"#489977", "#1765A0", "#FF8A01", "#7BBB5F", "#E95862", "#5D9EFE", 
 			"#E8A815", "#00ACBF", "#FB3A04", "#3F40FF", "#1BC282", "#0068B7"));
 	}
