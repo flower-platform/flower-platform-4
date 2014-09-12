@@ -7,7 +7,7 @@
 	<property name="severity" value="warning"/>
 
 	<!-- Filters:  http://checkstyle.sourceforge.net/config.html-->
-	<module name="SuppressionCommentFilter"/>
+	<!-- <module name="SuppressionCommentFilter"/> -->
 	
 	<module name="SuppressionFilter">
 	    <property name="file" value="suppressions.xml"/>
