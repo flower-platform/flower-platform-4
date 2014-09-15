@@ -100,36 +100,19 @@ public class RemoteMethodInvocationListener {
 	 * 
 	 */
 	public void postInvoke(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
-<<<<<<< Temporary merge branch 1
-		if (logger.isDebugEnabled()) {
-			long endTime = new Date().getTime();
-			long difference = endTime - remoteMethodInvocationInfo.getStartTimestamp();
-			String serviceId = remoteMethodInvocationInfo.getServiceId();
-			String methodName = remoteMethodInvocationInfo.getMethodName();
-			boolean log = true;
-			if (methodName != null && methodName.equals("ping")) {
-				String logPing = loggerContext.getProperty("logNodeServicePingInvocation");
-				log = logPing == null ? false : Boolean.parseBoolean(logPing);
-			}
-			if (log) {
-				logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
-=======
 		ContextThreadLocal context = CorePlugin.getInstance().getContextThreadLocal().get();
 		try {
 			if (logger.isDebugEnabled()) {
-				long endTime = new Date().getTime();
-				long difference = endTime - remoteMethodInvocationInfo.getStartTimestamp();
-				String serviceId = remoteMethodInvocationInfo.getServiceId();
-				String methodName = remoteMethodInvocationInfo.getMethodName();
 				boolean log = true;
-				if (methodName.equals("ping")) {
+				if (remoteMethodInvocationInfo.getServiceMethodOrUrl().equals("resourceService.ping()")) {
 					String logPing = loggerContext.getProperty("logNodeServicePingInvocation");
 					log = logPing == null ? false : Boolean.parseBoolean(logPing);
 				}
 				if (log) {
-					logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
+					long endTime = new Date().getTime();
+					long difference = endTime - remoteMethodInvocationInfo.getStartTimestamp();
+					logger.debug("[{}ms] {} invoked", new Object[] { difference, remoteMethodInvocationInfo.getServiceMethodOrUrl() });
 				}
->>>>>>> Temporary merge branch 2
 			}
 	
 			Command command = context.getCommand();

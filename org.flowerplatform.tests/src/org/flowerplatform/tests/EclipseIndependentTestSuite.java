@@ -36,6 +36,7 @@ import org.flowerplatform.tests.codesync.CodeSyncTestSuite;
 import org.flowerplatform.tests.controllers.FileSystemControllersTest;
 import org.flowerplatform.tests.core.CommandStackTest;
 import org.flowerplatform.tests.core.CoreTestSuite;
+import org.flowerplatform.tests.js_client.java.JsClientJavaTestSuite;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -50,10 +51,11 @@ import org.osgi.framework.BundleContext;
 @SuppressWarnings("restriction")
 @RunWith(Suite.class)
 @SuiteClasses({ 
-	CodeSyncTestSuite.class,
-	FileSystemControllersTest.class,
-	CommandStackTest.class,
-	CoreTestSuite.class
+//	CodeSyncTestSuite.class,
+//	FileSystemControllersTest.class,
+//	CommandStackTest.class,
+//	CoreTestSuite.class,
+	JsClientJavaTestSuite.class
 })
 public class EclipseIndependentTestSuite {
 	

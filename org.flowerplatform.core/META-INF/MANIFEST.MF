@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+Eclipse-BuddyPolicy: registered
 Eclipse-RegisterBuddy: org.flowerplatform.util
 Bundle-ManifestVersion: 2
 Bundle-Name: Core

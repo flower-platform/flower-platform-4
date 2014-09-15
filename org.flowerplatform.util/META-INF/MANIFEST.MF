@@ -5,14 +5,6 @@ Bundle-Name: Util
 Bundle-SymbolicName: org.flowerplatform.util
 Bundle-Version: 0.1.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-<<<<<<< Temporary merge branch 1
-Export-Package: ch.qos.logback.core,
- javax.ws.rs,
- javax.ws.rs.client,
- javax.ws.rs.container,
- javax.ws.rs.core,
- javax.ws.rs.ext,
-=======
 Export-Package: ch.qos.logback.classic,
  ch.qos.logback.classic.joran,
  ch.qos.logback.classic.util,
@@ -21,7 +13,11 @@ Export-Package: ch.qos.logback.classic,
  ch.qos.logback.core.joran.spi,
  ch.qos.logback.core.spi,
  ch.qos.logback.core.util,
->>>>>>> Temporary merge branch 2
+ javax.ws.rs,
+ javax.ws.rs.client,
+ javax.ws.rs.container,
+ javax.ws.rs.core,
+ javax.ws.rs.ext,
  org.apache.commons.io,
  org.apache.commons.io.comparator,
  org.apache.commons.io.filefilter,

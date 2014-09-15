@@ -59,10 +59,7 @@ public class GitConstants {
 
 	public static final String FULL_NAME = "fullName";
 	public static final String CONFIG_REMOTE = "configRemote";
-<<<<<<< Temporary merge branch 1
 
-=======
->>>>>>> Temporary merge branch 2
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";
 	public static final String CONFIG_REBASE = "configRebase";
 
@@ -98,12 +95,8 @@ public class GitConstants {
 	public static final String MODIFY = "MODIFY";
 	public static final String RENAME = "RENAME";
 	public static final String COPY = "COPY";
-<<<<<<< Temporary merge branch 1
-
-=======
 	public static final String FILE_PATH = "filePath";
 
->>>>>>> Temporary merge branch 2
 	public static final String GIT_PREFIX_SESSION = "git|";
 	
 	//////////////////////////////////

@@ -7,7 +7,10 @@ Require-Bundle: org.flowerplatform.js_client.core,
  org.flowerplatform.util,
  org.eclipse.core.runtime,
  org.flowerplatform.core
+Eclipse-BuddyPolicy: registered
+Eclipse-RegisterBuddy: org.flowerplatform.core
 Export-Package: org.flowerplatform.js_client.java,
+ org.glassfish.jersey.client,
  org.mozilla.javascript
 Bundle-ClassPath: lib-from-maven/aopalliance-repackaged-2.3.0-b05.jar,
  lib-from-maven/hk2-api-2.3.0-b05.jar,

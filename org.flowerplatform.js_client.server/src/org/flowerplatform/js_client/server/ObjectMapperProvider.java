@@ -26,7 +26,7 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 		objectMapper.registerModule(new JaxbAnnotationModule());
 		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		
+		objectMapper.enableDefaultTyping(DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
 //		objectMapper.enableDefaultTyping(DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
 //		TypeResolverBuilder<?> typer = new CustomTypeResolverBuilder(DefaultTyping.NON_FINAL);
 //	    // we'll always use full class name, when using defaulting
