@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,12 +104,12 @@ import org.osgi.framework.BundleContext;
  */
 public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 
-	protected static CodeSyncJavaPlugin INSTANCE;
+	protected static CodeSyncJavaPlugin instance;
 	
 	private FolderModelAdapter folderModelAdapter;
 	
 	public static CodeSyncJavaPlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 	
 	/**
@@ -119,7 +119,7 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
-		INSTANCE = this;
+		instance = this;
 		
 		CodeSyncPlugin.getInstance().addTechnologyForExtension(EXTENSION_JAVA, JAVA);
 		
@@ -238,7 +238,8 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 		
 		createNodeTypeDescriptor(MODIFIER)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, modifiers)
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST).setPossibleValuesAs(Arrays.asList(
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME)
+					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST).setPossibleValuesAs(Arrays.asList(
 					"public",
 					"protected",
 					"private",
@@ -335,13 +336,13 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 //						.addFeature(INITIALIZER));
 //				
 //				CodeSyncPlugin.getInstance().getFeatureAccessExtensions().add(new JavaFeatureAccessExtension());
-				
+//CHECKSTYLE:OFF				
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass", new JavaClassProcessor());
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass.title", new JavaClassTitleProcessor());
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass.javaAttribute", new JavaClassAttributeProcessor());
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass.javaOperation", new JavaClassOperationProcessor());
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("scenarioInterraction", new JavaScenarioElementProcessor());
-//				
+//CHECKSTYLE:ON				
 //				AbstractFeatureChangesProcessor processor = new AbstractFeatureChangesProcessor();
 //				// if model element removed => remove view
 //				processor.getDependentFeatures().add(new DependentFeature(EObject.class, NotationPackage.eINSTANCE.getView_DiagrammableElement()));
@@ -378,7 +379,7 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 	
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		INSTANCE = null;
+		instance = null;
 	}
 
 	@Override

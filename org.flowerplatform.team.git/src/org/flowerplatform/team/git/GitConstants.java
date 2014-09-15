@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,11 @@ import org.flowerplatform.util.UtilConstants;
 /**
  * @author Cojocea Marius Eduard
  */
-public class GitConstants {
+public final class GitConstants {
 
+	private GitConstants() {
+		
+	}
 	/////////////////////////////////////////////////////////////
 	//Node type in Git folder hierarchy
 	/////////////////////////////////////////////////////////////
@@ -48,7 +51,6 @@ public class GitConstants {
 	/////////////////////////////////////////////////////////////
 	
 	public static final String GIT_SCHEME = "git";
-	public static final String DOT_GIT_SCHEME = ".git";
 	
 	/////////////////////////////////////////////////////////////
 	// Git Node Properties
@@ -73,7 +75,9 @@ public class GitConstants {
 	public static final String COMMIT_MESSAGE = "commitMessage";
 
 	public static final String AUTHOR = "author";
+	public static final String AUTHOR_EMAIL = "author_email";
 	public static final String COMMITTER = "committer";
+	public static final String COMMITTER_EMAIL = "committer_email";
 	public static final String PREVIOUS_AUTHOR = "previous_author";
 	public static final String PREVIOUS_COMMIT_MESSAGE = "previous_commitMessage";
 
@@ -110,13 +114,9 @@ public class GitConstants {
 	
 	public static final String LONG_MESSAGE = "longMessage";
 	
-	public static final String AUTHOR_EMAIL = "AuthorEmail";
-	
 	public static final String AUTHORED_DATE = "AuthoredDate";
 	
-	public static final String COMMITTER_EMAIL = "CommitterEmail";
-	
-	public static final String COMMITER_DATE = "CommitteredDate";
+	public static final String COMMITTER_DATE = "CommitteredDate";
 	
 	public static final String SPECIAL_MESSAGE = "SpecialMessage";
 	
@@ -136,9 +136,9 @@ public class GitConstants {
 	
 	public static final String IMG = "img";
 	
-	public static final String PARENT = "parent";
+	public static final String PARENTS = "parents";
 	
-	public static final String CHILD = "child";
+	public static final String CHILDREN = "children";
 	
 	public static final String BRANCHES = "branches";
 	

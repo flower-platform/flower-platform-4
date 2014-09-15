@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
-
-import org.flowerplatform.util.RunnableWithParam;
 
 /**
  * Stores additional attributes that must be added to a {@link HttpServlet} context.
@@ -39,19 +36,26 @@ import org.flowerplatform.util.RunnableWithParam;
  * 
  * @author Cristina Constantinescu
  */
-public class ServletUtils {
+public final class ServletUtils {
 
+	private ServletUtils() {
+		
+	}
 	public static final String PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY = "useFilesFromTemporaryDirectory"; 
 	public static final String PROP_DEFAULT_USE_FILES_FROM_TEMPORARY_DIRECTORY = "false"; 
 	
 	private static Map<String, Object> servletContextAdditionalAttributes = new HashMap<String, Object>();
-	
+	/**
+	 *@author see class
+	 **/
 	/* package */ static void addAllAdditionalAttributesToServletContext(ServletContext context) {
 		for (Map.Entry<String, Object> entry : servletContextAdditionalAttributes.entrySet()) {
 			context.setAttribute(entry.getKey(), entry.getValue());
 		}
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	public static void addServletContextAdditionalAttributes(String key, Object value) {
 		servletContextAdditionalAttributes.put(key, value);
 	}

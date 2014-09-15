@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.mindmap.action.NodeUpAction;
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsBar;
 	import org.flowerplatform.flex_client.properties.action.AddChildActionProvider;
+	import org.flowerplatform.flex_client.properties.action.AddSiblingActionProvider;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
@@ -47,6 +48,7 @@ package org.flowerplatform.flex_client.mindmap {
 			actionProvider.actionProviders.push(CorePlugin.getInstance().editorClassFactoryActionProvider);
 			actionProvider.actionProviders.push(new AddChildActionProvider());
 			actionProvider.actionProviders.push(new OpenWithEditorActionProvider());
+			actionProvider.actionProviders.push(new AddSiblingActionProvider());
 			
 			var shortcutsActionProvider:VectorActionProvider = new VectorActionProvider();
 			shortcutsActionProvider.addAction(new NodeUpAction());

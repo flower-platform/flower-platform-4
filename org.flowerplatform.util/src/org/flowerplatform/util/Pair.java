@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,9 @@ public class Pair<A, B> {
 	public Pair() {
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public Pair(A a, B b) {
 		super();
 		this.a = a;
@@ -51,8 +54,8 @@ public class Pair<A, B> {
 		}
 		Pair<?, ?> otherObj = (Pair<?, ?>) obj;
 		return 
-			((a == null && otherObj.a == null) || (a != null && a.equals(otherObj.a))) &&
-			((b == null && otherObj.b == null) || (b != null && b.equals(otherObj.b)));
+			((a == null && otherObj.a == null) || (a != null && a.equals(otherObj.a))) 
+			&& ((b == null && otherObj.b == null) || (b != null && b.equals(otherObj.b)));
 	}
 	
 }

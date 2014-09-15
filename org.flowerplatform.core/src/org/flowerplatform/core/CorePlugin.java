@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@ import java.io.File;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.flowerplatform.core.file.FileSystemControllers;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
@@ -86,7 +85,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 @SuppressWarnings("restriction")
 public class CorePlugin extends AbstractFlowerJavaPlugin {
 
-	protected static CorePlugin INSTANCE;
+	protected static CorePlugin instance;
 
 	protected static final String PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP = "deleteTemporaryDirectoryAtServerStartup"; 
 	protected static final String PROP_DEFAULT_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP = "true"; 
@@ -127,7 +126,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	private ILockManager lockManager = new InMemoryLockManager(); 
 	
 	public static CorePlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 	
 	@Override
@@ -231,6 +230,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return composedSessionListener;
 	}
 
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public void addSessionListener(ISessionListener sessionListener) {
 		composedSessionListener.add(sessionListener);
 	}
@@ -247,11 +249,16 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return CoreConstants.LOAD_FILE_SERVLET + "/" + resource;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public CorePlugin() {
 		super();
 
-		getFlowerProperties().addProperty(new FlowerProperties.AddBooleanProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP, PROP_DEFAULT_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP));
-		getFlowerProperties().addProperty(new FlowerProperties.AddBooleanProperty(ServletUtils.PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY, ServletUtils.PROP_DEFAULT_USE_FILES_FROM_TEMPORARY_DIRECTORY));	
+		getFlowerProperties().addProperty(new FlowerProperties
+				.AddBooleanProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP, PROP_DEFAULT_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP));
+		getFlowerProperties().addProperty(new FlowerProperties
+				.AddBooleanProperty(ServletUtils.PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY, ServletUtils.PROP_DEFAULT_USE_FILES_FROM_TEMPORARY_DIRECTORY));	
 	
 		String customLogPath = CoreConstants.FLOWER_PLATFORM_HOME + LOGBACK_CONFIG_FILE; 
 		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -272,7 +279,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		INSTANCE = this;
+		instance = this;
 			
 		System.getProperties().put("flower.version", CoreConstants.APP_VERSION);
 	
@@ -331,9 +338,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(CoreConstants.PREFERENCE_CATEGORY_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTY_SETTER, new PreferencePropertySetter())
 			// TODO CC: to remove when working at preferences persistence
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING).setNameAs("value").setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_PREFERENCE).setReadOnlyAs(true));
-		
-		
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING)
+					.setNameAs("value").setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_PREFERENCE).setReadOnlyAs(true));
+			
 		new FileSystemControllers().registerControllers();
 		new ResourceDebugControllers().registerControllers();
 		new TypeDescriptorRegistryDebugControllers().registerControllers();
@@ -353,9 +360,12 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 	
 	}
 
+	/**
+	 *@author Cristian Spiescu
+	 **/
 	public void stop(BundleContext bundleContext) throws Exception {
 		scheduledExecutorServiceFactory.dispose();
 		super.stop(bundleContext);
-		INSTANCE = null;
+		instance = null;
 	}
 }

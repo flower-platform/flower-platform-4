@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,25 +23,58 @@ import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 
 
 /**
- * 
- */
+ *@author Mariana Gheorghe
+ **/
 public abstract class MatchActionAddAbstract extends DiffAction {
 
 	protected boolean processDiffs;
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected abstract Object getThis(Match match); 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected abstract Object getOpposite(Match match);
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected abstract IModelAdapter getThisModelAdapter(Match match);
+	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected abstract IModelAdapter getOppositeModelAdapter(Match match);
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected abstract IModelAdapterSet getThisModelAdapterSet(Match match);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected abstract IModelAdapterSet getOppositeModelAdapterSet(Match match);
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected abstract void setOpposite(Match match, Object elment);
+	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected abstract void processDiffs(Match match);
+	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected abstract void setChildrenModified(Match match);
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public MatchActionAddAbstract(boolean processDiffs) {
 		super();
 		this.processDiffs = processDiffs;
@@ -54,17 +87,21 @@ public abstract class MatchActionAddAbstract extends DiffAction {
 		return new ActionResult(false, true, true, getThisModelAdapter(match).getMatchKey(child, match.getCodeSyncAlgorithm()), true);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected void processMatch(Match parentMatch, Match match, boolean isFirst) {
-		Object this_ = getThis(match);
-		if (this_ == null) // this happens when parentMatch was a 2-match-ancestor-left/right and match is 1-match-ancestor (i.e. del left & right)
+		Object thisObject = getThis(match);
+		if (thisObject == null) {
 			return;
+		}
 		
-		String type = getThisModelAdapterSet(match).getType(this_, match.getCodeSyncAlgorithm());
+		String type = getThisModelAdapterSet(match).getType(thisObject, match.getCodeSyncAlgorithm());
 		IModelAdapter oppositeMa = getOppositeModelAdapterSet(parentMatch).getModelAdapterForType(type);	
 		Object opposite = oppositeMa.createChildOnContainmentFeature(
 				getOpposite(parentMatch), 
 				match.getFeature(), 
-				this_, 
+				thisObject, 
 				getThisModelAdapterSet(match),
 				match.getCodeSyncAlgorithm());
 		setOpposite(match, opposite);
@@ -74,27 +111,29 @@ public abstract class MatchActionAddAbstract extends DiffAction {
 		IModelAdapter thisMa = getThisModelAdapter(match);
 		FeatureProvider featureProvider = match.getCodeSyncAlgorithm().getFeatureProvider(match);
 		for (Object childFeature : featureProvider.getValueFeatures()) {
-			Object value = thisMa.getValueFeatureValue(this_, childFeature, null, match.getCodeSyncAlgorithm());
+			Object value = thisMa.getValueFeatureValue(thisObject, childFeature, null, match.getCodeSyncAlgorithm());
 			Object valueOpposite = oppositeMa.getValueFeatureValue(opposite, childFeature, null, match.getCodeSyncAlgorithm());
 			if (!CodeSyncAlgorithm.safeEquals(value, valueOpposite)) {
 				oppositeMa.setValueFeatureValue(opposite, childFeature, value, match.getCodeSyncAlgorithm());
-				actionPerformed(match, thisMa, this_, oppositeMa, opposite, childFeature, new ActionResult(false, true, true));
+				actionPerformed(match, thisMa, thisObject, oppositeMa, opposite, childFeature, new ActionResult(false, true, true));
 			}
 		}
 		
-		if (processDiffs) 
+		if (processDiffs) {
 			processDiffs(match);
+		}
 		
 		match.setChildrenConflict(false);
 				
 		if (!match.getSubMatches().isEmpty()) {
 			setChildrenModified(match);
 			// process child match
-			for (Match childMatch : match.getSubMatches())
+			for (Match childMatch : match.getSubMatches()) {
 				processMatch(match, childMatch, false);
+			}
 		}
 		
-		ActionResult result = new ActionResult(false, true, true, thisMa.getMatchKey(this_, match.getCodeSyncAlgorithm()), true);
+		ActionResult result = new ActionResult(false, true, true, thisMa.getMatchKey(thisObject, match.getCodeSyncAlgorithm()), true);
 		IModelAdapter thisParentMa = getThisModelAdapter(parentMatch);
 		IModelAdapter oppositeParentMa = getOppositeModelAdapter(parentMatch);
 		actionPerformed(parentMatch, thisParentMa, getThis(parentMatch), oppositeParentMa, getOpposite(parentMatch), match.getFeature(), result);
