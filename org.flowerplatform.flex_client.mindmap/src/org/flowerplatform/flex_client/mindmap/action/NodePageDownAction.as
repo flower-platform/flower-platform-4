@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,19 +17,9 @@ package org.flowerplatform.flex_client.mindmap.action {
 	
 	import flash.ui.Keyboard;
 	
-	import mx.collections.ArrayCollection;
-	import mx.core.FlexGlobals;
-	import mx.core.UIComponent;
-	
-	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.mindmap.MindMapEditorFrontend;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.action.ActionBase;
-	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.shortcut.Shortcut;
 	
 	/**
@@ -37,6 +27,8 @@ package org.flowerplatform.flex_client.mindmap.action {
 	 */
 	public class NodePageDownAction extends AbstractNavigateAction {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.mindmap.action.NodePageDownAction";
+				
 		public function NodePageDownAction(appendNodesToCurrentSelection:Boolean = false) {
 			super(Resources.getMessage("mindmap.pagedown"), new Shortcut(false, appendNodesToCurrentSelection, false, Keyboard.PAGE_DOWN), appendNodesToCurrentSelection);			
 		}

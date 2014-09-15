@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,9 @@ public class CodeSyncSubscribableResourceProvider extends AbstractController imp
 
 	private String resource;
 	
+	/**
+	 *@author see class
+	 **/
 	public CodeSyncSubscribableResourceProvider(String resource) {
 		super();
 		this.resource = resource;
@@ -74,6 +77,9 @@ public class CodeSyncSubscribableResourceProvider extends AbstractController imp
 		return true;
 	}
 
+	/**
+	 *@author see class
+	 **/
 	protected String getResourceUri(Node node) {
 		String repo = CoreUtils.getRepoFromNode(node);
 		return CoreUtils.createNodeUriWithRepo("fpp", repo, resource);

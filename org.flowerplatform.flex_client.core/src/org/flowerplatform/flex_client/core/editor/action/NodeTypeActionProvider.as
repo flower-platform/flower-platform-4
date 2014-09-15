@@ -1,44 +1,81 @@
-package org.flowerplatform.flex_client.core.editor.action
-{
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
+/**
+ * Its method <code>getActions(selection:Ilist)</code> returns all the actions registered 
+ * for the selection type. 
+ * 
+ * @author Alina Bratu
+ */
+package org.flowerplatform.flex_client.core.editor.action {
+	
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IActionProvider;
 
+	/**
+	 * @author Alina Bratu
+	 */
 	public class NodeTypeActionProvider implements IActionProvider {
-		
-		var actionFactories:Vector.<IAction> ;
 		
 		public function NodeTypeActionProvider():void {
 		}
 		
+		/**
+		 * If all nodes in <code>selection</code> have the same type, it returns a list of the actions 
+		 * that can be executed on that particular type of node.
+		 */
 		public function getActions(selection:IList):Vector.<IAction> {
 			var nodeType:String;
-			actionFactories = new Vector.<IAction>();
+			var actions:Vector.<IAction> = new Vector.<IAction>();
 			
-			// verify if nodes have same type; if not, we're not displaying actions
-			if (selection != null && selection.length > 0 && selection.getItemAt(0) is Node) {
-				for (var i:int = 0; i < selection.length - 1 ; i++) {
-					if (selection.getItemAt(i).type != selection.getItemAt(i+1)) {
+			// verify if selection is not null and not empty
+			if (selection != null && selection.length > 0) {
+				
+				// if selection is a mind map node, get the node from the wrapper
+				var obj:Object = selection.getItemAt(0);
+				if (obj is MindMapRootModelWrapper) {
+					obj = MindMapRootModelWrapper(obj).model;
+				}
+				nodeType =  Node(obj).type;
+				
+				for (var i:int = 1; i < selection.length; i++) {
+					obj = selection.getItemAt(i);
+					if (obj is MindMapRootModelWrapper) {
+						obj = MindMapRootModelWrapper(obj).model;
+					}
+					var nextNode:Node = Node(obj);
+					
+					if (nodeType != nextNode.type) {
 						return null;
 					}
 				}
-				nodeType = selection.getItemAt(0).type;
-				
-				// get list of action descriptors for the type of node the selection has
 				
 				var descriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(nodeType)
 					.getAdditiveControllers(CoreConstants.ACTION_DESCRIPTOR,selection.getItemAt(0));
 				
-				// create list of action factories using action descriptors and action registry
 				for each (var a:ActionDescriptor in descriptors) {
-					actionFactories.push(FlexUtilGlobals.getInstance().actionRegistry[a.actionId.toString()].newInstance());
+					actions.push(FlexUtilGlobals.getInstance().getActionInstanceFromRegistry(a.actionId));
 				}
-				return actionFactories;
+				return actions;
 			}
 			return null;
 		}

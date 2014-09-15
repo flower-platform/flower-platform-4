@@ -2,7 +2,7 @@
 <!-- 
 	license-start
  
-	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -35,17 +35,28 @@
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.team.git.GitConstants;
+			import org.flowerplatform.flexutil.Utils;
 						
 			[Bindable]
 			public var branches:ArrayCollection;
 			
 			public var node:Node;
+						
+			// used for Git History View
+			[Bindable]
+			public var useNodeAsCommitId:Boolean;
 			
 			override protected function creationCompleteHandler(event:FlexEvent):void {
 				super.creationCompleteHandler(event);				
 				
 				VerticalLayout(layout).gap = 15;
-				CorePlugin.getInstance().serviceLocator.invoke("GitService.getBranches", [node.nodeUri], getBranchesHandler); 
+				if (!useNodeAsCommitId) {
+					CorePlugin.getInstance().serviceLocator.invoke("GitService.getBranches", [node.nodeUri], getBranchesHandler); 
+				} else {
+					Utils.makePseudoDisabled(sourceCommit);
+					sourceCommit.text = node.getPropertyValue(GitConstants.ID);
+					configureUpstreamGroup.visible = configureUpstreamGroup.includeInLayout = false;
+				}
 			}
 			
 			protected function getBranchesHandler(branches:ArrayCollection):void {
@@ -71,16 +82,23 @@
 			}
 					
 			override protected function okHandler(event:Event = null):void {				
+				var commitId:String;
+				var startPoint:String;
+				if (useNodeAsCommitId) {
+					commitId = node.getPropertyValue(GitConstants.ID);
+				} else {
+					startPoint = selectBranch.selectedItem.name; 
+				}
+				
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.createBranch", 
 					[node.nodeUri, 
 					branchNameTextInput.text, 
-					selectBranch.selectedItem.name, 
+					startPoint,
 					configureUpstreamGroup.visible, // if the node is a tag, don't configure upstream in createBranch
 					configureUpstreamCheckBox.selected && mergeUpstreamRadioButton.selected, // Merge upstream commits into local branch
 					configureUpstreamCheckBox.selected && rebaseCommitsRadioButton.selected, // Rebase commits of local branch onto upstream
-					checkoutBranchCheckBox.selected]); // Checkout new Branch
-				
-				cancelHandler(event);
+					checkoutBranchCheckBox.selected, // Checkout new Branch
+					commitId], cancelHandler); //use commit ID for Git History					
 			}
 			
 			protected function selectBranchChangeHandler(event:IndexChangeEvent):void {				
@@ -95,7 +113,7 @@
 				
 				if (selectedItem.type != GitConstants.GIT_TAG_TYPE) {					
 					configureUpstreamCheckBox.selected = rebaseCommitsRadioButton.enabled = mergeUpstreamRadioButton.enabled = (selectedItem.type == GitConstants.GIT_REMOTE_BRANCH_TYPE);					
-				}				
+				}
 			}
 			
 		]]>
@@ -103,7 +121,9 @@
 			
 	<s:Form width="100%">
 		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.source')}"
-					width="100%">
+					width="100%"
+					visible="{!useNodeAsCommitId}"
+					includeInLayout="{!useNodeAsCommitId}">
 			<s:DropDownList id="selectBranch" 
 							requireSelection="true"
 							dataProvider="{branches}"
@@ -112,10 +132,17 @@
 							width="100%"/>
 		</s:FormItem>
 		
+		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.source')}"
+					width="100%"
+					visible="{useNodeAsCommitId}"
+					includeInLayout="{useNodeAsCommitId}">
+			<s:TextInput id="sourceCommit"
+						 width="100%" />
+		</s:FormItem>
+		
 		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.branchName')}"
 					width="100%">
-			<s:TextInput id="branchNameTextInput"
-						 baseline="15"
+			<s:TextInput id="branchNameTextInput"						
 						 width="100%"/>
 		</s:FormItem>
 	</s:Form>

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ package org.flowerplatform.flex_client.properties.controllers {
 			pd.type = type;
 			pd.name = property;		
 			pd.category = Resources.getMessage("raw.properties");		
-			pd.orderIndex = int.MAX_VALUE;
+			pd.orderIndex = (property == "nodeUri" ? int.MAX_VALUE - 1 : int.MAX_VALUE);
 			return pd;			
 		}		
 		

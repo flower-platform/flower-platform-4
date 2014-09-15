@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,38 +27,46 @@ package org.flowerplatform.flex_client.team.git.action {
 	 */	
 	public class ResetAction extends ActionBase {
 		
-		public function ResetAction() {
+		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.ResetAction";
+		
+		public var useNodeAsCommitId:Boolean;
+		
+		public function ResetAction(useNodeAsCommitId:Boolean=false) {
 			super();
+			this.useNodeAsCommitId = useNodeAsCommitId;
 			label = Resources.getMessage('flex_client.team.git.action.reset');
 			icon = Resources.resetIcon;
 			orderIndex = 370;
 		}
 		
 		override public function get visible():Boolean {
-			if (selection.length == 1 && selection.getItemAt(0) is Node) {
-				var node:Node = Node(selection.getItemAt(0));
-				if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0) {
-					if (node.type == GitConstants.GIT_REPO_TYPE && !node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY)) { 
-						// not a git repository
-						return false;
-					}
-					return true;
-				}
-			}	
-			return false;			
+			var node:Node = Node(selection.getItemAt(0));
+			if (node.type == GitConstants.GIT_REPO_TYPE && !node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY)) { 
+				// not a git repository
+				return false;
+			}
+			return true;			
+		}
+		
+		public function callResetAction(nodeUri:String, idCommit:String):void {
+			CorePlugin.getInstance().serviceLocator.invoke("GitService.reset", [nodeUri, "HARD", idCommit]);
 		}
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			var resetView:ResetView = new ResetView();
-			resetView.node = Node(selection.getItemAt(0));
-			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-				.setViewContent(resetView)
-				.setWidth(500)
-				.setHeight(530)
-				.setTitle(label)
-				.setIcon(icon)
-				.show();
+			if (!useNodeAsCommitId) {
+				var resetView:ResetView = new ResetView();
+				resetView.node = Node(selection.getItemAt(0));
+				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+					.setViewContent(resetView)
+					.setWidth(500)
+					.setHeight(530)
+					.setTitle(label)
+					.setIcon(icon)
+					.show();	
+			} else {
+				callResetAction(node.nodeUri, node.getPropertyValue(GitConstants.ID));
+			}
 		}
 	}
 	

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.core.node.controller;
 
+import java.util.Map;
+
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
@@ -25,8 +27,16 @@ import org.flowerplatform.util.controller.IController;
  */
 public interface IPropertySetter extends IController {
 	
-	public abstract void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context);
+//	public abstract void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context);
+
+	/**
+	 *@author see class
+	 **/
+	void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context);
 	
-	public abstract void unsetProperty(Node node, String property, ServiceContext<NodeService> context);
+	/**
+	 *@author see class
+	 **/
+	void unsetProperty(Node node, String property, ServiceContext<NodeService> context);
 	
 }

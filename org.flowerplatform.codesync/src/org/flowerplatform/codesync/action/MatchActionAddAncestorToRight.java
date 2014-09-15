@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,22 +21,34 @@ import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 
 
 /**
- * 
- */
+ *@author Mariana Gheorghe
+ **/
 public class MatchActionAddAncestorToRight extends MatchActionAddAncestorAbstract {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public MatchActionAddAncestorToRight(boolean processDiffs) {
 		super(processDiffs);
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected Object getOpposite(Match match) {
 		return match.getRight();
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected IModelAdapter getOppositeModelAdapter(Match match) {
 		return match.getCodeSyncAlgorithm().getRightModelAdapter(getOpposite(match));
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected void setOpposite(Match match, Object elment) {
 		match.setRight(elment);
 	}

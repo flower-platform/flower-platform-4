@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,12 +104,12 @@ import org.osgi.framework.BundleContext;
  */
 public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 
-	protected static CodeSyncJavaPlugin INSTANCE;
+	protected static CodeSyncJavaPlugin instance;
 	
 	private FolderModelAdapter folderModelAdapter;
 	
 	public static CodeSyncJavaPlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 	
 	/**
@@ -119,7 +119,7 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
-		INSTANCE = this;
+		instance = this;
 		
 		CodeSyncPlugin.getInstance().addTechnologyForExtension(EXTENSION_JAVA, JAVA);
 		
@@ -145,12 +145,12 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 				.addModelAdapter(SUPER_INTERFACE, expressionModelAdapter));
 		
 		MemberOfChildCategoryDescriptor childrenDescriptor = new MemberOfChildCategoryDescriptor(CodeSyncConstants.CHILDREN);
-	
+		
 		createNodeTypeDescriptor(FOLDER)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, childrenDescriptor)
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FOLDER).setLabelAs(getLabel("codesync.java.package"))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FOLDER)
 					.setIconAs(getImagePathFromPublicResources(IMG_WIZ_PACKAGE)).setOrderIndexAs(10))
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FILE).setLabelAs(getLabel("codesync.java.file"))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FILE)
 					.setIconAs(getImagePathFromPublicResources(IMG_FILE)).setOrderIndexAs(20))
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_PACKAGE)));
 	
@@ -160,6 +160,7 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_FILE)));
 		
 		PropertyDescriptor returnType = new PropertyDescriptor().setNameAs(TYPED_ELEMENT_TYPE);
+		returnType.setSharedControllerAllowed(true);
 		
 		MemberOfChildCategoryDescriptor typeMembersDescriptor = new MemberOfChildCategoryDescriptor(TYPE_MEMBERS);
 		
@@ -185,7 +186,7 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(CATEGORY_CAN_CONTAIN_TYPES)
 			.addCategory(CATEGORY_HAS_SUPER_INTERFACES)
 			.addCategory(CATEGORY_MODIFIABLE)
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ENUM_CONSTANT).setLabelAs(getLabel("codesync.java.enum.constant"))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ENUM_CONSTANT)
 					.setIconAs(getImagePathFromPublicResources(IMG_FIELD)).setOrderIndexAs(10))
 			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICONS, getImagePath(IMG_TYPE_ENUM)));
 	
@@ -205,15 +206,15 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 		createNodeTypeDescriptor(OPERATION)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, typeMembersDescriptor)
 			.addCategory(CATEGORY_MODIFIABLE)
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(PARAMETER).setLabelAs(getLabel("codesync.java.parameter"))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(PARAMETER)
 					.setIconAs(getImagePathFromPublicResources(IMG_LOCAL_VAR)).setOrderIndexAs(10))
 			.addAdditiveController(PROPERTIES_PROVIDER, new JavaIconPropertyProvider(ICONS, getImagePath(IMG_METHOD)))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType);
 		
 		createNodeTypeDescriptor(ENUM_CONSTANT)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, typeMembersDescriptor)
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ENUM_CONSTANT_ARGUMENT).setLabelAs(getLabel("codesync.java.enum.constant.argument")).setOrderIndexAs(10))
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ANNOTATION).setLabelAs(getLabel("codesync.java.annotation"))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ENUM_CONSTANT_ARGUMENT).setOrderIndexAs(10))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ANNOTATION)
 					.setIconAs(getImagePathFromPublicResources(IMG_ANNOTATION)).setOrderIndexAs(20))
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_FIELD)));
 		
@@ -237,7 +238,8 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 		
 		createNodeTypeDescriptor(MODIFIER)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, modifiers)
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST).setPossibleValuesAs(Arrays.asList(
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.NAME)
+					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST).setPossibleValuesAs(Arrays.asList(
 					"public",
 					"protected",
 					"private",
@@ -252,7 +254,7 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 		
 		createNodeTypeDescriptor(PARAMETER)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(OPERATION_PARAMETERS))
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MODIFIER).setLabelAs(getLabel("codesync.java.modifier")).setOrderIndexAs(10))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MODIFIER).setOrderIndexAs(10))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, returnType)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, getImagePath(IMG_LOCAL_VAR)));
 		
@@ -260,28 +262,28 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 		.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(SUPER_INTERFACES));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CAN_CONTAIN_TYPES)
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(CLASS).setLabelAs(getLabel("codesync.java.type.class"))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(CLASS)
 					.setIconAs(getImagePathFromPublicResources(IMG_WIZ_TYPE_CLASS)).setOrderIndexAs(10000))
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(INTERFACE).setLabelAs(getLabel("codesync.java.type.interface"))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(INTERFACE)
 					.setIconAs(getImagePathFromPublicResources(IMG_WIZ_TYPE_INTERFACE)).setOrderIndexAs(20000))
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ENUM).setLabelAs(getLabel("codesync.java.type.enum"))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ENUM)
 					.setIconAs(getImagePathFromPublicResources(IMG_WIZ_TYPE_ENUM)).setOrderIndexAs(30000))
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ANNOTATION_TYPE).setLabelAs(getLabel("codesync.java.type.annotation"))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ANNOTATION_TYPE)
 					.setIconAs(getImagePathFromPublicResources(IMG_WIZ_TYPE_ANNOTATION)).setOrderIndexAs(40000));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_TYPE)
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ATTRIBUTE)
-					.setIconAs(getImagePathFromPublicResources(IMG_FIELD)).setLabelAs(getLabel("codesync.java.field")).setOrderIndexAs(100))
+					.setIconAs(getImagePathFromPublicResources(IMG_FIELD)).setOrderIndexAs(100))
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(OPERATION)
-					.setIconAs(getImagePathFromPublicResources(IMG_METHOD)).setLabelAs(getLabel("codesync.java.method")).setOrderIndexAs(200));
+					.setIconAs(getImagePathFromPublicResources(IMG_METHOD)).setOrderIndexAs(200));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_HAS_SUPER_INTERFACES)
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(SUPER_INTERFACE).setLabelAs(getLabel("codesync.java.super.interface")).setOrderIndexAs(250));
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(SUPER_INTERFACE).setOrderIndexAs(250));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_MODIFIABLE)
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MODIFIER).setLabelAs(getLabel("codesync.java.modifier")).setOrderIndexAs(1000))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MODIFIER).setOrderIndexAs(1000))
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(ANNOTATION)
-					.setIconAs(getImagePathFromPublicResources(IMG_ANNOTATION)).setLabelAs(getLabel("codesync.java.annotation")).setOrderIndexAs(2000));
+					.setIconAs(getImagePathFromPublicResources(IMG_ANNOTATION)).setOrderIndexAs(2000));
 		
 		// wrap the descriptor register code in a runnable
 //		CodeSyncPlugin.getInstance().addRunnablesForLoadDescriptors(new Runnable() {
@@ -334,13 +336,13 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 //						.addFeature(INITIALIZER));
 //				
 //				CodeSyncPlugin.getInstance().getFeatureAccessExtensions().add(new JavaFeatureAccessExtension());
-				
+//CHECKSTYLE:OFF				
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass", new JavaClassProcessor());
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass.title", new JavaClassTitleProcessor());
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass.javaAttribute", new JavaClassAttributeProcessor());
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("classDiagram.javaClass.javaOperation", new JavaClassOperationProcessor());
 //				EditorModelPlugin.getInstance().getDiagramUpdaterChangeProcessor().addDiagrammableElementFeatureChangeProcessor("scenarioInterraction", new JavaScenarioElementProcessor());
-//				
+//CHECKSTYLE:ON				
 //				AbstractFeatureChangesProcessor processor = new AbstractFeatureChangesProcessor();
 //				// if model element removed => remove view
 //				processor.getDependentFeatures().add(new DependentFeature(EObject.class, NotationPackage.eINSTANCE.getView_DiagrammableElement()));
@@ -377,7 +379,7 @@ public class CodeSyncJavaPlugin extends AbstractFlowerJavaPlugin {
 	
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		INSTANCE = null;
+		instance = null;
 	}
 
 	@Override

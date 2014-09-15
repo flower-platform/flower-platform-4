@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,13 +14,10 @@
  * license-end
  */
 package org.flowerplatform.flex_client.codesync.regex.action {
-	import org.flowerplatform.flex_client.codesync.regex.CodeSyncRegexConstants;
 	import org.flowerplatform.flex_client.codesync.regex.CodeSyncRegexPlugin;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.IEditorFrontendAware;
-	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexutil.action.MultipleSelectionActionBase;
 		
 	/**
@@ -45,17 +42,7 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 		public function get editorFrontend():EditorFrontend {			
 			return _editorFrontend;
 		}		
-		
-		override protected function isVisibleForSelectedElement(element:Object):Boolean {		
-			if (element is MindMapRootModelWrapper) {
-				return false;
-			}
-			return element is Node && 
-				(Node(element).type == CodeSyncRegexConstants.REGEX_MATCHES_TYPE 
-					|| Node(element).type == CodeSyncRegexConstants.REGEX_MATCH_TYPE 
-					|| Node(element).type == CodeSyncRegexConstants.VIRTUAL_REGEX_TYPE);
-		}		
-		
+				
 		override public function run():void	{
 			CodeSyncRegexPlugin.getInstance().getTextEditorFrontend(editorFrontend, true);
 		}

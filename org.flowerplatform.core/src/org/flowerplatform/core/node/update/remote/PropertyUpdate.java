@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,16 @@ public class PropertyUpdate extends Update {
 	private String key;
 	
 	private Object value;
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	private Object oldValue;
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	private boolean hasOldValue;
 	
 	private boolean isUnset;
 
@@ -36,10 +46,12 @@ public class PropertyUpdate extends Update {
 		this.key = key;
 	}
 
+	//CHECKSTYLE:OFF
 	public PropertyUpdate setKeyAs(String key) {
 		this.key = key;
 		return this;
 	}
+	//CHECKSTYLE:ON
 	
 	public Object getValue() {
 		return value;
@@ -49,10 +61,42 @@ public class PropertyUpdate extends Update {
 		this.value = value;
 	}
 
-	public PropertyUpdate setValueAs(Object value) {
-		this.value = value;
+	//CHECKSTYLE:OFF
+	public PropertyUpdate setValueAs(Object properyUpdateValue) {
+		this.value = properyUpdateValue;
 		return this;
 	}
+	//CHECKSTYLE:ON
+
+	public Object getOldValue() {
+		return oldValue;
+	}
+
+	/**
+	 * No standard setter was created, in order to avoid serialization of this field 
+	 * 
+	 * @author Claudiu Matei
+	 */
+	public PropertyUpdate setOldValueAs(Object propertyOldValue) {
+		this.oldValue = propertyOldValue;
+		return this;
+	}
+
+	public boolean getHasOldValue() {
+		return hasOldValue;
+	}
+	
+	/**
+	 * No standard setter was created, in order to avoid serialization of this field 
+	 * 
+	 * @author Claudiu Matei
+	 */
+	//CHECKSTYLE:OFF
+	public PropertyUpdate setHasOldValueAs(boolean hasOldValue) {
+		this.hasOldValue = hasOldValue;
+		return this;
+	}
+	//CHECKSTYLE:ON
 	
 	public boolean getIsUnset() {
 		return isUnset;
@@ -62,11 +106,17 @@ public class PropertyUpdate extends Update {
 		this.isUnset = isUnset;
 	}
 		
+	//CHECKSTYLE:OFF
 	public PropertyUpdate setUnsetAs(boolean isUnset) {
 		this.isUnset = isUnset;
 		return this;
+		//CHECKSTYLE:ON
+		
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public PropertyUpdate() {
 		super();
 		this.setType(CoreConstants.UPDATE_PROPERTY);

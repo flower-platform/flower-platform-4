@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,8 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.tests.codesync.CodeSyncTestSuite;
+import org.flowerplatform.tests.controllers.FileSystemControllersTest;
+import org.flowerplatform.tests.core.CommandStackTest;
 import org.flowerplatform.tests.core.CoreTestSuite;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.junit.BeforeClass;
@@ -41,7 +43,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-
+//CHECKSTYLE:OFF
 /**
  * @author Mariana Gheorghe
  */
@@ -49,23 +51,23 @@ import org.osgi.framework.BundleContext;
 @RunWith(Suite.class)
 @SuiteClasses({ 
 	CodeSyncTestSuite.class,
-	CoreTestSuite.class,
-//	FileSystemControllersTest.class
-	
-//	RegexTestSuite.class
+	FileSystemControllersTest.class,
+	CommandStackTest.class,
+	CoreTestSuite.class
 })
 public class EclipseIndependentTestSuite {
-	
-	public static String WORKSPACE_LOCATION = "workspace";
-	
+//CHECKSTYLE:ON	
+	public static String workspaceLocation = "workspace";
 	public static NodeService nodeService;
 	
 	public static String sessionId = "mockSessionId";
-	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	@BeforeClass
 	public static void beforeClass() throws Exception {
-		// populate from web.xml in the servlet container
-		FrameworkProperties.getProperties().put("osgi.instance.area", WORKSPACE_LOCATION);
+		// populated from FlowerFrameworkLauncher in the servlet container
+		FrameworkProperties.getProperties().put("FLOWER_PLATFORM_HOME", new File("").getAbsolutePath());
 		
 		startPlugin(new ResourcesPlugin());
 		startPlugin(new CorePlugin());
@@ -109,19 +111,23 @@ public class EclipseIndependentTestSuite {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public static void copyFiles(String from, String dir) {
-		File to = new File(WORKSPACE_LOCATION, dir);
+		File to = new File(workspaceLocation, dir);
 		try {
 			FileUtils.copyDirectory(new File(from), to);
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot copy files needed for test", e);
 		}
 	}
-
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public static void deleteFiles(String dir) {
 		try {
-			FileUtils.deleteDirectory(new File(WORKSPACE_LOCATION, dir));
+			FileUtils.deleteDirectory(new File(workspaceLocation, dir));
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot delete files ", e);
 		}

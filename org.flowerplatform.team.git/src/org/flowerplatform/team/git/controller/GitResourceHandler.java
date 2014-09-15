@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,9 +15,9 @@
  */
 package org.flowerplatform.team.git.controller;
 
-import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_TYPE;
-import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
 import static org.flowerplatform.team.git.GitConstants.GIT_REPO_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTE_TYPE;
+import static org.flowerplatform.team.git.GitConstants.GIT_REMOTES_TYPE;
 
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -55,6 +55,7 @@ public class GitResourceHandler implements IResourceHandler {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+
 	}
 
 	@Override

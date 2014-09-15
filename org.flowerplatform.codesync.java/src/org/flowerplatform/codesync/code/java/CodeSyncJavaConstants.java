@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,11 @@ import org.flowerplatform.resources.ResourcesPlugin;
 /**
  * @author Mariana Gheorghe
  */
-public class CodeSyncJavaConstants {
+public final class CodeSyncJavaConstants {
 	
+	private CodeSyncJavaConstants() {
+		
+	}
 	public static final String JAVA = "java";
 
 	public static final String EXTENSION_JAVA = "java";
@@ -67,7 +70,7 @@ public class CodeSyncJavaConstants {
 	public static final String OPERATION_HAS_BODY = "hasBody";
 	public static final String ANNOTATION_VALUE_VALUE = "annotationValueValue";
 	public static final String ANNOTATION_MEMBER_DEFAULT_VALUE = "annotationMemberDefaultValue";
-	public final static String SINGLE_MEMBER_ANNOTATION_VALUE_NAME = "_";
+	public static final String SINGLE_MEMBER_ANNOTATION_VALUE_NAME = "_";
 	
 	// Containment features
 	
@@ -118,10 +121,16 @@ public class CodeSyncJavaConstants {
 	public static final String VISIBILITY_PROTECTED = "_protected";
 	public static final String VISIBILITY_DEFAULT = "_default";
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public static String getImagePath(String image) {
 		return "org.flowerplatform.resources/images/codesync.java/" + image;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public static String getImagePathFromPublicResources(String image) {
 		return ResourcesPlugin.getInstance().getResourceUrl("/images/codesync.java/" + image);
 	}

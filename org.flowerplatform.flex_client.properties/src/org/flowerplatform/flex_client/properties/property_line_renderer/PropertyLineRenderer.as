@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 		
 		protected function propertyDescriptorUpdated():void {
 			// use title as label if set
-			this.label = _propertyDescriptor.title != null ? _propertyDescriptor.title : _propertyDescriptor.name;			
+			this.label = _propertyDescriptor.label != null ? _propertyDescriptor.label : _propertyDescriptor.name;			
 			
 			if (renderer != null) {
 				renderer.propertyDescriptorChangedHandler();

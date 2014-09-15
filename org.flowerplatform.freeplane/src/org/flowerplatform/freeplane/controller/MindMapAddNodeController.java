@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,14 +41,21 @@ public class MindMapAddNodeController extends AbstractController implements IAdd
 		NodeModel newNodeModel = new NodeModel("", parentRawNodeData.getMap());
 		newNodeModel.setLeft(parentRawNodeData.isLeft());
 		
-		parentRawNodeData.insert(newNodeModel, currentModelAtInsertionPoint != null ? parentRawNodeData.getChildPosition(currentModelAtInsertionPoint) : parentRawNodeData.getChildCount());
+		parentRawNodeData.insert(newNodeModel, currentModelAtInsertionPoint != null ? parentRawNodeData
+				.getChildPosition(currentModelAtInsertionPoint) : parentRawNodeData.getChildCount());
 		parentRawNodeData.getMap().setSaved(false);
 		
 		// set the id on the node instance
 		String scheme = Utils.getScheme(node.getNodeUri());
 		String ssp = Utils.getSchemeSpecificPart(node.getNodeUri());
-		child.setNodeUri(Utils.getUri(scheme, ssp, newNodeModel.createID()));
-		child.setRawNodeData(newNodeModel);		
+		String childUri = child.getNodeUri();
+		if (childUri == null) {
+			child.setNodeUri(Utils.getUri(scheme, ssp, newNodeModel.createID()));
+		} else {
+			String childId = Utils.getFragment(child.getNodeUri());
+			newNodeModel.setID(childId);
+		}
+		child.setRawNodeData(newNodeModel);
 	}
 
 }

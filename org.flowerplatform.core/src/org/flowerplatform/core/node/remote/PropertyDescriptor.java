@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,10 @@ import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_
 
 import java.util.List;
 
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.IDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
  * @author Cristina Constantinescu
@@ -31,7 +33,7 @@ import org.flowerplatform.util.controller.IDescriptor;
 public class PropertyDescriptor extends AbstractController implements IDescriptor {
 	
 	private String name;
-	private String title;
+	private String label;
 	
 	private String type = PROPERTY_DESCRIPTOR_TYPE_STRING;
 	private String category = PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
@@ -55,23 +57,28 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.name = name;
 	}
 	
+	//CHECKSTYLE:OFF
 	public PropertyDescriptor setNameAs(String name) {
 		this.name = name;
 		return this;
 	}
+	//CHECKSTYLE:ON
 		
-	public String getTitle() {
-		return title;
+	public String getLabel() {
+		return label;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
-	public PropertyDescriptor setTitleAs(String title) {
-		this.title = title;
+	//CHECKSTYLE:OFF
+	public PropertyDescriptor setLabelAs(String label) {
+		this.label = label;
 		return this;
 	}
+	//CHECKSTYLE:ON
+	
 	
 	public String getType() {
 		return type;
@@ -81,11 +88,14 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.type = type;
 	}
 	
+	//CHECKSTYLE:OFF
+
 	public PropertyDescriptor setTypeAs(String type) {
 		this.type = type;
 		return this;
 	}
-	
+	//CHECKSTYLE:ON
+
 	public String getCategory() {
 		return category;
 	}
@@ -94,10 +104,14 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.category = category;
 	}
 	
-	public PropertyDescriptor setCategoryAs(String category) {
-		this.category = category;
+	//CHECKSTYLE:OFF
+
+	public PropertyDescriptor setCategoryAs(String categoryName) {
+		this.category = categoryName;
 		return this;
 	}
+	//CHECKSTYLE:ON
+
 	
 	public boolean getReadOnly() {
 		return readOnly;
@@ -107,8 +121,11 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.readOnly = readOnly;
 	}
 	
-	public PropertyDescriptor setReadOnlyAs(boolean readOnly) {
-		this.readOnly = readOnly;
+	/**
+	 *@author see class
+	 **/
+	public PropertyDescriptor setReadOnlyAs(boolean readOnlyValue) {
+		this.readOnly = readOnlyValue;
 		return this;
 	}
 
@@ -120,8 +137,11 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.possibleValues = possibleValues;
 	}
 	
-	public PropertyDescriptor setPossibleValuesAs(List<?> possibleValues) {
-		this.possibleValues = possibleValues;
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	public PropertyDescriptor setPossibleValuesAs(List<?> givenPossibleValues) {
+		this.possibleValues = givenPossibleValues;
 		return this;
 	}
 	
@@ -133,6 +153,9 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.contributesToCreation = contributeToCreation;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public PropertyDescriptor setContributesToCreationAs(boolean contributeToCreation) {
 		this.contributesToCreation = contributeToCreation;
 		return this;
@@ -146,8 +169,11 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.mandatory = mandatory;
 	}
 	
-	public PropertyDescriptor setMandatoryAs(boolean mandatory) {
-		this.mandatory = mandatory;
+	/**
+	 *@author see class
+	 **/
+	public PropertyDescriptor setMandatoryAs(boolean isMandatory) {
+		this.mandatory = isMandatory;
 		return this;
 	}
 	
@@ -159,9 +185,11 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.defaultValue = defaultValue;
 	}
 	
+	//CHECKSTYLE:OFF
 	public PropertyDescriptor setDefaultValueAs(Object defaultValue) {
 		this.defaultValue = defaultValue;
 		return this;
+		//CHECKSTYLE:ON
 	}
 	
 	public String getPropertyLineRenderer() {
@@ -172,14 +200,28 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.propertyLineRenderer = propertyLineRenderer;
 	}
 	
-	public PropertyDescriptor setPropertyLineRendererAs(String propertyLineRenderer) {
-		this.propertyLineRenderer = propertyLineRenderer;
+	/**
+	 *@author see class
+	 **/
+	public PropertyDescriptor setPropertyLineRendererAs(String lineRenderer) {
+		this.propertyLineRenderer = lineRenderer;
 		return this;
+	}
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public void setTypeDescriptor(TypeDescriptor typeDescriptor) {
+		super.setTypeDescriptor(typeDescriptor);
+		if (label == null) {
+			label = ResourcesPlugin.getInstance().getLabelForProperty(typeDescriptor.getType() + "." + name);
+		}
 	}
 
 	@Override
 	public String toString() {
-		return "PropertyDescriptor [name=" + name + ", title=" + title
+		return "PropertyDescriptor [name=" + name + ", title=" + label
 				+ ", type=" + type + ", category=" + category
 				+ ", propertyLineRenderer=" + propertyLineRenderer
 				+ ", contributesToCreation=" + contributesToCreation
@@ -187,5 +229,5 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 				+ ", possibleValues=" + possibleValues + ", defaultValue="
 				+ defaultValue + "]";
 	}	
-	
+
 }

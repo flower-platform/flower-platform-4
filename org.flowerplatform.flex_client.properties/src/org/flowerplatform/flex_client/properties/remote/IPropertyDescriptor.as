@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@ package org.flowerplatform.flex_client.properties.remote {
 		function get name():String;
 		function set name(value:String):void;
 		
-		function get title():String;
-		function set title(value:String):void;
+		function get label():String;
+		function set label(value:String):void;
 		
 		function get type():String;
 		function set type(value:String):void;

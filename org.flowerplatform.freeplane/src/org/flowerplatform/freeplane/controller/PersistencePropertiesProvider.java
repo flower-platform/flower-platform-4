@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
 package org.flowerplatform.freeplane.controller;
 
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.controller.IPersistenceController;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
@@ -27,7 +28,7 @@ import org.freeplane.features.map.NodeModel;
 /**
  * @author Cristina Constantinescu
  */
-public class PersistencePropertiesProvider extends AbstractController implements IPropertiesProvider {
+public class PersistencePropertiesProvider extends AbstractController implements IPropertiesProvider, IPersistenceController {
 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {

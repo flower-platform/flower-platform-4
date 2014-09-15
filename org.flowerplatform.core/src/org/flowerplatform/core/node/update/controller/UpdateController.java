@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,8 +15,14 @@
  */
 package org.flowerplatform.core.node.update.controller;
 
+import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
+import static org.flowerplatform.core.CoreConstants.RESOURCE_SET;
 import static org.flowerplatform.core.CoreConstants.UPDATE_CHILD_ADDED;
 import static org.flowerplatform.core.CoreConstants.UPDATE_CHILD_REMOVED;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -26,6 +32,7 @@ import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.controller.IRemoveNodeController;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.resource.ResourceSetService;
 import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
 import org.flowerplatform.core.node.update.remote.PropertyUpdate;
 import org.flowerplatform.util.controller.AbstractController;
@@ -36,31 +43,67 @@ import org.flowerplatform.util.controller.AbstractController;
 public class UpdateController extends AbstractController
 		implements IAddNodeController, IRemoveNodeController, IPropertySetter {
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public UpdateController() {
 		// must be invoked last; otherwise the modification may not be fully/correctly recorded
 		setOrderIndex(100000);
 	}
 	
 	@Override
-	public void addNode(Node node, Node child, ServiceContext<NodeService> context) {
+	public void addNode(Node node, Node child, ServiceContext<NodeService> context) {		
+		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(node.getNodeUri());
 		String insertBeforeFullNodeId = (String) context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID);
-		CorePlugin.getInstance().getResourceSetService().addUpdate(
-				node, 
-				new ChildrenUpdate().setTargetNodeAs(child).setFullTargetNodeAddedBeforeIdAs(insertBeforeFullNodeId).setTypeAs(UPDATE_CHILD_ADDED).setFullNodeIdAs(node.getNodeUri()), 
-				context);	
+		if (resourceNode != null) {
+			String resourceSet = (String) resourceNode.getProperties().get(RESOURCE_SET);
+			if (resourceSet == null) {
+				resourceSet = resourceNode.getNodeUri();
+			}
+			ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
+			service.addUpdate(resourceSet, 
+						new ChildrenUpdate()
+							.setTargetNodeAs(child)
+							.setFullTargetNodeAddedBeforeIdAs(insertBeforeFullNodeId)
+							.setTypeAs(UPDATE_CHILD_ADDED)
+							.setFullNodeIdAs(node.getNodeUri()));
+			
+		}
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Claudiu Matei
+	 */
 	@Override
 	public void removeNode(Node node, Node child, ServiceContext<NodeService> context) {
-		CorePlugin.getInstance().getResourceSetService().addUpdate(
-				node, 
-				new ChildrenUpdate().setTargetNodeAs(child).setTypeAs(UPDATE_CHILD_REMOVED).setFullNodeIdAs(node.getNodeUri()), 
-				context);	
+		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(node.getNodeUri());
+		String insertBeforeFullNodeId = (String) context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID);
+		if (resourceNode != null) {
+			String resourceSet = (String) resourceNode.getProperties().get(RESOURCE_SET);
+			if (resourceSet == null) {
+				resourceSet = resourceNode.getNodeUri();
+			}
+			// otherwise the node will reference probably the whole mindmap file, that would lead to memory leaks
+//			child.setRawNodeData(null);
+			ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
+			@SuppressWarnings("unchecked")
+			List<ChildrenUpdate> removedNodes = (List<ChildrenUpdate>) context.get("removedNodes");
+			service.addUpdate(resourceSet, 
+						new ChildrenUpdate()
+							.setTargetNodeAs(child)
+							.setRemovedNodesAs(removedNodes)
+							.setFullTargetNodeAddedBeforeIdAs(insertBeforeFullNodeId)
+							.setTypeAs(UPDATE_CHILD_REMOVED)
+							.setFullNodeIdAs(node.getNodeUri()));		
+		}
 	}
 	
 	@Override
-	public void setProperty(Node node, String key, Object value, ServiceContext<NodeService> context) {	
-		setUnsetProperty(node, key, value, false, context);
+	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {	
+		for (String key : properties.keySet()) {
+			setUnsetProperty(node, key, properties.get(key), false, context);
+		}
 	}
 
 	@Override
@@ -70,11 +113,38 @@ public class UpdateController extends AbstractController
 		setUnsetProperty(node, key, propertyValue, propertyValue == null, context);
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Claudiu Matei
+	 */
 	private void setUnsetProperty(Node node, String key, Object value, boolean isUnset, ServiceContext<NodeService> context) {		
-		CorePlugin.getInstance().getResourceSetService().addUpdate(
-				node, 
-				new PropertyUpdate().setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getNodeUri()), 
-				context);		
+		String resourceSet = null;
+		Node resourceNode;
+		if (context.getBooleanValue(NODE_IS_RESOURCE_NODE)) {
+			resourceNode = node;
+		} else {
+			resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(node.getNodeUri());
+			
+		}
+		if (resourceNode == null) {
+			return;
+		}
+		resourceSet = (String) resourceNode.getProperties().get(RESOURCE_SET);
+		if (resourceSet == null) {
+			resourceSet = resourceNode.getNodeUri();
+		}
+		ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
+		PropertyUpdate update = new PropertyUpdate();
+		update.setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getNodeUri());
+		
+		@SuppressWarnings("unchecked")
+		HashMap<String, Object> oldValues = (HashMap<String, Object>) context.getContext().get(CoreConstants.OLD_VALUES);
+		if (oldValues.containsKey(key)) {
+			update.setHasOldValueAs(true);
+			update.setOldValueAs(oldValues.get(key));
+		}
+		
+		service.addUpdate(resourceSet, update);		
 	}
 
 }

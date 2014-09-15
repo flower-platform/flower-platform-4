@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,10 +20,14 @@ import static org.flowerplatform.core.CoreConstants.TYPE_KEY;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.MissingResourceException;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.node.resource.ResourceSetService;
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.TypeDescriptorRemote;
 
 /**
@@ -33,6 +37,9 @@ import org.flowerplatform.util.controller.TypeDescriptorRemote;
  */
 public class NodeServiceRemote {
 	
+	/**
+	 *@author see class
+	 **/
 	public List<Node> getChildren(String nodeUri, ServiceContext<NodeService> context) {
 		if (context == null) {
 			context = new ServiceContext<NodeService>(getNodeService());
@@ -41,32 +48,66 @@ public class NodeServiceRemote {
 		}
 		return getNodeService().getChildren(CorePlugin.getInstance().getResourceService().getNode(nodeUri), context);		
 	}
-	
+
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
+	 * @author Claudiu Matei
+	 */
 	public void setProperty(String fullNodeId, String property, Object value) {
-		getNodeService().setProperty(CorePlugin.getInstance().getResourceService().getNode(fullNodeId), property, value, new ServiceContext<NodeService>(getNodeService()));	
+		ResourceSetService rss = CorePlugin.getInstance().getResourceSetService();
+		Node node = CorePlugin.getInstance().getResourceService().getNode(fullNodeId);
+		node.getOrPopulateProperties(new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		String typeLabel = ResourcesPlugin.getInstance().getLabelForNodeType(node.getType());
+		String nodeName = (String) node.getPropertyValue(getNodeTitleProperty(node.getType()));
+		String propertyLabel = typeLabel + (nodeName != null ? "(" + nodeName + ")" : "") + "." + property;
+		String commandTitle = ResourcesPlugin.getInstance().getMessage("commandStack.command.setProperty", propertyLabel, value.toString());
+		rss.startCommand(rss.getResourceSet(fullNodeId), commandTitle);
+		getNodeService().setProperty(node, property, value, new ServiceContext<NodeService>(getNodeService()));	
 	}
 		
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
+	 * @author Claudiu Matei
+	 */
 	public void unsetProperty(String fullNodeId, String property) {
-		getNodeService().unsetProperty(CorePlugin.getInstance().getResourceService().getNode(fullNodeId), property, new ServiceContext<NodeService>(getNodeService()));	
+		ResourceSetService rss = CorePlugin.getInstance().getResourceSetService();
+		Node node = CorePlugin.getInstance().getResourceService().getNode(fullNodeId);
+		node.getOrPopulateProperties(new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		String typeLabel = ResourcesPlugin.getInstance().getLabelForNodeType(node.getType());
+		String nodeName = (String) node.getPropertyValue(getNodeTitleProperty(node.getType()));
+		String propertyLabel = typeLabel + (nodeName != null ? "(" + nodeName + ")" : "") + "." + property;
+		String commandTitle = ResourcesPlugin.getInstance().getMessage("commandStack.command.unsetProperty", propertyLabel);
+		rss.startCommand(rss.getResourceSet(fullNodeId), commandTitle);
+		getNodeService().unsetProperty(node, property, new ServiceContext<NodeService>(getNodeService()));	
 	}
 	
 	/**
 	 * @author Cristina Constantinescu
 	 * @author Sebastian Solomon
+	 * @author Claudiu Matei
 	 */
-	public String addChild(String parentFullNodeId, ServiceContext<NodeService> context) {
+	public String addChild(String parentNodeUri, ServiceContext<NodeService> context) {
 		if (context == null) {
 			context = new ServiceContext<NodeService>(getNodeService());
 		} else {
 			context.setService(getNodeService());
 		}
 				
-		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentFullNodeId);
+		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentNodeUri);
 		String childType = (String) context.get(TYPE_KEY);
 		if (childType == null) {
 			throw new RuntimeException("Type for new child node must be provided in context!");
 		}
 		Node child = new Node(null, childType);
+		
+		ResourceSetService rss = CorePlugin.getInstance().getResourceSetService();
+		String childTypeLabel = ResourcesPlugin.getInstance().getLabelForNodeType(childType);
+		String childName = (String) context.get(getNodeTitleProperty(childType));
+		String nodeLabel = childTypeLabel + (childName != null ? "(" + childName + ")" : "");
+		String commandTitle = ResourcesPlugin.getInstance().getMessage("commandStack.command.addChild", nodeLabel);
+		rss.startCommand(rss.getResourceSet(parentNodeUri), commandTitle);
 		
 		getNodeService().addChild(parent, child, context);
 		
@@ -75,9 +116,28 @@ public class NodeServiceRemote {
 		return child.getNodeUri();
 	}
 	
-	public void removeChild(String parentFullNodeId, String childFullNodeId) {
-		getNodeService().removeChild(CorePlugin.getInstance().getResourceService().getNode(parentFullNodeId), 
-				CorePlugin.getInstance().getResourceService().getNode(childFullNodeId), new ServiceContext<NodeService>(getNodeService()));
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
+	 * @author Claudiu Matei
+	 */
+	public void removeChild(String parentNodeUri, String childNodeUri) {
+		ResourceSetService rss = CorePlugin.getInstance().getResourceSetService();
+		Node childNode = CorePlugin.getInstance().getResourceService().getNode(childNodeUri);
+		childNode.getOrPopulateProperties(new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		String childTypeLabel;
+		try {
+			childTypeLabel = ResourcesPlugin.getInstance().getLabelForNodeType(childNode.getType());
+		} catch (MissingResourceException e) {
+			childTypeLabel = childNode.getType();
+		}
+		String childName = (String) childNode.getPropertyValue(getNodeTitleProperty(childNode.getType()));
+		String nodeLabel = childTypeLabel + (childName != null ? "(" + childName + ")" : "");
+		String commandTitle = ResourcesPlugin.getInstance().getMessage("commandStack.command.removeChild", nodeLabel);
+		rss.startCommand(rss.getResourceSet(parentNodeUri), commandTitle);
+		
+		getNodeService().removeChild(CorePlugin.getInstance().getResourceService().getNode(parentNodeUri), 
+				CorePlugin.getInstance().getResourceService().getNode(childNodeUri), new ServiceContext<NodeService>(getNodeService()));
 	}
 	
 	public List<TypeDescriptorRemote> getRegisteredTypeDescriptors() {
@@ -119,6 +179,9 @@ public class NodeServiceRemote {
 		return response;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public Node getNode(String fullNodeId) {	
 		return CorePlugin.getInstance().getResourceService().getNode(fullNodeId, new ServiceContext<ResourceService>().add(POPULATE_WITH_PROPERTIES, true));
 	}
@@ -136,4 +199,9 @@ public class NodeServiceRemote {
 		return CorePlugin.getInstance().getNodeService();
 	}
 	
+	private String getNodeTitleProperty(String nodeType) {
+		GenericValueDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(nodeType)
+				.getSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, null);
+		return (String) descriptor.getValue();
+	}
 }

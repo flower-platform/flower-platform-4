@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,6 @@ import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceSetService;
-import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
@@ -55,7 +54,8 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	 */
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, final Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
-		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(getNode(element), new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(POPULATE_WITH_PROPERTIES, true));
+		List<Node> children = CorePlugin.getInstance().getNodeService()
+				.getChildren(getNode(element), new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(POPULATE_WITH_PROPERTIES, true));
 		return new FilteredIterable<Node, Object>((Iterator<Node>) children.iterator()) {
 
 			@Override
@@ -100,7 +100,8 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	 * @author Cristina Constantinescu
 	 */
 	@Override
-	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, 
+			IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// first check if the child already exists
 //		Iterable<?> children = super.getContainmentFeatureIterable(eObject, feature, null);
 //		IModelAdapter adapter = codeSyncElementConverter.getModelAdapter(correspondingChild);
@@ -123,10 +124,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 				// set the type for the new node; needed by the action performed handler
 				String type = correspondingModelAdapterSet.getType(correspondingChild, codeSyncAlgorithm);
 				
-				String scheme = Utils.getScheme(parentNode.getNodeUri());
-				String ssp = Utils.getSchemeSpecificPart(parentNode.getNodeUri());
-				String childUri = Utils.getUri(scheme, ssp, null);
-				Node child = new Node(childUri, type);
+				Node child = new Node(null, type);
 				ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
 				context.getContext().put(CodeSyncConstants.SYNC_IN_PROGRESS, true);
 				CorePlugin.getInstance().getNodeService().addChild(parentNode, child, context);
@@ -155,18 +153,30 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		return false;
 	}
 
+	/**
+	 *@author Valentina Bojan
+	 **/
 	public String getConflictPropertyName(String property) {
 		return property + CONFLICT_SUFFIX;
 	}
 
+	/**
+	 *@author Valentina Bojan
+	 **/
 	public boolean isConflict(Node node) {
 		return hasFlagTrue(node, CONFLICT);
 	}
 
+	/**
+	 *@author Valentina Bojan
+	 **/
 	public boolean isConflictPropertyName(String property) {
 		return property.endsWith(CONFLICT_SUFFIX);
 	}
 
+	/**
+	 *@author Valentina Bojan  
+	 **/
 	public boolean isOriginalPropertyName(String property) {
 		return property.endsWith(ORIGINAL_SUFFIX);
 	}
@@ -176,6 +186,9 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		return b != null && b;
 	}
 
+	/**
+	 *@author Valentina Bojan
+	 **/
 	public boolean noChildConflict(Node node, NodeService service) {
 		for (Node child : service.getChildren(node, new ServiceContext<NodeService>(service).add(POPULATE_WITH_PROPERTIES, true))) {
 			if (isConflict(child) || isChildrenConflict(child)) {
@@ -185,18 +198,30 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		return true;
 	}
 
+	/**
+	 *@author Valentina Bojan 
+	 **/
 	public boolean isChildrenConflict(Node node) {
 		return hasFlagTrue(node, CHILDREN_CONFLICT);
 	}
 
+	/**
+	 *@author Valentina Bojan 
+	 **/
 	public boolean isSync(Node node) {
 		return hasFlagTrue(node, SYNC);
 	}
 
+	/**
+	 *@author Valentina Bojan 
+	 **/
 	public boolean isAdded(Node node) {
 		return hasFlagTrue(node, ADDED);
 	}
 
+	/**
+	 *@author Valentina Bojan
+	 **/
 	public boolean isRemoved(Node node) {
 		return hasFlagTrue(node, REMOVED);
 	}
@@ -296,10 +321,16 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 		service.setProperty(node, CHILDREN_SYNC, true, new ServiceContext<NodeService>(service));
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected Node getNode(Object element) {
 		return (Node) element;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected void processContainmentFeatureAfterActionPerformed(Node node, Object feature, ActionResult result, Match match) {
 		NodeService service = CorePlugin.getInstance().getNodeService();
 		Object child = findChild(match, feature, result.childAdded, result.childMatchKey);
@@ -322,7 +353,6 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	/**
 	 * Checks if the <code>list</code> contains the <code>child</code> based on its match key.
 	 * @param matchKey 
-	 * @param childMatchKey 
 	 */
 	protected Object findChild(Match parentMatch, Object feature, boolean childAdded, Object matchKey) {
 		if (matchKey == null) {

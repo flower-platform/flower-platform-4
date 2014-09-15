@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,22 +39,25 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class ResourceDebugControllers extends DebugControllers {
 
-	private final String RESOURCES_SERVER = DEBUG + "ServerResources";
+	private static final String RESOURCES_SERVER = DEBUG + "ServerResources";
 	
-	private final String RESOURCES_CLIENT = DEBUG + "ClientResources";
+	private static final String RESOURCES_CLIENT = DEBUG + "ClientResources";
 	
-	private final String SESSIONS = DEBUG + "Sessions";
+	private static final String SESSIONS = DEBUG + "Sessions";
 	
-	private final String SESSION = DEBUG + "Session";
-	private final String RESOURCE2 = DEBUG + "Resource2";
+	private static final String SESSION = DEBUG + "Session";
+	private static final String RESOURCE2 = DEBUG + "Resource2";
 	
-	private final String RESOURCE_SET = DEBUG + "ResourceSet";
-	private final String RESOURCE = DEBUG + "Resource";
-	private final String SESSION2 = DEBUG + "Session2";
+	private static final String RESOURCE_SET = DEBUG + "ResourceSet";
+	private static final String RESOURCE = DEBUG + "Resource";
+	private static final String SESSION2 = DEBUG + "Session2";
 	
-	private final String SESSION_CATEGORY = UtilConstants.CATEGORY_PREFIX + SESSION;
-	private final String RESOURCE_CATEGORY = UtilConstants.CATEGORY_PREFIX + RESOURCE;
+	private static final String SESSION_CATEGORY = UtilConstants.CATEGORY_PREFIX + SESSION;
+	private static final String RESOURCE_CATEGORY = UtilConstants.CATEGORY_PREFIX + RESOURCE;
 	
+	/**
+	 *@author see class
+	 **/
 	class RootDebugController extends AbstractController implements IChildrenProvider {
 		
 		@Override
@@ -68,6 +71,9 @@ public class ResourceDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class DebugController extends AbstractController implements IPropertiesProvider, IChildrenProvider {
 
 		@Override
@@ -89,6 +95,9 @@ public class ResourceDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class SessionsDebugController extends AbstractController implements IPropertiesProvider, IChildrenProvider {
 
 		@Override
@@ -111,6 +120,9 @@ public class ResourceDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class ResourcesClientDebugController extends AbstractController implements IPropertiesProvider, IChildrenProvider {
 
 		@Override
@@ -130,6 +142,9 @@ public class ResourceDebugControllers extends DebugControllers {
 		
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class ResourcesDebugController extends AbstractController implements IPropertiesProvider, IChildrenProvider {
 
 		@Override
@@ -152,6 +167,9 @@ public class ResourceDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class SessionCategoryDebugController extends AbstractController implements IPropertiesProvider {
 		
 		@Override
@@ -163,6 +181,9 @@ public class ResourceDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class SessionDebugController extends AbstractController implements IChildrenProvider {
 
 		@Override
@@ -183,6 +204,9 @@ public class ResourceDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class ResourceDebugController extends AbstractController implements IChildrenProvider {
 
 		@Override
@@ -203,6 +227,9 @@ public class ResourceDebugControllers extends DebugControllers {
 		
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class ResourceCategoryDebugController extends AbstractController implements IPropertiesProvider {
 		
 		@Override
@@ -215,6 +242,9 @@ public class ResourceDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class ResourceSetDebugController extends AbstractController implements IChildrenProvider, IPropertiesProvider {
 
 		@Override
@@ -242,6 +272,9 @@ public class ResourceDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public void registerControllers() {
 		
 		addVirtualDebugType(DEBUG);

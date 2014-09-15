@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,12 +17,19 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
+	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.mindmap.action.EditNodeDetailsInDialogAction;
 	import org.flowerplatform.flex_client.mindmap.action.EditNoteInDialogAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodeDownAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodeLeftAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodePageDownAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodePageUpAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodeRightAction;
+	import org.flowerplatform.flex_client.mindmap.action.NodeUpAction;
 	import org.flowerplatform.flex_client.mindmap.action.RefreshAction;
 	import org.flowerplatform.flex_client.mindmap.controller.MindMapNodeTypeProvider;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeAbsoluteLayoutRectangleController;
@@ -70,7 +77,8 @@ package org.flowerplatform.flex_client.mindmap {
 			this.correspondingJavaPlugin = "org.flowerplatform.mindmap";
 
 			CorePlugin.getInstance().nodeTypeProvider = new MindMapNodeTypeProvider();
-			CorePlugin.getInstance().serviceLocator.addService("mindmapService");
+			CorePlugin.getInstance().serviceLocator.addService("mindMapService");
+			CorePlugin.getInstance().serviceLocator.addService("freeplaneService");
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.ID)			
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new MindMapRootModelChildrenController(-10))
@@ -91,23 +99,25 @@ package org.flowerplatform.flex_client.mindmap {
 				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER, new NodeInplaceEditorController());		
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapConstants.MINDMAP_NODE_TYPE)
-				.addSingleController(MindMapConstants.NODE_SIDE_PROVIDER, new GenericValueProviderFromDescriptor(MindMapConstants.PROPERTY_FOR_SIDE_DESCRIPTOR));
-			
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapConstants.MINDMAP_NODE_TYPE)
-				.addSingleController(MindMapConstants.NODE_SIDE_PROVIDER, new GenericValueProviderFromDescriptor(MindMapConstants.PROPERTY_FOR_SIDE_DESCRIPTOR));
-			
+				.addSingleController(MindMapConstants.NODE_SIDE_PROVIDER, new GenericValueProviderFromDescriptor(MindMapConstants.PROPERTY_FOR_SIDE_DESCRIPTOR))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(EditNodeDetailsInDialogAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(EditNoteInDialogAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RemoveNodeAction.ID));
+		
 			// register PropertiesPlugin Renderer
 			PropertiesPlugin.getInstance().propertyDescriptorTypeToPropertyRendererFactory[MindMapConstants.MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE] = new FactoryWithInitialization
 				(IconsWithButtonPropertyRenderer, {
-					clickHandler: function(itemRendererHandler:IDialogResultHandler, propertyName:String, propertyValue:Object):void {
+					clickHandler: function(itemRendererHandler:IDialogResultHandler, propertyName:String, propertyValue:Object,selection:Node):void {
 						var dialog:MindMapIconsView = new MindMapIconsView();
+						dialog.showOnlyRepositoryCustomIcons = false;
 						dialog.setResultHandler(itemRendererHandler);
 						dialog.icons = propertyValue;
+						dialog.repoPath = CorePlugin.getInstance().getRepository(selection.nodeUri);
 						
 						FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 						.setViewContent(dialog)						
-						.setWidth(300)
-						.setHeight(320)
+						.setWidth(370)
+						.setHeight(340)
 						.show();
 					},
 					
@@ -119,18 +129,22 @@ package org.flowerplatform.flex_client.mindmap {
 			PropertiesPlugin.getInstance().propertyDescriptorTypeToPropertyRendererFactory[MindMapConstants.MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE] = new FactoryWithInitialization
 				(DropDownListPropertyRenderer, {	
 					requestDataProviderHandler: function(node:Node, callbackFunction:Function):void {
-						CorePlugin.getInstance().serviceLocator.invoke("mindmapService.getStyles", [node.nodeUri], callbackFunction);
+						CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.getStyles", [node.nodeUri], callbackFunction);
 					}
 			});				
 
 			FlexUtilGlobals.getInstance().registerAction(RefreshAction);
 			FlexUtilGlobals.getInstance().registerAction(EditNodeDetailsInDialogAction);
 			FlexUtilGlobals.getInstance().registerAction(EditNoteInDialogAction);
+			FlexUtilGlobals.getInstance().registerAction(NodeDownAction);
+			FlexUtilGlobals.getInstance().registerAction(NodeLeftAction);
+			FlexUtilGlobals.getInstance().registerAction(NodePageDownAction);
+			FlexUtilGlobals.getInstance().registerAction(NodePageUpAction);
+			FlexUtilGlobals.getInstance().registerAction(NodeRightAction);
+			FlexUtilGlobals.getInstance().registerAction(NodeUpAction);
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
-				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RefreshAction.ID))
-				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(EditNodeDetailsInDialogAction.ID))
-				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(EditNoteInDialogAction.ID));
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RefreshAction.ID));
 			
 			CorePlugin.getInstance().linkHandlers[CoreConstants.OPEN_RESOURCES] = new LinkHandler(MindMapConstants.MINDMAP_CONTENT_TYPE);
 			

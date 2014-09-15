@@ -2,7 +2,7 @@
 <!-- 
 	license-start
  
-	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@
 		<![CDATA[
 			import mx.events.FlexEvent;
 			
-			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
@@ -51,11 +50,13 @@
 			}
 			
 			protected function treeClickHandler(event:MouseEvent):void {
-				var selectedNode:Node = Node(HierarchicalModelWrapper(tree.selectedItem).treeNode);
-				if(selectedNode.type == GitConstants.GIT_LOCAL_BRANCH_TYPE ||
-					selectedNode.type == GitConstants.GIT_REMOTE_BRANCH_TYPE ||
-					selectedNode.type == GitConstants.GIT_TAG_TYPE){
-					textInput.text = selectedNode.getPropertyValue(CoreConstants.NAME);
+				if (tree.selectedItem != null) {
+					var selectedNode:Node = Node(HierarchicalModelWrapper(tree.selectedItem).treeNode);
+					if(selectedNode.type == GitConstants.GIT_LOCAL_BRANCH_TYPE ||
+						selectedNode.type == GitConstants.GIT_REMOTE_BRANCH_TYPE ||
+						selectedNode.type == GitConstants.GIT_TAG_TYPE){
+						textInput.text = selectedNode.getPropertyValue(GitConstants.FULL_NAME);
+					}	
 				}
 			}
 			
@@ -93,9 +94,7 @@
 		
 		<s:Form width="100%">
 			<s:FormItem label = "{Resources.getMessage('flex_client.team.git.ui.resetView.reset')}">
-				<s:TextInput width="100%"
-							 editable="true"
-							 id="textInput"/>
+				<s:TextInput width="100%" id="textInput"/>
 			</s:FormItem>
 		</s:Form>
 		

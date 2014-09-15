@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,5 +103,8 @@ package org.flowerplatform.flex_client.mindmap {
 		
 		public static const MINDMAP_CONTENT_TYPE:String = "mindmap";
 		public static const MINDMAP_EDITOR_NAME:String = "MindMap Editor";
+		
+		public static const LOAD_CUSTOM_ICONS:int = 1;
+		public static const LOAD_DEFAULT_ICONS:int = 2;
 	}
 }

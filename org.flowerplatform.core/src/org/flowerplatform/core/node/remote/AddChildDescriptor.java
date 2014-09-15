@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,8 +15,10 @@
  */
 package org.flowerplatform.core.node.remote;
 
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.IDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
  * Used to register client-side Add actions for a node type.
@@ -30,7 +32,7 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 	private String label;
 	
 	private String icon;
-	
+
 	public String getChildType() {
 		return childType;
 	}
@@ -55,8 +57,9 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 		this.icon = icon;
 	}
 	
-	public AddChildDescriptor setChildTypeAs(String childType) {
-		this.childType = childType;
+	//CHECKSTYLE:OFF
+	public AddChildDescriptor setChildTypeAs(String childTypeValue) {
+		this.childType = childTypeValue;
 		return this;
 	}
 
@@ -74,7 +77,19 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 		setOrderIndex(orderIndex);
 		return this;
 	}
-	
+	//CHECKSTYLE:ON
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public void setTypeDescriptor(TypeDescriptor typeDescriptor) {
+		super.setTypeDescriptor(typeDescriptor);
+		if (label == null) {
+			label = ResourcesPlugin.getInstance().getLabelForNodeType(childType);
+		}
+	}
+
 	@Override
 	public String toString() {
 		return String.format("AddChildDescriptor [childType = %s, label = %s, orderIndex = %d]", 

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,8 @@ package org.flowerplatform.flex_client.core {
 		public static const AUTO_SUBSCRIBE_ON_EXPAND:String = "autoSubscribeOnExpand";
 		
 		public static const IS_OPENABLE_IN_NEW_EDITOR:String = "isOpenableInNewEditor";
+		
+		public static const INSERT_BEFORE_FULL_NODE_ID:String = "insertBeforeFullNodeId"; 
 		
 		public static const PROPERTY_DESCRIPTOR:String = "propertyDescriptor";
 		
@@ -120,6 +122,13 @@ package org.flowerplatform.flex_client.core {
 		public static const RESOURCE_NODE_IDS_NOT_FOUND:String = "resourceNodeIdsNotFound";
 		public static const LAST_UPDATE_TIMESTAMP:String = "timestampOfLastUpdate";
 		public static const UPDATES:String = "updates";
+		
+		//////////////////////////////////
+		// Command stack
+		//////////////////////////////////
+
+		public static const COMMAND_STACK:String = "commandStack";
+		public static const COMMAND_TYPE:String = "command";
 		
 		//////////////////////////////////
 		// Editor

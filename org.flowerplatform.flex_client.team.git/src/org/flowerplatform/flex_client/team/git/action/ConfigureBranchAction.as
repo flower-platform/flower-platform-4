@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,18 +33,7 @@ package org.flowerplatform.flex_client.team.git.action {
 			icon = Resources.configBranchIcon;
 			orderIndex = 320;
 		}
-		
-
-//		override public function get visible():Boolean {
-//			if (selection.length == 1 && selection.getItemAt(0) is Node) {
-//				var node:Node = Node(selection.getItemAt(0));
-//				return (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || 
-//						node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE);		
-//			}
-//			
-//			return false;
-//		}
-		
+				
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			var configBranchView:ConfigureBranchView = new ConfigureBranchView();			

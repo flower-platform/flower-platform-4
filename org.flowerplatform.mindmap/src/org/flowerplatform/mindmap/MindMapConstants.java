@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,11 @@ import org.flowerplatform.core.CoreConstants;
 /**
  * @author Cristina Constantinescu
  */
-public class MindMapConstants {
+public final class MindMapConstants {
 	
+	private MindMapConstants() {
+		
+	}
 	//////////////////////////////////
 	// Node types
 	//////////////////////////////////
@@ -40,10 +43,10 @@ public class MindMapConstants {
 	
 	public static final String NODE_DETAILS = "nodeDetails";
 	
-	public static final List<String> FONT_SIZES = new ArrayList<>();
+	public static final List<Integer> FONT_SIZES = new ArrayList<>();
 	static {
 		for (int i = 1; i <= 72; i++) {
-			FONT_SIZES.add(String.valueOf(i));
+			FONT_SIZES.add(i);
 		}
 	}
 	

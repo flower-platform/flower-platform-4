@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,10 +29,16 @@ import org.flowerplatform.core.file.IFileAccessController;
  */
 public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 
+	/**
+	 *@author see class
+	 **/
 	protected CodeSyncFile getCodeSyncFile(Object file) {
 		return (CodeSyncFile) file;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	protected Object getOrCreateFileInfo(Object element, IFileAccessController fileAccessController) {
 		CodeSyncFile codeSyncFile = getCodeSyncFile(element);
 		if (codeSyncFile.getFileInfo() == null) {
@@ -41,6 +47,9 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 		return codeSyncFile.getFileInfo();
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	protected abstract Object createFileInfo(Object file, IFileAccessController fileAccessController);
 	
 	@Override
@@ -63,6 +72,9 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 		return getName(element, codeSyncAlgorithm.getFileAccessController());
 	}
 
+	/**
+	 *@author see class
+	 **/
 	protected String getName(Object element, IFileAccessController fileAccessController) {
 		return fileAccessController.getName(getCodeSyncFile(element).getFile());
 	}
@@ -106,6 +118,9 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 		return false;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	protected abstract TextEdit rewrite(Document document, Object fileInfo);
 	
 	/**

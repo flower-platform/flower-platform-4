@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ import static org.flowerplatform.core.CoreConstants.DONT_PROCESS_OTHER_CONTROLLE
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -35,17 +36,26 @@ import org.flowerplatform.util.controller.TypeDescriptor;
  */
 public class DelegateToResourceController extends AbstractController implements
 	IChildrenProvider, IParentProvider, IAddNodeController, IRemoveNodeController, 
-	IPropertiesProvider, IPropertySetter, IDefaultPropertyValueProvider {
+	IPropertiesProvider, IPropertySetter, IDefaultPropertyValueProvider, IPersistenceController {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected String getResource(String scheme) {
 		return CoreConstants.CATEGORY_RESOURCE_PREFIX + scheme;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected TypeDescriptor getDescriptor(Node node) {
 		return CorePlugin.getInstance().getNodeTypeDescriptorRegistry()
 				.getExpectedTypeDescriptor(getResource(node.getScheme()));
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected List<AbstractController> getControllers(Node node, String controllerType) {
 		TypeDescriptor descriptor = getDescriptor(node);
 		if (descriptor == null) {
@@ -64,6 +74,9 @@ public class DelegateToResourceController extends AbstractController implements
 		return controllers;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected AbstractController getController(Node node, String controllerType) {
 		TypeDescriptor descriptor = getDescriptor(node);
 		if (descriptor == null) {
@@ -78,20 +91,14 @@ public class DelegateToResourceController extends AbstractController implements
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
-		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
-			return;
-		}
+	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		for (AbstractController controller : getControllers(node, CoreConstants.PROPERTY_SETTER)) {
-			((IPropertySetter) controller).setProperty(node, property, value, context);
+			((IPropertySetter) controller).setProperties(node, properties, context);
 		}
 	}
 
 	@Override
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
-		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
-			return;
-		}
 		for (AbstractController controller : getControllers(node, CoreConstants.PROPERTY_SETTER)) {
 			((IPropertySetter) controller).unsetProperty(node, property, context);
 		}
@@ -99,9 +106,6 @@ public class DelegateToResourceController extends AbstractController implements
 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
-			return;
-		}
 		for (AbstractController controller : getControllers(node, CoreConstants.PROPERTIES_PROVIDER)) {
 			((IPropertiesProvider) controller).populateWithProperties(node, context);
 		}
@@ -109,9 +113,6 @@ public class DelegateToResourceController extends AbstractController implements
 
 	@Override
 	public void removeNode(Node node, Node child, ServiceContext<NodeService> context) {
-		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
-			return;
-		}
 		for (AbstractController controller : getControllers(node, CoreConstants.REMOVE_NODE_CONTROLLER)) {
 			((IRemoveNodeController) controller).removeNode(node, child, context);
 		}
@@ -119,9 +120,6 @@ public class DelegateToResourceController extends AbstractController implements
 
 	@Override
 	public void addNode(Node node, Node child, ServiceContext<NodeService> context) {
-		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
-			return;
-		}
 		for (AbstractController controller : getControllers(node, CoreConstants.ADD_NODE_CONTROLLER)) {
 			((IAddNodeController) controller).addNode(node, child, context);
 		}
@@ -129,9 +127,6 @@ public class DelegateToResourceController extends AbstractController implements
 
 	@Override
 	public Node getParent(Node node, ServiceContext<NodeService> context) {
-		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
-			return null;
-		}
 		AbstractController controller = getController(node, CoreConstants.PARENT_PROVIDER);
 		if (controller == null) {
 			return null;
@@ -142,9 +137,6 @@ public class DelegateToResourceController extends AbstractController implements
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 		List<Node> children = new ArrayList<Node>();
-		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
-			return children;
-		}		
 		for (AbstractController controller : getControllers(node, CoreConstants.CHILDREN_PROVIDER)) {
 			children.addAll(((IChildrenProvider) controller).getChildren(node, context));
 		}
@@ -153,9 +145,6 @@ public class DelegateToResourceController extends AbstractController implements
 
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
-			return false;
-		}
 		for (AbstractController controller : getControllers(node, CoreConstants.CHILDREN_PROVIDER)) {
 			if (((IChildrenProvider) controller).hasChildren(node, context)) {
 				return true;
@@ -167,9 +156,6 @@ public class DelegateToResourceController extends AbstractController implements
 	@Override
 	public Object getDefaultValue(Node node, String property, ServiceContext<NodeService> context) {
 		Object value = null;
-		if (context.getBooleanValue(CoreConstants.EXECUTE_ONLY_FOR_UPDATER)) {
-			return value;
-		}
 		for (AbstractController controller : getControllers(node, CoreConstants.DEFAULT_PROPERTY_PROVIDER)) {
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
  				break;

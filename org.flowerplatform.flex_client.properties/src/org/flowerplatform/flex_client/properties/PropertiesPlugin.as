@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ package org.flowerplatform.flex_client.properties {
 	import org.flowerplatform.flex_client.properties.action.NewComposedAction;
 	import org.flowerplatform.flex_client.properties.action.ShowPreferencesAction;
 	import org.flowerplatform.flex_client.properties.action.ShowPropertiesAction;
+	import org.flowerplatform.flex_client.properties.action.SiblingComposedAction;
 	import org.flowerplatform.flex_client.properties.controllers.PreferencePropertyDescriptorProvider;
 	import org.flowerplatform.flex_client.properties.controllers.PropertyDescriptorProvider;
 	import org.flowerplatform.flex_client.properties.controllers.RawPropertyDescriptorProvider;
@@ -78,14 +79,18 @@ package org.flowerplatform.flex_client.properties {
 									
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new PropertiesViewProvider());
 		
-			FlexUtilGlobals.getInstance().registerAction(ShowPropertiesAction);
+			FlexUtilGlobals.getInstance().registerAction(ShowPropertiesAction);			
+			FlexUtilGlobals.getInstance().registerAction(NewComposedAction);
+			FlexUtilGlobals.getInstance().registerAction(SiblingComposedAction);
+			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ShowPropertiesAction.ID));
 			
 			CorePlugin.getInstance().getEditorClassFactoryActionProvider().addActionClass(NewComposedAction);
+			CorePlugin.getInstance().getEditorClassFactoryActionProvider().addActionClass(SiblingComposedAction);
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new PreferencesViewProvider());
-			CorePlugin.getInstance().globalMenuActionProvider.addAction(new ShowPreferencesAction());
+			CorePlugin.getInstance().registerActionToGlobalMenu(new ShowPreferencesAction());
 		}
 		
 		override public function start():void {

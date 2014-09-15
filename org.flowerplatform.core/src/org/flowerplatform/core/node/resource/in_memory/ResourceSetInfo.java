@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.flowerplatform.core.node.update.Command;
 import org.flowerplatform.core.node.update.remote.Update;
 
 /**
@@ -32,7 +33,20 @@ public class ResourceSetInfo {
 	
 	private List<Update> updates = new ArrayList<Update>();
 	
-	private List<Object> commands;
+	/**
+	 * @author Claudiu Matei
+	 */
+	private List<Command> commands = new ArrayList<Command>();
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	private String commandToUndoId; 
+
+	/**
+	 * @author Claudiu Matei
+	 */
+	private String commandToRedoId; 
 	
 	public List<String> getResourceUris() {
 		return resourceUris;
@@ -42,16 +56,32 @@ public class ResourceSetInfo {
 		return updates;
 	}
 
-	public List<Object> getCommands() {
-		return commands;
-	}
-
 	public long getLoadedTimestamp() {
 		return loadedTimestamp;
 	}
 
 	public void setLoadedTimestamp(long loadedTimestamp) {
 		this.loadedTimestamp = loadedTimestamp;
+	}
+
+	public List<Command> getCommandStack() {
+		return commands;
+	}
+
+	public String getCommandToUndoId() {
+		return commandToUndoId;
+	}
+
+	public void setCommandToUndoId(String commandToUndoId) {
+		this.commandToUndoId = commandToUndoId;
+	}
+	
+	public String getCommandToRedoId() {
+		return commandToRedoId;
+	}
+
+	public void setCommandToRedoId(String commandToRedoId) {
+		this.commandToRedoId = commandToRedoId;
 	}
 	
 }

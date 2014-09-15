@@ -2,7 +2,7 @@
 <!-- 
 	license-start
  
-	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 <!--
 @author Cristina Brinza
 -->
-<ns:Wizard xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<ns:Wizard xmlns:fx="http://www.adobe.com/2006/mxml"
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx"
 		   xmlns:ns="org.flowerplatform.flexutil.popup.*"
@@ -86,36 +86,46 @@
 		]]>
 	</fx:Script>
 	
-	<fx:Declarations>
-		<s:RadioButtonGroup id="configFetchPushGroup"/>
-	</fx:Declarations>
+	<s:RadioButtonGroup id="configFetchPushGroup"/>
 	
-	<ns:states>
-		<s:State name="selectFetchPushState"/>
-		<s:State name="configureFetchPushState"/>
-	</ns:states>
-	
-	<s:Form width="100%" height="100%" includeIn="selectFetchPushState">			
-		<s:FormItem	label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.remoteName')}">
-			<s:TextInput id="remoteNameTextInput"
-						 creationComplete="{callLater(remoteNameTextInput.setFocus)}"
-						 change="textChangeHandler(event)" width="100%"/>
-		</s:FormItem>
-
-		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.URI')}">
-			<s:TextInput id="configureTextInput" 
-						 change="textChangeHandler(event)" width="100%"/>
-		</s:FormItem>
+	<ns:states>	
+		<mx:State name="selectFetchPushState">
+			<mx:SetProperty name="wizardTitle" value="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteAction.firstPageTitle')}"/>
 			
-		<s:RadioButton id="configurePushRadioButton" group="{configFetchPushGroup}" selected="true"
-					   label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.configurePush')}"  />
-		<s:RadioButton id="configureFetchRadioButton" group="{configFetchPushGroup}"
-					   label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.configureFetch')}"/>	
-	</s:Form>
-	
-	<local:ConfigureFetchPushComponent id="configureFetchPushPage"
-									   height="100%"
-									   width="100%"
-									   includeIn="configureFetchPushState"/>
+			<mx:AddChild relativeTo="{contentArea}">
+				<s:Form width="100%" height="100%">			
+					<s:FormItem	label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.remoteName')}">
+						<s:TextInput id="remoteNameTextInput"
+									 creationComplete="{callLater(remoteNameTextInput.setFocus)}"
+									 change="textChangeHandler(event)" width="100%"/>
+					</s:FormItem>
+					
+					<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.URI')}">
+						<s:TextInput id="configureTextInput" 
+									 change="textChangeHandler(event)" width="100%"/>
+					</s:FormItem>
+					
+					<s:RadioButton id="configurePushRadioButton" group="{configFetchPushGroup}" selected="true"
+								   label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.configurePush')}"  />
+					<s:RadioButton id="configureFetchRadioButton" group="{configFetchPushGroup}"
+								   label="{Resources.getMessage('flex_client.team.git.ui.ConfigureRemoteView.configureFetch')}"/>	
+				</s:Form>
+			</mx:AddChild>
+		
+		</mx:State>
+		
+		<mx:State name="configureFetchPushState">
+			<mx:SetProperty name="wizardTitle" value="{configurePushRadioButton.selected ? Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.title', ['push']) : Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.title', ['fetch'])}"/>
+			<mx:SetProperty name="wizardDescription" value="{configurePushRadioButton.selected ? Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.description', ['push']) :  Resources.getMessage('flex_client.team.git.ui.component.configureFetchPush.description', ['fetch'])}"/>
+		
+			<mx:AddChild relativeTo="{contentArea}">
+				<local:ConfigureFetchPushComponent id="configureFetchPushPage"
+												   height="100%"
+												   width="100%"/>
+			</mx:AddChild>
+		</mx:State>
+			
+		
+	</ns:states>
 	
 </ns:Wizard>

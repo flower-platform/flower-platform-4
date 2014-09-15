@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,11 +71,13 @@ public class FilePropertiesController extends AbstractController implements IPro
 				case CoreConstants.FILE_LAST_ACCESS_TIME:
 				case CoreConstants.FILE_LAST_MODIFIED_TIME:
 				case CoreConstants.FILE_CREATION_TIME:
-					node.getProperties().put(entry.getKey().toString(), new Date(((FileTime)entry.getValue()).toMillis()));
+					node.getProperties().put(entry.getKey().toString(), new Date(((FileTime) entry.getValue()).toMillis()));
 					break;
 				case CoreConstants.FILE_IS_DIRECTORY: 
 					node.getProperties().put(FILE_IS_DIRECTORY, entry.getValue());
 					break;
+			default:
+				break;
 			}
 		}
 
@@ -95,36 +97,42 @@ public class FilePropertiesController extends AbstractController implements IPro
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
 		long length = 0;
 	    for (Object child : fileAccessController.listFiles(folder)) {
-	        if (fileAccessController.isFile(folder))
-	            length += fileAccessController.length(child);
-	        else
-	            length += getFolderSize(child);
+	        if (fileAccessController.isFile(folder)) {
+				length += fileAccessController.length(child);
+			} else {
+				length += getFolderSize(child);
+			}
 	    }
 	    return length;
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
+	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		IFileAccessController fileAccessController = CorePlugin.getInstance().getFileAccessController();
-		if (CoreConstants.NAME.equals(property)) {
-			Object file;
-			if (!node.getPropertyValue(CoreConstants.NAME).equals(value)) {
-				try {
-					throw new UnsupportedOperationException();
-//					file = fileAccessController.getFile(node.getIdWithinResource());
-//					String parentPath = fileAccessController.getParent(file);
-//					Object parent = fileAccessController.getFile(parentPath);
-//					Object dest = fileAccessController.getFile(parent, value.getPropertyValue().toString());
-//					if (fileAccessController.exists(dest)) {
-//						throw new RuntimeException("There is already a file with the same name in this location.");
-//					}
-//					if (!fileAccessController.rename(file, dest)) {
-//						throw new RuntimeException("The filename, directory name, or volume label syntax is incorrect");
-//					}
-//					node.getProperties().put(NAME, value.getPropertyValue());
-//					node.setIdWithinResource(fileAccessController.getAbsolutePath(dest));
-				} catch (Exception e) {
-					throw new RuntimeException(e);
+		
+		for (String property : properties.keySet()) {
+			Object value = properties.get(property);
+			
+			if (CoreConstants.NAME.equals(property)) {
+				Object file;
+				if (!node.getPropertyValue(CoreConstants.NAME).equals(value)) {
+					try {
+						throw new UnsupportedOperationException();
+	//					file = fileAccessController.getFile(node.getIdWithinResource());
+	//					String parentPath = fileAccessController.getParent(file);
+	//					Object parent = fileAccessController.getFile(parentPath);
+	//					Object dest = fileAccessController.getFile(parent, value.getPropertyValue().toString());
+	//					if (fileAccessController.exists(dest)) {
+	//						throw new RuntimeException("There is already a file with the same name in this location.");
+	//					}
+	//					if (!fileAccessController.rename(file, dest)) {
+	//						throw new RuntimeException("The filename, directory name, or volume label syntax is incorrect");
+	//					}
+	//					node.getProperties().put(NAME, value.getPropertyValue());
+	//					node.setIdWithinResource(fileAccessController.getAbsolutePath(dest));
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
 				}
 			}
 		}

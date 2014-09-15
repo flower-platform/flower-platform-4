@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,8 +57,6 @@ package org.flowerplatform.flexutil.shortcut {
 		public var allowKeyBindingsToProcessEvents:Boolean = true;
 		
 		public var learnShortcutOnNextActionInvocation:Boolean = false;
-		
-		public var additionalActionProviders:ComposedActionProvider = new ComposedActionProvider();
 		
 		public function KeyBindings() {
 			if (UIComponent(FlexGlobals.topLevelApplication).stage != null) {
@@ -120,15 +118,11 @@ package org.flowerplatform.flexutil.shortcut {
 			if (handler is IAction) {
 				// check if visible & enabled, then run it
 				action = IAction(handler);
-				if (action.visible && action.enabled) {
-					action.run(); 
-				}
+				FlexUtilGlobals.getInstance().actionHelper.runAction(action, null, null, true, true);				
 			} else if (handler is Function) {
 				// execute function
 				handler();
-			} else {		
-//				var actions:Vector.<IAction> = additionalActionProviders.getActions(null);
-				
+			} else {				
 				// search actionId also in active's view list of available actions	
 				var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
 				var view:UIComponent = workbench.getEditorFromViewComponent(workbench.getActiveView());
@@ -138,31 +132,10 @@ package org.flowerplatform.flexutil.shortcut {
 						selection = IViewHostAware(view).viewHost.getCachedSelection();
 					}
 					
-//					var actions:Vector.<IAction> = IActionProvider(view).getActions(selection);	
-//					trace("in keybindings : "+viewActions);
-//					for (i = 0; i < viewActions.length; i++) {
-//						actions.push(viewActions[i]);
-//					}
+					action = FlexUtilGlobals.getInstance().getActionInstanceFromRegistry(String(handler));
+					FlexUtilGlobals.getInstance().actionHelper.runAction(action, selection, null, true, true);										
 				}
-				
-//				if (actions == null) {
-//					return;
-//				}
-//				for (var i:int = 0; i < actions.length; i++) {
-					action = FlexUtilGlobals.getInstance().actionRegistry[handler].newInstance();
-//					if (action.id == handler) {
-						try {
-							action.selection = selection;
-							if (action.visible && action.enabled) {								
-								action.run(); 
-							}
-						} finally {
-							action.selection = null;
-						}						
-//						break;
-//					}
-//				}								
-			}
+			}				
 		}
 	
 		public function getRegisteredHandler(shortcut:Shortcut):Object {			

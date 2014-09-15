@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,7 +104,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 		}
 		
 		private function clickHandlerInternal(event:MouseEvent):void {
-			clickHandler(this, _propertyLineRenderer.propertyDescriptor.name, currentValue);
+			clickHandler(this, _propertyLineRenderer.propertyDescriptor.name, currentValue,this._propertyLineRenderer.node);
 		}
 		
 		public function handleDialogResult(result:Object):void {			

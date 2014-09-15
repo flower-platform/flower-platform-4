@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TextResourceHandler extends AbstractController implements IResourceHandler {
 
-	protected final static Logger logger = LoggerFactory.getLogger(TextResourceHandler.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(TextResourceHandler.class);
 	
 	@Override
 	public String getResourceUri(String nodeUri) {
@@ -65,7 +65,7 @@ public class TextResourceHandler extends AbstractController implements IResource
 		try {
 			model.setResourceContent(new StringBuffer(IOUtils.toString(CorePlugin.getInstance().getFileAccessController().getContent(model.getResource()))));
 		} catch (IOException e) {
-			logger.error("Exception thrown while getting content from resource!");
+			LOGGER.error("Exception thrown while getting content from resource!");
 		}						
 		model.setDirty(false);
 		return model;

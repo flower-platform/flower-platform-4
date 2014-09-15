@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,13 +35,6 @@ package org.flowerplatform.flex_client.core.editor.action {
 			icon = Resources.uploadIcon;
 			orderIndex = 310;
 		}
-		
-		override public function get visible():Boolean {
-			if (selection.length == 0 || selection.length > 1) {
-				return false;
-			}
-			return super.visible;
-		}	
 		
 		override protected function isVisibleForSelectedElement(element:Object):Boolean {
 			if (Node(element).type == CoreConstants.FILE_NODE_TYPE && !Node(element).properties[CoreConstants.FILE_IS_DIRECTORY]) {

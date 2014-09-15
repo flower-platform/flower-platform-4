@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,10 +104,17 @@ package org.flowerplatform.flexutil.action {
 			return action is IComposedAction && !IComposedAction(action).actAsNormalAction;
 		}
 		
-		public function runAction(action:IAction, selection:IList, context:Object):void {
+		public function runAction(action:IAction, selection:IList, context:Object, checkVisibility:Boolean = false, checkEnablement:Boolean = false):void {
 			try {
 				action.selection = selection;
 				action.context = context;
+				
+				if (checkVisibility && !action.visible) {
+					return;
+				}
+				if (checkEnablement && !action.enabled) {
+					return;
+				}
 				action.run();
 			} finally {										
 				action.selection = null;

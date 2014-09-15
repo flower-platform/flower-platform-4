@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,12 +22,25 @@ import java.util.Date;
  */
 public class Update implements Comparable<Update> {
 
-	private String type;
+	/**
+	 * @author Claudiu Matei
+	 */
+	private String id;
 	
+	private String type;
+
 	private String fullNodeId;
 	
 	private long timestamp = new Date().getTime();
 	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public String getFullNodeId() {
 		return fullNodeId;
 	}
@@ -36,8 +49,11 @@ public class Update implements Comparable<Update> {
 		this.fullNodeId = fullNodeId;
 	}
 
-	public Update setFullNodeIdAs(String fullNodeId) {
-		this.fullNodeId = fullNodeId;
+	/**
+	 *@author see class
+	 **/
+	public Update setFullNodeIdAs(String fullNodeIdValue) {
+		this.fullNodeId = fullNodeIdValue;
 		return this;
 	}
 	
@@ -57,10 +73,14 @@ public class Update implements Comparable<Update> {
 		this.type = type;
 	}
 
+	//CHECKSTYLE:OFF
+
 	public Update setTypeAs(String type) {
 		this.type = type;
 		return this;
 	}
+	//CHECKSTYLE:ON
+
 	
 	@Override
 	public int compareTo(Update o) {

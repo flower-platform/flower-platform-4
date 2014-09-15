@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,9 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class CodeSyncAddNodeController extends AbstractController implements IAddNodeController {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public CodeSyncAddNodeController() {
 		// must be invoked after the persistence controller
 		// because we need the child to be already added to the model before we set the ADDED marker
