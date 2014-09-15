@@ -8,7 +8,59 @@
 		</div>
 	</div>
 
-	<div ng-include src="'../js_client.users/partials/userGeneralSettings.html'"></div>
-	<div ng-include src="'../js_client.users/partials/userAccountSettings.html'"></div>
-	
+	<div>	
+		<div class="col-sm-3">
+			<h2>User Profile</h2>
+			<p>Please update this user's information.</p>
+		</div>
+		
+		<div class="col-sm-9">
+			<form class="well" role="form">
+				<div class="form-group">
+					<label class="control-label required">Username</label>
+					<input type="text" class="form-control" ng-model="user.messageResult.properties.login">
+				</div>
+			
+				<div class="row">
+					<div class="form-group col-sm-6">
+						<label class="control-label required">First Name</label>
+						<input type="text" class="form-control" ng-model="user.messageResult.properties.firstName">
+					</div>
+					
+					<div class="form-group col-sm-6">
+						<label class="control-label required">Last Name</label>
+						<input type="text" class="form-control" ng-model="user.messageResult.properties.lastName">
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="form-group col-sm-6">
+						<label class="control-label required">E-Mail</label>
+						<input type="email" class="form-control" ng-model="user.messageResult.properties.email">
+					</div>
+				</div>
+				
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" ng-checked="user.messageResult.properties.isAdmin == 'true'" disabled="disabled"> is Admin 
+					</label>
+				</div>
+				
+				<br>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary" ng-click="save()">
+						<i class="icon-ok icon-white"></i> Save
+					</button>
+		
+					<button type="submit" class="btn btn-default" ng-click="remove()">
+						<i class="icon-trash"></i> Delete
+					</button>
+		
+					<button type="submit" class="btn btn-default" ng-click="cancel()">
+						<i class="icon-remove"></i> Cancel
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>

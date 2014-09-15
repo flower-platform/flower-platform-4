@@ -43,6 +43,20 @@ flowerProject.lazy.factory('Login', [function() {
 	
 }]);
 
+flowerProject.lazy.service('UserNodeUri', function () {
+	 var userNodeUri = '';
+
+   return {
+       getProperty: function () {
+           return userNodeUri;
+       },
+       setProperty: function(value) {
+      	 userNodeUri = encodeURIComponent(value);
+       }
+   };
+});
+
+
 /**
  * Decorate the Template service from core.
  */

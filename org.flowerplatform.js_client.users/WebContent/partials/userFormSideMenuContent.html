@@ -1,21 +1,10 @@
 <div ng-controller="NavigationCtrl">
-	
-	<div class="panel panel-default">
-	
-		<div class="panel-heading">
-			<h3 class="panel-title">Profile</h3>
-		</div>
-	  
-		<div class="panel-body">    
-			<nav class="bs-docs-sidebar">
-				<ul id="sidebar" class="nav nav-pills nav-stacked bs-docs-sidenav affix-top">
-					<li ng-class="{active: path == 'General'}"><a ng-click="path='General'; scrollTo('General')">General</a></li>
-					<li ng-class="{active: path == 'AccountSettings'}"><a ng-click="path='AccountSettings'; scrollTo('AccountSettings')">Account Settings</a></li>
-	       		</ul>
-	  		 </nav>
-	   </div>
-	   
+
+	<div class="list-group">
+		<a class="list-group-item disabled" >Profile</a>
+		<a class="list-group-item" ng-class="{active: currentRoute == '/users/{{decodeUri}}' }" ng-href="#users/{{uri}}">General</a>
+		<a class="list-group-item" ng-class="{active: currentRoute == '/users/{{decodeUri}}/AccountSettings'}" ng-href="#users/{{uri}}/AccountSettings">Account Settings</a>
 	</div>
-	
+
 </div>
    

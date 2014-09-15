@@ -36,6 +36,7 @@ body {
 /* style for navbar */
 .navbar-menu {
 	padding-top: 40px;
+	border-right: 10px solid transparent;
 }
 .navbar-header {
   float: none;
@@ -57,17 +58,6 @@ body {
   float: none;
 }
 
-/* style for the first elements in form */
-.change-username-form , .password-confirmation-form {
-	margin-top: 0;
-}
-
-/* style for elements from Profile panel */
-.nav-pills>li>a {
-	text-decoration:none;
-	color: black;
-}
-
 /* style for input if nothing is written */
 :required {
   box-shadow: 1px 1px 4px transparent;
@@ -77,4 +67,12 @@ body {
 #delete-account-button {
 	color: #8A0808;
 	width: 100%;
+}
+
+/* style for profile group */
+.list-group > a.disabled {
+  color: #999999;
+}
+.list-group {
+	border-right: 10px solid transparent;
 }
