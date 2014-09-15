@@ -347,7 +347,8 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(CoreConstants.PREFERENCE_CATEGORY_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTY_SETTER, new PreferencePropertySetter())
 			// TODO CC: to remove when working at preferences persistence
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING).setNameAs("value").setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_PREFERENCE).setReadOnlyAs(true));
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING).setNameAs("value")
+					.setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_PREFERENCE).setReadOnlyAs(true));
 
 		new FileSystemControllers().registerControllers();
 		new ResourceDebugControllers().registerControllers();

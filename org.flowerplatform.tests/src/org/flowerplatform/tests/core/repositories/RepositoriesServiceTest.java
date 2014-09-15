@@ -21,12 +21,14 @@ import org.flowerplatform.util.Utils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import org.flowerplatform.core.CoreUtils;
 
 /**
  * @author Cristina Brinza
@@ -45,6 +47,9 @@ public class RepositoriesServiceTest {
 	public static Node users;
 	public static Node repos;
 
+	/**
+	 * @author see class
+	 */
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		startPlugin(new FreeplanePlugin());
@@ -75,7 +80,7 @@ public class RepositoriesServiceTest {
 			users = new Node(USERS_URI, CoreConstants.USERS);
 			CorePlugin.getInstance().getNodeService().addChild(
 					root, 
-					users, 
+					users,
 					new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 
 			// repositories node
@@ -126,11 +131,17 @@ public class RepositoriesServiceTest {
 		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummy-session", CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Before
 	public void before() {
 		repositoriesService = new RepositoriesService();
 	}
 
+//	/**
+//	 * @author see class
+//	 */
 	@Test
 	public void testCreateRepository() throws IOException {
 		String testLogin = "user1-random1";
@@ -142,19 +153,19 @@ public class RepositoriesServiceTest {
 		assertTrue("Repository directory not created", new File(FLOWER_PLATFORM_WORKSPACE + "/" + testLogin + "/" + testRepoName).exists());
 		
 		// check if Repository node is created
-		assertTrue("Repository Node not created", resourceService.getNode(repositoriesService.createRepositoryNodeUri(testLogin, testRepoName)) != null);
+		assertTrue("Repository Node not created", resourceService.getNode(CoreUtils.getRepositoryNodeUri(testLogin, testRepoName)) != null);
 		
-		String repositoryName = repositoriesService.createRepositoryName(testLogin, testRepoName);		
+		String repositoryName = CoreUtils.getRepositoryName(testLogin, testRepoName);		
 		Node user = resourceService.getNode(CoreConstants.USERS_PATH + "#" + testLogin);
 		
 		// check if repo is in owned_repositories
 		@SuppressWarnings("unchecked")
-		List<String> ownedRepositories = (List<String>)user.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
+		List<String> ownedRepositories = (List<String>) user.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
 		assertTrue("Repo not in owned repositories", ownedRepositories.contains(repositoryName));
 		
 		// check if repo is in member_in_repositories
 		@SuppressWarnings("unchecked")
-		List<String> memberInRepositories = (List<String>)user.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES);
+		List<String> memberInRepositories = (List<String>) user.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES);
 		assertTrue("Repo not in member_in_repositories", memberInRepositories.contains(repositoryName));
 			
 		// create second repo for same user
@@ -166,7 +177,7 @@ public class RepositoriesServiceTest {
 		assertTrue("Repository directory not created", new File(FLOWER_PLATFORM_WORKSPACE + "/" + testLogin + "/" + testRepoName2).exists());
 		
 		// check if Repository node is created
-		assertTrue("Repository Node not created", resourceService.getNode(repositoriesService.createRepositoryNodeUri(testLogin, testRepoName2)) != null);
+		assertTrue("Repository Node not created", resourceService.getNode(CoreUtils.getRepositoryNodeUri(testLogin, testRepoName2)) != null);
 		
 		// create repo with same name as firstRepo for another user
 		String testLogin2 = "user2-random2";
@@ -177,9 +188,12 @@ public class RepositoriesServiceTest {
 		assertTrue("Repository directory not created", new File(FLOWER_PLATFORM_WORKSPACE + "/" + testLogin2 + "/" + testRepoName).exists());
 		
 		// check if Repository node is created
-		assertTrue("Repository Node not created", resourceService.getNode(repositoriesService.createRepositoryNodeUri(testLogin2, testRepoName)) != null);
+		assertTrue("Repository Node not created", resourceService.getNode(CoreUtils.getRepositoryNodeUri(testLogin2, testRepoName)) != null);
 	}
 
+	/**
+	 * @author see class
+	 */
 	@Test(expected = RuntimeException.class)
 	public void testCreateRepositoryException() throws IOException {
 		String testLogin = "user3-random3";
@@ -190,9 +204,12 @@ public class RepositoriesServiceTest {
 		// trying to create repo with same name for same user throws Runtime Exception
 		repositoriesService.createRepository(testLogin, testRepoName, "repository description");
 	}
-		
+	
+	/**
+	 * @author see class
+	 */
 	@Test
-	public void testDeleteRepository() throws IOException{
+	public void testDeleteRepository() throws IOException {
 		String testLogin = "user1-random1";
 		String testRepoName = "delete-repo";
 		
@@ -207,26 +224,29 @@ public class RepositoriesServiceTest {
 		
 		// check if repository node was deleted from file
 		try {
-			resourceService.getNode(repositoriesService.createRepositoryNodeUri(testLogin, testRepoName));
+			resourceService.getNode(CoreUtils.getRepositoryNodeUri(testLogin, testRepoName));
 			fail("NullPointerException should have been thrown");
 		} catch (NullPointerException e) {
 			// ignore this
 		}
 		
-		String repositoryName = repositoriesService.createRepositoryName(testLogin, testRepoName);		
-		Node user = resourceService.getNode(repositoriesService.getUriFromFragment(testLogin));
+		String repositoryName = CoreUtils.getRepositoryName(testLogin, testRepoName);		
+		Node user = resourceService.getNode(CoreUtils.getUriFromFragment(testLogin));
 		
 		// check in OWNED_REPOSITORIES for owner
 		@SuppressWarnings("unchecked")
-		List<String> ownedRepositories = (List<String>)user.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
+		List<String> ownedRepositories = (List<String>) user.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
 		assertTrue("Repo still in owned repositories!", !ownedRepositories.contains(repositoryName));
 				
 		// check every member in MEMBERS
 		@SuppressWarnings("unchecked")
-		List<String> memberInRepositories = (List<String>)user.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES);
+		List<String> memberInRepositories = (List<String>) user.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES);
 		assertTrue("Repo still in member_in_repositories!", !memberInRepositories.contains(repositoryName));
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Test(expected = RuntimeException.class)
 	public void testDeleteNoRepository() throws IOException {
 		// trying to delete a repository that doesn't exist
@@ -236,42 +256,106 @@ public class RepositoriesServiceTest {
 		repositoriesService.deleteRepository(testLogin, testRepoName);		
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testRenameRepository() throws IOException {
 		String testLogin = "user1-random1";
 		String testRepoName = "repo";
+		String testRepoNameRenamed = "renamed-repo";
 		
 		// first create repo
 		repositoriesService.createRepository(testLogin, testRepoName, "");
 		
-		repositoriesService.renameRepository("user1-random1", "repo", "renamed-repo");
+		repositoriesService.renameRepository(testLogin, testRepoName, testRepoNameRenamed);
+		
+		// take the repository
+		String repositoryNameChanged = CoreUtils.getRepositoryName(testLogin, testRepoNameRenamed);
+		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(testLogin, testRepoName));
+		assertTrue("Repository not renamed!", repository.getPropertyValue(CoreConstants.NAME).equals(testRepoNameRenamed));
+		
+		// check every member has repository renamed
+		for (String member : (List<String>) repository.getPropertyValue(CoreConstants.MEMBERS)) {
+			Node memberNode = resourceService.getNode(CoreUtils.getUriFromFragment(member));
+			assertTrue("Each member should have the repository renamed!", 
+					((List<String>) memberNode.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES)).contains(repositoryNameChanged));
+		}
+		
+		// check every user who starred has repository renamed
+		for (String memberWhoStarred : (List<String>) repository.getPropertyValue(CoreConstants.STARRED_BY)) {
+			Node memberNode = resourceService.getNode(CoreUtils.getUriFromFragment(memberWhoStarred));
+			assertTrue("Each member should have the repository renamed!", 
+					((List<String>) memberNode.getPropertyValue(CoreConstants.STARRED_REPOSITORIES)).contains(repositoryNameChanged));
+		}
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testAddMember() throws IOException {
 		String owner = "user1-random1";
+		String owner2 = "user2-random2";
 		String repoName = "add-member";
-		String newMember = "user2-random2";
+		String newMember = "user3-random3";
 	
 		repositoriesService.createRepository(owner, repoName, "");
 		repositoriesService.addMember(owner, repoName, newMember);
 		
-		// check member in two repos with same name - diff owner's 
+		// check for member in repository 
+		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(owner, repoName));
+		assertTrue("Repository doesn't contain new member!", ((List<String>) repository.getPropertyValue(CoreConstants.MEMBERS)).contains(newMember));
+		
+		// check in MEMBER_IN_REPOSITORIES for member
+		Node newMemberNode = resourceService.getNode(CoreUtils.getUriFromFragment(newMember));
+		assertTrue("Member doesn't have repository in MEMBER_IN_REPOSITORIES!", 
+				((List<String>) newMemberNode.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES)).contains(CoreUtils.getRepositoryName(owner, repoName)));
+		
+		// check member in two repos with same name - diff owners 
+		repositoriesService.createRepository(owner2, repoName, "");
+		repositoriesService.addMember(owner2, repoName, newMember);
+		assertTrue("Member in two repos with same name failed!", 
+				((List<String>) newMemberNode.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES)).contains(CoreUtils.getRepositoryName(owner2, repoName)));
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testAddStarredBy() throws IOException {
 		String owner = "user1-random1";
+		String owner2 = "user2-random2";
 		String repoName = "add-starred-by";
 		String userWhoStarred = "user3-random3";
 		
 		repositoriesService.createRepository(owner, repoName, "");
 		repositoriesService.addStarredBy(owner, repoName, userWhoStarred);
 		
-		// check same as above
+		// check for member in repository 
+		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(owner, repoName));
+		assertTrue("Repository doesn't contain user who starred!", ((List<String>) repository.getPropertyValue(CoreConstants.STARRED_BY)).contains(userWhoStarred));
+		
+		// check in STARRED_REPOSITORIES for member
+		Node newMemberNode = resourceService.getNode(CoreUtils.getUriFromFragment(userWhoStarred));
+		assertTrue("Member doesn't have repository in STARRED_REPOSITORIES!", 
+				((List<String>) newMemberNode.getPropertyValue(CoreConstants.STARRED_REPOSITORIES)).contains(CoreUtils.getRepositoryName(owner, repoName)));
+		
+		// check user who starred in two repos with same name - diff owners 
+		repositoriesService.createRepository(owner2, repoName, "");
+		repositoriesService.addStarredBy(owner2, repoName, userWhoStarred);
+		assertTrue("Starred two repos with same name failed!", 
+				((List<String>) newMemberNode.getPropertyValue(CoreConstants.STARRED_REPOSITORIES)).contains(CoreUtils.getRepositoryName(owner2, repoName)));
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testRemoveMember() throws IOException {
 		String owner = "user1-random1";
 		String repoName = "remove-member";
@@ -280,9 +364,17 @@ public class RepositoriesServiceTest {
 		repositoriesService.createRepository(owner, repoName, "");
 		repositoriesService.addMember(owner, repoName, member);
 		repositoriesService.removeMember(owner, repoName, member);
+		
+		// member should be removed
+		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(owner, repoName));
+		assertFalse("Repository does contain removed member!", ((List<String>) repository.getPropertyValue(CoreConstants.MEMBERS)).contains(member));
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testRemoveStarredBy() throws IOException {
 		String owner = "user1-random1";
 		String repoName = "remove-starred-by";
@@ -291,14 +383,27 @@ public class RepositoriesServiceTest {
 		repositoriesService.createRepository(owner, repoName, "");
 		repositoriesService.addStarredBy(owner, repoName, userWhoStarredToBeRemoved);
 		repositoriesService.removeStarredBy(owner, repoName, userWhoStarredToBeRemoved);
+		
+		// remove starred by
+		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(owner, repoName));
+		assertFalse("Repository does contain removed member who starred!", 
+				((List<String>) repository.getPropertyValue(CoreConstants.STARRED_BY)).contains(userWhoStarredToBeRemoved));
 	}
 	
+	@Test
+	public void testGetRepositories() {
+		repositoriesService.getRepositories();
+	}
+	
+	/**
+	 * @author see class
+	 */
 	@AfterClass
 	public static void afterClass() throws Exception {
-//		EclipseIndependentTestSuite.deleteFiles(REPOSITORIES);
-//		new File("workspace/.users").delete();
-//		EclipseIndependentTestSuite.deleteFiles("user1-random1");
-//		EclipseIndependentTestSuite.deleteFiles("user2-random2");
-//		EclipseIndependentTestSuite.deleteFiles("user3-random3");
+		EclipseIndependentTestSuite.deleteFiles(REPOSITORIES);
+		new File("workspace/.users").delete();
+		EclipseIndependentTestSuite.deleteFiles("user1-random1");
+		EclipseIndependentTestSuite.deleteFiles("user2-random2");
+		EclipseIndependentTestSuite.deleteFiles("user3-random3");
 	}
 }
