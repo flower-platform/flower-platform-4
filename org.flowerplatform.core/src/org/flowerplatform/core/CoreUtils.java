@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +38,15 @@ import org.flowerplatform.util.controller.IController;
 /**
  * @author Mariana Gheorghe
  */
-public class CoreUtils {
+public final class CoreUtils {
 
+	private CoreUtils() {
+		
+	}
+	
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public static void delete(File f) {	
 		if (f.isDirectory() && !Files.isSymbolicLink(Paths.get(f.toURI()))) {		
 			for (File c : f.listFiles()) {
@@ -49,6 +56,9 @@ public class CoreUtils {
 		f.delete();
 	}
 	
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public static void zipFiles(List<String> files, String zipFilePath, String rootFolderName) throws Exception {		
 		ZipOutputStream zip = null;
 		FileOutputStream fileWriter = null;
@@ -71,7 +81,7 @@ public class CoreUtils {
 
 	private static void addFileToZip(String path, String srcFile, ZipOutputStream zip, boolean flag) throws Exception {		
 		File folder = new File(srcFile);
-		if (flag == true) {
+		if (flag) {
 			zip.putNextEntry(new ZipEntry(path + "/" + folder.getName() + "/"));
 		} else { 
 			if (folder.isDirectory()) {				
@@ -106,6 +116,9 @@ public class CoreUtils {
 		}
 	}
 	
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	@SuppressWarnings("rawtypes")
 	public static void unzipArchive(File archive, File outputDir) throws IOException {
 		ZipFile zipfile = new ZipFile(archive);
@@ -176,12 +189,19 @@ public class CoreUtils {
 		return ssp.substring(index + 1);
 	}
 
+	/**
+	 *@author Claudiu Matei
+	 **/
 	public static boolean isControllerInvokable(IController controller, ServiceContext<?> context) {
 		@SuppressWarnings("unchecked")
-		List<Class<?>> invokeOnlyControllersWithClasses = (List<Class<?>>)context.get(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES);
-		if (invokeOnlyControllersWithClasses == null) return true;
+		List<Class<?>> invokeOnlyControllersWithClasses = (List<Class<?>>) context.get(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES);
+		if (invokeOnlyControllersWithClasses == null) {
+			return true;
+		}
 		for (Class<?> marker : invokeOnlyControllersWithClasses) {
-			if (marker.isInstance(controller)) return true;
+			if (marker.isInstance(controller)) {
+				return true;
+			}
 		}
 		return false;
 	}

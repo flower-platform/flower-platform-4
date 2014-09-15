@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,9 @@ public class FeatureProvider {
 	private IModelAdapter modelAdapter;
 	private CodeSyncAlgorithm codeSyncAlgorithm;
 	
+	/**
+	 *@author see class
+	 **/
 	public FeatureProvider(IModelAdapter modelAdapter, CodeSyncAlgorithm codeSyncAlgorithm) {
 		this.modelAdapter = modelAdapter;
 		this.codeSyncAlgorithm = codeSyncAlgorithm;
@@ -41,6 +44,9 @@ public class FeatureProvider {
 		return modelAdapter.getContainmentFeatures(extension, codeSyncAlgorithm);
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public int getFeatureType(Object feature) {
 		return modelAdapter.getFeatureType(extension, feature, codeSyncAlgorithm);
 	}

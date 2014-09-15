@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,7 +77,8 @@ public class RemoteMethodInvocationListener {
 				// the client is not subscribed to this resource anymore, maybe he went offline?
 				// subscribe the client to this resource
 				try {
-					CorePlugin.getInstance().getResourceService().subscribeToParentResource(sessionId, clientResource, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
+					CorePlugin.getInstance().getResourceService().subscribeToParentResource(sessionId, clientResource, new ServiceContext<ResourceService>(CorePlugin
+							.getInstance().getResourceService()));
 				} catch (Exception e) {
 					// the resource could not be loaded; inform the client
 					notFoundResources.add(clientResource);
@@ -108,7 +109,7 @@ public class RemoteMethodInvocationListener {
 				String serviceId = remoteMethodInvocationInfo.getServiceId();
 				String methodName = remoteMethodInvocationInfo.getMethodName();
 				boolean log = true;
-				if (methodName != null && methodName.equals("ping")) {
+				if (methodName.equals("ping")) {
 					String logPing = loggerContext.getProperty("logNodeServicePingInvocation");
 					log = logPing == null ? false : Boolean.parseBoolean(logPing);
 				}

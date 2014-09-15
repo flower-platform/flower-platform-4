@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@ import static org.flowerplatform.core.CoreConstants.CODESYNC_ICONS;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
 
+import java.util.Map;
+
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.Match.MatchType;
 import org.flowerplatform.core.CoreConstants;
@@ -47,6 +49,9 @@ import org.flowerplatform.util.controller.AbstractController;
 public class StructureDiffMatchPropertiesProvider extends AbstractController implements IPropertiesProvider,
 		IPropertySetter {
 
+	/**
+	 *@author see class
+	 **/
 	public StructureDiffMatchPropertiesProvider() {
 		// invoke after the persistence providers
 		// so the properties are populate
@@ -130,6 +135,8 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 				color = MATCH_COLOR_BODY_MODIFIED;
 			}
 			break;
+		default:
+			break;
 		}
 
 		// set color
@@ -147,8 +154,8 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 	private void setText(Node node) {
 		String name = (String) node.getProperties().get(CoreConstants.NAME);
 		String textPath = (String) node.getProperties().get(CodeSyncConstants.MATCH_PATH);
-		if (textPath != null ) {
-			node.getProperties().put(MindMapConstants.TEXT, "<html><head>" + name + "</head><br><body><font size=9>"+ textPath + "</font></body></html>");
+		if (textPath != null) {
+			node.getProperties().put(MindMapConstants.TEXT, "<html><head>" + name + "</head><br><body><font size=9>" + textPath + "</font></body></html>");
 		} else {
 			node.getProperties().put(MindMapConstants.TEXT, name);
 		}
@@ -160,15 +167,17 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 	}
 
 	@Override
-	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
-		if (ICONS.equals(property)) {
-			node.getOrPopulateProperties(context);
-			
-			String codeSyncIcons = getCodeSyncIcons(node);
-			if (codeSyncIcons == null) {
-				codeSyncIcons = "";
+	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
+		for (String property : properties.keySet()) {
+			if (ICONS.equals(property)) {
+				node.getOrPopulateProperties(context);
+				
+				String codeSyncIcons = getCodeSyncIcons(node);
+				if (codeSyncIcons == null) {
+					codeSyncIcons = "";
+				}
+				context.getService().setProperty(node, CODESYNC_ICONS, codeSyncIcons, context);
 			}
-			context.getService().setProperty(node, CODESYNC_ICONS, codeSyncIcons, context);
 		}
 	}
 

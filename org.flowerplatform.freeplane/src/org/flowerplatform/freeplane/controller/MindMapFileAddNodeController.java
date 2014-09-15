@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,9 @@ public class MindMapFileAddNodeController extends AbstractController implements 
 	private String extension;
 	private String rootNodeType;
 	
+	/**
+	 *@author see class
+	 **/
 	public MindMapFileAddNodeController(String extension) {
 		super();
 		this.extension = extension;
@@ -51,6 +54,9 @@ public class MindMapFileAddNodeController extends AbstractController implements 
 		setOrderIndex(10000);
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public MindMapFileAddNodeController(String extension, String rootNodeType) {
 		this(extension);
 		this.rootNodeType = rootNodeType;
@@ -82,6 +88,9 @@ public class MindMapFileAddNodeController extends AbstractController implements 
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	protected boolean endsWithExtension(String filename) {
 		return filename.endsWith(extension);
 	}

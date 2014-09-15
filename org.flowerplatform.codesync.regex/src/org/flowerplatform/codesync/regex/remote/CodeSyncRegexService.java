@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,9 @@ public class CodeSyncRegexService {
 
 	private final Pattern newLinePattern = Pattern.compile("(\r\n)|(\n)|(\r)");
 		
+	/**
+	 *@author see class
+	 **/
 	public List<Pair<String, String>> getRegexActions() {	
 		List<Pair<String, String>> list = new ArrayList<Pair<String, String>>();
 		
@@ -74,6 +77,9 @@ public class CodeSyncRegexService {
 		return list;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public String generateMatches(String nodeUri, String textNodeUri, String newPath, boolean override) throws Exception {
 		final NodeService nodeService = CorePlugin.getInstance().getNodeService();
 		ServiceContext<NodeService> context;	

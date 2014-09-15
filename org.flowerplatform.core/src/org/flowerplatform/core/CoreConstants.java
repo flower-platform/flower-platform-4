@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,14 @@ package org.flowerplatform.core;
 
 import org.flowerplatform.util.UtilConstants;
 
-public class CoreConstants {
+/**
+ *@author Mariana Gheorghe
+ **/
+public final class CoreConstants {
 
+	private CoreConstants() {
+		
+	}
 	public static final String APP_VERSION = "0.1.1";
 	public static final String API_VERSION = "0.1.0";
 	
@@ -170,7 +176,7 @@ public class CoreConstants {
 	 * Used to save the last value of a node's property in context, before the property is updated 
 	 * @author Claudiu Matei
 	 */
-	public static final String OLD_VALUE = "oldValue";
+	public static final String OLD_VALUES = "oldValue";
 
 	
 	//////////////////////////////////

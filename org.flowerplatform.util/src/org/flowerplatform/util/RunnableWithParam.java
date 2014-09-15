@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.util;
 
-import java.util.concurrent.Callable;
 
 /**
  * Callback similar to {@link Runnable} or {@link Callable}, 
@@ -26,7 +25,9 @@ import java.util.concurrent.Callable;
  * @param <P> The type of the parameter. Can be {@link Void} if not used.
  */
 public interface RunnableWithParam<R, P> {
-	
-	public R run(P param);
+	/**
+	 *@author see class
+	 **/
+	R run(P param);
 
 }

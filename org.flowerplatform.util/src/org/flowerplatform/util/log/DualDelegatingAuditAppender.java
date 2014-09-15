@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,14 +23,18 @@ public class DualDelegatingAuditAppender implements IAuditAppender {
 	protected IAuditAppender appender1;
 	
 	protected IAuditAppender appender2;
-	
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public DualDelegatingAuditAppender(IAuditAppender appender1,
 			IAuditAppender appender2) {
 		super();
 		this.appender1 = appender1;
 		this.appender2 = appender2;
 	}
-
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public void append(AuditDetails auditDetails) {
 		if (appender1 != null) {
 			appender1.append(auditDetails);

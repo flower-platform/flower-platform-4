@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,7 +95,8 @@ public class NodeModelAdapterLeft extends NodeModelAdapter {
 		int featureType = match.getCodeSyncAlgorithm().getFeatureProvider(match).getFeatureType(feature);
 		switch (featureType) {
 		case CodeSyncConstants.FEATURE_TYPE_VALUE:
-			CorePlugin.getInstance().getNodeService().unsetProperty(node, CodeSyncControllerUtils.getOriginalPropertyName(feature.toString()), new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+			CorePlugin.getInstance().getNodeService().unsetProperty(node, CodeSyncControllerUtils
+					.getOriginalPropertyName(feature.toString()), new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 			break;
 		case CodeSyncConstants.FEATURE_TYPE_CONTAINMENT:
 			processContainmentFeatureAfterActionPerformed(node, feature, result, match);
