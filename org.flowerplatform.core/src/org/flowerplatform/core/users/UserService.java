@@ -59,8 +59,7 @@ public class UserService {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Node saveUser(List<Node> users1) {
-		Node user =(Node) users1.get(0);
+	public Node saveUser(Node user) {
 		if (user.getNodeUri() == null) {
 			// new user
 			user.setNodeUri("user:test|" + user.getProperties().get("login"));
