@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,21 +27,27 @@ public abstract class RegexAction implements Runnable {
 	public String getName() {
 		return name;
 	}
-
-	public RegexAction setName(String name) {
-		this.name = name;
+	/**
+	 *@author see class
+	 **/
+	public RegexAction setName(String nameParameter) {
+		this.name = nameParameter;
 		return this;
 	}
 
 	public String getDescription() {
 		return description;
 	}
-
-	public RegexAction setDescription(String description) {
-		this.description = description;
+	/**
+	 *@author see class
+	 **/
+	public RegexAction setDescription(String descriptionParameter) {
+		this.description = descriptionParameter;
 		return this;
 	}
-
+	/**
+	 *@author see class
+	 **/
 	public abstract void executeAction(RegexProcessingSession param);
 				
 	@Override

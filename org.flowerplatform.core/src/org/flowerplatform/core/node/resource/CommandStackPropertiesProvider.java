@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,9 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class CommandStackPropertiesProvider extends AbstractController implements IPropertiesProvider {
 
+	/**
+	 * @author Claudiu Matei
+	 */
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		node.getProperties().put(NAME, node.getNodeUri());
 //		node.getProperties().put(CoreConstants.RESOURCE_SET, node.getNodeUri());

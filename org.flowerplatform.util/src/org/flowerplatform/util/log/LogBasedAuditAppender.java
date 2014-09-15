@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,9 @@ public class LogBasedAuditAppender implements IAuditAppender {
 
 	private static Marker auditMarker = MarkerFactory.getMarker("AUDIT");
 	
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	protected void addEntriesInMDC(AuditDetails auditDetails) {
 		if (auditDetails.getParam0() != null) {
 			MDC.put("param0", auditDetails.getParam0().toString());
@@ -38,6 +41,9 @@ public class LogBasedAuditAppender implements IAuditAppender {
 		}
 	}
 	
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	protected void removeEntriesFromMDC(AuditDetails auditDetails) {
 		if (auditDetails.getParam0() != null) {
 			MDC.remove("param0");
@@ -50,6 +56,9 @@ public class LogBasedAuditAppender implements IAuditAppender {
 		}
 	}
 	
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public void append(AuditDetails auditDetails) {
 		if (auditDetails.getLogger().isInfoEnabled()) {
 			addEntriesInMDC(auditDetails);

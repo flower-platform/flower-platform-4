@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,13 +71,19 @@ public class DelegatingRegexWithAction extends AbstractRegexWithAction {
 		return action;
 	}
 	
-	public DelegatingRegexWithAction setRegexAction(RegexAction action) {
-		this.action = action;
+	/**
+	 *@author see class
+	 **/
+	public DelegatingRegexWithAction setRegexAction(RegexAction actionValue) {
+		this.action = actionValue;
 		return this;
 	}
 
-	public DelegatingRegexWithAction setNode(Node node) {
-		this.node = node;
+	/**
+	 *@author see class
+	 **/
+	public DelegatingRegexWithAction setNode(Node givenNode) {
+		this.node = givenNode;
 		return this;
 	}
 

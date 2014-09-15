@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,15 +66,18 @@ import org.osgi.framework.BundleContext;
  */
 public class GitPlugin extends AbstractFlowerJavaPlugin {
 	
-	protected static GitPlugin INSTANCE;
+	protected static GitPlugin instance;
 		
 	public static GitPlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 		
+	/**
+	 *@author see class
+	 **/
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
-		INSTANCE = this;
+		instance = this;
 
 		CorePlugin.getInstance().getServiceRegistry().registerService("GitService", new GitService());
 		CorePlugin.getInstance().getServiceRegistry().registerService("gitHistoryService", new GitHistoryService());
@@ -87,10 +90,12 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FULL_NAME).setReadOnlyAs(true).setOrderIndexAs(1))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(COMMIT_ID).setReadOnlyAs(true).setOrderIndexAs(2))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(COMMIT_MESSAGE).setReadOnlyAs(true).setOrderIndexAs(3))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(IS_CHECKEDOUT).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(4))
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(IS_CHECKEDOUT)
+					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(4))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_UPSTREAM_BRANCH).setReadOnlyAs(true).setOrderIndexAs(5))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_REMOTE).setReadOnlyAs(true).setOrderIndexAs(6))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_REBASE).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(7));;
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor()
+					.setNameAs(CONFIG_REBASE).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(7));
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY_TYPE)
 			.addAdditiveController(CHILDREN_PROVIDER, new RepoChildrenProvider());

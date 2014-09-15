@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.remote.SubscriptionInfo;
 import org.flowerplatform.core.node.update.controller.UpdateController;
-import org.flowerplatform.core.session.SessionService;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.Utils;
 import org.slf4j.Logger;
@@ -45,10 +44,13 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class ResourceService implements IResourceHolder {
 
-	protected final static Logger logger = LoggerFactory.getLogger(ResourceService.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(ResourceService.class);
 	
 	private Map<String, IResourceHandler> resourceHandlers = new HashMap<String, IResourceHandler>();
 	
+	/**
+	 *@author see class
+	 **/
 	public void addResourceHandler(String scheme, IResourceHandler resourceHandler) {
 		resourceHandlers.put(scheme, resourceHandler);
 	}
@@ -71,14 +73,20 @@ public abstract class ResourceService implements IResourceHolder {
 		return getNode(nodeUri, new ServiceContext<ResourceService>());
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public Node getNode(String nodeUri, ServiceContext<ResourceService> context) {
-		logger.debug("Get node for URI: {}", nodeUri);
+		LOGGER.debug("Get node for URI: {}", nodeUri);
 	
 		String scheme = Utils.getScheme(nodeUri);
 		IResourceHandler resourceHandler = getResourceHandler(scheme);
 		return getNode(nodeUri, resourceHandler, context);
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	protected Node getNode(String nodeUri, IResourceHandler resourceHandler, ServiceContext<ResourceService> context) {
 		String resourceUri = resourceHandler.getResourceUri(nodeUri);
 		Object resourceData = resourceUri == null ? null : getResourceData(resourceUri);
@@ -105,7 +113,7 @@ public abstract class ResourceService implements IResourceHolder {
 	 * resource set
 	 */
 	public SubscriptionInfo subscribeToParentResource(String sessionId, String nodeUri, ServiceContext<ResourceService> context) {
-		logger.debug("Subscribe session {} to parent of {}", sessionId, nodeUri);
+		LOGGER.debug("Subscribe session {} to parent of {}", sessionId, nodeUri);
 		
 		String scheme = Utils.getScheme(nodeUri);
 		IResourceHandler resourceHandler = getResourceHandler(scheme);
@@ -138,10 +146,13 @@ public abstract class ResourceService implements IResourceHolder {
 	 * Paired with {@link SessionService#sessionSubscribedToResource(String, String, ServiceContext)}.
 	 */
 	public void sessionSubscribedToResource(String sessionId, String resourceUri, ServiceContext<ResourceService> context) {
-		logger.debug("Subscribe session {} to resource {}", sessionId, resourceUri);
+		LOGGER.debug("Subscribe session {} to resource {}", sessionId, resourceUri);
 		doSessionSubscribedToResource(sessionId, resourceUri);
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	protected abstract void doSessionSubscribedToResource(String sessionId, String resourceUri);
 	
 	/**
@@ -151,7 +162,7 @@ public abstract class ResourceService implements IResourceHolder {
 	 * Paired with {@link SessionService#sessionUnsubscribedFromResource(String, String, ServiceContext)}.
 	 */
 	public void sessionUnsubscribedFromResource(String sessionId, String resourceUri, ServiceContext<ResourceService> context) {
-		logger.debug("Unsubscribe session {} from resource {}", sessionId, resourceUri);
+		LOGGER.debug("Unsubscribe session {} from resource {}", sessionId, resourceUri);
 		Node resourceNode = getNode(resourceUri);
 		String resourceSet = (String) resourceNode.getProperties().get(CoreConstants.RESOURCE_SET);
 		if (resourceSet == null) {
@@ -165,10 +176,16 @@ public abstract class ResourceService implements IResourceHolder {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	protected abstract void doSessionUnsubscribedFromResource(String sessionId, String resourceUri);
 	
+	/**
+	 *@author see class
+	 **/
 	public void save(String resourceUri, ServiceContext<ResourceService> context) {
-		logger.debug("Save resource {}", resourceUri);
+		LOGGER.debug("Save resource {}", resourceUri);
 		
 		String scheme = Utils.getScheme(resourceUri);
 		IResourceHandler resourceHandler = getResourceHandler(scheme);
@@ -185,11 +202,15 @@ public abstract class ResourceService implements IResourceHolder {
 				resourceNode, 
 				IS_DIRTY, 
 				resourceHandler.isDirty(resourceData),
-				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true)
+				.add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 	}
 
+	/**
+	 *@author see class
+	 **/
 	public void reload(String resourceUri, ServiceContext<ResourceService> context) {
-		logger.debug("Reload resource {}", resourceUri);
+		LOGGER.debug("Reload resource {}", resourceUri);
 		
 		String scheme = Utils.getScheme(resourceUri);
 		IResourceHandler resourceHandler = getResourceHandler(scheme);
@@ -207,23 +228,43 @@ public abstract class ResourceService implements IResourceHolder {
 				resourceNode, 
 				IS_DIRTY, 
 				resourceHandler.isDirty(resourceData),
-				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+				new ServiceContext<NodeService>(CorePlugin.getInstance()
+						.getNodeService()).add(NODE_IS_RESOURCE_NODE, true)
+						.add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public boolean isDirty(String nodeUri, ServiceContext<ResourceService> serviceContext) {
 		IResourceHandler resourceHandler = getResourceHandler(Utils.getScheme(nodeUri));
 		String resourceUri = resourceHandler.getResourceUri(nodeUri);
 		return resourceHandler.isDirty(getResourceData(resourceUri));
 	}
 
+	/**
+	 *@author see class
+	 **/
 	public abstract List<String> getResources();
 	
+	/**
+	 *@author see class
+	 **/
 	public abstract List<String> getSessionsSubscribedToResource(String resourceNodeId);
 
+	/**
+	 *@author see class
+	 **/
 	public abstract long getUpdateRequestedTimestamp(String resourceNodeId);
 	
+	/**
+	 *@author see class
+	 **/
 	public abstract void setUpdateRequestedTimestamp(String resourceUri, long timestamp);
 
+	/**
+	 *@author see class
+	 **/
 	public Node getResourceNode(String nodeUri) {
 		IResourceHandler resourceHandler = getResourceHandler(Utils.getScheme(nodeUri));
 		return getNode(resourceHandler.getResourceUri(nodeUri), resourceHandler, new ServiceContext<ResourceService>());

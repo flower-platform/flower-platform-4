@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.util.Utils;
 
 /**
@@ -56,7 +55,10 @@ public class Node implements Externalizable {
 	public Node() {
 		super();
 	}
-
+	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public Node(String nodeUri, String type) {
 		setNodeUri(nodeUri);
 		setType(type);
@@ -134,6 +136,9 @@ public class Node implements Externalizable {
 		this.rawNodeData = rawNodeData;
 	}
 		
+	/**
+	 *@author see class
+	 **/
 	public Object getPropertyValue(String property) {
 		Object propertyObj = getPropertyValueOrWrapper(property);
 		if (propertyObj instanceof PropertyWrapper) {
@@ -142,6 +147,9 @@ public class Node implements Externalizable {
 		return propertyObj;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public Object getPropertyValueOrWrapper(String property) {
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
 		if (!getOrPopulateProperties(context).containsKey(property)) {

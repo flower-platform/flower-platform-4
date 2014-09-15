@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,20 @@ public interface IProjectAccessController {
 	 */
 	Object getFile(Object project, String path);
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	Object getContainingProjectForFile(Object file);
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	String getPathRelativeToProject(Object file);
 	
 	//needed for synchronization. because in Eclipse we can't use project.findMember(path) (it return null if resource dosn't exist). We use instead .getFile/getFolder
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	Object getFolder(Object project, String path);
 	
 }

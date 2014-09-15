@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,8 @@ package org.flowerplatform.codesync;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.flowerplatform.codesync.adapter.IModelAdapter;
-
 /**
- * 
+ * @author Mariana Gheorghe
  */
 public class Match {
 	
@@ -102,8 +100,9 @@ public class Match {
 	 * should be done using {@link #addSubMatch()}.
 	 */
 	public List<Match> getSubMatches() {
-		if (subMatches == null)
+		if (subMatches == null) {
 			subMatches = new ArrayList<Match>();
+		}
 		return subMatches;
 	}
 
@@ -144,8 +143,9 @@ public class Match {
 	 * should be done using {@link #addDiff()}.
 	 */
 	public List<Diff> getDiffs() {
-		if (diffs == null)
+		if (diffs == null) {
 			diffs = new ArrayList<Diff>();
+		}
 		return diffs;
 	}
 
@@ -209,13 +209,17 @@ public class Match {
 	// Methods with some logic.
 	// *****************************************************
 
+	/**
+	 * @author see class
+	 */
 	public Object getDelegate() {
-		if (getAncestor() != null)
+		if (getAncestor() != null) {
 			return getAncestor();
-		else if (getLeft() != null)
+		} else if (getLeft() != null) {
 			return getLeft();
-		else
+		} else {
 			return getRight();
+		}
 	}
 	
 	/**
@@ -251,23 +255,23 @@ public class Match {
 	 * 
 	 */
 	public boolean isConflict() {
-		return isDiffsConflict() ||
-			getAncestor() == null && (getLeft() == null || getRight() == null) && // this is 1-match-l/r AND
-			getParentMatch() != null && 
-					(getParentMatch().getAncestor() != null && (getParentMatch().getLeft() == null || getParentMatch().getRight() == null)); // parent match is 2-match
+		return isDiffsConflict() 
+				|| getAncestor() == null && (getLeft() == null || getRight() == null) && // this is 1-match-l/r AND
+				getParentMatch() != null 
+				&& (getParentMatch().getAncestor() != null && (getParentMatch().getLeft() == null || getParentMatch().getRight() == null)); // parent match is 2-match
 		
 	}
 	
 	public boolean isModifiedLeft() {
-		return diffsModifiedLeft || 
-			getAncestor() != null && getLeft() == null ||
-			getAncestor() == null && getLeft() != null;
+		return diffsModifiedLeft 
+				|| getAncestor() != null && getLeft() == null 
+				|| getAncestor() == null && getLeft() != null;
 	}
 
 	public boolean isModifiedRight() {
-		return diffsModifiedRight || 
-			getAncestor() != null && getRight() == null ||
-			getAncestor() == null && getRight() != null;
+		return diffsModifiedRight 
+				|| getAncestor() != null && getRight() == null 
+				|| getAncestor() == null && getRight() != null;
 	}
 
 	/**
@@ -292,12 +296,15 @@ public class Match {
 		subMatch.codeSyncAlgorithm = codeSyncAlgorithm;
 		
 		int nMatch = 0;
-		if (getAncestor() != null)
+		if (getAncestor() != null) {
 			nMatch++;
-		if (getLeft() != null)
+		}
+		if (getLeft() != null) {
 			nMatch++;
-		if (getRight() != null)
+		}
+		if (getRight() != null) {
 			nMatch++;
+		}
 		
 		boolean conflict = nMatch == 2 && // this is a 2-match 
 			subMatch.getAncestor() == null && // and new child is 1-match
@@ -306,15 +313,19 @@ public class Match {
 		boolean modifiedLeft = false, modifiedRight = false;
 		
 		if (subMatch.getAncestor() != null) {
-			if (subMatch.getLeft() == null)
-				modifiedLeft = true; 
-			if (subMatch.getRight() == null)
-				modifiedRight = true;
-		} else {
-			if (subMatch.getLeft() != null)
+			if (subMatch.getLeft() == null) {
 				modifiedLeft = true;
-			if (subMatch.getRight() != null)
+			} 
+			if (subMatch.getRight() == null) {
 				modifiedRight = true;
+			}
+		} else {
+			if (subMatch.getLeft() != null) {
+				modifiedLeft = true;
+			}
+			if (subMatch.getRight() != null) {
+				modifiedRight = true;
+			}
 		}
 		
 		propagateConflictAndModified(this, conflict, modifiedLeft, modifiedRight);
@@ -325,20 +336,27 @@ public class Match {
 	 * 
 	 */
 	private void propagateConflictAndModified(Match currentMatch, boolean conflict, boolean modifiedLeft, boolean modifiedRight) {
-		while (currentMatch != null && 
-				(conflict && !currentMatch.isChildrenConflict() || // conflict not yet propagated on this node or
-				modifiedLeft && !currentMatch.isChildrenModifiedLeft() ||
-				modifiedRight && !currentMatch.isChildrenModifiedRight())) { // modified not yet propagated
-			if (conflict && !currentMatch.isChildrenConflict())
+		while (currentMatch != null 
+				&& (conflict && !currentMatch.isChildrenConflict() || // conflict not yet propagated on this node or
+				modifiedLeft && !currentMatch.isChildrenModifiedLeft() 
+				|| modifiedRight && !currentMatch.isChildrenModifiedRight())) { // modified not yet propagated
+			if (conflict && !currentMatch.isChildrenConflict()) {
 				currentMatch.childrenConflict = true;
-			if (modifiedLeft && !currentMatch.isChildrenModifiedLeft())
+			}
+			if (modifiedLeft && !currentMatch.isChildrenModifiedLeft()) {
 				currentMatch.childrenModifiedLeft = true;
-			if (modifiedRight && !currentMatch.isChildrenModifiedRight())
+			}
+			if (modifiedRight && !currentMatch.isChildrenModifiedRight()) {
 				currentMatch.childrenModifiedRight = true;
+			}
 			currentMatch = currentMatch.getParentMatch();
 		}
 	}
 
+	/**
+	 * 
+	 * @author Mariana Gheorghe
+	 */
 	public boolean refreshDiffFlags(boolean conflict, boolean modifiedLeft, boolean modifiedRight) {
 		boolean modified = false;
 		if (!diffsConflict && conflict) {
@@ -346,11 +364,12 @@ public class Match {
 			modified = true;
 		} else if (diffsConflict && !conflict) {
 			boolean ok = true;
-			for (Diff childDiff : getDiffs()) 
+			for (Diff childDiff : getDiffs()) {
 				if (childDiff.isConflict()) {
 					ok = false;
 					break;
 				}
+			}
 			if (ok) {
 				diffsConflict = false;
 				modified = true;
@@ -361,11 +380,12 @@ public class Match {
 			modified = true;
 		} else if (diffsModifiedLeft && !modifiedLeft) {
 			boolean ok = true;
-			for (Diff childDiff : getDiffs()) 
+			for (Diff childDiff : getDiffs()) {
 				if (childDiff.isLeftModified()) {
 					ok = false;
 					break;
 				}
+			}
 			if (ok) {
 				diffsModifiedLeft = false;
 				modified = true;
@@ -376,11 +396,12 @@ public class Match {
 			modified = true;
 		} else if (diffsModifiedRight && !modifiedRight) {
 			boolean ok = true;
-			for (Diff childDiff : getDiffs()) 
+			for (Diff childDiff : getDiffs()) {
 				if (childDiff.isRightModified()) {
 					ok = false;
 					break;
 				}
+			}
 			if (ok) {
 				diffsModifiedRight = false;
 				modified = true;
@@ -389,23 +410,27 @@ public class Match {
 		return modified;
 	}
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public List<Match> propagateConflictAndModifiedTrueOrFalse(Match currentMatch, boolean conflict, boolean modifiedLeft, boolean modifiedRight) {
 		List<Match> modifiedMatches = new ArrayList<Match>();
-		while (currentMatch != null && 
-				(conflict != currentMatch.isChildrenConflict() || // conflict not yet propagated on this node or
-				modifiedLeft != currentMatch.isChildrenModifiedLeft() ||
-				modifiedRight != currentMatch.isChildrenModifiedRight())) { // modified not yet propagated
+		while (currentMatch != null 
+				&& (conflict != currentMatch.isChildrenConflict() || // conflict not yet propagated on this node or
+				modifiedLeft != currentMatch.isChildrenModifiedLeft()
+				|| modifiedRight != currentMatch.isChildrenModifiedRight())) { // modified not yet propagated
 			boolean modified = false;
 			if (conflict && !currentMatch.isChildrenConflict()) {
 				currentMatch.childrenConflict = true;
 				modified = true;
 			} else if (!conflict && currentMatch.isChildrenConflict()) {
 				boolean ok = true;
-				for (Match childMatch : currentMatch.getSubMatches())
+				for (Match childMatch : currentMatch.getSubMatches()) {
 					if (childMatch.isConflict() || childMatch.isChildrenConflict()) {
 						ok = false;
 						break;
 					}
+				}
 				if (ok) {
 					currentMatch.childrenConflict = false;
 					modified = true;
@@ -416,11 +441,12 @@ public class Match {
 				modified = true;
 			} else if (!modifiedLeft && currentMatch.isChildrenModifiedLeft()) {
 				boolean ok = true;
-				for (Match childMatch : currentMatch.getSubMatches())
+				for (Match childMatch : currentMatch.getSubMatches()) {
 					if (childMatch.isModifiedLeft() || childMatch.isChildrenModifiedLeft()) {
 						ok = false;
 						break;
 					}
+				}
 				if (ok) {
 					currentMatch.childrenModifiedLeft = false;
 					modified = true;
@@ -431,18 +457,20 @@ public class Match {
 				modified = true;
 			} else if (!modifiedRight && currentMatch.isChildrenModifiedRight()) {
 				boolean ok = true;
-				for (Match childMatch : currentMatch.getSubMatches())
+				for (Match childMatch : currentMatch.getSubMatches()) {
 					if (childMatch.isModifiedRight() || childMatch.isChildrenModifiedRight()) {
 						ok = false;
 						break;
 					}
+				}
 				if (ok) {
 					currentMatch.childrenModifiedRight = false;
 					modified = true;
 				}
 			}
-			if (modified)
+			if (modified) {
 				modifiedMatches.add(currentMatch);
+			}
 			currentMatch = currentMatch.getParentMatch();
 		}
 		return modifiedMatches;
@@ -468,42 +496,50 @@ public class Match {
 	public void addDiff(Diff diff) {
 		getDiffs().add(diff);
 		diff.setParentMatch(this);
-		if (diff.isConflict())
+		if (diff.isConflict()) {
 			diffsConflict = true;
-		if (diff.isLeftModified())
+		}
+		if (diff.isLeftModified()) {
 			diffsModifiedLeft = true;
-		if (diff.isRightModified())
+		}
+		if (diff.isRightModified()) {
 			diffsModifiedRight = true;
-		if (getParentMatch() != null)
+		}
+		if (getParentMatch() != null) {
 			propagateConflictAndModified(getParentMatch(), diffsConflict, diffsModifiedLeft, diffsModifiedRight);
+		}
 	}
 	
 	/**
 	 * @author Mariana
 	 */
 	public MatchType getMatchType() {
-		if (getAncestor() != null) 
-			if (getLeft() != null)
-				if (getRight() != null)
+		if (getAncestor() != null) {
+			if (getLeft() != null) {
+				if (getRight() != null) {
 					return MatchType._3MATCH;
-				else
+				} else {
 					return MatchType._2MATCH_ANCESTOR_LEFT;
-			else
-				if (getRight() != null)
+				}
+			} else
+				if (getRight() != null) {
 					return MatchType._2MATCH_ANCESTOR_RIGHT;
-				else 
+				} else {
 					return MatchType._1MATCH_ANCESTOR;
-		else
-			if (getLeft() != null)
-				if (getRight() != null)
+				}
+		} else
+			if (getLeft() != null) {
+				if (getRight() != null) {
 					return MatchType._2MATCH_LEFT_RIGHT;
-				else
+				} else {
 					return MatchType._1MATCH_LEFT;
-			else
-				if (getRight() != null)
+				}
+			} else
+				if (getRight() != null) {
 					return MatchType._1MATCH_RIGHT;
-				else 
+				} else {
 					return null;
+				}
 	}
 	
 	/**

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +38,11 @@ package org.flowerplatform.flex_client.team.git.action
 		
 		public static var ID:String = "org.flowerplatform.flex_client.team.git.action.CheckoutAction";
 		
-		public function CheckoutAction() {						
-			super();				
+		public var useNodeAsCommitId:Boolean;
+		
+		public function CheckoutAction(useNodeAsCommitId:Boolean=false) {						
+			super();	
+			this.useNodeAsCommitId = useNodeAsCommitId;
 			label = Resources.getMessage("flex_client.team.git.action.checkoutAction");
 			icon = Resources.checkoutIcon;
 			orderIndex = 240;
@@ -62,17 +65,12 @@ package org.flowerplatform.flex_client.team.git.action
 			FlexUtilGlobals.getInstance().actionHelper.runAction(FlexUtilGlobals.getInstance().getActionInstanceFromRegistry(ShowGitStagingAction.ID), null, null);		
 		}
 
-		public function reset(node:Node, commitID:String):void {
-			for each(var child:Node in node.parent.children) {
-				if (child.properties[GitConstants.IS_CHECKEDOUT] == true){
-					CorePlugin.getInstance().serviceLocator.invoke("GitService.reset", [child.nodeUri, "HARD", String(child.properties[GitConstants.COMMIT_ID])]);
-					break;
-				}
-			}
-			callGitServiceCheckout(node, commitID);			
+		public function reset(node:Node):void {
+			var commitID:String = node.parent.parent.properties[commitID];
+			CorePlugin.getInstance().serviceLocator.invoke("GitService.reset", [node.nodeUri, GitConstants.RESET_HARD, commitID]);	
 		}		
 		
-		public function faultCallback(event:FaultEvent, node:Node, commitID:String):void {				
+		public function faultCallback(event:FaultEvent, node:Node):void {				
 			if (event != null) {	
 				var index:Number = event.fault.faultString.search("CheckoutConflictException");
 				if (index != -1) {
@@ -82,41 +80,45 @@ package org.flowerplatform.flex_client.team.git.action
 						.setWidth(300)
 						.setHeight(150)
 						.addButton(Resources.getMessage("flex_client.team.git.action.commitChanges"), function():void {commitChanges();})
-						.addButton(Resources.getMessage("flex_client.team.git.action.Reset"), function():void {reset(node, commitID);})
+						.addButton(Resources.getMessage("flex_client.team.git.action.Reset"), function():void {reset(node);})
 						.addButton(Resources.getMessage("flex_client.team.git.action.Cancel"), function():void {})
 						.showMessageBox();	
 				}
 			}
 		}	
-		
-		public function callGitServiceCheckout(node:Node, commitID:String):void {			
-			CorePlugin.getInstance().serviceLocator.invoke("GitService.checkout", [node.nodeUri, commitID], null, function(event:FaultEvent):void {faultCallback(event, node, commitID)});
+
+		public function checkout(node:Node, commitID:String = null):void {			
+			CorePlugin.getInstance().serviceLocator.invoke("GitService.checkout", [node.nodeUri, commitID], null, function(event:FaultEvent):void {faultCallback(event, node)});
 		}
 
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0))		
 			var name:String = node.properties[GitConstants.NAME];
-			
-			if (node.type == "gitLocalBranch" || node.type == "gitTag") {
-				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-					.setText(Resources.getMessage("flex_client.team.git.action.checkout.popup",[name]))
-					.setTitle(Resources.getMessage("flex_client.team.git.createSdiff.getInfo"))
-					.setWidth(300)
-					.setHeight(125)
-					.addButton(Resources.getMessage("flex_client.team.git.action.Yes"), function():void {callGitServiceCheckout(node, null);})
-					.addButton(Resources.getMessage("flex_client.team.git.action.No"))
-					.showMessageBox();
-			} else if (node.type == "gitRemoteBranch") {
-				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-					.setText(Resources.getMessage("flex_client.team.git.action.checkout.remote"))
-					.setTitle(Resources.getMessage("flex_client.team.git.createSdiff.getInfo"))
-					.setWidth(350)
-					.setHeight(200)
-					.addButton(Resources.getMessage("flex_client.team.git.action.CreateNewBranch"), function():void {createNewBranch(node);})
-					.addButton(Resources.getMessage("flex_client.team.git.action.CheckoutCommit"),  function():void {callGitServiceCheckout(node, null);})
-					.addButton(Resources.getMessage("flex_client.team.git.action.Cancel"))
-					.showMessageBox();			
-			}			
+
+			if (!useNodeAsCommitId) {
+				if (node.type == "gitLocalBranch" || node.type == "gitTag") {
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(Resources.getMessage("flex_client.team.git.action.checkout.popup",[name]))
+						.setTitle(Resources.getMessage("flex_client.team.git.createSdiff.getInfo"))
+						.setWidth(300)
+						.setHeight(125)
+						.addButton(Resources.getMessage("flex_client.team.git.action.Yes"), function():void {checkout(node);})
+						.addButton(Resources.getMessage("flex_client.team.git.action.No"))
+						.showMessageBox();
+				} else if (node.type == "gitRemoteBranch") {
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(Resources.getMessage("flex_client.team.git.action.checkout.remote"))
+						.setTitle(Resources.getMessage("flex_client.team.git.createSdiff.getInfo"))
+						.setWidth(350)
+						.setHeight(200)
+						.addButton(Resources.getMessage("flex_client.team.git.action.CreateNewBranch"), function():void {createNewBranch(node);})
+						.addButton(Resources.getMessage("flex_client.team.git.action.CheckoutCommit"),  function():void {checkout(node);})
+						.addButton(Resources.getMessage("flex_client.team.git.action.Cancel"))
+						.showMessageBox();			
+				}			
+			} else {
+				checkout(node, node.getPropertyValue(GitConstants.ID));
+			}
 		}
 	}
 }

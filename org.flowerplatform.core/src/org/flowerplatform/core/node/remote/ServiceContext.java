@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,9 @@ public class ServiceContext<T> extends HashMap<String, Object> {
 		this.service = service;
 	}
 
+	/**
+	 *@author see class
+	 **/
 	public Map<String, Object> getContext() {
 		if (context == null) {
 			context = new HashMap<>();
@@ -46,21 +49,36 @@ public class ServiceContext<T> extends HashMap<String, Object> {
 		this.context = context;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public ServiceContext() {	
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public ServiceContext(T service) {
 		this.service = service;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public boolean getBooleanValue(String key) {
 		return getContext().containsKey(key) && (boolean) getContext().get(key);
 	}
 
+	/**
+	 *@author see class
+	 **/
 	public Object get(String key) {
 		return getContext().get(key);
 	}
 		
+	/**
+	 *@author see class
+	 **/
 	public ServiceContext<T> add(String key, Object value) {		
 		getContext().put(key, value);
 		return this;
