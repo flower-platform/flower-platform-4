@@ -71,7 +71,7 @@ public class Command {
 	public void setLastUpdateIdAfterCommandExecution(String lastUpdateId) {
 		this.lastUpdateIdAfterCommandExecution = lastUpdateId;
 	}
-
+//CHECKSTYLE:OFF
 	@Override
 	public boolean equals(Object command) {
 		if (command == null || !(command instanceof Command)) {
@@ -79,6 +79,7 @@ public class Command {
 		}
 		return id.equals(((Command) command).getId());
 	}
+	//CHECKSTYLE:ON
 	
 	
 }
