@@ -1,0 +1,38 @@
+<div ng-controller="UserListCtrl">
+
+	<h2>User List</h2>
+	
+	<div id="actions" class="btn-group">
+		<a class="btn btn-primary" href="#/users/new"> 
+			<span class="icon-plus icon-white">Add</span>
+		</a> 
+		<a class="btn btn-default" href=""> 
+			<span class="icon-ok">Done</span>
+		</a>
+	</div>
+	
+	<div class="pagebanner"><span ng-bind="users.messageResult.length"></span> users found.</div>
+	
+	<table class="table table-condensed table-striped table-hover">
+		<thead>
+			<tr>
+				<th>Username</th>
+				<th>Full Name</th>
+				<th>E-Mail</th>
+				<th>Enabled</th>
+			</tr>
+		</thead>
+	
+		<tbody>
+			<tr ng-repeat="user in users.messageResult | filter:query">
+				<td><a ng-href="#/users/{{user.nodeUri}}">{{user.properties.login}}</a></td>
+				<td>{{user.properties.name}}</td>
+				<td>{{user.properties.email}}</td>
+				<td><input type="checkbox" disabled="disabled" ng-checked="{{user.enabled}}"></td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<div class="exportlinks well">Export options: </div>
+
+</div>

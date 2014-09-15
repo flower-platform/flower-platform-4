@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/aopalliance-repackaged-2.3.0-b05.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/hk2-api-2.3.0-b05.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/glassfish/hk2/hk2-api/2.3.0-b05/hk2-api-2.3.0-b05-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/hk2-locator-2.3.0-b05.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/glassfish/hk2/hk2-locator/2.3.0-b05/hk2-locator-2.3.0-b05-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/hk2-utils-2.3.0-b05.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-annotations-2.3.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-core-2.3.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-databind-2.3.2.jar" sourcepath="C:/Users/PowerUser/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.3.2/jackson-databind-2.3.2-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-jaxrs-base-2.3.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-jaxrs-json-provider-2.3.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-module-jaxb-annotations-2.3.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/javassist-3.18.1-GA.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/javax.annotation-api-1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/javax.inject-2.3.0-b05.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jersey-client-2.11.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/glassfish/jersey/core/jersey-client/2.11/jersey-client-2.11-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jersey-common-2.11.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/glassfish/jersey/core/jersey-common/2.11/jersey-common-2.11-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jersey-container-servlet-2.11.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jersey-container-servlet-core-2.11.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/glassfish/jersey/containers/jersey-container-servlet-core/2.11/jersey-container-servlet-core-2.11-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jersey-guava-2.11.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jersey-media-json-jackson-2.11.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/glassfish/jersey/media/jersey-media-json-jackson/2.11/jersey-media-json-jackson-2.11-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jersey-server-2.11.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/glassfish/jersey/core/jersey-server/2.11/jersey-server-2.11-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/osgi-resource-locator-1.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/rhino-1.7R4.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/mozilla/rhino/1.7R4/rhino-1.7R4-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/validation-api-1.1.0.Final.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

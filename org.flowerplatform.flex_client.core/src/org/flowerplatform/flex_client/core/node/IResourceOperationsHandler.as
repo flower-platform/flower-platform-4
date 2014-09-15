@@ -21,8 +21,8 @@ package org.flowerplatform.flex_client.core.node {
 	 */
 	public interface IResourceOperationsHandler	{
 		
-		function get nodeRegistryManager():NodeRegistryManager;
-		function set nodeRegistryManager(value:NodeRegistryManager):void;
+		function get nodeRegistryManager():*;
+		function set nodeRegistryManager(value:*):void;
 		
 		function updateGlobalDirtyState(someResourceNodeHasBecomeDirty:Boolean):void;
 		

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,16 +26,10 @@ public class SubscriptionInfo {
 	
 	private String resourceSet;
 	
-	/**
-	 *@author see class
-	 **/
 	public SubscriptionInfo(Node rootNode) {
 		this(rootNode, null, null);
 	}
 
-	/**
-	 *@author see class
-	 **/
 	public SubscriptionInfo(Node rootNode, Node resourceNode, String resourceSet) {
 		super();
 		this.rootNode = rootNode;

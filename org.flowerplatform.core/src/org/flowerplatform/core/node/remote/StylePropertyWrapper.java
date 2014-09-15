@@ -36,5 +36,9 @@ public class StylePropertyWrapper extends PropertyWrapper {
 		return this;
 		//CHECKSTYLE:ON
 	}
+
+	public StylePropertyWrapper() {
+		super();		
+	}	
 	
 }

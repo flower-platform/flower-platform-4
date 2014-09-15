@@ -19,6 +19,7 @@ package org.flowerplatform.flexutil.service {
 	import mx.messaging.ChannelSet;
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.AsyncToken;
+	import mx.rpc.Fault;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
@@ -58,15 +59,15 @@ package org.flowerplatform.flexutil.service {
 			return remoteObject;
 		}
 		
-		public function faultHandler(event:FaultEvent, responder:ServiceResponder):void {
+		public function faultHandler(fault:Fault, responder:ServiceResponder):void {
 			if (responder.faultHandler != null) {
-				responder.faultHandler(event);
+				responder.faultHandler(fault);
 			} else {
 				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 					.setWidth(300)
 					.setHeight(200)
 					.setTitle(FlexUtilAssets.INSTANCE.getMessage("service.fault.title"))
-					.setText(FlexUtilAssets.INSTANCE.getMessage("service.fault.message", [event.fault.faultString, event.fault.content]))
+					.setText(FlexUtilAssets.INSTANCE.getMessage("service.fault.message", [fault.faultString, fault.content]))
 					.showMessageBox();
 			}			
 		}

@@ -29,5 +29,9 @@ package org.flowerplatform.flexutil {
 		public static const SHIFT:String = "SHIFT";
 		public static const ALTERNATE:String = "ALTERNATE";
 		
+		public static const EMBED_IN_FLEX_APP:String = "embedInFlexApp";
+		public static const EMBED_IN_FLEX_APP_WEB:String = "web";
+		public static const EMBED_IN_FLEX_APP_MOBILE:String = "mobile";
+		
 	}
 }

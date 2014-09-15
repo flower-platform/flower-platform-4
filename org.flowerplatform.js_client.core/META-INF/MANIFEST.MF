@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Core
+Bundle-SymbolicName: org.flowerplatform.js_client.core;singleton:=true
+Bundle-Version: 0.1.1.qualifier
+Require-Bundle: org.eclipse.equinox.http.registry
+Bundle-ActivationPolicy: lazy

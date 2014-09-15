@@ -20,7 +20,8 @@ Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.equinox.common,
  org.eclipse.osgi,
  org.eclipse.compare.core,
- com.ibm.icu
+ com.ibm.icu,
+ org.flowerplatform.js_client.java
 Bundle-Activator: org.flowerplatform.tests.TestActivator
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib-from-maven/mockito-all-1.9.5.jar,
@@ -28,3 +29,4 @@ Bundle-ClassPath: lib-from-maven/mockito-all-1.9.5.jar,
 Export-Package: org.flowerplatform.tests
 Import-Package: javax.servlet,
  javax.servlet.http
+

@@ -15,9 +15,13 @@
  * license-end
  */
 package org.flowerplatform.flex_client.team.git {
+<<<<<<< Temporary merge branch 1
+
+=======
 
 	import mx.collections.ArrayCollection;
 	
+>>>>>>> Temporary merge branch 2
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	
 	public class GitConstants {
@@ -28,8 +32,13 @@ package org.flowerplatform.flex_client.team.git {
 		/////////////////////////////////////////////////////////////
 		//Node type in Git folder hierarchy
 		/////////////////////////////////////////////////////////////
+<<<<<<< Temporary merge branch 1
+
+		public static const GIT_REPO_TYPE:String = "gitRepo";		
+=======
 
 		public static const GIT_REPO_TYPE:String = "gitRepo";
+>>>>>>> Temporary merge branch 2
 
 		public static const GIT_LOCAL_BRANCHES_TYPE:String = "gitLocalBranches";
 		public static const GIT_REMOTE_BRANCHES_TYPE:String = "gitRemoteBranches";
@@ -51,12 +60,24 @@ package org.flowerplatform.flex_client.team.git {
 		/////////////////////////////////////////////////////////////
 
 		public static const NAME:String = "name";
+<<<<<<< Temporary merge branch 1
+
+=======
 		public static const COMMIT_ID:String = "commitID";
 
+>>>>>>> Temporary merge branch 2
 		public static const IS_GIT_REPOSITORY:String = "isGitRepository";
 
 		public static const FULL_NAME:String = "fullName";
 		
+<<<<<<< Temporary merge branch 1
+		public static const CONFIG_REMOTE:String = "configRemote";
+		public static const CONFIG_UPSTREAM_BRANCH:String = "configUpstreamBranch";
+		public static const CONFIG_REBASE:String = "configRebase";
+		public static const CURRENT_BRANCH:String = "currentBranch";		
+		public static const IS_CHECKEDOUT:String = "isCheckedOut";		
+		public static const FETCH_REF_SPECS:String = "fetchRefSpecs";
+=======
 		public static const CONFIG_REMOTE:String = "configRemote";
 		public static const CONFIG_UPSTREAM_BRANCH:String = "configUpstreamBranch";
 		public static const CONFIG_REBASE:String = "configRebase";
@@ -64,6 +85,7 @@ package org.flowerplatform.flex_client.team.git {
 		public static const IS_CHECKEDOUT:String = "isCheckedOut";
 
 		public static const FETCH_REF_SPECS:String = "fetchRefSpecs";
+>>>>>>> Temporary merge branch 2
 		public static const PUSH_REF_SPECS:String = "pushRefSpecs";
 		public static const REMOTE_URIS:String = "URIs";
 		public static const IS_REPO:String = "isRepo";
@@ -152,4 +174,10 @@ package org.flowerplatform.flex_client.team.git {
 			"#489977", "#1765A0", "#FF8A01", "#7BBB5F", "#E95862", "#5D9EFE", 
 			"#E8A815", "#00ACBF", "#FB3A04", "#3F40FF", "#1BC282", "#0068B7"));
 	}
+<<<<<<< Temporary merge branch 1
 }
+
+
+=======
+}
+>>>>>>> Temporary merge branch 2

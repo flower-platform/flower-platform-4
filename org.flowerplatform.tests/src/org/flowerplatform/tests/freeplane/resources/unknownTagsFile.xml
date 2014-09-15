@@ -1,0 +1,50 @@
+<node TEXT="test" ID="ID_1229967238" CREATED="1407493284393" MODIFIED="1407493284393" FOLDED="false">
+
+	<richcontent TYPE="DETAILS" HIDDEN="true">
+		<html>
+			<head></head>
+			<body><p>Details .... </p></body>
+		</html>
+	</richcontent>
+
+	<icon BUILTIN="yes" />
+	<icon BUILTIN="checked" />
+	<icon BUILTIN="password" />
+	
+	<unknownTag1 unknownProp1="value1" unknownProp2="value2">
+		<node TEXT="test" ID="ID_1229967238" CREATED="1407493284393" MODIFIED="1407493284393" FOLDED="false">
+			<richcontent TYPE="DETAILS" HIDDEN="true">
+				<html><head></head><body><p>Details .... </p></body></html>
+			</richcontent>
+		</node>
+	</unknownTag1>
+		
+	<cloud COLOR="#0033ff" SHAPE="RECT" />
+
+	<font NAME="Segoe UI" SIZE="18" BOLD="true" ITALIC="true" />
+
+	<hook NAME="FirstGroupNode"/>
+	<hook NAME="MapStyle">
+		<map_styles>
+			<stylenode LOCALIZED_TEXT='styles.root_node'></stylenode>
+		</map_styles>
+	</hook>
+	
+	<unknownTag2 unknownProp1="value1" unknownProp2="value2">
+		<icon BUILTIN="password"/>
+	</unknownTag2>
+	
+	<hook NAME="NodeConditionalStyles">
+		<conditional_style ACTIVE='true' STYLE_REF='TitlesContent' LAST='false'/>
+		<conditional_style ACTIVE='true' STYLE_REF='BeginnerTopic' LAST='false'/>
+	</hook>
+	
+	<attribute NAME="a1" VALUE="v1"/>
+	<attribute NAME="a2" VALUE="v2"/>
+	<attribute NAME="a3" VALUE="v3"/>
+	
+	<unknownTag1 unknownProp1="value1" unknownProp2="value2">
+		<attribute NAME="a1" VALUE="v1"/>
+	</unknownTag1>
+
+</node>

@@ -96,7 +96,7 @@ public class FileSystemControllersTest {
 		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceUris();
 		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceSets();
 		doReturn(-1L).when(remoteMethodInvocationInfo).getTimestampOfLastRequest();
-		remoteMethodInvocationInfo.setMethodName("test");
+		remoteMethodInvocationInfo.setServiceMethodOrUrl("test");
 
 	}
 	/**

@@ -20,6 +20,7 @@
  */
 package org.flowerplatform.flex_client.team.git.action
 {
+	import mx.rpc.Fault;
 	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -71,6 +72,13 @@ package org.flowerplatform.flex_client.team.git.action
 			callGitServiceCheckout(node, commitID);			
 		}		
 		
+<<<<<<< Temporary merge branch 1
+		public function FaultCallback(fault:Fault):void {				
+			if (fault != null) {				
+				var index:Number = fault.faultString.search("CheckoutConflictException");
+				if (index != -1)
+					uncommitedChanges(fault.faultString.substring(index));
+=======
 		public function faultCallback(event:FaultEvent, node:Node, commitID:String):void {				
 			if (event != null) {	
 				var index:Number = event.fault.faultString.search("CheckoutConflictException");
@@ -85,6 +93,7 @@ package org.flowerplatform.flex_client.team.git.action
 						.addButton(Resources.getMessage("flex_client.team.git.action.Cancel"), function():void {})
 						.showMessageBox();	
 				}
+>>>>>>> Temporary merge branch 2
 			}
 		}	
 		

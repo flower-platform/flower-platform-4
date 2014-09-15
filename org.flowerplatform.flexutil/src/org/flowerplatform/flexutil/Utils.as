@@ -276,5 +276,15 @@ package org.flowerplatform.flexutil {
 			return getKeyCodeNames()[keyCode];			
 		}
 		
+		public static function getUrlWithParameter(url:String, key:String, value:String):String {
+			var index:int = url.indexOf("?");
+			var paramToString:String = key + "=" + value;
+			if (index < 0) {
+				return url + "?" + paramToString;
+			} else {
+				return url.substr(0, index + 1) + paramToString + "&" + url.substr(index + 1);
+			}
+		}
+		
 	}
 }

@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.core.service {
 	import mx.collections.ArrayCollection;
 	import mx.messaging.ChannelSet;
 	import mx.rpc.AbstractOperation;
+	import mx.rpc.Fault;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
@@ -114,15 +115,15 @@ package org.flowerplatform.flex_client.core.service {
 			}
 		}
 		
-		override public function faultHandler(event:FaultEvent, responder:ServiceResponder):void {
-			if (event.fault.faultCode == "Channel.Call.Failed" /*|| event.fault.faultCode == "Client.Error.MessageSend")*/) {
+		override public function faultHandler(fault:Fault, responder:ServiceResponder):void {
+			if (fault.faultCode == "Channel.Call.Failed" /*|| fault.faultCode == "Client.Error.MessageSend")*/) {
 				if (communicationErrorViewContent == null) {
 					communicationErrorViewContent = new ReconnectingViewContent();
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 						.setViewContent(communicationErrorViewContent)
 						.showModalOverAllApplication();
 				}
-			} else if (event.fault.faultCode == "Client.Error.MessageSend") {
+			} else if (fault.faultCode == "Client.Error.MessageSend") {
 				if (communicationErrorViewContent == null) {
 					if (FlexUtilGlobals.getInstance().clientCommunicationErrorViewContent == null) {
 						communicationErrorViewContent = new ReconnectingViewContent();
@@ -134,7 +135,7 @@ package org.flowerplatform.flex_client.core.service {
 						.showModalOverAllApplication();
 				}
 			}else {
-				super.faultHandler(event, responder);
+				super.faultHandler(fault, responder);
 			}
 		}
 

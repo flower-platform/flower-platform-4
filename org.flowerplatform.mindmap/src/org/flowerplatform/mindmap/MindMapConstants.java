@@ -34,6 +34,7 @@ public final class MindMapConstants {
 	
 	public static final String FREEPLANE_PERSISTENCE_NODE_TYPE_KEY = "nodeType";
 	public static final String MINDMAP_NODE_TYPE = "freeplaneNode";
+	public static final String MINDMAP_NODE_TYPE_1 = "freeplaneNode1";
 	
 	//////////////////////////////////
 	// Node properties
@@ -100,7 +101,9 @@ public final class MindMapConstants {
 	//////////////////////////////////
 	
 	public static final String FREEPLANE_MINDMAP_RESOURCE_KEY = "fpm";
+	public static final String FREEPLANE_MINDMAP_RESOURCE_KEY_1 = "fpm1";
 	public static final String FREEPLANE_PERSISTENCE_RESOURCE_KEY = "fpp";
+	public static final String FREEPLANE_MINDMAP_CATEGORY_1 = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY_1;
 	public static final String FREEPLANE_MINDMAP_CATEGORY = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY;
 	public static final String FREEPLANE_PERSISTENCE_CATEGORY = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 	

@@ -19,4 +19,5 @@ Bundle-ClassPath: lib/freeplaneeditor.jar,
  .
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.flowerplatform.freeplane.FreeplanePlugin
-Export-Package: org.flowerplatform.freeplane
+Export-Package: org.flowerplatform.freeplane,
+ org.flowerplatform.freeplane.controller.xml_parser

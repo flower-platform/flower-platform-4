@@ -603,6 +603,12 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
 		public static const gitDiffFromWorkspaceAndPatch:Class;
+<<<<<<< Temporary merge branch 1
+
+		[Embed(source="/team.git/permission.png")]
+		public static const permission:Class;
+		
+=======
 		
 		[Embed(source="/team.git/switch.gif")]
 		public static const switchIcon:Class;
@@ -616,6 +622,7 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/team.git/revert.gif")]
 		public static const gitRevertCommitIcon:Class;
 
+>>>>>>> Temporary merge branch 2
 		[Embed(source="/team.git/branch_obj.gif")]
 		public static const branchIcon:Class;
 		
@@ -639,12 +646,15 @@ package org.flowerplatform.flex_client.resources {
 
 		[Embed(source="/team.git/staging.png")]
 		public static const gitStagingIcon:Class;
+<<<<<<< Temporary merge branch 1
+=======
 
 		[Embed(source="/git/history.gif")]
 		public static const gitHistoryIcon:Class;
 		
 		[Embed(source="/team.git/copy.gif")]
 		public static const copy:Class;
+>>>>>>> Temporary merge branch 2
 	}
 }
 		
