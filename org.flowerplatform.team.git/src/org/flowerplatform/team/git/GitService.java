@@ -242,8 +242,10 @@ public class GitService {
 	 * Creates new branch
 	 * 
 	 */
+	//CHECKSTYLE:OFF 
 	public void createBranch(String parentUri, String name, 
 			String startPoint, boolean configureUpstream, boolean track, boolean setUpstream, boolean checkoutBranch, String commitId) throws Exception {
+	//CHECKSTYLE:ON 
 		String repoPath = Utils.getRepo(parentUri);
 		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		

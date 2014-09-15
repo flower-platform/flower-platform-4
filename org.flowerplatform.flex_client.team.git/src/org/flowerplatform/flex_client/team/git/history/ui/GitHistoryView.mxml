@@ -38,10 +38,12 @@
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.team.git.GitConstants;
+			import org.flowerplatform.flex_client.team.git.action.CheckoutAction;
 			import org.flowerplatform.flex_client.team.git.action.CherryPickAction;
 			import org.flowerplatform.flex_client.team.git.action.CopyIdToClipboard;
 			import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
 			import org.flowerplatform.flex_client.team.git.action.MergeAction;
+			import org.flowerplatform.flex_client.team.git.action.ResetAction;
 			import org.flowerplatform.flex_client.team.git.action.RevertCommitAction;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
@@ -132,6 +134,8 @@
 				result.push(new CopyIdToClipboard());
 				result.push(new MergeAction(true));
 				result.push(new CreateBranchAction(true));
+				result.push(new ResetAction(true));
+				result.push(new CheckoutAction(true));
 				result.push(new CherryPickAction());
 				result.push(new RevertCommitAction());
 				return result;
