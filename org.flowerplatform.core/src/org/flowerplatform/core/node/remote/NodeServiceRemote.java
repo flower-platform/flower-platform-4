@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,9 @@ import org.flowerplatform.util.controller.TypeDescriptorRemote;
  */
 public class NodeServiceRemote {
 	
+	/**
+	 *@author see class
+	 **/
 	public List<Node> getChildren(String nodeUri, ServiceContext<NodeService> context) {
 		if (context == null) {
 			context = new ServiceContext<NodeService>(getNodeService());
@@ -176,6 +179,9 @@ public class NodeServiceRemote {
 		return response;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public Node getNode(String fullNodeId) {	
 		return CorePlugin.getInstance().getResourceService().getNode(fullNodeId, new ServiceContext<ResourceService>().add(POPULATE_WITH_PROPERTIES, true));
 	}
@@ -196,6 +202,6 @@ public class NodeServiceRemote {
 	private String getNodeTitleProperty(String nodeType) {
 		GenericValueDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(nodeType)
 				.getSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, null);
-		return (String)descriptor.getValue();
+		return (String) descriptor.getValue();
 	}
 }

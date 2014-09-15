@@ -103,15 +103,17 @@ public class RemoteMethodInvocationListener {
 		ContextThreadLocal context = CorePlugin.getInstance().getContextThreadLocal().get();
 		try {
 			if (logger.isDebugEnabled()) {
+				long endTime = new Date().getTime();
+				long difference = endTime - remoteMethodInvocationInfo.getStartTimestamp();
+				String serviceId = remoteMethodInvocationInfo.getServiceId();
+				String methodName = remoteMethodInvocationInfo.getMethodName();
 				boolean log = true;
-				if (remoteMethodInvocationInfo.getServiceMethodOrUrl().equals("resourceService.ping()")) {
+				if (methodName.equals("ping")) {
 					String logPing = loggerContext.getProperty("logNodeServicePingInvocation");
 					log = logPing == null ? false : Boolean.parseBoolean(logPing);
 				}
 				if (log) {
-					long endTime = new Date().getTime();
-					long difference = endTime - remoteMethodInvocationInfo.getStartTimestamp();
-					logger.debug("[{}ms] {} invoked", new Object[] { difference, remoteMethodInvocationInfo.getServiceMethodOrUrl() });
+					logger.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
 				}
 			}
 	

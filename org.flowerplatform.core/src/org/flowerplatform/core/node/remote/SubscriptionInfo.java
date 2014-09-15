@@ -26,9 +26,6 @@ public class SubscriptionInfo {
 	
 	private String resourceSet;
 	
-	public SubscriptionInfo() {	
-	}
-	
 	public SubscriptionInfo(Node rootNode) {
 		this(rootNode, null, null);
 	}

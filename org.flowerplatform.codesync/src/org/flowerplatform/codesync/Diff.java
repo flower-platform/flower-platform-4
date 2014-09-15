@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
 package org.flowerplatform.codesync;
 
 /**
- * 
- */
+ *@author Mariana Gheorghe
+ **/
 public class Diff {
 
 	private Object feature;
@@ -29,9 +29,8 @@ public class Diff {
 	private boolean isRightModified;
 	
 	/**
-	 * 
-	 */
-	private boolean isConflict;
+	 *@author Mariana Gheorghe
+	 **/	private boolean isConflict;
 
 	@Override
 	public String toString() {
@@ -58,24 +57,24 @@ public class Diff {
 		return isLeftModified;
 	}
 
-	public void setLeftModified(boolean isLeftModified) {
-		this.isLeftModified = isLeftModified;
+	public void setLeftModified(boolean isLeftModifiedValue) {
+		this.isLeftModified = isLeftModifiedValue;
 	}
 
 	public boolean isRightModified() {
 		return isRightModified;
 	}
 
-	public void setRightModified(boolean isRightModified) {
-		this.isRightModified = isRightModified;
+	public void setRightModified(boolean rightModified) {
+		this.isRightModified = rightModified;
 	}
 
 	public boolean isConflict() {
 		return isConflict;
 	}
 
-	public void setConflict(boolean isConflict) {
-		this.isConflict = isConflict;
+	public void setConflict(boolean isConflictValue) {
+		this.isConflict = isConflictValue;
 	}
 
 	public void setParentMatch(Match parentMatch) {

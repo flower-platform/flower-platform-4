@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,13 @@ import java.util.Map;
 /**
  * @author Cristian Spiescu
  */
-public class Utils {
+public final class Utils {
+	
+	private Utils() { }
+	
+	/**
+	 *@author see class
+	 **/
 	public static <T> T getValueSafe(Map<?, T> map, Object key) {
 		if (map == null) {
 			return null;
@@ -29,23 +35,36 @@ public class Utils {
 		}
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public static boolean safeEquals(Object a, Object b) {
-		if (a == null && b == null)
+		if (a == null && b == null) {
 			return true;
-		else if (a == null || b == null)
+		} else if (a == null || b == null) {
 			return false;
-		else
+		} else {
 			return a.equals(b);
+		}
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public static String defaultIfNull(String str) {
 		return defaultIfNull(str, "");
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public static String defaultIfNull(String str, String defaultStr) {
 		return str == null ? defaultStr : str;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public static String getScheme(String uri) {
 		int index = uri.indexOf(":");
 		if (index < 0) {
@@ -54,13 +73,15 @@ public class Utils {
 		return uri.substring(0, index);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public static String getRepo(String uri) {
 		int indexStart = uri.indexOf(":");
 		int indexEnd;
-		if(uri.contains("|")){
+		if (uri.contains("|")) {
 			indexEnd = uri.indexOf("|");
-		}
-		else{
+		} else {
 			indexEnd = uri.length();
 		}
 //		int indexEnd = uri.indexOf("|");
@@ -70,6 +91,9 @@ public class Utils {
 		return uri.substring(indexStart + 1, indexEnd);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public static String getSchemeSpecificPart(String uri) {
 		int index = uri.indexOf(":");
 		if (index < 0) {
@@ -83,6 +107,9 @@ public class Utils {
 		return ssp.substring(0, index);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public static String getFragment(String uri) {
 		int index = uri.lastIndexOf("#");
 		if (index < 0) {
@@ -91,10 +118,16 @@ public class Utils {
 		return uri.substring(index + 1);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public static String getUri(String scheme, String ssp) {
 		return getUri(scheme, ssp, null);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public static String getUri(String scheme, String ssp, String fragment) {
 		String uri = scheme + ":" + ssp;
 		if (fragment != null) {

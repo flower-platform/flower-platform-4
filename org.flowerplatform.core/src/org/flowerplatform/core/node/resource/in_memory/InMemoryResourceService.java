@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ public class InMemoryResourceService extends ResourceService {
 	protected void doSessionSubscribedToResource(String sessionId, String resourceUri) {
 		if (getSessionsSubscribedToResource(resourceUri).isEmpty()) {
 			// load on first subscription
-			logger.debug("First subscription; load resource {}", resourceUri);
+			LOGGER.debug("First subscription; load resource {}", resourceUri);
 			String scheme = Utils.getScheme(resourceUri);
 			IResourceHandler resourceHandler = getResourceHandler(scheme);
 			try {
@@ -72,7 +72,7 @@ public class InMemoryResourceService extends ResourceService {
 		
 		if (getSessionsSubscribedToResource(resourceUri).isEmpty()) {
 			// unload on last unsubscription
-			logger.debug("Last unsubscription; unload resource {}", resourceUri);
+			LOGGER.debug("Last unsubscription; unload resource {}", resourceUri);
 			String scheme = Utils.getScheme(resourceUri);
 			IResourceHandler resourceHandler = getResourceHandler(scheme);
 			try {

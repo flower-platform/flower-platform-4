@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,9 @@ import org.osgi.framework.Bundle;
  * @author Cristina Constantinescu
  */
 public class CustomJSPFactory extends JSPFactory {
-	
+	/**
+	 *@author see class
+	 **/
 	public Object create() throws CoreException {
 		JspServlet jspServlet = (JspServlet) super.create();
 		
@@ -41,7 +43,7 @@ public class CustomJSPFactory extends JSPFactory {
 			
 			Field jspAlias = jspServlet.getClass().getDeclaredField("alias");
 			jspAlias.setAccessible(true);
-			Object alias= jspAlias.get(jspServlet);
+			Object alias = jspAlias.get(jspServlet);
 			
 			Field jspBundleResourcePath = jspServlet.getClass().getDeclaredField("bundleResourcePath");
 			jspBundleResourcePath.setAccessible(true);

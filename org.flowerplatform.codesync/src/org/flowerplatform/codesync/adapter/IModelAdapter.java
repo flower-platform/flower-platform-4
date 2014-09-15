@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,36 +21,72 @@ import java.util.Map;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
-import org.flowerplatform.codesync.action.DiffAction;
 
 /**
  * @see AbstractModelAdapter
+ * @author Mariana Gheorghe
  */
 public interface IModelAdapter {
 	
-	public List<?> getValueFeatures(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	List<?> getValueFeatures(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
 	
-	public List<?> getContainmentFeatures(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	List<?> getContainmentFeatures(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
 	
-	public int getFeatureType(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	int getFeatureType(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm);
 	
-	public String getFeatureName(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	String getFeatureName(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm);
 
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm);
 	
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm);
 
-	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
 	
-	public void addToMap(Object element, Map<Object, Object> map, CodeSyncAlgorithm codeSyncAlgorithm);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	void addToMap(Object element, Map<Object, Object> map, CodeSyncAlgorithm codeSyncAlgorithm);
 	
-	public Object removeFromMap(Object element, Map<Object, Object> leftOrRightMap, boolean isRight, CodeSyncAlgorithm codeSyncAlgorithm);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	Object removeFromMap(Object element, Map<Object, Object> leftOrRightMap, boolean isRight, CodeSyncAlgorithm codeSyncAlgorithm);
 	
-	public void setValueFeatureValue(Object element, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	void setValueFeatureValue(Object element, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm);
 	
-	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet modelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet modelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm);
 	
-	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child, CodeSyncAlgorithm codeSyncAlgorithm);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child, CodeSyncAlgorithm codeSyncAlgorithm);
 	
 	/**
 	 * Saves the given <code>element</code> to its underlying resource. Returns <code>true</code> if saving is also required
@@ -58,28 +94,28 @@ public interface IModelAdapter {
 	 * 
 	 * @author Mariana
 	 */
-	public boolean save(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
+	boolean save(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
 	
 	/**
 	 * Discards this element (i.e. for a file, discards the AST created from its content; for an EObject, unload the containing resource, etc).
 	 *
 	 * @author Mariana
 	 */
-	public boolean discard(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
+	boolean discard(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
 	
 	/**
 	 * Called from {@link CodeSyncAlgorithm} before the features of <code>element</code> have been processed.
 	 * 
 	 * @author Mariana
 	 */
-	public void beforeFeaturesProcessed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm);
+	void beforeFeaturesProcessed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm);
 	
 	/**
 	 * Called from {@link CodeSyncAlgorithm} after all the features of <code>element</code> have been processed.
 	 * 
 	 * @author Mariana
 	 */
-	public void featuresProcessed(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
+	void featuresProcessed(Object element, CodeSyncAlgorithm codeSyncAlgorithm);
 	
 	/**
 	 * Called after a {@link DiffAction} was performed.
@@ -89,7 +125,7 @@ public interface IModelAdapter {
 	 * @param result the action's result
 	 * @author Mariana
 	 */
-	public void actionPerformed(Object element, Object feature, ActionResult result, Match match);
+	void actionPerformed(Object element, Object feature, ActionResult result, Match match);
 
 	/**
 	 * Called after all the {@link DiffAction}s were performed for the <code>element</code>,
@@ -97,7 +133,7 @@ public interface IModelAdapter {
 	 * 
 	 * @author Mariana
 	 */
-	public void allActionsPerformedForFeature(Object element, Object correspondingElement, Object feature, CodeSyncAlgorithm codeSyncAlgorithm);
+	void allActionsPerformedForFeature(Object element, Object correspondingElement, Object feature, CodeSyncAlgorithm codeSyncAlgorithm);
 	
 	/**
 	 * Calls {@link #allActionsPerformedForFeature(Object, Object, Object, CodeSyncAlgorithm)} for all the containment features
@@ -105,18 +141,36 @@ public interface IModelAdapter {
 	 * 
 	 * @author Mariana
 	 */
-	public void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm);
+	void allActionsPerformed(Object element, Object correspondingElement, CodeSyncAlgorithm codeSyncAlgorithm);
 	
-	public void setConflict(Object element, Object feature, Object oppositeValue, CodeSyncAlgorithm codeSyncAlgorithm);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	void setConflict(Object element, Object feature, Object oppositeValue, CodeSyncAlgorithm codeSyncAlgorithm);
 
-	public void unsetConflict(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm);
+	/**
+	 *@author Valentina Bojan
+	 **/
+	void unsetConflict(Object element, Object feature, CodeSyncAlgorithm codeSyncAlgorithm);
 
-	public void setChildrenConflict(Object element);
+	/**
+	 *@author Valentina Bojan
+	 **/
+	void setChildrenConflict(Object element);
 
-	public void unsetChildrenConflict(Object element);
+	/**
+	 *@author Valentina Bojan
+	 **/
+	void unsetChildrenConflict(Object element);
 
-	public void setSync(Object element);
+	/**
+	 *@author Valentina Bojan
+	 **/
+	void setSync(Object element);
 
-	public void setChildrenSync(Object element);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	void setChildrenSync(Object element);
 	
 }

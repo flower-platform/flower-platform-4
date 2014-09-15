@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ import static org.flowerplatform.core.CoreConstants.DONT_PROCESS_OTHER_CONTROLLE
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -37,15 +38,24 @@ public class DelegateToResourceController extends AbstractController implements
 	IChildrenProvider, IParentProvider, IAddNodeController, IRemoveNodeController, 
 	IPropertiesProvider, IPropertySetter, IDefaultPropertyValueProvider, IPersistenceController {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected String getResource(String scheme) {
 		return CoreConstants.CATEGORY_RESOURCE_PREFIX + scheme;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected TypeDescriptor getDescriptor(Node node) {
 		return CorePlugin.getInstance().getNodeTypeDescriptorRegistry()
 				.getExpectedTypeDescriptor(getResource(node.getScheme()));
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected List<AbstractController> getControllers(Node node, String controllerType) {
 		TypeDescriptor descriptor = getDescriptor(node);
 		if (descriptor == null) {
@@ -64,6 +74,9 @@ public class DelegateToResourceController extends AbstractController implements
 		return controllers;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected AbstractController getController(Node node, String controllerType) {
 		TypeDescriptor descriptor = getDescriptor(node);
 		if (descriptor == null) {
@@ -78,9 +91,9 @@ public class DelegateToResourceController extends AbstractController implements
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
+	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		for (AbstractController controller : getControllers(node, CoreConstants.PROPERTY_SETTER)) {
-			((IPropertySetter) controller).setProperty(node, property, value, context);
+			((IPropertySetter) controller).setProperties(node, properties, context);
 		}
 	}
 
