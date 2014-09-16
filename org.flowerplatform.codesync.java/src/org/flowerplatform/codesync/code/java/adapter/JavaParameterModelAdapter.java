@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@ package org.flowerplatform.codesync.code.java.adapter;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
@@ -32,6 +31,9 @@ import org.flowerplatform.core.CoreConstants;
  */
 public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public JavaParameterModelAdapter() {
 		valueFeatures.add(CodeSyncJavaConstants.TYPED_ELEMENT_TYPE);
 		containmentFeatures.add(CodeSyncJavaConstants.MODIFIERS);
@@ -66,7 +68,8 @@ public class JavaParameterModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, 
+			IModelAdapterSet correspondingModelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.OPERATION_PARAMETERS.equals(feature)) {
 			MethodDeclaration method = (MethodDeclaration) parent;
 			AST ast = method.getAST();

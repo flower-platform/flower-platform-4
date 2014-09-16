@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,9 @@ import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -45,7 +47,6 @@ import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.controller.IRemoveNodeController;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.update.controller.UpdateController;
@@ -69,19 +70,28 @@ import org.slf4j.LoggerFactory;
  */
 public class NodeService {
 		
-	private final static Logger logger = LoggerFactory.getLogger(NodeService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(NodeService.class);
 	
 	protected TypeDescriptorRegistry registry;
 	
+	/**
+	 *@author see class
+	 **/
 	public NodeService() {
 		super();		
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public NodeService(TypeDescriptorRegistry registry) {
 		super();
 		this.registry = registry;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -124,6 +134,9 @@ public class NodeService {
 		}
 	}
 		
+	/**
+	 *@author see class
+	 **/
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -196,14 +209,22 @@ public class NodeService {
 		}
 		return parent;
 	}
-	
+
+	/**
+	 *
+	 * @author Claudiu Matei
+	 */
+	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
+		setProperties(node, Collections.singletonMap(property, value), context);
+	}
+		
 	/**
 	 *
 	 * @author Cristian Spiescu
 	 * @author Cristina Constantinescu
 	 * @author Claudiu Matei
 	 */
-	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {		
+	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
@@ -213,18 +234,23 @@ public class NodeService {
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
 		
-		// Save value before the change
-		if (node.getOrPopulateProperties(context).containsKey(property)) {
-			Object oldValue = node.getOrPopulateProperties(context).get(property);
-			context.add(CoreConstants.OLD_VALUE, oldValue);
+		// Save values before the change
+		Map<String, Object> oldValues = new HashMap<>();
+		Map<String, Object> props = node.getOrPopulateProperties(context);
+		for (String property : properties.keySet()) {
+			if (props.containsKey(property)) {
+				Object oldValue = node.getOrPopulateProperties(context).get(property);
+				oldValues.put(property, oldValue);
+			}
 		}
+		context.add(CoreConstants.OLD_VALUES, oldValues);
 		
 		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);		
 		for (IPropertySetter controller : controllers) {
 			if (!CoreUtils.isControllerInvokable(controller, context)) {
 				continue;
 			}
-			controller.setProperty(node, property, value, context);
+			controller.setProperties(node, properties, context);
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
 				break;
 			}
@@ -235,7 +261,8 @@ public class NodeService {
 		if (oldDirty != newDirty) {			
 			// dirty state changed -> change resourceNode isDirty property
 			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService())
+					.add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 		}
 	}
 
@@ -253,8 +280,10 @@ public class NodeService {
 		boolean oldDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
 
 		// Save value before the change
+		Map<String, Object> oldValues = new HashMap<>();
 		Object oldValue = node.getOrPopulateProperties(context).get(property);
-		context.add(CoreConstants.OLD_VALUE, oldValue);
+		oldValues.put(property, oldValue);
+		context.add(CoreConstants.OLD_VALUES, oldValues);
 		
 		List<IPropertySetter> controllers = descriptor.getAdditiveControllers(PROPERTY_SETTER, node);
 		for (IPropertySetter controller : controllers) {
@@ -272,10 +301,14 @@ public class NodeService {
 		if (oldDirty != newDirty) {			
 			// dirty state changed -> change resourceNode isDirty property
 			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService())
+					.add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public void addChild(Node node, Node child, ServiceContext<NodeService> context) {		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
@@ -302,9 +335,11 @@ public class NodeService {
 		if (oldDirty != newDirty) {
 			// dirty state changed -> change resourceNode isDirty property
 			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService())
+					.add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 		}
-		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService())
+				.add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 	}
 	
 	private void removeChildDFS(Node node, Node child, ArrayList<ChildrenUpdate> removedNodes) {
@@ -320,6 +355,9 @@ public class NodeService {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public void removeChild(Node node, Node child, ServiceContext<NodeService> context) {	
 		List<Node> grandChildren = CorePlugin.getInstance().getNodeService().getChildren(child, context);
 		if (context.get("parentNode") == null) {
@@ -367,9 +405,11 @@ public class NodeService {
 		if (oldDirty != newDirty) {
 			// dirty state changed -> change resourceNode isDirty property
 			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService()).add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService())
+					.add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 		}
-		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService())
+				.add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 	}
 	
 	/**

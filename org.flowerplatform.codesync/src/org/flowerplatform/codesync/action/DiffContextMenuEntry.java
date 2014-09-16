@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@ import java.util.List;
 
 
 /**
- * 
- */
+ *@author Mariana Gheorghe
+ **/
 public class DiffContextMenuEntry {
 
 	private String label;
@@ -51,8 +51,8 @@ public class DiffContextMenuEntry {
 		return isRight;
 	}
 
-	public void setRight(boolean isRight) {
-		this.isRight = isRight;
+	public void setRight(boolean isRightValue) {
+		this.isRight = isRightValue;
 	}
 
 	public int getColor() {

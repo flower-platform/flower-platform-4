@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,10 +126,10 @@ import org.osgi.framework.BundleContext;
  */
 public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 
-	protected static CodeSyncRegexPlugin INSTANCE;
+	protected static CodeSyncRegexPlugin instance;
 	
 	public static CodeSyncRegexPlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 		
 	private CodeSyncRegexService regexService = new CodeSyncRegexService();
@@ -140,10 +140,16 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		return actions;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public void addRegexAction(RegexAction action) {
 		actions.put(action.getName(), action);
 	}
 		
+	/**
+	 *@author see class
+	 **/
 	public void clearRegexActionsAndCompiledRegexConfigurations() {
 		actions.clear();
 	}
@@ -152,9 +158,12 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		return regexService;
 	}
 
+	/**
+	 *@author see class
+	 **/
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
-		INSTANCE = this;
+		instance = this;
 				
 		CorePlugin.getInstance().getServiceRegistry().registerService("codeSyncRegexService", regexService);
 		
@@ -344,7 +353,7 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 
 	public void stop(BundleContext bundleContext) throws Exception {
 		super.stop(bundleContext);
-		INSTANCE = null;
+		instance = null;
 	}
 
 	@Override

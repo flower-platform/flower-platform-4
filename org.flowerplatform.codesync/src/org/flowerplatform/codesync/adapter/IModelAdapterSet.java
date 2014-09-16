@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,14 +24,34 @@ import org.flowerplatform.util.Pair;
  */
 public interface IModelAdapterSet {
 
-	public abstract String getType(Object model, CodeSyncAlgorithm codeSyncAlgorithm);
-
-	public abstract IModelAdapter getModelAdapter(Object model, CodeSyncAlgorithm codeSyncAlgorithm);
-
-	public abstract IModelAdapter getModelAdapterForType(String type);
-
-	public abstract IModelAdapter getFileModelAdapterDelegate();
 	
-	public abstract Pair<Integer, Integer> getStartEndLine(Object model, IDocument document);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	String getType(Object model, CodeSyncAlgorithm codeSyncAlgorithm);
+
+	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	IModelAdapter getModelAdapter(Object model, CodeSyncAlgorithm codeSyncAlgorithm);
+
+	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	IModelAdapter getModelAdapterForType(String type);
+
+	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	IModelAdapter getFileModelAdapterDelegate();
+	
+	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	Pair<Integer, Integer> getStartEndLine(Object model, IDocument document);
 	
 }

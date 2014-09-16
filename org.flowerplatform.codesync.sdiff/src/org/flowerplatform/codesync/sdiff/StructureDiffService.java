@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,6 +76,9 @@ import org.flowerplatform.util.file.StringHolder;
 @SuppressWarnings("restriction")
 public class StructureDiffService {
 
+	/**
+	 *@author see class
+	 **/
 	public Node createStructureDiffFromWorkspaceAndPatch(String patch, String repo, String sdiffOutputPath) {
 		return createStructureDiff(patch,
 									repo,
@@ -83,7 +86,10 @@ public class StructureDiffService {
 									new WorkspaceAndPatchFileContentProvider());
 	}
 	
-	public Node createStructureDiff(String patch, String repo, String sdiffOutputPath, IFileContentProvider fileContentProvider){
+	/**
+	 *@author see class
+	 **/
+	public Node createStructureDiff(String patch, String repo, String sdiffOutputPath, IFileContentProvider fileContentProvider) {
 		// create file and subscribe to sdiff root
 		String sdiffFileUri = createSdiffFile(repo, sdiffOutputPath);
 		String sdiffUri = sdiffFileUri.replace(FILE_SCHEME, "fpp");
@@ -215,10 +221,10 @@ public class StructureDiffService {
 	}
 	
 	private boolean isModifiedOrChildrenModified(Match match) {
-		return match.isChildrenModifiedLeft() ||
-				match.isChildrenModifiedRight() ||
-				match.isDiffsModifiedLeft() ||
-				match.isDiffsModifiedRight();
+		return match.isChildrenModifiedLeft()
+				 || match.isChildrenModifiedRight()
+				 || match.isDiffsModifiedLeft()
+				 || match.isDiffsModifiedRight();
 	}
 	
 	private void propagateBodyModifiedToParents(Node child) {
@@ -255,7 +261,7 @@ public class StructureDiffService {
 						if (overlap(index, index, modelStartLine, modelEndLine) == 0) { 
 							// line: does it contain a special comment from the ones mentioned in the list above?
 							String specialComment = getSpecialCommentStringContent(line, listOfSpecialComments); 
-							if(specialComment != null){
+							if (specialComment != null) {
 								addChildComment(child, specialComment);
 							}
 							returnValueFlag = true;
@@ -321,7 +327,7 @@ public class StructureDiffService {
 	 * @param specialComment the text contained by the new node appended
 	 * @author Elena Posea
 	 */
-	private void addChildComment(Node parent, String specialComment){
+	private void addChildComment(Node parent, String specialComment) {
 		// create child
 		Node child = new Node(null, CodeSyncSdiffConstants.COMMENT);
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());

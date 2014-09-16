@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,8 +77,11 @@ import org.flowerplatform.util.regex.RegexWithActions;
 public class CodeSyncRegexService {
 
 	private final Pattern newLinePattern = Pattern.compile("(\r\n)|(\n)|(\r)");
-
-	public List<Pair<String, String>> getRegexActions() {
+		
+	/**
+	 *@author see class
+	 **/
+	 public List<Pair<String, String>> getRegexActions() {
 		List<Pair<String, String>> list = new ArrayList<Pair<String, String>>();
 
 		for (RegexAction regexAction : CodeSyncRegexPlugin.getInstance().getActions().values()) {
@@ -87,7 +90,10 @@ public class CodeSyncRegexService {
 		return list;
 	}
 
-	private void parseFile(String testFilesFolderPath, String testFileToBeParsed, Node resourceNode, RegexConfiguration regexConfig) throws Exception {
+	/**
+	 *@author see class
+	 **/
+	 private void parseFile(String testFilesFolderPath, String testFileToBeParsed, Node resourceNode, RegexConfiguration regexConfig) throws Exception {
 		final NodeService nodeService = CorePlugin.getInstance().getNodeService();
 		ServiceContext<NodeService> matchFilesContext  = new ServiceContext<NodeService>(nodeService);;
 		ServiceContext<NodeService> resultFilesContext = new ServiceContext<NodeService>(nodeService);

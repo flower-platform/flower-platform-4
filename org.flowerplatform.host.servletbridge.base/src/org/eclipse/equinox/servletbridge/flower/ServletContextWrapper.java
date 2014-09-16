@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,16 +25,54 @@ import java.util.Set;
  * @author Cristian Spiescu
  */
 public interface ServletContextWrapper {
+	
+	/**
+	 *@author see class
+	 **/
 	String getTempDir();
 	
+	/**
+	 *@author see class
+	 **/
 	URL getResource(java.lang.String path) throws MalformedURLException;
+	/**
+	 *@author see class
+	 **/
 	void log(String msg);
+	/**
+	 *@author see class
+	 **/
 	void log(String msg, Throwable throwable);
+	/**
+	 *@author see class
+	 **/
 	Object getAttribute(String name);
+	/**
+	 *@author see class
+	 **/
 	int getMajorVersion();
+	/**
+	 *@author see class
+	 **/
 	int getMinorVersion();
+	
+	/**
+	 *@author see class
+	 **/
 	Set<String> getResourcePaths(String path);
+	
+	/**
+	 *@author see class
+	 **/
 	InputStream getResourceAsStream(String path);
+	
+	/**
+	 *@author see class
+	 **/
 	String getRealPath(String path);
+	
+	/**
+	 *@author see class
+	 **/
 	String getContextPath();
 }

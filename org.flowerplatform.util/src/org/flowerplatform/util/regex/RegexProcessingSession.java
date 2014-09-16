@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RegexProcessingSession {
 
-	private static final Logger logger = LoggerFactory.getLogger(RegexProcessingSession.class); 
+	private static final Logger LOGGER = LoggerFactory.getLogger(RegexProcessingSession.class); 
 	
 	protected Matcher matcher;
 	
@@ -47,12 +47,6 @@ public class RegexProcessingSession {
 	// public int currentNestingLevel;
 	
 	protected String lastMatchCategory;
-	
-	// TODO CS: move to map
-	// public Object currentNode; // type Node, but util cannot depend on core. 
-	// public HashMap<String, Object> specificInfo;
-	// public List<Object> stateStack;	
-	// public boolean DO_NOT_EXECUTE_OTHER_ACTIONS = false;
 	
 	public Map<Object, Object> context;
 	
@@ -98,7 +92,9 @@ public class RegexProcessingSession {
 		context.put("currentNode", null);
 		context.put("DO_NOT_EXECUTE_OTHER_ACTIONS", false);
 	}
-
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public boolean find() throws RegexException {
 		boolean result = matcher.find();
 		StringBuilder log = new StringBuilder();
@@ -133,22 +129,26 @@ public class RegexProcessingSession {
 		// find the current regex
 		if (currentMatchGroupIndex > matcher.groupCount()) {
 			// i.e. there was not at least one not null group;  
-//			logger.error("currentMatchGroupIndex > matcher.groupCount. This shouldn't happen. Please see the audit logs to try to reproduce the input, while enabling trace for this package.");
+//			logger.error("currentMatchGroupIndex > matcher.groupCount. This shouldn't happen. 
+//			Please see the audit logs to try to reproduce the input, while enabling trace for this package.");
 			log.append("\nERROR: currentMatchGroupIndex > matcher.groupCount. This shouldn't happen.");
 			throw new RegexException(log.toString());
 		}
 		
 		if (configuration.captureGroupToRegexMapping[currentMatchGroupIndex] == null) {
 			// i.e. the captured group corresponds to a sub-match of a regex; not to the original match itself
-//			logger.error("Captured group corresponds to a sub-match, and not with the top-level group. This shouldn't happen. Please see the audit logs to try to reproduce the input, while enabling trace for this package.");
+//			logger.error("Captured group corresponds to a sub-match, and not with the top-level group. This shouldn't happen. 
+//			Please see the audit logs to try to reproduce the input, while enabling trace for this package.");
 			log.append("\nERROR: Captured group corresponds to a sub-match, and not with the top-level group. This shouldn't happen.");
 			throw new RegexException(log.toString());
 		} 
 
 		currentRegex = configuration.captureGroupToRegexMapping[currentMatchGroupIndex];
 //		if (logger.isTraceEnabled()) {
-			log.append(String.format("\n[%s:%s] corresponds to group #%s. Invoking Action...", new Object[] { currentRegex.getName(), currentRegex.getClass().getSimpleName(), currentMatchGroupIndex}));
-//			logger.trace("[{}:{}] corresponds to group #{}. Invoking Action...", new Object[] { currentRegex.getName(), currentRegex.getClass().getSimpleName(), currentMatchGroupIndex});
+			log.append(String.format("\n[%s:%s] corresponds to group #%s. Invoking Action...", new Object[] { currentRegex.getName(),
+					currentRegex.getClass().getSimpleName(), currentMatchGroupIndex}));
+//			logger.trace("[{}:{}] corresponds to group #{}. Invoking Action...", new Object[] { currentRegex.getName(), currentRegex.getClass()
+//			.getSimpleName(), currentMatchGroupIndex});
 //		}
 	
 		// for the the current regex, populate the submatches
@@ -158,7 +158,9 @@ public class RegexProcessingSession {
 			currentSubMatchesForCurrentRegex = new String[currentRegex.getNumberOfCaptureGroups()];
 			for (int i = 0; i < currentRegex.getNumberOfCaptureGroups(); i++) {
 				if (currentMatchGroupIndex + i + 1 > matcher.groupCount()) {
-//					logger.error("Not enough match groups left, to fully populate the expected submatches. This shouldn't happen. Please see the audit logs to try to reproduce the input, while enabling trace for this package.");
+//					logger.error("Not enough match groups left, to fully populate the expected submatches. This shouldn't happen. 
+//					Please see the audit logs to try to reproduce the input, 
+//					while enabling trace for this package.");
 					log.append("\nERROR: Not enough match groups left, to fully populate the expected submatches. This shouldn't happen.");
 					throw new RegexException(log.toString());
 				}				
@@ -171,6 +173,9 @@ public class RegexProcessingSession {
 		return true;
 	}
 	
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public void find(Runnable runnable) throws RegexException {
 		while (find()) {
 			if (runnable != null) {
@@ -178,9 +183,11 @@ public class RegexProcessingSession {
 			}
 		}
 	}
-	
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public void candidateAnnounced(String category) {
-		if (logger.isTraceEnabled()) {
+		if (LOGGER.isTraceEnabled()) {
 			StringBuilder subMatchesAsString = new StringBuilder();
 			if (currentSubMatchesForCurrentRegex != null) {
 				for (String subMatch : currentSubMatchesForCurrentRegex) {
@@ -190,7 +197,7 @@ public class RegexProcessingSession {
 			}
 			
 			// debug to show with other color
-			logger.debug("Match candidate for category = {} and submatches = {}", category, subMatchesAsString);
+			LOGGER.debug("Match candidate for category = {} and submatches = {}", category, subMatchesAsString);
 		}
 		lastMatchCategory = category;
 	}

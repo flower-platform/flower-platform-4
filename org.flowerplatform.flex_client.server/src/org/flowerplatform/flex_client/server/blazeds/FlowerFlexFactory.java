@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,17 +78,30 @@ public class FlowerFlexFactory implements FlexFactory {
 		return factoryInstance.lookup();
 	}
 
+	/**
+	 *@author see class
+	 **/
 	static class FlowerFactoryInstance extends FactoryInstance {
+		
+		/**
+		 *@author see class
+		 **/
 		FlowerFactoryInstance(FlowerFlexFactory factory, String id,
 				ConfigMap properties) {
 			super(factory, id, properties);
 		}
 
+		/**
+		 *@author see class
+		 **/
 		public String toString() {
 			return "FlowerFactory instance for id=" + getId() + " source="
 					+ getSource() + " scope=" + getScope();
 		}
 
+		/**
+		 *@author see class
+		 **/
 		public Object lookup() {
 			return CorePlugin.getInstance().getServiceRegistry()
 					.getService(getSource());

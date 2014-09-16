@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,8 +28,10 @@ import org.flowerplatform.core.CoreConstants;
  * @author Cristi
  * @author Sorin
  */
-public class TestUtil {
 
+public final class TestUtil {
+
+	private TestUtil() { }
 	public static final String NORMAL = "normal";
 	
 	public static final String EXPECTED = "expected";
@@ -42,7 +44,9 @@ public class TestUtil {
 	public static String getResourcesDir(Class<?> cls) {
 		return "src/" + cls.getPackage().getName().replaceAll("\\.", "/") + "/resources/";
 	}	
-	
+	/**
+	 *@author see class
+	 **/
 	public static String getWorkspaceResourceAbsolutePath(String pathWithinWorkspace) {
 		return ResourcesPlugin.getWorkspace().getRoot().findMember(pathWithinWorkspace).getLocation().toString();
 	}
@@ -55,9 +59,11 @@ public class TestUtil {
 	 * Copies the files from the specified folder into ws/root/projectName, and imports this as a project.
 	 * projectName may contain a leading /.
 	 * 
+	 *@author see class
+	 **
 	 * @from Can be null; an empty project will be created.
 	 */
-	public static final void copyFilesAndCreateProject(String from, String projectName) {
+	public static void copyFilesAndCreateProject(String from, String projectName) {
 		try {
 //			new DatabaseOperationWrapper(new DatabaseOperation() {
 //				
@@ -110,7 +116,9 @@ public class TestUtil {
 			throw new RuntimeException("Cannot copy files/create project needed for test", e);
 		}
 	}
-
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public static void copyFiles(String from, String dir) {
 		File to = new File("workspace", dir);
 		try {
@@ -131,8 +139,9 @@ public class TestUtil {
 			int bytesRead; 
 			do {
 				bytesRead = fileEditorInputReader.read(buffer);
-				if (bytesRead > 0) 
-					loadedContent.append(buffer, 0, bytesRead);				
+				if (bytesRead > 0) {
+					loadedContent.append(buffer, 0, bytesRead);
+				}				
 			} while (bytesRead > 0);
 			fileEditorInputReader.close();
 		} catch (Exception e) {
@@ -140,14 +149,14 @@ public class TestUtil {
 		}	
 		return loadedContent.toString();
 	}
-
+//CHECKSTYLE:OFF
 //	public static Object getRecordedCommandAtIndex(IRecordingTestWebCommunicationChannelProvider context, int commandIndex) {
 //		if (context.getRecordingTestWebCommunicationChannel().getRecordedCommands().size() <= commandIndex) {
 //			Assert.fail("We are trying to access command #" + commandIndex + " but there are only " + context.getRecordingTestWebCommunicationChannel().getRecordedCommands().size() + " recorded commands");
 //		}
 //		return context.getRecordingTestWebCommunicationChannel().getRecordedCommands().get(commandIndex);
 //	}
-//	
+//CHECKSTYLE:ON
 //	/**
 //	 * Useful when there may be commands in channel from previous test. 
 //	 * @see #assertExist_InvokeStatefulClientMethodClientCommand() 
@@ -185,13 +194,17 @@ public class TestUtil {
 //		}
 //	}
 	
-	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public static void createDirectoriesIfNeeded(String path) {
 		if (!new File(path).exists()) {
 			new File(path).mkdirs();
 		}
 	}
-	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public static String getCanonicalPath(String path) {
 		try {
 			return new File(path).getCanonicalPath();
@@ -199,7 +212,7 @@ public class TestUtil {
 			throw new RuntimeException(e);
 		}
 	}
-	
+//CHECKSTYLE:OFF	
 //	/**
 //	 * Be careful not to have commands from previous test in channel (make a new one!)
 //	 */
@@ -272,5 +285,5 @@ public class TestUtil {
 //				.getService("");
 //		return editorStatefulService.calculateStatefulClientId(editableResourcePath);
 //	}
-	
+//CHECKSTYLE:ON
 }

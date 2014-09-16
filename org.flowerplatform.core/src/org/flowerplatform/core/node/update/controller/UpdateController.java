@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,9 @@ import static org.flowerplatform.core.CoreConstants.RESOURCE_SET;
 import static org.flowerplatform.core.CoreConstants.UPDATE_CHILD_ADDED;
 import static org.flowerplatform.core.CoreConstants.UPDATE_CHILD_REMOVED;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -41,6 +43,9 @@ import org.flowerplatform.util.controller.AbstractController;
 public class UpdateController extends AbstractController
 		implements IAddNodeController, IRemoveNodeController, IPropertySetter {
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public UpdateController() {
 		// must be invoked last; otherwise the modification may not be fully/correctly recorded
 		setOrderIndex(100000);
@@ -80,7 +85,7 @@ public class UpdateController extends AbstractController
 				resourceSet = resourceNode.getNodeUri();
 			}
 			// otherwise the node will reference probably the whole mindmap file, that would lead to memory leaks
-			child.setRawNodeData(null);
+//			child.setRawNodeData(null);
 			ResourceSetService service = CorePlugin.getInstance().getResourceSetService();
 			@SuppressWarnings("unchecked")
 			List<ChildrenUpdate> removedNodes = (List<ChildrenUpdate>) context.get("removedNodes");
@@ -95,8 +100,10 @@ public class UpdateController extends AbstractController
 	}
 	
 	@Override
-	public void setProperty(Node node, String key, Object value, ServiceContext<NodeService> context) {	
-		setUnsetProperty(node, key, value, false, context);
+	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {	
+		for (String key : properties.keySet()) {
+			setUnsetProperty(node, key, properties.get(key), false, context);
+		}
 	}
 
 	@Override
@@ -130,9 +137,11 @@ public class UpdateController extends AbstractController
 		PropertyUpdate update = new PropertyUpdate();
 		update.setKeyAs(key).setValueAs(value).setUnsetAs(isUnset).setFullNodeIdAs(node.getNodeUri());
 		
-		if (context.getContext().containsKey(CoreConstants.OLD_VALUE)) {
+		@SuppressWarnings("unchecked")
+		HashMap<String, Object> oldValues = (HashMap<String, Object>) context.getContext().get(CoreConstants.OLD_VALUES);
+		if (oldValues.containsKey(key)) {
 			update.setHasOldValueAs(true);
-			update.setOldValueAs(context.get(CoreConstants.OLD_VALUE));
+			update.setOldValueAs(oldValues.get(key));
 		}
 		
 		service.addUpdate(resourceSet, update);		
