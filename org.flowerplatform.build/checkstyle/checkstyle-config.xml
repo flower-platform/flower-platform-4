@@ -4,7 +4,7 @@
     "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 
 <module name="Checker">
-	<property name="severity" value="warning"/>
+	<property name="severity" value="error"/>
 
 	<!-- Filters:  http://checkstyle.sourceforge.net/config.html-->
 	<module name="SuppressionCommentFilter"/>
@@ -45,7 +45,7 @@
 
     <module name="TreeWalker">
         <property name="tabWidth" value="4"/>
-
+    	<property name="severity" value="error"/>
 		<!-- Filters : see http://checkstyle.sourceforge.net/config.html -->
 		<module name="FileContentsHolder"/>
         
@@ -109,6 +109,8 @@
         <module name="LineLength">
     		<property name="max" value="180"/>
     		<property name="ignorePattern" value="^ *\* *[^ ]+$"/>
+    		<property name="severity" value="error"/>
+    		
 		</module>
         <module name="MethodLength">
    			<property name="tokens" value="METHOD_DEF"/>

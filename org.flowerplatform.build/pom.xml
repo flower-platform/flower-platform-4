@@ -62,7 +62,11 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>2.12.1</version>
         <configuration>
-        	<configLocation>checkstyle/checkstyle-config.xml</configLocation>     	
+        	<!-- <configLocation>checkstyle/checkstyle-config.xml</configLocation>  --> 
+        	<propertyExpansion>config_loc=${basedir}/checkstyle</propertyExpansion>
+     		<configLocation>${basedir}/checkstyle/checkstyle-config.xml</configLocation>
+      		<suppressionsLocation>${basedir}/checkstyle/suppressions.xml</suppressionsLocation>
+     		<includeTestSourceDirectory>true</includeTestSourceDirectory>   	
         </configuration>
       </plugin>
     </plugins>

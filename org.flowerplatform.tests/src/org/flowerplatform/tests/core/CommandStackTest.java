@@ -399,7 +399,7 @@ public class CommandStackTest {
 		resourceSetService.resetCommandStack(RESOURCE_NODE_URI);
 
 		Node node = nodeService.getChildren(rootNode, context).get(0);
-
+//CHECKSTYLE:OFF
 		String newNodeId;
 		{
 			context.add("type", MindMapConstants.MINDMAP_NODE_TYPE);
@@ -566,7 +566,7 @@ public class CommandStackTest {
 			assertEquals("Command to undo has index 3", resourceSetService.getCommandToUndoId(RESOURCE_NODE_URI), commands.get(3).getId());
 			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(RESOURCE_NODE_URI), null);
 		}
-
+//CHECKSTYLE:ON
 	}
 
 }
