@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * @author Cristina Constantinescu
  */
-public class ServiceContext<T> extends HashMap<String, Object> {
+public class ServiceContext<T> {
 
 	private T service;
 	
@@ -84,4 +84,11 @@ public class ServiceContext<T> extends HashMap<String, Object> {
 		return this;
 	}
 
+	/**
+	 *@author see class
+	 **/
+	public void addInContext(String key, Object value) {		
+		add(key, value);		
+	}
+	
 }

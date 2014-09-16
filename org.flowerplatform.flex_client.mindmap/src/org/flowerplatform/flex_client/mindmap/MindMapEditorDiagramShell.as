@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.flex_client.mindmap {
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
+	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.INodeChangeListener;
@@ -75,7 +77,9 @@ package org.flowerplatform.flex_client.mindmap {
 		}
 		
 		public function nodeUpdated(node:Node, property:String, oldValue:Object, newValue:Object):void {
-			// do nothing
+			if (property == CoreConstants.IS_DIRTY) {
+				CorePlugin.getInstance().resourceNodesManager.updateGlobalDirtyState(newValue);
+			}
 		}
 						
 		override public function getRootNodeX(context:DiagramShellContext, rootNode:Object):Number {

@@ -28,7 +28,7 @@ package org.flowerplatform.flex_client.core.service {
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
-	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
+	import org.flowerplatform.flex_client.core.node.IHostServiceInvocator;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.service.ServiceResponder;
@@ -50,7 +50,7 @@ package org.flowerplatform.flex_client.core.service {
 	 * @author Cristina Constantinescu
 	 * @author Mariana Gheorghe
 	 */ 
-	public class UpdatesProcessingServiceLocator extends ServiceLocator implements IServiceInvocator {
+	public class UpdatesProcessingServiceLocator extends ServiceLocator implements IHostServiceInvocator {
 		
 		private var communicationErrorViewContent:IViewContent;
 		
@@ -84,9 +84,7 @@ package org.flowerplatform.flex_client.core.service {
 			return operation;
 		}
 		
-		override public function resultHandler(event:ResultEvent, responder:ServiceResponder):void {			
-			var result:Object = event.result;
-			
+		override public function resultHandler(result:Object, responder:ServiceResponder):void {
 			if (result.hasOwnProperty(CoreConstants.LAST_UPDATE_TIMESTAMP)) {
 				CorePlugin.getInstance().lastUpdateTimestampOfServer = result[CoreConstants.LAST_UPDATE_TIMESTAMP];
 				CorePlugin.getInstance().lastUpdateTimestampOfClient = new Date().time;

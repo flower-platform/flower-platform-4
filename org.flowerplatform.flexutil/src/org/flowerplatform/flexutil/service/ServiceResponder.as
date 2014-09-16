@@ -45,7 +45,7 @@ package org.flowerplatform.flexutil.service {
 		}
 		
 		public function result(data:Object):void {
-			serviceLocator.resultHandler(ResultEvent(data), this);
+			serviceLocator.resultHandler(ResultEvent(data).result, this);
 		}
 		
 		public function fault(info:Object):void {

@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.util.Utils;
 
 /**
@@ -49,9 +50,6 @@ public class Node implements Externalizable {
 
 	private Object rawNodeData;
 
-	/**
-	 * TODO
-	 */
 	public Node() {
 		super();
 	}

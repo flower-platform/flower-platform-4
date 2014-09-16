@@ -37,3 +37,4 @@ Eclipse-RegisterBuddy: org.flowerplatform.util
 Bundle-ActivationPolicy: lazy
 Export-Package: com.fasterxml.jackson.databind,
  org.flowerplatform.js_client.server
+Bundle-Activator: org.flowerplatform.js_client.server.JsClientServerPlugin

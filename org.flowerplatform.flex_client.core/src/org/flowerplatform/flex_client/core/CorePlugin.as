@@ -49,18 +49,17 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
-	import org.flowerplatform.flex_client.core.editor.resource.ResourceOperationsHandler;
 	import org.flowerplatform.flex_client.core.editor.ui.AboutView;
 	import org.flowerplatform.flex_client.core.editor.ui.OpenNodeView;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
-	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
-	import org.flowerplatform.flex_client.core.node.NodeExternalInvocator;
+	import org.flowerplatform.flex_client.core.node.FlexHostInvocator;
+	import org.flowerplatform.flex_client.core.node.FlexHostResourceOperationsHandler;
+	import org.flowerplatform.flex_client.core.node.IHostServiceInvocator;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.ResourceDebugControllers;
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
 	import org.flowerplatform.flex_client.core.node.remote.GenericValueDescriptor;
-	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 	import org.flowerplatform.flex_client.core.node_tree.GenericNodeTreeViewProvider;
 	import org.flowerplatform.flex_client.core.node_tree.NodeTreeAction;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
@@ -153,8 +152,8 @@ package org.flowerplatform.flex_client.core {
 			return _nodeRegistryManager;
 		}
 		
-		public function get resourceNodesManager():ResourceOperationsHandler {
-			return ResourceOperationsHandler(nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler);
+		public function get resourceNodesManager():FlexHostResourceOperationsHandler {
+			return FlexHostResourceOperationsHandler(nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler);
 		}
 		
 		override public function preStart():void {
@@ -177,8 +176,8 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("uploadService");
 			serviceLocator.addService("preferenceService");
 			
-			var resourceOperationsHandler:ResourceOperationsHandler = new ResourceOperationsHandler();
-			_nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IServiceInvocator(serviceLocator), new NodeExternalInvocator());
+			var resourceOperationsHandler:FlexHostResourceOperationsHandler = new FlexHostResourceOperationsHandler();
+			_nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IHostServiceInvocator(serviceLocator), new FlexHostInvocator());
 			
  			updateTimer = new UpdateTimer(5000);
 			
@@ -398,8 +397,7 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(TypeDescriptorRemote);
 			registerClassAliasFromAnnotation(GenericValueDescriptor);
 			registerClassAliasFromAnnotation(AddChildDescriptor);
-			registerClassAliasFromAnnotation(Pair);
-			registerClassAliasFromAnnotation(ServiceContext);
+			registerClassAliasFromAnnotation(Pair);			
 		}
 		
 		override protected function registerMessageBundle():void {
@@ -576,6 +574,6 @@ package org.flowerplatform.flex_client.core {
 	}
 }
 
-include "../../../../../../org.flowerplatform.js_client.core/WebContent/js/node_registry/ResourceOperationsManager.js";	
-include "../../../../../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistryManager.js";	
-include "../../../../../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistry.js";
+include "../../../../../../org.flowerplatform.js_client.common_js_as/WebContent/js/ResourceOperationsManager.js";	
+include "../../../../../../org.flowerplatform.js_client.common_js_as/WebContent/js/NodeRegistryManager.js";	
+include "../../../../../../org.flowerplatform.js_client.common_js_as/WebContent/js/NodeRegistry.js";

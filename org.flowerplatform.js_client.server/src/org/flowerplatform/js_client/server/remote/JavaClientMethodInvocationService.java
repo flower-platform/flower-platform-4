@@ -40,9 +40,9 @@ public class JavaClientMethodInvocationService {
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public Object invoke(HashMap<String, Object> requestParams) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public Object invoke(HashMap<String, Object> requestParams) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {		
 		String serviceAndMethod = (String) requestParams.get(SERVICE_DOT_METHOD_NAME);
-		Object[] parameters = (Object[]) requestParams.get(PARAMETERS);
+		ArrayList<?> parameters = (ArrayList<?>) requestParams.get(PARAMETERS);
 		
 		String[] tokens = serviceAndMethod.split("\\.");
 		String serviceName = tokens[0];
@@ -64,7 +64,7 @@ public class JavaClientMethodInvocationService {
 			throw new RuntimeException(String.format("The service with id='%s' doesn't contain the method '%s'", serviceName, methodName));
 		}
 		// invoke the method
-		return foundMethod.invoke(service, parameters != null ? parameters : null);
+		return foundMethod.invoke(service, parameters != null ? parameters.toArray() : null);
 	}
 	
 }

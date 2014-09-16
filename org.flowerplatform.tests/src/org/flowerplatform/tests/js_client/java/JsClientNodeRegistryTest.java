@@ -8,14 +8,15 @@ import static org.mockito.Mockito.verify;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.flowerplatform.js_client.java.ClientNode;
-import org.flowerplatform.js_client.java.INodeChangeListener;
 import org.flowerplatform.js_client.java.JsClientJavaUtils;
-import org.flowerplatform.js_client.java.JsExternalInvocator;
-import org.flowerplatform.js_client.java.JsList;
-import org.flowerplatform.js_client.java.JsResourceOperationsHandler;
+import org.flowerplatform.js_client.java.node.ClientNode;
+import org.flowerplatform.js_client.java.node.INodeChangeListener;
+import org.flowerplatform.js_client.java.node.JavaHostInvocator;
+import org.flowerplatform.js_client.java.node.JavaHostResourceOperationsHandler;
 import org.flowerplatform.tests.js_client.java.JSClientJavaTestUtils.RecordingServiceInvocator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,20 +32,31 @@ public class JsClientNodeRegistryTest {
 	private static Context ctx;
 	private static Scriptable scope;
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		ctx = Context.enter();
 		scope = ctx.initStandardObjects();	
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/").getAbsolutePath() + "/../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistry.js"), StandardCharsets.UTF_8), null, 1, null);
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/").getAbsolutePath() + "/../../org.flowerplatform.js_client.core/WebContent/js/node_registry/ResourceOperationsManager.js"), StandardCharsets.UTF_8), null, 1, null);
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/").getAbsolutePath() + "/../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistryManager.js"), StandardCharsets.UTF_8), null, 1, null);		
+		
+		String pathToJsFolder = FileUtils.getFile("src/").getAbsolutePath() + "/../../org.flowerplatform.js_client.common_js_as/WebContent/js";
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(pathToJsFolder + "/NodeRegistry.js"), StandardCharsets.UTF_8), null, 1, null);
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(pathToJsFolder + "/ResourceOperationsManager.js"), StandardCharsets.UTF_8), null, 1, null);
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(pathToJsFolder + "/NodeRegistryManager.js"), StandardCharsets.UTF_8), null, 1, null);		
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	@AfterClass
 	public static void setUpAfterClass() throws Exception {
 		Context.exit();
 	}
 		
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	@Test
 	public void expand() throws Exception {
 		ClientNode parent = JSClientJavaTestUtils.createClientNode("parent");
@@ -52,16 +64,16 @@ public class JsClientNodeRegistryTest {
 		ClientNode child2 = JSClientJavaTestUtils.createClientNode("child2");
 		ClientNode child3 = JSClientJavaTestUtils.createClientNode("child3");
 				
-		JsList<ClientNode> list = new JsList<>();
+		List<ClientNode> list = new ArrayList<>();
 		list.add(child1);
 		list.add(child2);
 		list.add(child3);
-		
+				
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
+				new JavaHostResourceOperationsHandler(), 
 				new RecordingServiceInvocator().setExpectedResults(new Object[] {list}), 
-				new JsExternalInvocator()});
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 					
 		// create nodeRegistry
@@ -80,7 +92,7 @@ public class JsClientNodeRegistryTest {
 				
 		// verify children
 		assertNotNull(parent.getChildren());	
-		assertEquals(3, parent.getChildren().length);
+		assertEquals(3, parent.getChildren().size());
 		
 		verify(listener).nodeAdded(child1);
 		verify(listener).nodeAdded(child2);

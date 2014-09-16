@@ -29,6 +29,9 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
+import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.js_client.java.JsClientJavaPlugin;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.tests.js_client.java.JsClientJavaTestSuite;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -52,11 +55,10 @@ import org.osgi.framework.BundleContext;
 	JsClientJavaTestSuite.class
 })
 public class EclipseIndependentTestSuite {
-<<<<<<< HEAD
-	
+
 	public static String workspaceLocation = "workspace";
 	
-//	public static NodeService nodeService;
+	public static NodeService nodeService;
 
 //CHECKSTYLE:ON	
 	
@@ -70,14 +72,15 @@ public class EclipseIndependentTestSuite {
 		FrameworkProperties.getProperties().put("FLOWER_PLATFORM_HOME", new File("").getAbsolutePath());
 		
 		startPlugin(new ResourcesPlugin());
-//		startPlugin(new CorePlugin());
-//		nodeService = CorePlugin.getInstance().getNodeService();
+		startPlugin(new CorePlugin());
+		startPlugin(new JsClientJavaPlugin());
+		nodeService = CorePlugin.getInstance().getNodeService();
 		
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		HttpSession session = mock(HttpSession.class);
 		when(req.getSession()).thenReturn(session);
 		when(session.getId()).thenReturn(sessionId);
-//		CorePlugin.getInstance().getRequestThreadLocal().set(req);
+		CorePlugin.getInstance().getRequestThreadLocal().set(req);
 	}
 	
 	/**

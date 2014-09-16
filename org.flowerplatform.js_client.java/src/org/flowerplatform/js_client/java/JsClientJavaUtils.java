@@ -18,5 +18,5 @@ public class JsClientJavaUtils {
 		}
 		return result;
 	}
-	
+		
 }

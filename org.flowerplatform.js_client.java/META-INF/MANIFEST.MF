@@ -4,9 +4,10 @@ Bundle-Name: Java
 Bundle-SymbolicName: org.flowerplatform.js_client.java;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.flowerplatform.util,
- org.eclipse.core.runtime
-Export-Package: org.flowerplatform.core.node.remote,
- org.flowerplatform.js_client.java,
+ org.eclipse.core.runtime,
+ org.flowerplatform.core
+Export-Package: org.flowerplatform.js_client.java,
+ org.flowerplatform.js_client.java.node,
  org.mozilla.javascript
 Bundle-ClassPath: lib-from-maven/aopalliance-repackaged-2.3.0-b05.jar,
  lib-from-maven/hk2-api-2.3.0-b05.jar,
@@ -32,3 +33,5 @@ Bundle-ClassPath: lib-from-maven/aopalliance-repackaged-2.3.0-b05.jar,
  lib-from-maven/rhino-1.7R4.jar,
  lib-from-maven/validation-api-1.1.0.Final.jar,
  .
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.flowerplatform.js_client.java.JsClientJavaPlugin
