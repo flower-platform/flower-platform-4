@@ -33,12 +33,25 @@ import org.flowerplatform.util.regex.RegexProcessingSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author Cristi
+ *
+ */
 public class RegexTestBase {
 
 	protected static final String FILES_ROOT_DIR = TestUtil.getResourcesDir(RegexTestBase.class) + TestUtil.NORMAL + "/";
 	
 	protected Logger logger = LoggerFactory.getLogger(this.getClass()); 
 	
+	/**
+	 * 
+	 * @param humanReadable
+	 * @param list
+	 * @param elementPreffix
+	 * @param startIndex
+	 * @param endIndex
+	 */
 	protected void assertAllExpectedElementsFound(String humanReadable, List<String> list, String elementPreffix, int startIndex, int endIndex) {
 		int currentAttrSuffix = startIndex;
 		for (String currentFoundAttr : list) {
@@ -49,6 +62,12 @@ public class RegexTestBase {
 
 	}
 	
+	/**
+	 * 
+	 * @param identifier
+	 * @param range
+	 * @param fileContent
+	 */
 	protected void assertIdentifierInRange(String identifier, int[] range, String fileContent) {
 		assertNotNull("Not found range for " + identifier, range);
 		
@@ -58,9 +77,15 @@ public class RegexTestBase {
 		
 	}
 	
+	/**
+	 * 
+	 * @param foundElements
+	 * @param expectedElements
+	 */
 	protected void assertAllExist(List<String> foundElements, List<String> expectedElements) {
-		if (foundElements.equals(expectedElements))
+		if (foundElements.equals(expectedElements)) {
 			return;
+		}
 		List<String> additionalFoundElements = new ArrayList<String>(foundElements);
 		additionalFoundElements.removeAll(expectedElements);
 		
@@ -68,19 +93,25 @@ public class RegexTestBase {
 		notFoundElements.removeAll(foundElements);
 		
 		Assert.assertTrue(
-						(notFoundElements.isEmpty() ? 
-								"" : ("\nCould not find the following elements : "  + notFoundElements)) +
-						(additionalFoundElements.isEmpty() ?
-								"" : ("\nAdditional elements were found : " + additionalFoundElements)), 
+						(notFoundElements.isEmpty()
+							?	"" : ("\nCould not find the following elements : "  + notFoundElements))
+						+ (additionalFoundElements.isEmpty() 
+								? "" : ("\nAdditional elements were found : " + additionalFoundElements)), 
 						 additionalFoundElements.isEmpty() && notFoundElements.isEmpty());
 	}
-	
+	/**
+	 * 
+	 * @param where
+	 * @param what
+	 * @return
+	 */
 	protected int[] findRangeByExactMatch(String where, String what) {
 		int i = where.indexOf(what);
 		if (i >= 0 && where.substring(i).indexOf(what) >= 0) {
-			if (logger.isWarnEnabled())
-				logger.warn("Warning : the following string has been found twice, by direct match :" + what + "\n" +
-						"If an assertion fails due to range not matching, it may be possible that the file content is incorrect");
+			if (logger.isWarnEnabled()) {
+				logger.warn("Warning : the following string has been found twice, by direct match :" + what + "\n"
+						+ "If an assertion fails due to range not matching, it may be possible that the file content is incorrect");
+			}
 		}
 //		// am comentat pentru ca: attr1 ... attr15
 //		if (where.indexOf(what) >= 0) {
@@ -89,6 +120,11 @@ public class RegexTestBase {
 		return new int[] { i, i + what.length() };
 	}	
 
+	/**
+	 * 
+	 * @author Elena Posea
+	 *
+	 */
 	static class CategoryRecorderRegexProcessingSession extends RegexProcessingSession {
 	
 		private HashMap<String, List<String>> recordedCategories = new HashMap<String, List<String>>();
@@ -98,14 +134,24 @@ public class RegexTestBase {
 			super.candidateAnnounced(category);
 			getRecorderCategory(category).add(currentSubMatchesForCurrentRegex[0]);
 		}
-		
+		/**
+		 * 
+		 * @param category
+		 * @return
+		 */
 		public List<String> getRecorderCategory(String category) {
-			if (!recordedCategories.containsKey(category))
+			if (!recordedCategories.containsKey(category)) {
 				recordedCategories.put(category, new ArrayList<String>());
+			}
 			return recordedCategories.get(category);
 		}
 	}
 
+	/**
+	 * 
+	 * @author Cristi
+	 *
+	 */
 	static class CategoryRecorderRegexConfiguration extends RegexConfiguration {
 		
 		@Override

@@ -27,7 +27,7 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public class RegexesController extends CodeSyncRegexSubscribableResourceProvider {
 	@Override
-	protected String getResourceUri(Node node){
+	protected String getResourceUri(Node node) {
 		String repo = CoreUtils.getRepoFromNode(node);
 		String specificPartTechnology = CorePlugin.getInstance().getVirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri());
 		return CoreUtils.createNodeUriWithRepo("fpp", repo, CodeSyncRegexConstants.REGEX_CONFIGS_FOLDER + "/" + specificPartTechnology + "/"

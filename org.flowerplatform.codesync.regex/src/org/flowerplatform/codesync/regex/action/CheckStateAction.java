@@ -13,6 +13,9 @@ import org.flowerplatform.util.regex.RegexProcessingSession;
 public class CheckStateAction extends RegexAction {
 	String[] states;
 
+	/**
+	 * @param csvListOfStates a comma separated list of states; this action checks whether you are in one of this statea, otherwise, stop executing other actions
+	 */
 	public CheckStateAction(String csvListOfStates) {
 		this.states = csvListOfStates.split(",");
 	}

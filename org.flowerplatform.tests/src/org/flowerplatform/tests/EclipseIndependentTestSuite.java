@@ -32,7 +32,6 @@ import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.resources.ResourcesPlugin;
-import org.flowerplatform.tests.core.CommandStackTest;
 import org.flowerplatform.tests.codesync.CodeSyncTestSuite;
 import org.flowerplatform.tests.controllers.FileSystemControllersTest;
 import org.flowerplatform.tests.core.CommandStackTest;

@@ -74,6 +74,9 @@ public class RegexProcessingSession {
 		return context;
 	}
 
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public void reset(boolean resetMatcher) {
 		currentMatchGroupIndex = -1;
 		currentRegex = null;		
@@ -92,6 +95,7 @@ public class RegexProcessingSession {
 		context.put("currentNode", null);
 		context.put("DO_NOT_EXECUTE_OTHER_ACTIONS", false);
 	}
+
 	/**
 	 *@author Cristina Constantinescu
 	 **/

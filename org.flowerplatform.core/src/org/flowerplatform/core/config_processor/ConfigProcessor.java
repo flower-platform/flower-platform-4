@@ -11,8 +11,16 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.controller.TypeDescriptor;
 
+/**
+ * @author Elena Posea
+ *
+ */
 public class ConfigProcessor {
 
+	/**
+	 * @param node
+	 * @param parentProcessedDataStructure
+	 */
 	public void processConfigHierarchy(Node node, Object parentProcessedDataStructure) {
 		// take the current node and create the instance; add it to
 		// parentProcessingDataStructure
@@ -20,10 +28,15 @@ public class ConfigProcessor {
 		processConfigHierarchy(node, parentProcessedDataStructure, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
 	}
 
+	/**
+	 * @param node
+	 * @param parentProcessedDataStructure
+	 * @param service
+	 */
 	private void processConfigHierarchy(Node node, Object parentProcessedDataStructure, ServiceContext<NodeService> service) {
 		// if node has the property CONFIG_SETTING_DISABLED, I should not process it, as it means it is disabled
 		Boolean disabledFlag = (Boolean) node.getPropertyValue(CONFIG_SETTING_DISABLED);
-		if (disabledFlag != null && disabledFlag != false) {
+		if (disabledFlag != null && disabledFlag) {
 			return;
 		}
 		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getType());

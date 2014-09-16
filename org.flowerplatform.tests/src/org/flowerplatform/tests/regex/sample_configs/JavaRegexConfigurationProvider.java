@@ -48,7 +48,7 @@ import org.flowerplatform.util.regex.UntilFoundThisIgnoreAll;
  * @author Cristi
  * @author Sorin
  */
-public class JavaRegexConfigurationProvider {
+public abstract class JavaRegexConfigurationProvider {
 	
 	public static final String ATTRIBUTE_CATEGORY = "attribute";
 	public static final String METHOD_CATEGORY = "method";
@@ -57,40 +57,44 @@ public class JavaRegexConfigurationProvider {
 	
 	private static final String NEW_KEYWORD 						= "\\bnew\\b"; // word that starts and ends with new
 	
-	private static final String regExDataType = "\\w[\\w\\[\\]\\<\\>]*?"; // TODO HashMap X < X Integer X , X String X > X
+	private static final String REGEX_DATA_TYPE = "\\w[\\w\\[\\]\\<\\>]*?"; // TODO HashMap X < X Integer X , X String X > X
 	
 	// TODO de facut java type begin in loc de ce exitsta mometan ca nu se supporta interfete, <,> fq com.crispico
 	
 	private static final String JAVA_TYPE_BEGIN = // something like class ... {
 			"(" + DONT_CAPTURE				
 				+ CLASS_KEYWORD + "|" + INTERFACE_KEYWORD +										// class or interface 
-			")"	+ 																				 
-			"(" + DONT_CAPTURE + 																// possibly multiple comments or identifiers or commas or unghiular parentheses
+			")"	 																				 
+			+ "(" + DONT_CAPTURE + 																// possibly multiple comments or identifiers or commas or unghiular parentheses
 				SPACE_OR_COMMENT + "|" +																			// comment  
-				"[" + 
-					IDENTIFIER_AFTER_BEGINNING_CHAR + COMMA + OPEN_ANGLE_PARENTHESIS + CLOSE_ANGLE_PARENTHESIS +	// every identifier or enumeration character or generic character
-					EXCLUDE + OPEN_BRACKET + EXCLUDE + SLASH + EXCLUDE + STAR +  									// except comment and bracket, because comment is processed as a hole and bracket is the condition to stop.
-				"]" +   
-			")"	+ MULTIPLE_TIMES +
-			STOP_BEFORE_OPEN_BRACKET_CHAR; 	
+				"[" 
+				+ IDENTIFIER_AFTER_BEGINNING_CHAR + COMMA + OPEN_ANGLE_PARENTHESIS + CLOSE_ANGLE_PARENTHESIS	// every identifier or enumeration character or generic character
+				+ EXCLUDE + OPEN_BRACKET + EXCLUDE + SLASH + EXCLUDE + STAR 
+				// except comment and bracket, because comment is processed as a hole and bracket is the condition to stop.
+				+ "]"   
+			+ ")"	+ MULTIPLE_TIMES
+			+ STOP_BEFORE_OPEN_BRACKET_CHAR; 	
 			
 	private static final String JAVA_ATTRIBUTE =			 
-			regExDataType + // data type of the attribute 
+			REGEX_DATA_TYPE + // data type of the attribute 
 			SPACE_OR_COMMENT + 											// TODO aici ar trebuie space or comment la fel optional nu neaparat sa existe?
 			"(\\w[\\w]*?)" + SPACES_OR_COMMENTS_OPTIONAL + "(?:\\[\\])?" + // name of the attribute; the 2nd part is for int attr[]; or int attr [];
-			SPACES_OR_COMMENTS_OPTIONAL + 
-			"(?:;|=)";
+			SPACES_OR_COMMENTS_OPTIONAL
+			+ "(?:;|=)";
 	
 	private static final String JAVA_METHOD =
-			regExDataType + // data type of the attribute 
-			SPACE_OR_COMMENT + 
-			"(\\w[\\w]*?)" + // name of the method
-			SPACES_OR_COMMENTS_OPTIONAL +
-			"\\(([^\\)]*?)\\)";	
-	
+			REGEX_DATA_TYPE + // data type of the attribute 
+			SPACE_OR_COMMENT
+			+ "(\\w[\\w]*?)" + // name of the method
+			SPACES_OR_COMMENTS_OPTIONAL
+			+ "\\(([^\\)]*?)\\)";	
+	/**
+	 * @param config
+	 */
 	public static void buildJavaConfiguration(RegexConfiguration config) {
 		config
-		.add(new UntilFoundThisIgnoreAll("Begining of type",  CLASS_KEYWORD + "[\\w\\s\\<\\>]*?" + STOP_BEFORE_OPEN_BRACKET_CHAR)) // TODO CS/RE de adaugat si posibilitatea de coment
+		.add(new UntilFoundThisIgnoreAll("Begining of type", 
+				CLASS_KEYWORD + "[\\w\\s\\<\\>]*?" + STOP_BEFORE_OPEN_BRACKET_CHAR)) // TODO CS/RE de adaugat si posibilitatea de comment
 		.add(new IfFindThisSkip("Multi-line comment", MULTI_LINE_COMMENT))
 		.add(new IfFindThisSkip("Single-line comment", SINGLE_LINE_COMMENT))
 		.add(new IfFindThisSkip("new keyword", NEW_KEYWORD))

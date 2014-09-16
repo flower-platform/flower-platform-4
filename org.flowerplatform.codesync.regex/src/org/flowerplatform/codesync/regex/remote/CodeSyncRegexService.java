@@ -95,7 +95,7 @@ public class CodeSyncRegexService {
 	 **/
 	 private void parseFile(String testFilesFolderPath, String testFileToBeParsed, Node resourceNode, RegexConfiguration regexConfig) throws Exception {
 		final NodeService nodeService = CorePlugin.getInstance().getNodeService();
-		ServiceContext<NodeService> matchFilesContext  = new ServiceContext<NodeService>(nodeService);;
+		ServiceContext<NodeService> matchFilesContext  = new ServiceContext<NodeService>(nodeService);
 		ServiceContext<NodeService> resultFilesContext = new ServiceContext<NodeService>(nodeService);
 		
 		IFileAccessController fileController = FileControllerUtils.getFileAccessController();
@@ -201,8 +201,9 @@ public class CodeSyncRegexService {
 
 						int startIndex = session.getMatcher().start(index);
 
-						if (startIndex == -1)
+						if (startIndex == -1) {
 							continue;
+						}
 
 						start = formatIndex(testFileContent, startIndex);
 						context.getContext().put(START, String.format("L%d C%d", start[0], start[1]));
@@ -227,7 +228,11 @@ public class CodeSyncRegexService {
 
 
 	}
-	
+	/**
+	 * @param nodeUri
+	 * @throws Exception
+	 * @author Elena Posea
+	 */
 	public void generateMatchesForSelection(String nodeUri) throws Exception {
 		IFileAccessController fileController = FileControllerUtils.getFileAccessController();
 		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
@@ -260,6 +265,12 @@ public class CodeSyncRegexService {
 		String testFilesFolderPath = fileController.getPath(parentFile) + "/" + REGEX_TEST_FILES_FOLDER;
 		parseFile(testFilesFolderPath, testFileRelativePath, resourceNode, regexConfig);
 	}
+
+	/**
+	 * @param nodeUri
+	 * @throws Exception
+	 * @author Elena Posea
+	 */
 	public void generateMatchesForAll(String nodeUri) throws Exception {
 		IFileAccessController fileController = FileControllerUtils.getFileAccessController();
 
@@ -301,6 +312,13 @@ public class CodeSyncRegexService {
 		}
 	}
 
+
+	/**
+	 * @param nodeUri
+	 * @return compare results
+	 * @throws Exception
+	 * @author Elena Posea
+	 */
 	public String testMatchesForAll(String nodeUri) throws Exception {
 		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
 		String technology = virtualNodeHandler.getTypeSpecificPartFromNodeUri(nodeUri);
@@ -312,25 +330,30 @@ public class CodeSyncRegexService {
 		List<Node> testFilesNodeChildren = CorePlugin.getInstance().getNodeService().getChildren(testFilesNode, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
 
 		compareResult += "Comparing match files...\n";
-		for(Node testFileNode : testFilesNodeChildren){
+		for (Node testFileNode : testFilesNodeChildren) {
 			compareResult += checkTestFileNodeForMatches(testFileNode);
 		}
 
 		compareResult += "\nComparing result files...\n";
-		for(Node testFileNode : testFilesNodeChildren){
+		for (Node testFileNode : testFilesNodeChildren) {
 			compareResult += checkTestFileNodeForResults(testFileNode);
 		}
 
 		return compareResult;
 	}
 
+	/**
+	 * @param nodeUri
+	 * @return compare results
+	 * @throws Exception
+	 * @author Elena Posea
+	 */
 	public String testMatchesForSelection(String nodeUri) throws Exception {
 		Node testFileNode = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		return "Matches: " + checkTestFileNodeForMatches(testFileNode) + "Results: " + checkTestFileNodeForResults(testFileNode);
 	}
 
-	
-	private String checkTestFileNodeForMatches(Node testFileNode){
+	private String checkTestFileNodeForMatches(Node testFileNode) {
 		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
 		String typeSpecficPart = virtualNodeHandler.getTypeSpecificPartFromNodeUri(testFileNode.getNodeUri());
 		String repo = CoreUtils.getRepoFromNodeUri(testFileNode.getNodeUri());
@@ -345,7 +368,7 @@ public class CodeSyncRegexService {
 		return compareNodes(matchesNode, expectedMatchesNode);
 	}
 
-	private String checkTestFileNodeForResults(Node testFileNode){
+	private String checkTestFileNodeForResults(Node testFileNode) {
 		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
 		String typeSpecficPart = virtualNodeHandler.getTypeSpecificPartFromNodeUri(testFileNode.getNodeUri());
 		String repo = CoreUtils.getRepoFromNodeUri(testFileNode.getNodeUri());
@@ -361,29 +384,30 @@ public class CodeSyncRegexService {
 	}
 
 	
-	private String compareNodes(Node matchesNode, Node expectedMatchesNode){
+	private String compareNodes(Node matchesNode, Node expectedMatchesNode) {
 		String partialCompareResult = "	Comparing files " + getRelativePathFromUri(matchesNode.getNodeUri()) + " vs " + getRelativePathFromUri(expectedMatchesNode.getNodeUri());
-		if(recursiveCompare(matchesNode, expectedMatchesNode, true)){
+		if (recursiveCompare(matchesNode, expectedMatchesNode, true)) {
 			partialCompareResult += " IDENTICAL\n";
-		}else{
+		} else {
 			partialCompareResult += " NOT THE SAME\n";
 		}
 		return partialCompareResult;
 	}
 	
-	private String getRelativePathFromUri(String nodeUri){
+	private String getRelativePathFromUri(String nodeUri) {
 		int index = nodeUri.indexOf('$');
 		return nodeUri.substring(index + 1);
 	}
 	
-	private boolean recursiveCompare(Node matchFileNode, Node expectedMatchFileNode, boolean firstLevel){
+	private boolean recursiveCompare(Node matchFileNode, Node expectedMatchFileNode, boolean firstLevel) {
 		ResourceServiceRemote rsr = new ResourceServiceRemote(); 
 		rsr.subscribeToParentResource(matchFileNode.getNodeUri());
 		List<Node> matchChildren = CorePlugin.getInstance().getNodeService().getChildren(matchFileNode, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
 		rsr.subscribeToParentResource(expectedMatchFileNode.getNodeUri());
-		List<Node> expectedMatchChildren = CorePlugin.getInstance().getNodeService().getChildren(expectedMatchFileNode, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
+		List<Node> expectedMatchChildren = CorePlugin.getInstance().getNodeService()
+				.getChildren(expectedMatchFileNode, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
 		// compare properties for current node
-		if (!firstLevel &&(!compareProperties(matchFileNode, expectedMatchFileNode))) { // firstLevel means "Matches" vs "Expected Matches"
+		if (!firstLevel && (!compareProperties(matchFileNode, expectedMatchFileNode))) { // firstLevel means "Matches" vs "Expected Matches"
 			return false;
 		}
 		int noOfMatchChildren = matchChildren.size();
@@ -400,7 +424,7 @@ public class CodeSyncRegexService {
 		return true;
 	}
 	
-	private boolean compareProperties(Node matchFileNode, Node expectedMatchFileNode){
+	private boolean compareProperties(Node matchFileNode, Node expectedMatchFileNode) {
 		// iterate through all expectedMatchFileNode's properties, including node type;
 		// look for all this properties in matchFileNode
 		ServiceContext<NodeService> context = new ServiceContext<>();
@@ -410,20 +434,25 @@ public class CodeSyncRegexService {
 			Object realPropertyValue = realProperties.get(key);
 			Object expectedPropertyValue = expectedProperties.get(key);
 			if (realPropertyValue == null) {
-				if(expectedPropertyValue != null){
+				if (expectedPropertyValue != null) {
 					return false;
-				}
-				else {
+				} else {
 					continue;
 				}
 			}
-			if(!realPropertyValue.equals(expectedPropertyValue)){
+			if (!realPropertyValue.equals(expectedPropertyValue)) {
 				return false;
 			}
 		}
 		return true;
 	}
-	
+
+	/**
+	 * 
+	 * @param folder
+	 * @param relativePath
+	 * @return a list of all files in that folder, with the appended relativePath before each of them
+	 */
 	public static List<String> getTestFilesRelativeToFolder(File folder, String relativePath) {
 		Object[] files = getFileAccessController().listFiles(folder);
 		List<String> allFilesStartingWithThisFolder = new ArrayList<String>();

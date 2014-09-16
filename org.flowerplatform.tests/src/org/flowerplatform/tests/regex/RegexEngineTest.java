@@ -35,6 +35,9 @@ import org.junit.Test;
  */
 public class RegexEngineTest extends RegexTestBase {
 
+	/**
+	 * @author Cristi
+	 */
 	@Test
 	public void testDispatchingFindResultToRegexWithAction() {
 		final List<String> results = new ArrayList<String>();

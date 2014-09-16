@@ -8,6 +8,10 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.VirtualNodeResourceHandler;
 import org.flowerplatform.util.controller.AbstractController;
 
+/**
+ * @author Elena Posea
+ *
+ */
 public class RegexTestFilePropertiesProvider extends AbstractController implements IPropertiesProvider {
 
 	@Override

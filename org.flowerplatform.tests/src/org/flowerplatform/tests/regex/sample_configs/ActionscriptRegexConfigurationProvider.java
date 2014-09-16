@@ -51,7 +51,7 @@ import org.flowerplatform.util.regex.UntilFoundThisIgnoreAll;
 /**
  * @author Sorin
  */
-public class ActionscriptRegexConfigurationProvider {
+public abstract class ActionscriptRegexConfigurationProvider {
 
 	private static final String VAR_KEYWORD = "\\bvar\\b"; // word that starts
 															// and ends with var
@@ -90,9 +90,9 @@ public class ActionscriptRegexConfigurationProvider {
 																					// commas
 			SPACE_OR_COMMENT + "|" + // comment
 			"[" + IDENTIFIER_AFTER_BEGINNING_CHAR + COMMA + // every identifier or enumeration character
-			EXCLUDE + OPEN_BRACKET + EXCLUDE + SLASH + EXCLUDE + STAR + 
+			EXCLUDE + OPEN_BRACKET + EXCLUDE + SLASH + EXCLUDE + STAR
 			// except comment and bracket, because comment is processed as a hole and bracket is the condition to stop.
-			"]" + ")" + MULTIPLE_TIMES + STOP_BEFORE_OPEN_BRACKET_CHAR; // ensure at a moment it will start with {
+			+ "]" + ")" + MULTIPLE_TIMES + STOP_BEFORE_OPEN_BRACKET_CHAR; // ensure at a moment it will start with {
 
 	protected static final String ACTIONSCRIPT_ATTRIBUTE = // something like var
 															// name
@@ -112,12 +112,16 @@ public class ActionscriptRegexConfigurationProvider {
 			CAPTURE_IDENTIFIER + // capture method name
 			SPACES_OR_COMMENTS_OPTIONAL + // possibly other multiple comments
 			OPEN_PARENTHESIS; // ensure it has (
-
+	/**
+	 * 
+	 * @param config
+	 */
 	public static void buildASConfiguration(RegexConfiguration config) {
 		config.setTargetNestingForMatches(ACTIONSCRIPT_NESTING_LEVEL_FOR_DECLARATIONS).add(new IfFindThisModifyNesting("Opening curly bracket", OPEN_BRACKET, 1))
 				.add(new IfFindThisModifyNesting("Closing curly bracket", CLOSE_BRACKET, -1))
 				.add(new UntilFoundThisIgnoreAll("Begining of type ", ACTIONSCRIPT_TYPE_BEGIN))
-				.add(new IfFindThisAnnounceMatchCandidate(org.flowerplatform.tests.regex.sample_configs.JavaRegexConfigurationProvider.ATTRIBUTE_CATEGORY, ACTIONSCRIPT_ATTRIBUTE, ATTRIBUTE_CATEGORY))
+				.add(new IfFindThisAnnounceMatchCandidate(org.flowerplatform.tests.regex.sample_configs.JavaRegexConfigurationProvider.ATTRIBUTE_CATEGORY, 
+						ACTIONSCRIPT_ATTRIBUTE, ATTRIBUTE_CATEGORY))
 				.add(new IfFindThisAnnounceMatchCandidate(METHOD_CATEGORY, ACTIONSCRIPT_METHOD, METHOD_CATEGORY))
 				.add(new IfFindThisSkip("Multi-line comment", MULTI_LINE_COMMENT))
 				.add(new IfFindThisSkip("Single-line comment", SINGLE_LINE_COMMENT)).compile(Pattern.DOTALL);

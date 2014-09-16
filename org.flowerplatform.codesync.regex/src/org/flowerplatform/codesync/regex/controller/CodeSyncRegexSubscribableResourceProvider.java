@@ -39,6 +39,9 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public abstract class CodeSyncRegexSubscribableResourceProvider extends AbstractController implements IChildrenProvider, IPropertiesProvider {
 
+	/**
+	 * @author Elena Posea
+	 */
 	public CodeSyncRegexSubscribableResourceProvider() {
 		setOrderIndex(-10000);
 	}
@@ -74,5 +77,10 @@ public abstract class CodeSyncRegexSubscribableResourceProvider extends Abstract
 		return true;
 	}
 
+	/**
+	 * @author Elena Posea
+	 * @param node
+	 * @return
+	 */
 	protected abstract String getResourceUri(Node node);
 }

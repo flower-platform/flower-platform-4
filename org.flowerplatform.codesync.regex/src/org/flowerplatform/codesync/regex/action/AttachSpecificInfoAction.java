@@ -17,6 +17,10 @@ public class AttachSpecificInfoAction extends RegexAction {
 	String attachInfoKey;
 	Boolean isContainment;
 
+	/**
+	 * @param attachInfoKey where to attach the info
+	 * @param isContainment if true, the info should be added as property; otherwise, add it as child
+	 */
 	public AttachSpecificInfoAction(String attachInfoKey, Boolean isContainment) {
 		this.attachInfoKey = attachInfoKey;
 		this.isContainment = isContainment;
@@ -24,16 +28,16 @@ public class AttachSpecificInfoAction extends RegexAction {
 
 	@Override
 	public void executeAction(RegexProcessingSession param) {
-		Node currentNode = (Node)param.context.get("currentNode");
+		Node currentNode = (Node) param.context.get("currentNode");
 		ServiceContext<NodeService> serviceContext;
 		if (isContainment) {
 			// attach info as children
 			Object currentValue = param.context.get(attachInfoKey);
-			if(currentValue instanceof List){
+			if (currentValue instanceof List) {
 				List<Object> listOfChildrenToBeAdded = (List<Object>) currentValue;
-				for(Object child : listOfChildrenToBeAdded){
+				for (Object child : listOfChildrenToBeAdded) {
 					serviceContext = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
-					serviceContext.setContext(((Node)child).getProperties());
+					serviceContext.setContext(((Node) child).getProperties());
 					CorePlugin.getInstance().getNodeService().addChild(currentNode, (Node) child, serviceContext);
 				}
 			}

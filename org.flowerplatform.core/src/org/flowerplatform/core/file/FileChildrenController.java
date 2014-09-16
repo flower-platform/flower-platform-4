@@ -26,7 +26,6 @@ import static org.flowerplatform.core.file.FileControllerUtils.createFileNodeUri
 import static org.flowerplatform.core.file.FileControllerUtils.getFileAccessController;
 import static org.flowerplatform.core.file.FileControllerUtils.getFilePathWithRepo;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,7 +120,7 @@ public class FileChildrenController extends AbstractController
 		
 		Boolean overwrite = (Boolean) context.get(OVERWRITE_IF_NECESSARY);
 		if (getFileAccessController().exists(fileToCreate)) {
-			if(overwrite == null || overwrite == false){
+			if (overwrite == null || !overwrite) {
 				throw new RuntimeException("There is already a file with the same name in this location.");
 			} else {
 				// this file already exists, but I want to overwrite it

@@ -17,6 +17,10 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.VirtualNodeResourceHandler;
 import org.flowerplatform.util.controller.AbstractController;
 
+/**
+ * @author Elena Posea
+ *
+ */
 public class RegexTestFileChildrenProvider extends AbstractController implements IChildrenProvider {
 
 	@Override
@@ -25,13 +29,17 @@ public class RegexTestFileChildrenProvider extends AbstractController implements
 		String repo = CoreUtils.getRepoFromNode(node);
 		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
 		children.add(virtualNodeHandler.createNodeFromRawNodeData(
-				virtualNodeHandler.createVirtualNodeUri(repo, REGEX_MODEL_TREE_NODE_TYPE, virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri())), REGEX_MODEL_TREE_NODE_TYPE));
+				virtualNodeHandler.createVirtualNodeUri(repo, REGEX_MODEL_TREE_NODE_TYPE, virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri())),
+				REGEX_MODEL_TREE_NODE_TYPE));
 		children.add(virtualNodeHandler.createNodeFromRawNodeData(
-				virtualNodeHandler.createVirtualNodeUri(repo, REGEX_EXPECTED_MODEL_TREE_NODE_TYPE, virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri())), REGEX_EXPECTED_MODEL_TREE_NODE_TYPE));
+				virtualNodeHandler.createVirtualNodeUri(repo, REGEX_EXPECTED_MODEL_TREE_NODE_TYPE, virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri())),
+				REGEX_EXPECTED_MODEL_TREE_NODE_TYPE));
 		children.add(virtualNodeHandler.createNodeFromRawNodeData(
-				virtualNodeHandler.createVirtualNodeUri(repo, REGEX_MATCHES_NODE_TYPE, virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri())), REGEX_MATCHES_NODE_TYPE));
+				virtualNodeHandler.createVirtualNodeUri(repo, REGEX_MATCHES_NODE_TYPE, virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri())),
+				REGEX_MATCHES_NODE_TYPE));
 		children.add(virtualNodeHandler.createNodeFromRawNodeData(
-				virtualNodeHandler.createVirtualNodeUri(repo, REGEX_EXPECTED_MATCHES_NODE_TYPE, virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri())), REGEX_EXPECTED_MATCHES_NODE_TYPE));
+				virtualNodeHandler.createVirtualNodeUri(repo, REGEX_EXPECTED_MATCHES_NODE_TYPE, virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri())),
+				REGEX_EXPECTED_MATCHES_NODE_TYPE));
 		
 		return children;
 		

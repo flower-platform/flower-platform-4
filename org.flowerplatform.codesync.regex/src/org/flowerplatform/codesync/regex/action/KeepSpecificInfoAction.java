@@ -15,6 +15,11 @@ public class KeepSpecificInfoAction extends RegexAction {
 	boolean isList;
 	boolean isContainment;
 
+	/**
+	 * @param keepInfoKey the key to where to keep the info
+	 * @param isList whether there should be stored more info for that entry/ a list, or only one
+	 * @param isContainment how should I store this info, as children of current node (if false), or as property in hashmap
+	 */
 	public KeepSpecificInfoAction(String keepInfoKey, boolean isList, boolean isContainment) {
 		this.keepInfoKey = keepInfoKey;
 		this.isList = isList;
@@ -25,7 +30,7 @@ public class KeepSpecificInfoAction extends RegexAction {
 	public void executeAction(RegexProcessingSession param) {
 		Object newInfo = null;
 		if (isContainment) {
-			Node currentNode = (Node)param.context.get("currentNode");
+			Node currentNode = (Node) param.context.get("currentNode");
 			newInfo = currentNode;
 		} else {
 			newInfo = new String(param.getCurrentSubMatchesForCurrentRegex()[0]);

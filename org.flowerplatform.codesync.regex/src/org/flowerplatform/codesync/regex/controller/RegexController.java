@@ -61,8 +61,9 @@ public class RegexController extends AbstractController implements IPropertiesPr
 			return;
 		}
 		node.getProperties().put(CodeSyncRegexConstants.FULL_REGEX, getFullRegex(node));
-		if(node.getProperties().get(CONFIG_SETTING_DISABLED) == null)
+		if (node.getProperties().get(CONFIG_SETTING_DISABLED) == null) {
 			node.getProperties().put(CONFIG_SETTING_DISABLED, false);
+		}
 	}
 	
 	@Override

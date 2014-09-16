@@ -22,7 +22,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-
+/**
+ * 
+ * @author Cristi
+ *
+ */
 @RunWith(Suite.class)
 @SuiteClasses({ 
 	RegexEngineTest.class,

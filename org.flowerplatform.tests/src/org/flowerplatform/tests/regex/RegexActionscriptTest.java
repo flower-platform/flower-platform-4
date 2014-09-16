@@ -33,14 +33,18 @@ import org.flowerplatform.util.regex.RegexProcessingSession;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * @author Elena Posea
+ *
+ */
 public class RegexActionscriptTest extends RegexTestBase {
 	
 
-	private static final String testFile2Path = FILES_ROOT_DIR + "TestFile2.as";
+	private static final String TEST_FILE_2_PATH = FILES_ROOT_DIR + "TestFile2.as";
 	
 	private static CharSequence testFile2;
 
-	private List<String> testFile2_attributeNames = Arrays.asList(
+	private List<String> testFile2attributeNames = Arrays.asList(
 								"attr1", 
 								"attr2", 
 								"attr3", 
@@ -48,17 +52,23 @@ public class RegexActionscriptTest extends RegexTestBase {
 								"_attr5", 
 								"$attr6");
 	
-	private List<String> testFile2_methodNames = Arrays.asList(
+	private List<String> testFile2methodNames = Arrays.asList(
 								"method1", 
 								"method2", 
 								"method3", 
 								"method4", 
 								"method5");
+	/**
+	 * load test file
+	 */
 	@BeforeClass
 	public static void loadTestFile() {
-		testFile2 = TestUtil.readFile(testFile2Path);
+		testFile2 = TestUtil.readFile(TEST_FILE_2_PATH);
 	}
 
+	/**
+	 * testActionscriptDeclarationsExist
+	 */
 	@Test
 	public void testActionscriptDeclarationsExist() {
 		RegexConfiguration config = new RegexTestBase.CategoryRecorderRegexConfiguration();
@@ -71,10 +81,12 @@ public class RegexActionscriptTest extends RegexTestBase {
 			throw new RuntimeException(e);
 		}
 		
-		assertAllExist(session.getRecorderCategory(ATTRIBUTE_CATEGORY), testFile2_attributeNames);
-		assertAllExist(session.getRecorderCategory(METHOD_CATEGORY), testFile2_methodNames);
+		assertAllExist(session.getRecorderCategory(ATTRIBUTE_CATEGORY), testFile2attributeNames);
+		assertAllExist(session.getRecorderCategory(METHOD_CATEGORY), testFile2methodNames);
 	}
-	
+	/**
+	 * testActionscriptFindRange
+	 */
 	@Test
 	public void testActionscriptFindRange() {
 		RegexConfiguration config = new RegexConfiguration();
@@ -87,7 +99,7 @@ public class RegexActionscriptTest extends RegexTestBase {
 		// Do action/Check result: range for a given attribute is correct
 		/////////////////////////////
 	
-		for (String attributeName : testFile2_attributeNames) {
+		for (String attributeName : testFile2attributeNames) {
 			session.reset(true);
 			int[] range;
 			try {
@@ -102,7 +114,7 @@ public class RegexActionscriptTest extends RegexTestBase {
 		// Do action/Check result: range for a given method is correct
 		/////////////////////////////
 
-		for (String methodName : testFile2_methodNames) {
+		for (String methodName : testFile2methodNames) {
 			session.reset(true);
 			try {
 				int[] range = session.findRangeFor(METHOD_CATEGORY, methodName);

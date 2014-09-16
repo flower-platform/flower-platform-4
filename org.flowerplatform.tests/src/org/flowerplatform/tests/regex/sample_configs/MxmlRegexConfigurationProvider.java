@@ -40,8 +40,11 @@ import org.flowerplatform.util.regex.RegexConfiguration;
  */
 public class MxmlRegexConfigurationProvider extends	ActionscriptRegexConfigurationProvider {
 	
-	private static int MXML_NESTING_LEVEL_FOR_DECLARATIONS = 1; // must pass <![CDATA[ which is considered as increasing the nesting
-	
+	private static final int MXML_NESTING_LEVEL_FOR_DECLARATIONS = 1; // must pass <![CDATA[ which is considered as increasing the nesting
+
+	/**
+	 * @param config
+	 */
 	public static void buildMxmlConfiguration(RegexConfiguration config) {
 		config
 			.setTargetNestingForMatches(MXML_NESTING_LEVEL_FOR_DECLARATIONS) 

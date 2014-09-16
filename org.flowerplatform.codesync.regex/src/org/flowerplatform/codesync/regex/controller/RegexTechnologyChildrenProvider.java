@@ -15,6 +15,10 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.VirtualNodeResourceHandler;
 import org.flowerplatform.util.controller.AbstractController;
 
+/**
+ * @author Elena Posea
+ *
+ */
 public class RegexTechnologyChildrenProvider extends AbstractController implements IChildrenProvider {
 
 	@Override
@@ -25,7 +29,8 @@ public class RegexTechnologyChildrenProvider extends AbstractController implemen
 		children.add(virtualNodeHandler.createNodeFromRawNodeData(
 				virtualNodeHandler.createVirtualNodeUri(repo, REGEXES_NODE_TYPE, virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri())), REGEXES_NODE_TYPE));
 		children.add(virtualNodeHandler.createNodeFromRawNodeData(
-				virtualNodeHandler.createVirtualNodeUri(repo, REGEX_TEST_FILES_NODE_TYPE, virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri())), REGEX_TEST_FILES_NODE_TYPE));
+				virtualNodeHandler.createVirtualNodeUri(repo, REGEX_TEST_FILES_NODE_TYPE, virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri())),
+				REGEX_TEST_FILES_NODE_TYPE));
 		
 		return children;
 		

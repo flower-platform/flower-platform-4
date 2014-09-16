@@ -329,7 +329,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			.addSingleController(CoreConstants.PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.ICONS));
 		
 		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CONFIG_SETTINGS)
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_SETTING_DISABLED).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(false).setContributesToCreationAs(true));
+			.addAdditiveController(PROPERTY_DESCRIPTOR, 
+					new PropertyDescriptor().setNameAs(CONFIG_SETTING_DISABLED)
+					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(false).setContributesToCreationAs(true));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CoreConstants.PREFERENCE_CATEGORY_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new PreferencePropertiesProvider().setOrderIndexAs(1000)); // after persistence props provider

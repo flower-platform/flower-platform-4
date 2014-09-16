@@ -32,29 +32,40 @@ import org.flowerplatform.util.regex.RegexProcessingSession;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * 
+ * @author Cristi
+ *
+ */
 public class RegexMxmlTest extends RegexTestBase {
 	
-	private static final String testFile3Path = FILES_ROOT_DIR + "TestFile3.mxml";
+	private static final String TEST_FILE_3_PATH = FILES_ROOT_DIR + "TestFile3.mxml";
 
 	private static CharSequence testFile3;
 
-	private List<String> testFile3_attributeNames = Arrays.asList(
+	private List<String> testFile3attributeNames = Arrays.asList(
 								"keyBindings", 
 								"MODULES_LOCATION", 
 								"showDebugMenu", 
 								"shouldUpdatePerspectiveUserEntryOnLayoutChange");
 	
-	private List<String> testFile3_methodNames = Arrays.asList(
+	private List<String> testFile3methodNames = Arrays.asList(
 								"viewerClass",
 								"getModulesToLoad",
 								"sendObject",
 								"applicationCompleteHandler");
 	
+	/**
+	 * load test file
+	 */
 	@BeforeClass
 	public static void loadTestFile() {
-		testFile3 = TestUtil.readFile(testFile3Path);
+		testFile3 = TestUtil.readFile(TEST_FILE_3_PATH);
 	}
 	
+	/**
+	 * testMxmlDeclarationsExist
+	 */
 	@Test
 	public void testMxmlDeclarationsExist() {
 		RegexConfiguration config = new RegexTestBase.CategoryRecorderRegexConfiguration();
@@ -67,10 +78,13 @@ public class RegexMxmlTest extends RegexTestBase {
 			throw new RuntimeException(e);
 		}
 		
-		assertAllExist(session.getRecorderCategory(ATTRIBUTE_CATEGORY), testFile3_attributeNames);
-		assertAllExist(session.getRecorderCategory(METHOD_CATEGORY), testFile3_methodNames);
+		assertAllExist(session.getRecorderCategory(ATTRIBUTE_CATEGORY), testFile3attributeNames);
+		assertAllExist(session.getRecorderCategory(METHOD_CATEGORY), testFile3methodNames);
 	}
 	
+	/**
+	 * testMxmlFindRange
+	 */
 	@Test
 	public void testMxmlFindRange() {
 		RegexConfiguration config = new RegexConfiguration();
@@ -83,7 +97,7 @@ public class RegexMxmlTest extends RegexTestBase {
 		// Do action/Check result: range for a given attribute is correct
 		/////////////////////////////
 	
-		for (String attributeName : testFile3_attributeNames) {
+		for (String attributeName : testFile3attributeNames) {
 			session.reset(true);
 			int[] range;
 			try {
@@ -98,7 +112,7 @@ public class RegexMxmlTest extends RegexTestBase {
 		// Do action/Check result: range for a given method is correct
 		/////////////////////////////
 
-		for (String methodName : testFile3_methodNames) {
+		for (String methodName : testFile3methodNames) {
 			session.reset(true);
 			try {
 				int[] range = session.findRangeFor(METHOD_CATEGORY, methodName);

@@ -11,7 +11,7 @@ public class IncreaseNestingLevelAction extends RegexAction {
 	@Override
 	public void executeAction(RegexProcessingSession param) {
 		int currentNestingLevel = (int) param.context.get("currentNestingLevel");
-		param.context.put("currentNestingLevel", currentNestingLevel+1);
+		param.context.put("currentNestingLevel", currentNestingLevel + 1);
 	}
 
 }
