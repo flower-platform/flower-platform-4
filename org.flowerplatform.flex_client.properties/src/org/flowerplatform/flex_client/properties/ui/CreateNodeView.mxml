@@ -55,6 +55,8 @@
 			public var option:String = SHOW_ONLY_CONTRIBUTES_TO_CREATION;
 			
 			public var diagramShellContext:DiagramShellContext;
+			
+			public var siblingNodeUri:String;
 						
 			override protected function creationCompleteHandler(event:FlexEvent):void {
 				super.creationCompleteHandler(event);
