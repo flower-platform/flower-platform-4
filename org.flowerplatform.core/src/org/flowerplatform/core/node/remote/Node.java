@@ -56,6 +56,9 @@ public class Node implements Externalizable {
 		super();
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 */
 	public Node(String nodeUri, String type) {
 		setNodeUri(nodeUri);
 		setType(type);

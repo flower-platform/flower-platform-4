@@ -34,9 +34,17 @@ import org.flowerplatform.core.node.resource.ResourceService;
 @Path("/users")
 public class UserService {
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public UserService() {
 	}
 	
+	
+	/**
+	 * @author Mariana Gheorghe
+	 * @author Andreea Tita
+	 */
 	@SuppressWarnings("deprecation")
 	@GET
 	public List<Node> getUsers() {
@@ -45,14 +53,18 @@ public class UserService {
 		
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
 		context.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
-		List<Node> users = CorePlugin.getInstance().getNodeService().getChildren(node,context);
-			for (Node user : users){
+		List<Node> users = CorePlugin.getInstance().getNodeService().getChildren(node, context);
+			for (Node user : users) {
 				user.setNodeUri(URLEncoder.encode(user.getNodeUri()));
 			}
 	
 		return users;
 	}
 	
+	/**
+	 * @author Mariana Gheorghe
+	 * @author Andreea Tita
+	 */
 	@GET @Path("/{nodeUri}")	
 	@Produces(MediaType.APPLICATION_JSON)
 	public Node getUser(@PathParam("nodeUri") String nodeUri) {
@@ -68,6 +80,10 @@ public class UserService {
 		return null;
 	}
 	
+	/**
+	 * @author Mariana Gheorghe
+	 * @author Andreea Tita
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Node saveUser(Node user) throws UnsupportedEncodingException {
@@ -98,6 +114,10 @@ public class UserService {
 		return currentUser;
 	}
 	
+	/**
+	 * @author Mariana Gheorghe
+	 * @author Andreea Tita
+	 */
 	@DELETE @Path("/{nodeUri}")
 	public void deleteUser(@PathParam("nodeUri") String nodeUri) {
 		
@@ -107,6 +127,9 @@ public class UserService {
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
 	}
 	
+	/**
+	 * @author Andreea Tita
+	 */
 	@POST @Path("/{nodeUri}/password")
 	public String changePassword(@PathParam("nodeUri") String nodeUri, Map<String, String> map) {
 		Node currentUser = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
@@ -127,6 +150,9 @@ public class UserService {
 		return CoreConstants.PASS_NOT_CHANGED;
 	}
 	
+	/**
+	 * @author Andreea Tita
+	 */
 	@POST @Path("/{nodeUri}/login") 
 	public Node changeLogin(@PathParam("nodeUri") String nodeUri, String login) {
 		Node currentUser = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
@@ -136,33 +162,44 @@ public class UserService {
 		return currentUser;
 	}
 	
-	/* generate a salt for password */
+	/**
+	 * @author Andreea Tita
+	 * generate a salt for password 
+	 */
 	public byte[] getSalt() {
 	    byte[] salt = new byte[16];
 	    new Random().nextBytes(salt);
 	    return salt;
 	}
 	
-	/* create a hashed password using salt */
+	/**
+	 * @author Andreea Tita
+	 * create a hashed password using salt
+	 */
 	public byte[] createPasswordHash(String password, String salt) {
-		final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+		Charset defaultCharset = Charset.forName("UTF-8");
 	    byte[] result = null;
 	    
 	    try {
 	        MessageDigest digest = MessageDigest.getInstance(CoreConstants.HASH_ALGORITHM);
-	        digest.update(salt.getBytes(DEFAULT_CHARSET));
-	        digest.update(password.getBytes(DEFAULT_CHARSET));
+	        digest.update(salt.getBytes(defaultCharset));
+	        digest.update(password.getBytes(defaultCharset));
 	        result = digest.digest();
-	    } catch (NoSuchAlgorithmException e) {}
+	    } catch (NoSuchAlgorithmException e) {
+	    	e.printStackTrace();
+	    }
 	   
 	    return result;
 	}
 	
-	/* check if the entered password is the same with the hashed password */
+	/**
+	 * @author Andreea Tita
+	 * check if the entered password is the same with the hashed password
+	 */
 	public boolean checkPassword(Node user, String password) {
         boolean result = false;
-        String storedPasswordHash = (String)user.getProperties().get("hashPassword");
-        String salt = (String)user.getProperties().get("saltPassword");
+        String storedPasswordHash = (String) user.getProperties().get("hashPassword");
+        String salt = (String) user.getProperties().get("saltPassword");
         byte[] checkPasswordHashBytes = createPasswordHash(password, salt);
         String checkPasswordHash = DatatypeConverter.printBase64Binary(checkPasswordHashBytes);
  
