@@ -19,4 +19,25 @@
             class="org.flowerplatform.js_client.server.UserValidatorServlet">
       </servlet>
    </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+            alias="/oauth/authorize"
+            class="org.flowerplatform.js_client.server.oauth.OAuth2AuthorizationServlet">
+      </servlet>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+            alias="/oauth/redirect"
+            class="org.flowerplatform.js_client.server.oauth.OAuth2RedirectServlet">
+      </servlet>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+            alias="/oauth/token"
+            class="org.flowerplatform.js_client.server.oauth.OAuth2TokenServlet">
+      </servlet>
+   </extension>
 </plugin>

@@ -65,10 +65,12 @@ flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', '$htt
 		logger.debug('sync cookies');
 		var map = callFlexCallback('syncCookies', function(map) {
 			logger.debug(map);
-			$.each(map, function(key, value) {
-				logger.debug('set cookie ' + key + value);
-				$.cookie(key, value);
-			});
+			if (map != undefined) {
+				$.each(map, function(key, value) {
+					logger.debug('set cookie ' + key + value);
+					$.cookie(key, value);
+				});
+			}
 			deferred.resolve(0);
 		});
 		return deferred.promise;

@@ -1,15 +1,9 @@
 package org.flowerplatform.js_client.server;
 
-import java.util.HashSet;
-
-import javax.ws.rs.core.MultivaluedHashMap;
-
 import org.flowerplatform.core.CorePlugin;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.oauth1.DefaultOAuth1Provider;
-import org.glassfish.jersey.server.oauth1.OAuth1ServerFeature;
 import org.glassfish.jersey.servlet.ServletContainer;
 
 /**
@@ -32,13 +26,6 @@ public class WebServicesConfig extends ResourceConfig {
 		register(new ObjectMapperProvider());
 		
 		register(LoggingFilter.class);
-		
-		DefaultOAuth1Provider p = new DefaultOAuth1Provider();
-		p.registerConsumer("test", "714528398641253", "4ce1637f1617d716a8347eae3524c8b3", new MultivaluedHashMap<String, String>());
-		p.addAccessToken("ceva", "4ce1637f1617d716a8347eae3524c8b3", "714528398641253", 
-				"", null, new HashSet<String>(), new MultivaluedHashMap<String, String>());
-		//p.newAccessToken(requestToken, verifier)
-		register(new OAuth1ServerFeature(p, "authorize1", "authorize2"));
 	}
 	
 }

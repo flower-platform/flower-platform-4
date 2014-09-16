@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib-from-maven/oauth1-server-2.12.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib-from-maven/oauth1-signature-2.12.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/org.apache.oltu.oauth2.resourceserver-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/org.apache.oltu.oauth2.client-1.0.0.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/apache/oltu/oauth2/org.apache.oltu.oauth2.client/1.0.0/org.apache.oltu.oauth2.client-1.0.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/commons-codec-1.8.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/json-20131018.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/org.apache.oltu.oauth2.authzserver-1.0.0.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/apache/oltu/oauth2/org.apache.oltu.oauth2.authzserver/1.0.0/org.apache.oltu.oauth2.authzserver-1.0.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/org.apache.oltu.oauth2.common-1.0.0.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/apache/oltu/oauth2/org.apache.oltu.oauth2.common/1.0.0/org.apache.oltu.oauth2.common-1.0.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/slf4j-api-1.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-annotations-2.3.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-core-2.3.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-databind-2.3.2.jar"/>

@@ -18,6 +18,5 @@ function callFlexCallback() {
 		logger.debug("call flex: " + args[0]);
 		logger.debug("args: " + args.slice(2));
 	}
-//	args.splice(1, 0, null);
 	StageWebViewBridge.call.apply(StageWebViewBridge, args);
 }

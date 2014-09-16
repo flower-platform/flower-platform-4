@@ -52,5 +52,8 @@ function getURLParam(name) {
 }
 
 function callFlexCallback() {
-	// nothing to do
+	var args = Array.prototype.slice.call(arguments, 0);
+	if (args[1] != null) {
+		args[1]();
+	}
 }
