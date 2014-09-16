@@ -252,5 +252,8 @@ public final class CoreConstants {
 	public static final String STARRED_BY = "starredBy";
 	public static final String EXTENSIONS = "extensions";
 	public static final String REPOSITORIES_URI = USERS_PATH + "#" + REPOSITORIES;
+	public static final String GENERAL_PURPOSE = "generalPurpose";
+	public static final String EXTENSION_DESCRIPTOR = "extensionMetadata";
+	public static final String FILESYSTEM_EXTENSION = "fileSystemExtension";
 
 }

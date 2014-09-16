@@ -115,6 +115,9 @@ public class RemoteMethodInvocationInfo {
 		return (List<String>) getHeaders().get(CoreConstants.RESOURCE_URIS);
 	}
 
+	/**
+	 *
+	 */
 	public long getTimestampOfLastRequest() {
 		Object timestamp = getHeaders().get(CoreConstants.LAST_UPDATE_TIMESTAMP);
 		if (timestamp == null) {

@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.core;
 
-import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import static org.flowerplatform.core.CoreConstants.DEFAULT_LOG_PATH;
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.LOGBACK_CONFIG_FILE;
@@ -24,8 +23,11 @@ import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.core.CoreConstants.ROOT_TYPE;
 import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
+import static org.flowerplatform.core.CoreConstants.GENERAL_PURPOSE;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.flowerplatform.core.CoreConstants.USERS;
 import static org.flowerplatform.core.CoreConstants.USER;
@@ -63,6 +65,7 @@ import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.core.preference.PreferencePropertiesProvider;
 import org.flowerplatform.core.preference.PreferencePropertySetter;
 import org.flowerplatform.core.preference.remote.PreferencesServiceRemote;
+import org.flowerplatform.core.repositories.ExtensionMetadata;
 import org.flowerplatform.core.repositories.RepositoriesService;
 import org.flowerplatform.core.repository.RepositoryChildrenProvider;
 import org.flowerplatform.core.repository.RepositoryPropertiesProvider;
@@ -88,7 +91,6 @@ import ch.qos.logback.core.joran.spi.JoranException;
  * @author Cristina Constantinescu
  * @author Mariana Gheorghe
  */
-@SuppressWarnings("restriction")
 public class CorePlugin extends AbstractFlowerJavaPlugin {
 
 	protected static CorePlugin instance;
@@ -312,6 +314,10 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USER);
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORIES);
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY);
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GENERAL_PURPOSE)
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("fileSystem").setLabel("File System"))
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("git").setLabel("Git")
+					.setDependencies(new ArrayList<String>(Arrays.asList("fileSystem"))));
 
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ROOT_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RootPropertiesProvider())

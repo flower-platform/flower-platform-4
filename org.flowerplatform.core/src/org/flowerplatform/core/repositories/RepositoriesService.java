@@ -14,6 +14,10 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.util.controller.AbstractController;
+import org.flowerplatform.util.controller.IController;
+import org.flowerplatform.util.controller.TypeDescriptor;
+
 import static org.flowerplatform.core.CoreUtils.getUriFromFragment;
 import static org.flowerplatform.core.CoreUtils.getRepositoryName;
 import static org.flowerplatform.core.CoreUtils.getRepositoryNodeUri;
@@ -22,7 +26,6 @@ import static org.flowerplatform.core.CoreUtils.getRepositoryNodeUri;
  * @author Cristina Brinza
  *
  */
-
 @SuppressWarnings("unchecked")
 public class RepositoriesService {
 	
@@ -61,8 +64,7 @@ public class RepositoriesService {
 		nodeService.setProperty(repositoryNode, CoreConstants.USER, login, new ServiceContext<NodeService>());
 		nodeService.setProperty(repositoryNode, CoreConstants.NAME, repoName, new ServiceContext<NodeService>());
 		nodeService.setProperty(repositoryNode, CoreConstants.DESCRIPTION, description, new ServiceContext<NodeService>());
-		List<String> members = new ArrayList<String>(); members.add(login);
-		nodeService.setProperty(repositoryNode, CoreConstants.MEMBERS, members, new ServiceContext<NodeService>());
+		nodeService.setProperty(repositoryNode, CoreConstants.MEMBERS, new ArrayList<String>(), new ServiceContext<NodeService>());
 		nodeService.setProperty(repositoryNode, CoreConstants.STARRED_BY, new ArrayList<String>(), new ServiceContext<NodeService>());
 		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, new ArrayList<String>(), new ServiceContext<NodeService>());
 		
@@ -76,14 +78,6 @@ public class RepositoriesService {
 		}
 		ownedRepos.add(getRepositoryName(login, repoName));
 		nodeService.setProperty(userNode, CoreConstants.OWNED_REPOSITORIES, ownedRepos, new ServiceContext<NodeService>());
-		
-		// member_in_repos
-		List<String> memberInRepos = (List<String>) userNode.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES);
-		if (memberInRepos == null) {
-			memberInRepos = new ArrayList<String>();
-		}
-		memberInRepos.add(getRepositoryName(login, repoName));
-		nodeService.setProperty(userNode, CoreConstants.MEMBER_IN_REPOSITORIES, memberInRepos, new ServiceContext<NodeService>());
 		
 		// save file
 		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
@@ -310,28 +304,164 @@ public class RepositoriesService {
 	/**
 	 * @author see class
 	 */
-	public List<Node> getRepositoriesForUser(String login) {
-//		Node user = resourceService.getNode(getUriFromFragment(login));
-//		
-//		for (String ownedRepository : user.getPropertyValue(CoreConstants.OWNED_REPOSITORIES)) {
-//			Node ownedRepositoryNode = 
+	public List<Node> getAllRepositories() {
+		Node repositoriesNode =  resourceService.getNode(CoreConstants.REPOSITORIES_URI);
+		
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
+		context.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
+		List<Node> repositories = CorePlugin.getInstance().getNodeService().getChildren(repositoriesNode, context);
+//		for (Node repository : repositories) {
+//			repository.setNodeUri(URLEncoder.encode(repository.getNodeUri()));
 //		}
-		return null;
+	
+		return repositories;
 	}
 	
 	/**
 	 * @author see class
 	 */
-	public List<Node> getRepositories() {
+	public List<Node> getRepositoriesForUserAsNode(String login) {
 		List<Node> repositories = new ArrayList<Node>();
+		Node user = resourceService.getNode(getUriFromFragment(login));
 		
-		Node repositoriesNode = resourceService.getNode(CoreConstants.REPOSITORIES_URI);
-		List<Node> children = nodeService.getChildren(repositoriesNode, new ServiceContext<NodeService>());
+		for (String ownedRepository : (List<String>) user.getPropertyValue(CoreConstants.OWNED_REPOSITORIES)) {
+			repositories.add(resourceService.getNode(getRepositoryNodeUri(login, ownedRepository)));
+		}
 		
 		return repositories;
 	}
 	
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * @author see class
+	 */
+	public List<String> getRepositoriesForUserAsString(String login) {
+		return (List<String>) resourceService.getNode(getUriFromFragment(login)).getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
+	}
 
+	/**
+	 * @author see class
+	 */
+	public void applyExtension(String login, String repoName, String extensionId) {
+		Node repositoryNode = resourceService.getNode(getRepositoryNodeUri(login, repoName));
+		List<String> extensions = (List<String>) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
+		if (!extensions.contains(extensionId)) {
+			extensions.add(extensionId);
+		} else {
+			throw new RuntimeException(String.format("This extension already exists for repository '%s'", repoName));
+		}
 		
+		// add extension dependencies to extensions
+//		ExtensionMetadata extensionMetadata = getExtensionMetadataForExtensionId(extensionId);
+//		for (String extensionDependency : extensionMetadata.getDependencies()) {
+//			if (!extensions.contains(extensionDependency)) {
+//				extensions.add(extensionDependency);
+//			}
+//		}
+
+		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, extensions, new ServiceContext<NodeService>());
+		
+		// save file
+		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
+	}
+	
+	/**
+	 * @author see class
+	 */
+	public void unapplyExtension(String login, String repoName, String extensionId) {
+		Node repositoryNode = resourceService.getNode(getRepositoryNodeUri(login, repoName));
+		List<String> extensions = (List<String>) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
+		if (extensions.contains(extensionId)) {
+			extensions.remove(extensionId);
+		} else {
+			throw new RuntimeException(String.format("This extension doesn't exist for repository '%s'", repoName));
+		}
+		
+		// delete extension dependencies
+//		ExtensionMetadata extensionMetadata = getExtensionMetadataForExtensionId(extensionId);
+//		for (String extensionDependency : extensionMetadata.getDependencies()) {
+//			extensions.remove(extensionDependency);
+//		}
+	
+		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, extensions, new ServiceContext<NodeService>());
+		
+		// save file
+		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
+	}
+	
+	/**
+	 * @author see class
+	 */
+	protected List<AbstractController> getExtensionDescriptors() {
+		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(CoreConstants.GENERAL_PURPOSE);
+		return descriptor.getAdditiveControllers(CoreConstants.EXTENSION_DESCRIPTOR, CoreConstants.FILESYSTEM_EXTENSION);
+	}
+	
+	/**
+	 * @author see class
+	 */
+	public List<ExtensionMetadata> getAllExtensions() {
+		List<AbstractController> extensionDescriptors = getExtensionDescriptors();
+		List<ExtensionMetadata> extensions = new ArrayList<ExtensionMetadata>();
+		
+		for (IController element : extensionDescriptors) {
+			extensions.add((ExtensionMetadata) element);
+		}
+		
+		return extensions;
+	}
+	
+	/**
+	 * @author see class
+	 */
+	protected List<String> getAllExtensionsNames() {
+		List<ExtensionMetadata> extensions = getAllExtensions();
+		List<String> extensionsIds = new ArrayList<String>();
+		
+		for (ExtensionMetadata extensionMetadata : extensions) {
+			extensionsIds.add(extensionMetadata.getId());
+		}
+		
+		return extensionsIds;
+	}
+	
+	/**
+	 * @author
+	 */
+	
+	/**
+	 * @author see class
+	 * 
+	 * Extensions that are not applied to current repository 
+	 */
+	public List<ExtensionMetadata> getAvailableExtensions(String login, String repoName) {
+		List<ExtensionMetadata> availableExtensions = new ArrayList<ExtensionMetadata>();
+		Node repository = resourceService.getNode(getRepositoryNodeUri(login, repoName));
+		List<ExtensionMetadata> allExtensions = getAllExtensions();
+		List<String> appliedExtensions = (List<String>) repository.getPropertyValue(CoreConstants.EXTENSIONS);
+		
+		for (int i = 0; i < allExtensions.size(); i++) {
+			ExtensionMetadata extension = allExtensions.get(i);
+			if (!appliedExtensions.contains(extension.getId())) {
+				availableExtensions.add(extension);
+			}
+		}
+		
+		return availableExtensions;
+	}
+	
+	/**
+	 * @author see class
+	 */
+	public ExtensionMetadata getExtensionMetadataForExtensionId(String extensionId) {
+		List<AbstractController> extensionDescriptors = getExtensionDescriptors();
+		for (IController element : extensionDescriptors) {
+			ExtensionMetadata extensionDescriptor = (ExtensionMetadata) element;
+			if (extensionDescriptor.getId().equals(extensionId)) {
+				return extensionDescriptor;
+			}
+		}
+
+		throw new RuntimeException(String.format("No metadata found for extension '%s'", extensionId));
+	}
+	
 }

@@ -14,6 +14,7 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.repositories.ExtensionMetadata;
 import org.flowerplatform.core.repositories.RepositoriesService;
 import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.tests.EclipseIndependentTestSuite;
@@ -22,7 +23,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -113,7 +113,7 @@ public class RepositoriesServiceTest {
 			CorePlugin.getInstance().getNodeService().setProperty(user, "firstName", "user2", new ServiceContext<NodeService>());
 			CorePlugin.getInstance().getNodeService().setProperty(user, "login", "user2-random2", new ServiceContext<NodeService>());
 			
-			// user2
+			// user3
 			user = new Node(USERS_FILE_URI + "#user3-random3", CoreConstants.USER);
 			CorePlugin.getInstance().getNodeService().addChild(
 					users,
@@ -139,9 +139,9 @@ public class RepositoriesServiceTest {
 		repositoriesService = new RepositoriesService();
 	}
 
-//	/**
-//	 * @author see class
-//	 */
+	/**
+	 * @author see class
+	 */
 	@Test
 	public void testCreateRepository() throws IOException {
 		String testLogin = "user1-random1";
@@ -162,11 +162,6 @@ public class RepositoriesServiceTest {
 		@SuppressWarnings("unchecked")
 		List<String> ownedRepositories = (List<String>) user.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
 		assertTrue("Repo not in owned repositories", ownedRepositories.contains(repositoryName));
-		
-		// check if repo is in member_in_repositories
-		@SuppressWarnings("unchecked")
-		List<String> memberInRepositories = (List<String>) user.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES);
-		assertTrue("Repo not in member_in_repositories", memberInRepositories.contains(repositoryName));
 			
 		// create second repo for same user
 		String testRepoName2 = "secondRepo";
@@ -213,22 +208,22 @@ public class RepositoriesServiceTest {
 		String testLogin = "user1-random1";
 		String testRepoName = "delete-repo";
 		
-		// create repo first
+		// create then delete repo
 		repositoriesService.createRepository(testLogin, testRepoName, "");
-		
-		// delete repo
 		repositoriesService.deleteRepository(testLogin, testRepoName);
 		
 		// check if directory still exists
 		assertTrue("Repository dir still exists!", !new File(FLOWER_PLATFORM_WORKSPACE + "/" + testLogin + "/" + testRepoName).exists());
 		
 		// check if repository node was deleted from file
+		//CHECKSTYLE:OFF
 		try {
 			resourceService.getNode(CoreUtils.getRepositoryNodeUri(testLogin, testRepoName));
 			fail("NullPointerException should have been thrown");
 		} catch (NullPointerException e) {
 			// ignore this
 		}
+		//CHECKSTYLE:ON
 		
 		String repositoryName = CoreUtils.getRepositoryName(testLogin, testRepoName);		
 		Node user = resourceService.getNode(CoreUtils.getUriFromFragment(testLogin));
@@ -241,7 +236,9 @@ public class RepositoriesServiceTest {
 		// check every member in MEMBERS
 		@SuppressWarnings("unchecked")
 		List<String> memberInRepositories = (List<String>) user.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES);
-		assertTrue("Repo still in member_in_repositories!", !memberInRepositories.contains(repositoryName));
+		if (memberInRepositories != null) {
+			assertTrue("Repo still in member_in_repositories!", !memberInRepositories.contains(repositoryName));
+		}
 	}
 	
 	/**
@@ -390,9 +387,58 @@ public class RepositoriesServiceTest {
 				((List<String>) repository.getPropertyValue(CoreConstants.STARRED_BY)).contains(userWhoStarredToBeRemoved));
 	}
 	
+	/**
+	 * @author see class
+	 */
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetRepositories() {
-		repositoriesService.getRepositories();
+	public void testApplyExtension() throws IOException {
+		String login = "user1-random1";
+		String repoName = "apply-extension";
+		
+		repositoriesService.createRepository(login, repoName, "");
+		repositoriesService.applyExtension(login, repoName, "fileSystem");
+		repositoriesService.applyExtension(login, repoName, "git");
+		
+		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(login, repoName));
+		List<String> extensions = (List<String>) repository.getPropertyValue(CoreConstants.EXTENSIONS);
+		assertTrue("Extension not applied!", extensions.contains("fileSystem"));
+		assertTrue("Extension not applied!", extensions.contains("git"));
+		
+//		for (String extensionId : extensions) {
+//			ExtensionMetadata extensionMetadata = repositoriesService.getExtensionMetadataForExtensionId(extensionId);
+//			for (String extensionDependency : extensionMetadata.getDependencies()) {
+//				assertTrue("Dependency not contained in extensions!", extensions.contains(extensionDependency));
+//			}
+//		}
+	}
+	
+	/**
+	 * @author see class
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testUnapplyExtension() throws IOException {
+		String login = "user1-random1";
+		String repoName = "unapply-extension";
+		
+		repositoriesService.createRepository(login, repoName, "");
+		repositoriesService.applyExtension(login, repoName, "fileSystem");
+		repositoriesService.applyExtension(login, repoName, "git");
+		repositoriesService.unapplyExtension(login, repoName, "fileSystem");
+		
+		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(login, repoName));
+		List<String> extensions = (List<String>) repository.getPropertyValue(CoreConstants.EXTENSIONS);
+		assertFalse("Extension still there although it should have been deleted!", extensions.contains("fileSystem"));
+		assertTrue("Extension not there although it should have been!", extensions.contains("git"));
+		
+		// unapply it's dependencies too
+//		for (String extensionId : extensions) {
+//			ExtensionMetadata extensionMetadata = repositoriesService.getExtensionMetadataForExtensionId(extensionId);
+//			for (String extensionDependency : extensionMetadata.getDependencies()) {
+//				assertFalse("Dependency still contained in extensions!", extensions.contains(extensionDependency));
+//			}
+//		}
 	}
 	
 	/**

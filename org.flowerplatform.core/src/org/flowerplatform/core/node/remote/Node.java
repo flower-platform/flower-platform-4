@@ -22,11 +22,12 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.util.Utils;
-import org.flowerplatform.core.node.controller.IPropertiesProvider;
 
 /**
  * <p>
@@ -48,6 +49,16 @@ public class Node implements Externalizable {
 
 	private Object rawNodeData;
 	
+	/**
+	 * TODO
+	 */
+	public Node() {
+		super();
+	}
+	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public Node(String nodeUri, String type) {
 		setNodeUri(nodeUri);
 		setType(type);
@@ -69,6 +80,7 @@ public class Node implements Externalizable {
 		this.nodeUri = nodeUri;
 	}
 	
+	@XmlTransient
 	public String getScheme() {
 		return Utils.getScheme(nodeUri);
 	}
@@ -115,6 +127,7 @@ public class Node implements Externalizable {
 		return getProperties();
 	}
 	
+	@XmlTransient
 	public Object getRawNodeData() {
 		return rawNodeData;
 	}
@@ -122,7 +135,10 @@ public class Node implements Externalizable {
 	public void setRawNodeData(Object rawNodeData) {
 		this.rawNodeData = rawNodeData;
 	}
-		
+	
+	/**
+	 * 
+	 */
 	public Object getPropertyValue(String property) {
 		Object propertyObj = getPropertyValueOrWrapper(property);
 		if (propertyObj instanceof PropertyWrapper) {
@@ -131,6 +147,9 @@ public class Node implements Externalizable {
 		return propertyObj;
 	}
 
+	/**
+	 * 
+	 */
 	public Object getPropertyValueOrWrapper(String property) {
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
 		if (!getOrPopulateProperties(context).containsKey(property)) {
