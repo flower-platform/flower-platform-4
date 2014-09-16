@@ -152,9 +152,6 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 				break;
 			case "ADDED":
 				var targetNodeInRegistry = this.getNodeById(update.targetNode.nodeUri);	
-//				if(nodeFromRegistry.children == null){
-//					this.setPropertyValue(nodeFromRegistry, "hasChildren", true);
-//				}
 				if (nodeFromRegistry.children != null && !nodeFromRegistry.children.contains(targetNodeInRegistry)) {
 					var index = -1; // -> add it last
 					if (update.fullTargetNodeAddedBeforeId != null) {
@@ -178,19 +175,12 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 			case "REMOVED":
 				var targetNodeInRegistry = this.getNodeById(update.targetNode.nodeUri);	
 				if (targetNodeInRegistry != null) {
-//					throw "before unregister " + nodeFromRegistry.children;
-//					throw "unregister" + update.targetNode.nodeUri;
 					this.unregisterNode(targetNodeInRegistry, nodeFromRegistry);
-//					throw "after unregister " + nodeFromRegistry.children;
 				} else {
 					// node not registered, probably it isn't visible for this client
 					// Nothing to do
 				}
 				
-//				if(nodeFromRegistry.children == null){
-//					this.setPropertyValue(nodeFromRegistry, "hasChildren", false);
-//				}
-
 				break;
 			case "REQUEST_REFRESH":
 				this.refresh(nodeFromRegistry);

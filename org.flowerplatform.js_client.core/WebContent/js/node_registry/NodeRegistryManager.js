@@ -55,8 +55,6 @@ NodeRegistryManager.prototype.getNodeRegistriesForResourceSet = function(resourc
 	if (nodeRegistries == null) {
 		nodeRegistries = [];
 	}
-	throw nodeRegistries[0];
-//	throw nodeRegistries.length;
 	return nodeRegistries;
 };
 
@@ -76,8 +74,8 @@ NodeRegistryManager.prototype.getResourceUrisForResourceSet = function(resourceS
 	if (resourceSet == null) {
 		resourceUris = [];
 	}
-	if (resourceUris == null) {
-		return null;
+	if (resourceUris == null) { // if undefined or null (== tests for undefined or null value) 
+		return null; // if there was no entry for the given key => return null
 	}
 	return resourceUris;
 };
@@ -112,17 +110,14 @@ NodeRegistryManager.prototype.getResourceUris = function() {
 };
 
 NodeRegistryManager.prototype.linkResourceNodeWithNodeRegistry = function(resourceUri, resourceSet, nodeRegistry) {
-//	throw "linkResourceNodeWithNodeRegistry " + resourceUri + " " + resourceSet;
 	// add resourceUri to resourceSet
 	var resourceUris = this.resourceSetToResourceUris[resourceSet];
-//	throw resourceUris;
 	if (resourceUris == null) {
 		resourceUris = [];
 		this.resourceSetToResourceUris[resourceSet] = resourceUris;
 	}
 	resourceUri = String(resourceUri); 
 	resourceUris.push(resourceUri);
-//	throw this.resourceSetToResourceUris[resourceSet];
 	this.resourceUriToResourceSet[resourceUri] = resourceSet;
 	
 	// add resourceSet to registry
@@ -135,7 +130,6 @@ NodeRegistryManager.prototype.linkResourceNodeWithNodeRegistry = function(resour
 	// listen for resourceNode properties modifications like isDirty
 	var resourceNode = nodeRegistry.getNodeById(resourceUri);
 	_nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler.updateGlobalDirtyState(resourceNode.properties[Constants.IS_DIRTY]);
-//	throw resourceNode.properties[Constants.IS_DIRTY];
 };
 
 NodeRegistryManager.prototype.unlinkResourceNodeFromNodeRegistry = function(resourceUri, nodeRegistry) {
@@ -144,20 +138,15 @@ NodeRegistryManager.prototype.unlinkResourceNodeFromNodeRegistry = function(reso
 	nodeRegistry.setPropertyValue(resourceNodeFromRegistry, Constants.IS_DIRTY, false);
 	
 	var resourceSet = this.resourceUriToResourceSet[resourceUri];
-//	throw resourceSet + " " + resourceUri;
 	
 	// remove resourceUri from resourceSet
 	var resourceUris = this.resourceSetToResourceUris[resourceSet];
-//	throw "I want to remove " + resourceUri + " from " +resourceUris;
 	if (resourceUris != null) {
-//		throw resourceUris;
-//		throw resourceUris.indexOf(String(resourceUri));
 		resourceUris.splice(resourceUris.indexOf(String(resourceUri)), 1);
 		if (resourceUris.length == 0) {
 			delete this.resourceSetToResourceUris[resourceSet];
 		}
 	}
-//	throw resourceUris;
 	// remove resourceUri from registry
 	resourceUris = this.getResourceUrisForNodeRegistry(nodeRegistry);
 	if (resourceUris != null) {
@@ -167,7 +156,6 @@ NodeRegistryManager.prototype.unlinkResourceNodeFromNodeRegistry = function(reso
 			nodeRegistry.unregisterNode(resourceNodeFromRegistry);
 		}
 	}
-//	throw resourceUris;
 	
 	// remove resourceSet from registry
 	var nodeRegistries = this.resourceSetToNodeRegistries[resourceSet];
@@ -273,11 +261,9 @@ NodeRegistryManager.prototype.subscribe = function(nodeId, nodeRegistry, subscri
 	var self = this;
 	this.serviceInvocator.invoke("resourceService.subscribeToParentResource", [nodeId], 
 		function (subscriptionInfo) {
-//			throw subscriptionInfo.resourceNode;
 			subscriptionInfo.rootNode = nodeRegistry.mergeOrRegisterNode(subscriptionInfo.rootNode);
 			if (subscriptionInfo.resourceNode != null) {
 				subscriptionInfo.resourceNode = nodeRegistry.mergeOrRegisterNode(subscriptionInfo.resourceNode);
-//				throw "linkez " + subscriptionInfo.resourceNode.nodeUri + "cu  setul " + subscriptionInfo.resourceSet;
 				self.linkResourceNodeWithNodeRegistry(subscriptionInfo.resourceNode.nodeUri, subscriptionInfo.resourceSet, nodeRegistry);
 			}
 			if (subscribeResultCallback != null) {
@@ -348,8 +334,9 @@ NodeRegistryManager.prototype.getDirtyResourceSetsFromNodeRegistries = function(
 /**
  * @param returnIfAtLeastOneDirtyResourceNodeFound if <code>true</code>, returns the first dirty resourceNodeId found.
  * @param dirtyResourceNodeHandler function will be executed each time a dirty resourceNode is found.
- * @return all dirty resourceUris, without duplicates.
+ * @return all dirty resourceSets, without duplicates.
  */ 
+
 NodeRegistryManager.prototype.getAllDirtyResourceSets = function(returnIfAtLeastOneDirtyResourceNodeFound, dirtyResourceNodeHandler) {
 	var dirtyResourceSets = [];
 	var nodeRegistries = this.getNodeRegistries();

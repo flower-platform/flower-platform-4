@@ -219,14 +219,14 @@ public class JsClientNodeRegistryTest {
 		
 		// register grandParent node
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", grandParent, null, -1);
-
+		
 		// register parent node
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", parent, grandParent, -1);
 		
 		// register child1 & child2 node
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", child1, parent, -1);
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", child2, parent, -1);
-
+		
 		// collapse grandParent
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "collapse", grandParent);
 		
@@ -234,13 +234,13 @@ public class JsClientNodeRegistryTest {
 		assertNull(JsClientJavaUtils.invokeJsFunction(nodeRegistry, "getNodeById", parent.getNodeUri()));
 		assertNull(JsClientJavaUtils.invokeJsFunction(nodeRegistry, "getNodeById", child1.getNodeUri()));
 		assertNull(JsClientJavaUtils.invokeJsFunction(nodeRegistry, "getNodeById", child2.getNodeUri()));
-
+		
 		verify(listener).nodeRemoved(parent);
 		verify(listener).nodeRemoved(child1);
 		verify(listener).nodeRemoved(child2);
-
+		
 	}
-
+	
 	/**
 	 * @author Elena Posea
 	 * new node is only different in what it concerns its properties
@@ -255,7 +255,7 @@ public class JsClientNodeRegistryTest {
 		oldProperties.put("propertyA", oldProperties, "valueA"); // it's something like a Map<,>, but gets translated in JavaScript
 		oldProperties.put("propertyB", oldProperties, "valueB");
 		node.setProperties(oldProperties);
-
+		
 		NativeObject newProperties = new NativeObject();
 		newProperties.put("propertyA", newProperties, "newValueA");
 		newProperties.put("propertyC", newProperties, "valueC");
@@ -270,7 +270,7 @@ public class JsClientNodeRegistryTest {
 					
 		// create nodeRegistry
 		Scriptable nodeRegistry = (Scriptable) ctx.evaluateString(scope, "_nodeRegistryManager.createNodeRegistry();", null, 1, null);
-
+		
 		// register node
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", node, null, -1);	
 		
@@ -281,7 +281,7 @@ public class JsClientNodeRegistryTest {
 		NativeObject afterRefreshProperties = (NativeObject) node.getProperties();
 		assertTrue("properties not changed properly", afterRefreshProperties != null && sameMap(afterRefreshProperties, newProperties));
 	}
-
+	
 	/**
 	 * @author Elena Posea
 	 * new node doesn't have any children => collapse
@@ -289,7 +289,7 @@ public class JsClientNodeRegistryTest {
 	 */
 	@Test
 	public void refreshCollapseIfNoChildren() throws Exception {
-
+		
 		ClientNode node = JSClientJavaTestUtils.createClientNode("node");
 		ClientNode child1 = JSClientJavaTestUtils.createClientNode("child1");
 		ClientNode child2 = JSClientJavaTestUtils.createClientNode("child2");
@@ -337,7 +337,7 @@ public class JsClientNodeRegistryTest {
 				}
 			}
 		}
-
+		
 		for (Object key: newProperties.keySet()) {
 			if (!properties.containsKey(key)) {
 				return false;
@@ -346,7 +346,7 @@ public class JsClientNodeRegistryTest {
 		
 		return true;
 	}
-
+	
 	/**
 	 * @author Elena Posea
 	 * new node has a different list of nodes than node.
@@ -357,7 +357,7 @@ public class JsClientNodeRegistryTest {
 	 */
 	@Test
 	public void refreshDifferentListOfChildren() throws Exception {
-
+		
 		ClientNode node = JSClientJavaTestUtils.createClientNode("node");
 		ClientNode child0 = JSClientJavaTestUtils.createClientNode("child0");
 		ClientNode child1 = JSClientJavaTestUtils.createClientNode("child1");
@@ -367,7 +367,7 @@ public class JsClientNodeRegistryTest {
 		ClientNodeWithChildren newChild3 = JSClientJavaTestUtils.createClientNodeWithChildren("child3");
 		ClientNodeWithChildren newChild0 = JSClientJavaTestUtils.createClientNodeWithChildren("child0");
 		ClientNodeWithChildren newChild1 = JSClientJavaTestUtils.createClientNodeWithChildren("child1");
-
+		
 		JsList<ClientNodeWithChildren> children = new JsList<ClientNodeWithChildren>();
 		children.add(newChild3);
 		children.add(newChild0);
@@ -387,7 +387,7 @@ public class JsClientNodeRegistryTest {
 					
 		// create nodeRegistry
 		Scriptable nodeRegistry = (Scriptable) ctx.evaluateString(scope, "_nodeRegistryManager.createNodeRegistry();", null, 1, null);
-
+		
 		// register node
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", node, null, -1);	
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", child0, node, -1);	
@@ -404,15 +404,15 @@ public class JsClientNodeRegistryTest {
 		verify(listener).nodeRemoved(child1); // because its index changed, so it has to be removed and added with the new index
 		verify(listener).nodeAdded(newChild3.getNode()); // new child
 		verify(listener).nodeAdded(child1); // same child, added on a different place
-	
+		
 		// child1 should be preserved/ neither added nor removed
 		verify(listener, never()).nodeAdded(newChild1.getNode());
-
+		
 		JsList<ClientNode> expectedChildren = new JsList<ClientNode>();
 		expectedChildren.add(child0); // should preserve this one
 		expectedChildren.add(newChild3.getNode());
 		expectedChildren.add(child1); // it should keep the old instance, just the index inside the list should be different
-
+		
 		assertEquals("doesn't have the right children after refresh", expectedChildren, node.getChildren());
 	}
 
@@ -478,7 +478,7 @@ public class JsClientNodeRegistryTest {
 		ClientNode root = JSClientJavaTestUtils.createClientNode("root");
 		ClientNode child1 = JSClientJavaTestUtils.createClientNode("child1");
 		ClientNode child2 = JSClientJavaTestUtils.createClientNode("child2");
-
+		
 		ClientNodeWithChildren rootWithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("root");
 		
 		JsList<ClientNodeWithChildren> children = new JsList<ClientNodeWithChildren>();
@@ -488,7 +488,7 @@ public class JsClientNodeRegistryTest {
 		children.add(child2WithChildren);
 		
 		rootWithChildren.setChildren(children);
-
+		
 		
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
@@ -511,6 +511,7 @@ public class JsClientNodeRegistryTest {
 		// try to update this node
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "processUpdates", root); // try to process one update
 		// node not found TODO: should I check for anything? if nothing throws any exception, it should be fine
+		// verific ca nu s-a adaugat in map
 	}
 
 	/** 
@@ -521,12 +522,12 @@ public class JsClientNodeRegistryTest {
 	@Test
 	public void onUpdateProperty() throws Exception {
 		ClientNode node = JSClientJavaTestUtils.createClientNode("node");
-
+		
 		NativeObject oldProperties = new NativeObject(); 
 		oldProperties.put("oldPropertyToBeRemoved", oldProperties, "notImportantValue");
 		oldProperties.put("oldProperty", oldProperties, "oldValueForOldProperty"); // it's something like a Map<,>, but gets translated in JavaScript
 		node.setProperties(oldProperties);
-
+		
 		NativeObject newProperties = new NativeObject();
 		newProperties.put("newProperty", newProperties, "valueForNewProperty");
 		newProperties.put("oldProperty", newProperties, "newValueForOldProperty");
@@ -691,7 +692,9 @@ public class JsClientNodeRegistryTest {
 		sendChildrenFlag.setType("UPDATED");
 		sendChildrenFlag.setIsUnset(false);
 		sendChildrenFlag.setValue(false);
-		sendChildrenFlag.setKey("hasChildren");
+		sendChildrenFlag.setKey("hasChildren"); 
+		// TODO: cum facem legat de flag? in mod normal serverul are grija ca daca trimite un update pt sters ultimul/adaugat primul copil,
+		// sa mai trimita un update pt flag; il mai trimit e artificial in teste, cat sa subliniez faptul ca ar trebui trimis separat de catre server?
 		
 		JsList<Update> updates = new JsList<Update>();
 		// this update we send here in tests by hand; in real code, this update is automatically send by server when it send an remove update for the last child
