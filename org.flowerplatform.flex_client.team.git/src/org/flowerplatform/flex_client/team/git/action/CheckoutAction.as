@@ -20,6 +20,7 @@
  */
 package org.flowerplatform.flex_client.team.git.action
 {
+	import mx.controls.Alert;
 	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -84,10 +85,19 @@ package org.flowerplatform.flex_client.team.git.action
 						.showMessageBox();	
 				}
 			}
-		}	
+		}
+		
+		public function resultPopUp(text:String):void {
+			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+				.setText(text)
+				.setTitle(Resources.getMessage("info"))
+				.setWidth(300)
+				.setHeight(150)
+				.showMessageBox();	
+		}
 
 		public function checkout(node:Node, commitID:String = null):void {			
-			CorePlugin.getInstance().serviceLocator.invoke("GitService.checkout", [node.nodeUri, commitID], null, function(event:FaultEvent):void {faultCallback(event, node)});
+			CorePlugin.getInstance().serviceLocator.invoke("GitService.checkout", [node.nodeUri, commitID], resultPopUp, function(event:FaultEvent):void {faultCallback(event, node)});
 		}
 
 		override public function run():void {

@@ -48,15 +48,13 @@ package org.flowerplatform.flex_client.team.git.action {
 			return true;			
 		}
 		
-		public function callResetAction(nodeUri:String, idCommit:String):void {
-			CorePlugin.getInstance().serviceLocator.invoke("GitService.reset", [nodeUri, "HARD", idCommit]);
-		}
-		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
-			if (!useNodeAsCommitId) {
 				var resetView:ResetView = new ResetView();
 				resetView.node = Node(selection.getItemAt(0));
+				if (useNodeAsCommitId) {
+					resetView.initCommitId = node.getPropertyValue(GitConstants.ID);
+				}
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 					.setViewContent(resetView)
 					.setWidth(500)
@@ -64,9 +62,6 @@ package org.flowerplatform.flex_client.team.git.action {
 					.setTitle(label)
 					.setIcon(icon)
 					.show();	
-			} else {
-				callResetAction(node.nodeUri, node.getPropertyValue(GitConstants.ID));
-			}
 		}
 	}
 	
