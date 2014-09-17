@@ -10,13 +10,15 @@ public class UserPrincipal implements Principal {
     
     private String email;
     
-    public UserPrincipal(){}
+    public UserPrincipal() {
+    	// nothing to do
+    }
     
-    public UserPrincipal(String username) { 
+    public UserPrincipal(String username) {
         this.username = username; 
     }
     
-    public UserPrincipal(String username, String email) { 
+    public UserPrincipal(String username, String email) {
         this.username = username; 
         this.email = email;
     }

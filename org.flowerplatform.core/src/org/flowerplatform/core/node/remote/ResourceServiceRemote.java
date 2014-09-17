@@ -33,12 +33,12 @@ import org.flowerplatform.util.Utils;
 @Path("/resourceService")
 public class ResourceServiceRemote {
 	
+	/**
+	 * @author see class
+	 */
 	@POST
 	@Path("/subscribeToParentResource")
 	@Produces(MediaType.APPLICATION_JSON)
-	/**
-	 *@author see class
-	 **/
 	public SubscriptionInfo subscribeToParentResource(String nodeUri) {
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
 		return CorePlugin.getInstance().getResourceService()

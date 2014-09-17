@@ -51,6 +51,9 @@ public class UserService {
 		return users;
 	}
 	
+	/**
+	 * @return the user with <code>nodeUri</code>
+	 */
 	@GET @Path("/{nodeUri}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Node getUser(@PathParam("nodeUri") String nodeUri) {
@@ -62,6 +65,11 @@ public class UserService {
 		return null;
 	}
 	
+	/**
+	 * Update or create the user.
+	 * 
+	 * @return the updated user
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Node saveUser(Node user) {
@@ -79,6 +87,9 @@ public class UserService {
 		return mem;
 	}
 	
+	/**
+	 * Delete the user with <code>nodeUri</code>.
+	 */
 	@DELETE @Path("/{nodeUri}")
 	public void deleteUser(@PathParam("nodeUri") String nodeUri) {
 		for (Node user : users) {
@@ -89,6 +100,9 @@ public class UserService {
 		}
 	}
 	
+	/**
+	 * @return the current user (saved in the session)
+	 */
 	@GET @Path("/login")
 	public Node getCurrentUser() {
 		Principal userPrincipal = userValidator.getCurrentUserPrincipal(
@@ -104,6 +118,11 @@ public class UserService {
 		throw new RuntimeException("User not found");
 	}
 	
+	/**
+	 * Perform login.
+	 * 
+	 * @return logged in user
+	 */
 	@POST @Path("/login")
 	public Node login(Map<String, String> loginInfo) {
 		String username = loginInfo.get("username");
@@ -118,6 +137,9 @@ public class UserService {
 		throw new RuntimeException("User not found");
 	}
 	
+	/**
+	 * Perform logout.
+	 */
 	@POST @Path("/logout")
 	public void logout() {
 		userValidator.clearCurrentUserPrincipal(CorePlugin.getInstance().getRequestThreadLocal().get().getSession());

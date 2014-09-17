@@ -7,6 +7,9 @@ import java.security.Principal;
  */
 public interface IUserPrincipalProvider {
 
+	/**
+	 * Create a user principal that will store the access token.
+	 */
 	Principal createUserPrincipal(String accessToken);
 
 }

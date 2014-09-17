@@ -31,6 +31,8 @@ public class FlowerAMFEndpoint extends AMFEndpoint {
 				setCurrentUserHeader(ack);
 				setJSessionIDHeader(ack);
 				break;
+			default:
+				// nothing to do
 			}
 		}
 		// sync if the session id was invalid
