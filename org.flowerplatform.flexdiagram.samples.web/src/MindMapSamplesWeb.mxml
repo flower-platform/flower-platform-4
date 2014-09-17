@@ -29,7 +29,6 @@
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer;
 			import org.flowerplatform.flexdiagram.samples.IModelHolder;
-			import org.flowerplatform.flexdiagram.samples.controller.BasicTypeProvider;
 			import org.flowerplatform.flexdiagram.samples.mindmap.MindMapPopulator;
 			import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelPropertyAdapter;
 			import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapTypeProvider;

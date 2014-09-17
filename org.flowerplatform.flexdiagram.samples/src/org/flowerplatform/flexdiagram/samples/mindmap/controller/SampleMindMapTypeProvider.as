@@ -16,8 +16,8 @@
 package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
+	import org.flowerplatform.flexdiagram.samples.SampleConstants;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
-	import org.flowerplatform.flexdiagram.samples.model.BasicSubModel;
 	import org.flowerplatform.flexutil.Pair;
 	import org.flowerplatform.flexutil.controller.ITypeProvider;
 	
@@ -28,13 +28,10 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 				return MindMapRootModelWrapper.ID;				
 			}
 			if (model is SampleMindMapModel) {
-				return "mindmap";
-			}
-			if (model is BasicSubModel) {
-				return "basicSubModel1";
+				return SampleConstants.SAMPLE_MINDMAP_NODE_TYPE;
 			}
 			if (model is Pair) {
-				return "dictionaryEntry"
+				return SampleConstants.SAMPLE_MINDMAP_NODE_PROPERTY_TYPE;
 			}
 			return null;
 		}

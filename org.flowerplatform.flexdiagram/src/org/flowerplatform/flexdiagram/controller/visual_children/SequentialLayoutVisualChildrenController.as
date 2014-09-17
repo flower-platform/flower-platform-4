@@ -29,12 +29,15 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 	 */
 	public class SequentialLayoutVisualChildrenController extends VisualChildrenController {
 		
-		public function SequentialLayoutVisualChildrenController(orderIndex:int = 0) {
+		public var visualElementsToSkip:Number;
+		
+		public function SequentialLayoutVisualChildrenController(visualElementsToSkip:Number, orderIndex:int = 0) {
 			super(orderIndex);
+			this.visualElementsToSkip = visualElementsToSkip;
 		}
 		
 		protected function getVisualElementsToSkip(model:Object):int {
-			return 0;
+			return visualElementsToSkip;
 		}
 		
 		override public function refreshVisualChildren(context:DiagramShellContext, parentModel:Object):void {

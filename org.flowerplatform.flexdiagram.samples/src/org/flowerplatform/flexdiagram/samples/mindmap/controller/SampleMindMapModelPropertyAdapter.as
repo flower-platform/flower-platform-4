@@ -8,11 +8,11 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	public class SampleMindMapModelPropertyAdapter implements IPropertyModelAdapter {
 		
 		public function getProperties(model:Object):Object{
-			return SampleMindMapModel(model).subModelsDict;	
+			return SampleMindMapModel(model).properties;	
 		}
 		
 		public function getPropertyValue(model:Object, property:String):Object{
-			return SampleMindMapModel(model).subModelsDict[property];	
+			return SampleMindMapModel(model).properties[property];	
 		}
 		
 		public function getPropertyValueOrWrapper(model:Object,property:String):*{

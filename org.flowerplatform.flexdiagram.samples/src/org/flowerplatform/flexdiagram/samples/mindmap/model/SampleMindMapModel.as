@@ -39,7 +39,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 		public var fontStyle:Boolean;
 		
 		
-		public var subModelsDict:BindableDictionary  = new BindableDictionary();
+		public var properties:BindableDictionary  = new BindableDictionary();
 		
 	}	
 }

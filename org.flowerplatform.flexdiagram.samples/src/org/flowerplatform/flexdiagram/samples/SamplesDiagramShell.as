@@ -22,7 +22,6 @@ package org.flowerplatform.flexdiagram.samples {
 	import org.flowerplatform.flexdiagram.controller.selection.BasicSelectionController;
 	import org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenController;
-	import org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenControllerWithBiggerSkip;
 	import org.flowerplatform.flexdiagram.renderer.connection.ConnectionRenderer;
 	import org.flowerplatform.flexdiagram.renderer.selection.StandardAnchorsSelectionRenderer;
 	import org.flowerplatform.flexdiagram.samples.controller.BasicConnectionRendererController;
@@ -55,7 +54,7 @@ package org.flowerplatform.flexdiagram.samples {
 				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new BasicModelAbsoluteLayoutRectangleController())
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new BasicModelModelChildrenController())
 				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())
-				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, new SequentialLayoutVisualChildrenController())
+				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, new SequentialLayoutVisualChildrenController(0))
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new BasicModelRendererController())
 				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER, new BasicSelectionController(StandardAnchorsSelectionRenderer))
 				.addSingleController(FlexDiagramConstants.RESIZE_CONTROLLER, new BasicModelResizeController())

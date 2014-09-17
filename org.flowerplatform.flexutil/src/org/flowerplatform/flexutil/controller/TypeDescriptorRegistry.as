@@ -34,9 +34,7 @@ package org.flowerplatform.flexutil.controller {
 	public class TypeDescriptorRegistry {
 		
 		internal var configurable:Boolean = true;
-		
-		public var typeProvider:ComposedTypeProvider = new ComposedTypeProvider();
-		
+				
 		public function isConfigurable():Boolean {
 			return configurable;
 		}

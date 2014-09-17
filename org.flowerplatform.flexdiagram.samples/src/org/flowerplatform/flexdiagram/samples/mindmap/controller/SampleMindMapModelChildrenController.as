@@ -42,8 +42,6 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 		}
 		
 		override public function getChildren(context:DiagramShellContext, model:Object):IList	{
-			// no children; this controller is used only to dispatch events
-			//return EMPTY_LIST;
 			var list:IList = new ArrayCollection();
 			
 			var subModels:BindableDictionary = BindableDictionary(PropertiesHelper.getInstance().propertyModelAdapter.getProperties(model));

@@ -50,6 +50,7 @@
 				return SampleMindMapModel(data);
 			}
 			
+			
 			override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 				var mindMapDiagramShell:MindMapDiagramShell = this.mindMapDiagramShell;
 				if (mindMapDiagramShell != null) {
@@ -81,12 +82,12 @@
 				
 			}
 			
-			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
-				if (visualChildrenController != null) {
-					visualChildrenController.refreshVisualChildren(diagramShellContext, data);
-				}
-				super.updateDisplayList(unscaledWidth, unscaledHeight);
-			}
+//			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
+//				if (visualChildrenController != null) {
+//					visualChildrenController.refreshVisualChildren(diagramShellContext, data);
+//				}
+//				super.updateDisplayList(unscaledWidth, unscaledHeight);
+//			}
 			
 			override public function set data(value:Object):void {
 				super.data = value;
