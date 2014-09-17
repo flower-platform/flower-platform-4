@@ -52,9 +52,8 @@ package org.flowerplatform.flex_client.team.git.action {
 			var node:Node = Node(selection.getItemAt(0));
 				var resetView:ResetView = new ResetView();
 				resetView.node = Node(selection.getItemAt(0));
-				if (useNodeAsCommitId) {
-					resetView.initCommitId = node.getPropertyValue(GitConstants.ID);
-				}
+				resetView.useNodeAsCommitId = useNodeAsCommitId;
+				
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 					.setViewContent(resetView)
 					.setWidth(500)

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
+import org.eclipse.jgit.api.CheckoutResult;
 import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.RebaseResult;
 import org.eclipse.jgit.lib.ConfigConstants;
@@ -296,6 +297,36 @@ public final class GitUtils {
 		} else {
 			sb.append("OK.");
 		}
+		return sb.toString();
+	}
+	
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public static String handleCheckoutResult(CheckoutResult checkoutResult) {
+		StringBuilder sb = new StringBuilder();		
+		
+		sb.append("Status: ");
+		sb.append(checkoutResult.getStatus());
+		sb.append("\n");
+		
+		if (CheckoutResult.Status.CONFLICTS.equals(checkoutResult.getStatus()) && checkoutResult.getConflictList() != null) {
+			sb.append("\nConflicts: ");
+			sb.append("\n");
+			for (String conflict : checkoutResult.getConflictList()) {
+				sb.append(conflict);
+				sb.append("\n");
+			}
+		}
+		
+		if (CheckoutResult.Status.NONDELETED.equals(checkoutResult.getStatus()) &&  checkoutResult.getUndeletedList() != null) {
+			sb.append("\nFailed deleting files: ");
+			sb.append("\n");
+			for (String path : checkoutResult.getUndeletedList()) {
+				sb.append(path);				
+				sb.append("\n");
+			}
+		}		
 		return sb.toString();
 	}
 	
