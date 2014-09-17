@@ -23,7 +23,6 @@ package org.flowerplatform.flex_client.core {
 	import mx.core.UIComponent;
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
-	import mx.rpc.AsyncToken;
 	
 	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
@@ -51,13 +50,13 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
-	import org.flowerplatform.flex_client.core.editor.resource.ResourceOperationsHandler;
+	import org.flowerplatform.flex_client.core.editor.resource.ResourceOperationsManager;
 	import org.flowerplatform.flex_client.core.editor.ui.AboutView;
 	import org.flowerplatform.flex_client.core.editor.ui.OpenNodeView;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
 	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
-	import org.flowerplatform.flex_client.core.node.NodeExternalInvocator;
+	import org.flowerplatform.flex_client.core.node.NodeRegistryManager;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.ResourceDebugControllers;
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
@@ -125,6 +124,8 @@ package org.flowerplatform.flex_client.core {
 								
 		public var globalMenuActionProvider:VectorActionProvider = new VectorActionProvider();
 				
+		public var nodeRegistryManager:NodeRegistryManager;
+		
 		public var lastUpdateTimestampOfServer:Number = -1;
 		public var lastUpdateTimestampOfClient:Number = -1;
 		
@@ -156,12 +157,8 @@ package org.flowerplatform.flex_client.core {
 			return editorClassFactoryActionProvider;
 		}
 		
-		public function get nodeRegistryManager():* {
-			return _nodeRegistryManager;
-		}
-		
-		public function get resourceNodesManager():ResourceOperationsHandler {
-			return ResourceOperationsHandler(nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler);
+		public function get resourceNodesManager():ResourceOperationsManager {
+			return ResourceOperationsManager(nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler);
 		}
 		
 		override public function preStart():void {
@@ -184,10 +181,10 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("uploadService");
 			serviceLocator.addService("preferenceService");
 			
-			var resourceOperationsHandler:ResourceOperationsHandler = new ResourceOperationsHandler();
-			_nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IServiceInvocator(serviceLocator), new NodeExternalInvocator());
-			
- 			updateTimer = new UpdateTimer(0);
+			var resourceOperationsHandler:ResourceOperationsManager = new ResourceOperationsManager();
+			nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IServiceInvocator(serviceLocator), resourceOperationsHandler);
+						
+ 			updateTimer = new UpdateTimer(5000);
 			
 			FlexUtilGlobals.getInstance().registerAction(RemoveNodeAction);
 			FlexUtilGlobals.getInstance().registerAction(RenameAction);
@@ -195,7 +192,7 @@ package org.flowerplatform.flex_client.core {
 			FlexUtilGlobals.getInstance().registerAction(OpenWithEditorComposedAction);
 		
 			FlexUtilGlobals.getInstance().registerAction(NodeTreeAction);
-			
+						
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GenericNodeTreeViewProvider());
 			
 			editorClassFactoryActionProvider.addActionClass(UndoAction);
@@ -412,7 +409,7 @@ package org.flowerplatform.flex_client.core {
 					userAuthenticationManager.logout();
 				}));
 		}
-		
+				
 		override protected function registerClassAliases():void {		
 			super.registerClassAliases();
 			registerClassAliasFromAnnotation(Node);
@@ -607,7 +604,3 @@ package org.flowerplatform.flex_client.core {
 			
 	}
 }
-
-include "../../../../../../org.flowerplatform.js_client.core/WebContent/js/node_registry/ResourceOperationsManager.js";	
-include "../../../../../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistryManager.js";	
-include "../../../../../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistry.js";

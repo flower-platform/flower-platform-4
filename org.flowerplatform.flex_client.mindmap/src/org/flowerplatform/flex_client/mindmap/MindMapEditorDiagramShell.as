@@ -15,9 +15,12 @@
  */
 package org.flowerplatform.flex_client.mindmap {
 	
+	import flash.events.MouseEvent;
+	
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.INodeChangeListener;
+	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.action.ExpandCollapseAction;
@@ -38,7 +41,7 @@ package org.flowerplatform.flex_client.mindmap {
 	 */
 	public class MindMapEditorDiagramShell extends MindMapDiagramShell implements INodeChangeListener {
 
-		private var _nodeRegistry:*;
+		private var _nodeRegistry:NodeRegistry;
 				
 		public function MindMapEditorDiagramShell() {
 			super();
@@ -51,11 +54,11 @@ package org.flowerplatform.flex_client.mindmap {
 			registerTool(ExpandCollapseAction.ID, new FactoryWithInitialization(ActionTool, {"action": new ExpandCollapseAction(), "eventType": WakeUpTool.CLICK}));
 		}
 			
-		public function get nodeRegistry():* {
+		public function get nodeRegistry():NodeRegistry {
 			return _nodeRegistry;
 		}
 
-		public function set nodeRegistry(value:*):void {
+		public function set nodeRegistry(value:NodeRegistry):void {
 			_nodeRegistry = value;
 			_nodeRegistry.addNodeChangeListener(this);
 		}

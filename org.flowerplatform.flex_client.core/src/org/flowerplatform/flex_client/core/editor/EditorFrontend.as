@@ -23,8 +23,10 @@ package org.flowerplatform.flex_client.core.editor {
 	import spark.components.VGroup;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.action.NodeTypeActionProvider;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.INodeRegistryManagerListener;
+	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
@@ -47,7 +49,7 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		protected var _viewHost:IViewHost;
 		
-		public var nodeRegistry:*;
+		public var nodeRegistry:NodeRegistry;
 		
 		public function EditorFrontend() {
 			super();
@@ -118,14 +120,14 @@ package org.flowerplatform.flex_client.core.editor {
 			// nothing to do
 		}
 		
-		public function nodeRegistryRemoved(nodeRegistry:*):void {
+		public function nodeRegistryRemoved(nodeRegistry:NodeRegistry):void {
 			if (this.nodeRegistry == nodeRegistry) {
 				var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
 				workbench.closeView(workbench.getViewComponentForEditor(this), true, false);
 			}
 		}
 		
-		public function resourceNodeRemoved(resourceNodeUri:String, nodeRegistry:*):void {
+		public function resourceNodeRemoved(resourceNodeUri:String, nodeRegistry:NodeRegistry):void {
 			// do nothing			
 		}		
 		

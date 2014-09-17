@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.core.node_tree {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.INodeChangeListener;
+	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flexutil.tree.TreeList;
 	
 	/**
@@ -28,7 +29,7 @@ package org.flowerplatform.flex_client.core.node_tree {
 	 */ 
 	public class NodeTreeComponent extends TreeList implements INodeChangeListener {
 			
-		protected var nodeRegistry:*;
+		protected var nodeRegistry:NodeRegistry;
 		
 		protected var _nodeUri:String;
 		
@@ -46,8 +47,6 @@ package org.flowerplatform.flex_client.core.node_tree {
 			
 			addEventListener("itemOpen", treeListItemOpenCloseHandler);
 			addEventListener("itemClose", treeListItemOpenCloseHandler);
-			
-			CorePlugin.getInstance().nodeRegistryManager.addListener(this);
 		}
 		
 		public function initializeTree(nodeUri:String):void {
@@ -57,7 +56,6 @@ package org.flowerplatform.flex_client.core.node_tree {
 		
 		public function finalizeTree():void {
 			CorePlugin.getInstance().nodeRegistryManager.unlinkResourceNodeFromNodeRegistry(nodeUri, nodeRegistry);
-			CorePlugin.getInstance().nodeRegistryManager.removeListener(this);
 		}
 				
 		protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
@@ -89,10 +87,6 @@ package org.flowerplatform.flex_client.core.node_tree {
 			requestRefreshLinearizedDataProvider();
 			invalidateDisplayList();
 		}		
-		
-		public function resourceNodeRemoved(resourceNodeUri:String, nodeRegistry:*):void {
-			// do nothing
-		}
 		
 	}
 }

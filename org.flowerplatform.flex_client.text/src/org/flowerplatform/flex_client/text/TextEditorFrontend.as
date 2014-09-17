@@ -48,9 +48,9 @@ package org.flowerplatform.flex_client.text {
 			super.createChildren();
 			
 			if (FlexUtilGlobals.getInstance().isMobile) {					
-				editor = new StageWebViewUIComponent();					
+				editor = new StageWebViewUIComponent();
 			} else {
-				editor = UIComponent(new FlowerIFrame("editor"));					
+				editor = UIComponent(new FlowerIFrame("editor"));
 			}	
 			editor.percentHeight = 100;
 			editor.percentWidth = 100;
@@ -58,7 +58,7 @@ package org.flowerplatform.flex_client.text {
 		}
 		
 		protected function creationCompleteHandler(event:FlexEvent):void {			
-			IFlowerIFrame(editor).addViewCompleteHandler(orionEditor_frameLoadHandler);			
+			IFlowerIFrame(editor).addViewCompleteHandler(orionEditor_frameLoadHandler);
 		}
 		
 		override protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
