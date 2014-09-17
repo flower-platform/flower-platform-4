@@ -17,7 +17,6 @@ package org.flowerplatform.flex_client.team.git.action {
 	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flex_client.team.git.GitConstants;
 	import org.flowerplatform.flex_client.team.git.ui.CreateTagView;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -35,10 +34,6 @@ package org.flowerplatform.flex_client.team.git.action {
 			label = Resources.getMessage("flex_client.team.git.action.createTag");
 			icon = Resources.createTag;
 			orderIndex = 240;
-		}
-		
-		override public function get visible():Boolean {
-			return selection != null && selection.length == 1 && selection.getItemAt(0) is Node && Node(selection.getItemAt(0)).type == GitConstants.GIT_TAGS_TYPE;
 		}
 		
 		override public function run():void {
