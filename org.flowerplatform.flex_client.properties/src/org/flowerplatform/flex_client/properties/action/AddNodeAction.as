@@ -68,11 +68,12 @@ package org.flowerplatform.flex_client.properties.action {
 		 */
 		override public function run():void {
 			var context:ServiceContext = new ServiceContext();
-			var parentNode:Node;
 			context.add("type", childType);
+			
+			var parentNode:Node;
 			if (asSibling == true) {
 				context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, siblingNodeUri);
-				parentNode =  Node(selection.getItemAt(0)).parent;
+				parentNode = Node(selection.getItemAt(0)).parent;
 			} else {
 				parentNode = Node(selection.getItemAt(0));
 			}

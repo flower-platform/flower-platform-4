@@ -8,7 +8,7 @@ package org.flowerplatform.flex_client.properties.action
 	 */ 
 	public class NewSiblingComposedAction extends ComposedAction {
 		
-		public static const ID:String = "org.flowerplatform.flex_client.properties.action.SiblingComposedAction";
+		public static const ID:String = "org.flowerplatform.flex_client.properties.action.NewSiblingComposedAction";
 		
 		public function NewSiblingComposedAction() {
 			label = Resources.getMessage("action.newSibling");	

@@ -101,6 +101,8 @@
 				var propertiesToSetAfterAddingNode:ArrayList = new ArrayList();
 				var context:ServiceContext = new ServiceContext();
 				context.add("type", nodeType);
+				context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, siblingNodeUri);
+				
 				for (var i:int = 0; i < propertyForm.numElements; i++) {
 					if (propertyForm.getElementAt(i) is PropertyLineRenderer) {
 						var propertyItemRenderer:PropertyLineRenderer = PropertyLineRenderer(propertyForm.getElementAt(i));
