@@ -46,6 +46,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.jgit.api.CheckoutCommand;
+import org.eclipse.jgit.api.CheckoutResult;
 import org.eclipse.jgit.api.CherryPickResult;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
@@ -478,12 +480,63 @@ public class GitService {
 	 * @param commitID If this is not null we checkout a commit.
 	 * @throws Exception
 	 */
-	public void checkout(String nodeUri, String commitID) throws Exception {				
+	public String checkout(String nodeUri, String commitID) throws Exception {				
 		String name = GitUtils.getName(nodeUri);
 		String repoPath = Utils.getRepo(nodeUri);
+		String textResult = null;
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
-				
-		new Git(repo).checkout().setName(commitID != null ? commitID : name).call();
+		
+		CheckoutCommand checkCom  = new Git(repo).checkout().setName(commitID != null ? commitID : name);
+		checkCom.call();
+		
+		CheckoutResult result = checkCom.getResult();
+		CheckoutResult.Status status = result.getStatus();
+		
+		if (status.toString().equals("OK")) {
+			textResult = "Checkout completed normally\n";
+			
+			int len = result.getModifiedList().size();
+			if (len > 0) {
+				textResult += "ModifiedList: ";
+				for (int i = 0; i < len; i++) {
+					textResult += result.getModifiedList().get(i);
+				}
+				textResult += "\n";
+			}
+			len = result.getRemovedList().size();
+			if (len > 0) {
+				textResult += "RemovedList: ";
+				for (int i = 0; i < len; i++) {
+					textResult += result.getRemovedList().get(i);
+				}
+				textResult += "\n";
+			}
+		} else if (status.toString().equals("NOT_TRIED")) {
+			textResult = "The call() method has not yet been executed";
+		} else if (status.toString().equals("CONFLICTS")) {
+			textResult = "Checkout has not completed because of checkout conflicts";	
+			
+			int len = result.getConflictList().size();
+			if (len > 0) {
+				textResult += "RemovedList: ";
+				for (int i = 0; i < len; i++) {
+					textResult += result.getConflictList().get(i);
+				}
+				textResult += "\n";
+			}
+		} else if (status.toString().equals("NONDELETED")) {
+			textResult = "Checkout has completed, but some files could not be deleted";//+getUndeletedList()
+			int len = result.getUndeletedList().size();
+			if (len > 0) {
+				textResult += "UndeletedList: ";
+				for (int i = 0; i < len; i++) {
+					textResult += result.getUndeletedList().get(i);
+				}
+				textResult += "\n";
+			}
+		} else if (status.toString().equals("ERROR")) {
+			textResult = "An Exception occurred during checkout";
+		}
 		
 		CorePlugin.getInstance().getResourceSetService().addUpdate(
 				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
@@ -495,6 +548,8 @@ public class GitService {
 				CorePlugin.getInstance().getResourceService().getNode(fileSystemNodeUri), 
 				new Update().setFullNodeIdAs(fileSystemNodeUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		
+		return textResult;
 	}	
 
 	/**
