@@ -43,9 +43,9 @@ public class MindMapPropertiesProvider1 extends PersistencePropertiesProvider {
 		MindMapNodesSelection data = clipboardController.copy(Collections.singleton(rawNodeData), true);
 
 		try {
-			String XMLString = data.getTransferData(MindMapNodesSelection.mindMapNodesFlavor).toString();
+			String xmlString = data.getTransferData(MindMapNodesSelection.mindMapNodesFlavor).toString();
 			XmlNodePropertiesParser handler = new XmlNodePropertiesParser(node);
-			handler.parseXML(XMLString);
+			handler.parseXML(xmlString);
 		} catch (Exception e) {
 			new RuntimeException(e);
 		}

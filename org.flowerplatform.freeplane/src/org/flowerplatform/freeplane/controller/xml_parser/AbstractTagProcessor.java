@@ -25,19 +25,32 @@ import org.xml.sax.Attributes;
  */
 public abstract class AbstractTagProcessor {
 
+	/**
+	 *@author Catalin Burcea
+	 **/
 	void processStartTag(XmlNodePropertiesParser parser, String tag, Attributes attributes, Node node) {
 	}
 
+	/**
+	 *@author Catalin Burcea
+	 **/
 	void processEndTag(XmlNodePropertiesParser parser, String tag, Node node) {
 	}
 
+	/**
+	 *@author Catalin Burcea
+	 **/
 	void processPlainText(XmlNodePropertiesParser parser, String plainText) {
-		parser.tagFullContent_stringBuffer.append(plainText);
+		parser.tagFullContentStringBuffer.append(plainText);
 	}
 
+	/**
+	 * @author Catalin Burcea
+	 * @author Valentina Bojan
+	 */
 	void addStartContentAndAttributes(XmlNodePropertiesParser parser, String tag, Attributes attributes, Node node, String keyProperty) {
 		// first invocation of this processor for a well-known tag
-		if (parser.tagFullContent_nesting == 0 && keyProperty != null) {
+		if (parser.tagFullContentNesting == 0 && keyProperty != null) {
 			parser.forcedTagProcessor = this;
 
 			// check the current tag is <node> => exception for nested node tags
@@ -48,68 +61,72 @@ public abstract class AbstractTagProcessor {
 
 			// check for duplicates tags; if there is any duplicate => assign
 			// this type of tag to a specific processor
-			if (parser.convertAllAttributes_processedXmlTags.contains(tag)) {
-				parser.convertAllAttributes_tagProcessorDinamicallyAdded = true;
+			if (parser.convertAllAttributesProcessedXmlTags.contains(tag)) {
+				parser.convertAllAttributesTagProcessorDinamicallyAdded = true;
 				parser.logger.debug(String.format("Dynamically adding new processor for unknown tag = {%s}", TagFullContentProcessor.class.getSimpleName()));
 				parser.xmlTagProcessors.put(tag, new TagFullContentProcessor(null));
-				parser.tagFullContent_nesting++;
+				parser.tagFullContentNesting++;
 				return;
 			}
 
 			// i.e. <attribute NAME="a1" VALUE="v1"/>
 			if (!keyProperty.isEmpty()) {
-				parser.tagFullContent_tagName = tag + "(" + keyProperty + "=" + attributes.getValue(keyProperty) + ")";
+				parser.tagFullContentTagName = tag + "(" + keyProperty + "=" + attributes.getValue(keyProperty) + ")";
 			} else {
 				// i.e. <font NAME="Segoe UI"/>
-				parser.tagFullContent_tagName = tag;
+				parser.tagFullContentTagName = tag;
 			}
-			parser.tagFullContent_stringBuffer = new StringBuffer();
+			parser.tagFullContentStringBuffer = new StringBuffer();
 			for (int i = 0; i < attributes.getLength(); i++) {
 				if (!attributes.getQName(i).equals(keyProperty)) {
-					node.getProperties().put(parser.tagFullContent_tagName + "." + attributes.getQName(i), attributes.getValue(i));
-					parser.tagFullContent_hasAttributes = true;
+					node.getProperties().put(parser.tagFullContentTagName + "." + attributes.getQName(i), attributes.getValue(i));
+					parser.tagFullContentHasAttributes = true;
 				}
 			}
-		}
-		// we are here because this tag was the current "forcedTagProcessor" or
-		// because we have to process an unknown tag => record what we see
-		else {
+		} else {
+			// we are here because this tag was the current "forcedTagProcessor" or
+			// because we have to process an unknown tag => record what we see
+			
 			// for an unknown tag we must reset the buffer
-			if (parser.tagFullContent_nesting == 0) {
-				parser.tagFullContent_stringBuffer = new StringBuffer();
+			if (parser.tagFullContentNesting == 0) {
+				parser.tagFullContentStringBuffer = new StringBuffer();
 			}
 
 			// in both cases we must take the content of the tag and put it in
 			// the buffer
-			parser.tagFullContent_stringBuffer.append("<" + tag);
+			parser.tagFullContentStringBuffer.append("<" + tag);
 			for (int i = 0; i < attributes.getLength(); i++) {
-				parser.tagFullContent_stringBuffer.append(" " + attributes.getQName(i) + "='" + attributes.getValue(i) + "'");
+				parser.tagFullContentStringBuffer.append(" " + attributes.getQName(i) + "='" + attributes.getValue(i) + "'");
 			}
-			parser.tagFullContent_stringBuffer.append(">");
+			parser.tagFullContentStringBuffer.append(">");
 		}
-		parser.tagFullContent_nesting++;
+		parser.tagFullContentNesting++;
 	}
 	
+	/**
+	 * @author Catalin Burcea
+	 * @author Valentina Bojan
+	 */
 	void addEndContent(XmlNodePropertiesParser parser, String tag, Node node, String keyProperty) {
-		parser.tagFullContent_nesting--;
+		parser.tagFullContentNesting--;
 		// we have reached the end of a well-known tag
-		if (parser.tagFullContent_nesting == 0 && keyProperty != null) {
+		if (parser.tagFullContentNesting == 0 && keyProperty != null) {
 			// i.e. the tag has content
-			if (parser.tagFullContent_stringBuffer.length() != 0) {
-				node.getProperties().put(parser.tagFullContent_tagName + FreeplaneConstants.CONTENT_MARK, parser.tagFullContent_stringBuffer.toString());
+			if (parser.tagFullContentStringBuffer.length() != 0) {
+				node.getProperties().put(parser.tagFullContentTagName + FreeplaneConstants.CONTENT_MARK, parser.tagFullContentStringBuffer.toString());
 			} else {
 				// i.e. <hook NAME="FreeNode"/> => no content, no attributes
-				if (!parser.tagFullContent_hasAttributes) {
-					node.getProperties().put(parser.tagFullContent_tagName, null);
+				if (!parser.tagFullContentHasAttributes) {
+					node.getProperties().put(parser.tagFullContentTagName, null);
 				}
 			}
 
 			parser.forcedTagProcessor = null;
-			parser.tagFullContent_tagName = null;
-			parser.tagFullContent_hasAttributes = false;
+			parser.tagFullContentTagName = null;
+			parser.tagFullContentHasAttributes = false;
 		} else {
 			// i.e. record a tag ending for a nested tag
-			parser.tagFullContent_stringBuffer.append("</" + tag + ">");
+			parser.tagFullContentStringBuffer.append("</" + tag + ">");
 		}
 	}
 }

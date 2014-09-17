@@ -45,18 +45,24 @@ public class XmlNodePropertiesParser extends DefaultHandler {
 	AbstractTagProcessor defaultTagProcessor = new ConvertAllAttributesProcessor();
 	private Node node;
 	public AbstractTagProcessor forcedTagProcessor;
-	public String tagFullContent_tagName;
-	public StringBuffer tagFullContent_stringBuffer;
-	public int tagFullContent_nesting;
-	public boolean tagFullContent_hasAttributes = false;
-	public HashSet<String> convertAllAttributes_processedXmlTags;
-	public boolean convertAllAttributes_tagProcessorDinamicallyAdded;
+	public String tagFullContentTagName;
+	public StringBuffer tagFullContentStringBuffer;
+	public int tagFullContentNesting;
+	public boolean tagFullContentHasAttributes = false;
+	public HashSet<String> convertAllAttributesProcessedXmlTags;
+	public boolean convertAllAttributesTagProcessorDinamicallyAdded;
 	public boolean isRoot;
 
+	/**
+	 *@author Catalin Burcea
+	 **/
 	public XmlNodePropertiesParser(Node node) {
 		this.node = node;
 	}
 
+	/**
+	 *@author Catalin Burcea
+	 **/
 	public AbstractTagProcessor getXMLTagProcessor(String tag) {
 		if (forcedTagProcessor != null) {
 			return forcedTagProcessor;
@@ -67,12 +73,15 @@ public class XmlNodePropertiesParser extends DefaultHandler {
 		return defaultTagProcessor;
 	}
 
+	/**
+	 *@author Valentina Bojan
+	 **/
 	public void parseXML(String xmlContent) throws ParserConfigurationException, SAXException, IOException {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser saxParser = factory.newSAXParser();
 		InputSource inputSource = new InputSource(new StringReader(xmlContent));
 		saxParser.parse(inputSource, this);
-		if (this.convertAllAttributes_tagProcessorDinamicallyAdded) {
+		if (this.convertAllAttributesTagProcessorDinamicallyAdded) {
 			saxParser.reset();
 			inputSource = new InputSource(new StringReader(xmlContent));
 			saxParser.parse(inputSource, this);
@@ -83,11 +92,11 @@ public class XmlNodePropertiesParser extends DefaultHandler {
 	public void startDocument() throws SAXException {
 		super.startDocument();
 		node.getProperties().clear();
-		convertAllAttributes_processedXmlTags = new HashSet<String>();
+		convertAllAttributesProcessedXmlTags = new HashSet<String>();
 		isRoot = true;
-		tagFullContent_nesting = 0;
+		tagFullContentNesting = 0;
 		forcedTagProcessor = null;
-		tagFullContent_stringBuffer = new StringBuffer();
+		tagFullContentStringBuffer = new StringBuffer();
 		xmlTagProcessors.put(FreeplaneConstants.ICON, new TagsAsListProcessor(FreeplaneConstants.ICONS, FreeplaneConstants.ICON_KEY_PROPERTY));
 		xmlTagProcessors.put(FreeplaneConstants.HOOK, new TagFullContentProcessor(FreeplaneConstants.HOOK_KEY_PROPERTY));
 		xmlTagProcessors.put(FreeplaneConstants.RICHCONTENT, new TagFullContentProcessor(FreeplaneConstants.RICHCONTENT_KEY_PROPERTY));
@@ -105,7 +114,7 @@ public class XmlNodePropertiesParser extends DefaultHandler {
 	}
 
 	@Override
-	public void characters(char ch[], int start, int length) throws SAXException {
+	public void characters(char[] ch, int start, int length) throws SAXException {
 		getXMLTagProcessor(null).processPlainText(this, new String(ch, start, length));
 	}
 }

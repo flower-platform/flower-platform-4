@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,20 +43,23 @@ import org.flowerplatform.util.controller.TypeDescriptorDebugWrapper;
  */
 public class TypeDescriptorRegistryDebugControllers extends DebugControllers {
 
-	private final String TYPES = DEBUG + "NodeTypes";
+	private static final String TYPES = DEBUG + "NodeTypes";
 	
-	private final String TYPES_FLEX = DEBUG + "FlexTypes";
+	private static final String TYPES_FLEX = DEBUG + "FlexTypes";
 	
-	private final String TYPES_JAVA = DEBUG + "JavaTypes";
-	private final String TYPE = DEBUG + "JavaType";
+	private static final String TYPES_JAVA = DEBUG + "JavaTypes";
+	private static final String TYPE = DEBUG + "JavaType";
 	
-	private final String CATEGORY = DEBUG + "JavaCategory";
-	private final String CONTROLLER_KEY_SINGLE = DEBUG + "JavaControllerKeySingle";
-	private final String CONTROLLER_KEY_ADDITIVE = DEBUG + "JavaControllerKeyAdditive";
+	private static final String CATEGORY = DEBUG + "JavaCategory";
+	private static final String CONTROLLER_KEY_SINGLE = DEBUG + "JavaControllerKeySingle";
+	private static final String CONTROLLER_KEY_ADDITIVE = DEBUG + "JavaControllerKeyAdditive";
 	
-	private final String CONTROLLER_SINGLE = DEBUG + "JavaControllerSingle";
-	private final String CONTROLLER_ADDITIVE = DEBUG + "JavaControllerAdditive";
+	private static final String CONTROLLER_SINGLE = DEBUG + "JavaControllerSingle";
+	private static final String CONTROLLER_ADDITIVE = DEBUG + "JavaControllerAdditive";
 	
+	/**
+	 *@author see class
+	 **/
 	class DebugController extends AbstractController implements IChildrenProvider {
 		
 		@Override
@@ -70,6 +73,9 @@ public class TypeDescriptorRegistryDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class TypesDebugController extends AbstractController implements IChildrenProvider {
 		
 		@Override
@@ -85,6 +91,9 @@ public class TypeDescriptorRegistryDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class FlexTypesDebugController extends AbstractController implements IChildrenProvider {
 	
 		@Override
@@ -99,6 +108,9 @@ public class TypeDescriptorRegistryDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class JavaTypesDebugController extends AbstractController implements IChildrenProvider {
 		
 		@Override
@@ -118,6 +130,9 @@ public class TypeDescriptorRegistryDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class TypeDebugController extends AbstractController implements IChildrenProvider, IPropertiesProvider {
 
 		@Override
@@ -158,6 +173,9 @@ public class TypeDescriptorRegistryDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class SingleControllerKeyDebugController extends AbstractController implements IChildrenProvider, IPropertiesProvider {
 
 		@Override
@@ -212,6 +230,9 @@ public class TypeDescriptorRegistryDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class AdditiveControllerKeyDebugController extends AbstractController implements IChildrenProvider, IPropertiesProvider {
 
 		@Override
@@ -260,6 +281,9 @@ public class TypeDescriptorRegistryDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	class CategoryDebugController extends AbstractController implements IPropertiesProvider {
 		
 		@Override
@@ -269,6 +293,9 @@ public class TypeDescriptorRegistryDebugControllers extends DebugControllers {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public void registerControllers() {
 		
 		addVirtualDebugType(TYPES);

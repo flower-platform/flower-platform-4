@@ -24,6 +24,7 @@ import org.freeplane.features.map.NodeModel;
  */
 public class FreeplaneMindmapResourceHandler1 extends FreeplaneMindmapResourceHandler {
 	
+	@Override
 	protected String getType(String nodeUri, NodeModel nodeModel) {
 		return MindMapConstants.MINDMAP_NODE_TYPE_1;
 	}

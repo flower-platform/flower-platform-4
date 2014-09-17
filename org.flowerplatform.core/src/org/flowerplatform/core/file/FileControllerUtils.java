@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,11 @@ import org.flowerplatform.util.Utils;
 /**
  * @author Mariana Gheorghe
  */
-public class FileControllerUtils {
+public final class FileControllerUtils {
 
+	private FileControllerUtils() {
+		
+	}
 	public static IFileAccessController getFileAccessController() {
 		return CorePlugin.getInstance().getFileAccessController();
 	}
@@ -47,14 +50,23 @@ public class FileControllerUtils {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public static String getFilePathWithRepo(Node node) {
 		return getFilePathWithRepo(node.getNodeUri());
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public static String getFilePathWithRepo(String nodeUri) {
 		return Utils.getSchemeSpecificPart(nodeUri).replace("|", "/");
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public static String createFileNodeUri(String repo, String path) {
 		// remove the repo prefix from the file path
 		if (path != null && path.startsWith(repo)) {
@@ -63,6 +75,9 @@ public class FileControllerUtils {
 		return createNodeUriWithRepo(FILE_SCHEME, repo, (path == null ? "" : path));
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public static String getNextAvailableName(String filePath) {
 		try {
 			return getNextAvailableName(filePath, 0);
@@ -74,7 +89,8 @@ public class FileControllerUtils {
 	private static String getNextAvailableName(String initialFilePath, int startingIndexSuffix) throws Exception {		
 		String fileNameWithoutExtension = FilenameUtils.removeExtension(FilenameUtils.getName(initialFilePath));
 		
-		String newFileName = String.format("%s%s.%s", fileNameWithoutExtension, startingIndexSuffix == 0 ? "" : String.valueOf(startingIndexSuffix), FilenameUtils.getExtension(initialFilePath));
+		String newFileName = String.format("%s%s.%s", fileNameWithoutExtension, 
+				startingIndexSuffix == 0 ? "" : String.valueOf(startingIndexSuffix), FilenameUtils.getExtension(initialFilePath));
 		String newFilePath = String.format("%s%s", FilenameUtils.getFullPath(initialFilePath), newFileName);
 		
 		if (!CorePlugin.getInstance().getFileAccessController().exists(CorePlugin.getInstance().getFileAccessController().getFile(newFilePath))) {

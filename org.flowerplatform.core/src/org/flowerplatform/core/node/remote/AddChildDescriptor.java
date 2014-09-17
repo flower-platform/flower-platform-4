@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,8 +57,9 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 		this.icon = icon;
 	}
 	
-	public AddChildDescriptor setChildTypeAs(String childType) {
-		this.childType = childType;
+	//CHECKSTYLE:OFF
+	public AddChildDescriptor setChildTypeAs(String childTypeValue) {
+		this.childType = childTypeValue;
 		return this;
 	}
 
@@ -76,6 +77,7 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 		setOrderIndex(orderIndex);
 		return this;
 	}
+	//CHECKSTYLE:ON
 
 	/**
 	 * @author Claudiu Matei

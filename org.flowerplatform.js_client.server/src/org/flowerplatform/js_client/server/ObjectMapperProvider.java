@@ -3,12 +3,15 @@ package org.flowerplatform.js_client.server;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
+import org.flowerplatform.js_client.server.jackson.TypeResolverBuilder;
+import org.flowerplatform.js_client.server.jackson.UntypedObjectDeserializer;
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 
 /**
@@ -23,16 +26,17 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 	
 	public ObjectMapperProvider() {
 		objectMapper = new ObjectMapper();
-		objectMapper.registerModule(new JaxbAnnotationModule());
+		objectMapper.registerModule(new JaxbAnnotationModule());		
 		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		objectMapper.enableDefaultTyping(DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
-//		objectMapper.enableDefaultTyping(DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
-//		TypeResolverBuilder<?> typer = new CustomTypeResolverBuilder(DefaultTyping.NON_FINAL);
-//	    // we'll always use full class name, when using defaulting
-//	    typer = typer.init(JsonTypeInfo.Id.CLASS, null);
-//	    typer = typer.inclusion(JsonTypeInfo.As.PROPERTY);
-//	    objectMapper.setDefaultTyping(typer);
+		
+		SimpleModule testModule = new SimpleModule().addDeserializer(Object.class, new UntypedObjectDeserializer());
+		objectMapper.registerModule(testModule);
+		
+		com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder<?> typer = new TypeResolverBuilder(DefaultTyping.NON_FINAL);
+	    typer = typer.init(JsonTypeInfo.Id.CLASS, null);
+	    typer = typer.inclusion(JsonTypeInfo.As.PROPERTY);
+	    objectMapper.setDefaultTyping(typer);
 	}
 	
 	@Override

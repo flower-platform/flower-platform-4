@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.equinox.servletbridge.CloseableURLClassLoader;
 import org.eclipse.equinox.servletbridge.FrameworkLauncher;
 
 /**
@@ -169,7 +168,8 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 				// copy content from source directory to destination directory
 				FileUtils.copyDirectory(new File(defaultFilesDirPath), new File(flowerPlatformHomeDirectoryPath));
 			} catch (IOException e) {
-				throw new RuntimeException(String.format("Error while copying content of flower-platform-home-default-files: from %s to %s", defaultFilesDirPath, flowerPlatformHomeDirectoryPath), e);
+				throw new RuntimeException(String.format("Error while copying content of flower-platform-home-default-files: from %s to %s", defaultFilesDirPath,
+						flowerPlatformHomeDirectoryPath), e);
 			}
 		}
 		
@@ -192,12 +192,15 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 			} catch (Exception e) {
 				throw new RuntimeException("Error while parsing " + LAUNCHER_PROPERTIES, e);
 			} finally {
-				if (launcherPropertiesFileInputStream != null)
+				if (launcherPropertiesFileInputStream != null) {
 					try {
 						launcherPropertiesFileInputStream.close();
+						//CHECKSTYLE:OFF
 					} catch (IOException e) {
 						// ignore
+						//CHECKSTYLE:ON
 					}
+				}
 			}
 		}
 		
@@ -217,14 +220,19 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 			developmentWorkspaceRoot = context.getRealPath(WEB_APP_CONTEXT_TO_DEV_WS_PATH);
 			// osgi.configuration.area a.k.a. -configuration 
 			osgiConfigurationArea = String.format("%s/.metadata/.plugins/org.eclipse.pde.core/%s", developmentWorkspaceRoot, developmentLaunchConfiguration);
-			if (!(new File(osgiConfigurationArea).exists()))
-				throw new RuntimeException(osgiConfigurationArea + " file not found. Either the 'developmentLaunchConfiguration' is not correctly set or the Eclipse configuration was not generated (=> you need to launch the target launch config " + developmentLaunchConfiguration + " at least once directly from Eclipse).");
+			if (!(new File(osgiConfigurationArea).exists())) {
+				throw new RuntimeException(osgiConfigurationArea + " file not found. Either the 'developmentLaunchConfiguration' is not correctly set or the Eclipse "
+						+ "configuration was not generated (=> you need to launch the target launch config " + developmentLaunchConfiguration 
+						+ " at least once directly from Eclipse).");
+			}
 		} else {
 			// prod mode
 			String relativeOsgiConfigurationArea = eclipseConfigurationLocation;
 			osgiConfigurationArea = context.getRealPath(relativeOsgiConfigurationArea);
 			if (!(new File(osgiConfigurationArea).exists())) {
-				throw new RuntimeException("Is the system starting in dev mode? Then make sure 'FLOWER_PLATFORM_HOME/launcher.properties' (i.e. '" + flowerPlatformHomeDirectoryPath + "/launcher.properties') exists and contains a value for 'developmentLaunchConfiguration'. Otherwise, if the system is starting in prod mode, there's an issue because 'osgiConfigurationArea' = " + osgiConfigurationArea + " doesn't exist.");
+				throw new RuntimeException("Is the system starting in dev mode? Then make sure 'FLOWER_PLATFORM_HOME/launcher.properties' (i.e. '" 
+			+ flowerPlatformHomeDirectoryPath + "/launcher.properties') exists and contains a value for 'developmentLaunchConfiguration'. "
+			+ "Otherwise, if the system is starting in prod mode, there's an issue because 'osgiConfigurationArea' = " + osgiConfigurationArea + " doesn't exist.");
 			}
 			
 			String pluginsDir = osgiConfigurationArea + "/../plugins";
@@ -244,7 +252,9 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 		if (!(new File(osgiDev).exists())) {
 			if (developmentLaunchConfiguration != null) {
 				// for dev, this is mandatory; for production = optional
-				throw new RuntimeException(osgiDev + " file not found. Either the 'developmentLaunchConfiguration' is not correctly set or the Eclipse configuration was not generated (=> you need to launch the target launch config " + developmentLaunchConfiguration + " at least once directly from Eclipse).");
+				throw new RuntimeException(osgiDev + " file not found. Either the 'developmentLaunchConfiguration' "
+						+ "is not correctly set or the Eclipse configuration was not generated (=> "
+						+ "you need to launch the target launch config " + developmentLaunchConfiguration + " at least once directly from Eclipse).");
 			}
 		} else {
 			properties.put("osgi.dev", "file:" + osgiDev);
@@ -262,12 +272,15 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 		} catch (Exception e) {
 			throw new RuntimeException("'configFileLocation' error; it points towards an unaccesible file or there was another error!", e);
 		} finally {
-			if (is != null)
+			if (is != null) {
 				try {
 					is.close();
+					//CHECKSTYLE:OFF
 				} catch (IOException e) {
 					// ignore
+					//CHECKSTYLE:ON
 				}
+			}
 		}
 		
 		String osgiInstanceArea = System.getProperty(FLOWER_PLATFORM_HOME) + WORKSPACE;		
@@ -278,7 +291,7 @@ public class FlowerFrameworkLauncher extends FrameworkLauncher {
 			if (!osgiInstanceAreaFile.exists()) {
 				osgiInstanceAreaFile.mkdirs();
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException(osgiInstanceArea + " workspace location not found", e);
 		}
 		properties.put("osgi.instance.area", "file:" + osgiInstanceArea);

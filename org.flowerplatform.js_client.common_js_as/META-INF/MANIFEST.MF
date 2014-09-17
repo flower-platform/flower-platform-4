@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Common_js_as
+Bundle-SymbolicName: org.flowerplatform.js_client.common_js_as;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.equinox.http.registry

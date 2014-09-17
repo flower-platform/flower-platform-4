@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,18 +49,16 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.remote.update.ChildrenUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.PropertyUpdate;
 	import org.flowerplatform.flex_client.core.editor.remote.update.Update;
-	import org.flowerplatform.flex_client.core.editor.resource.ResourceOperationsHandler;
 	import org.flowerplatform.flex_client.core.editor.ui.AboutView;
 	import org.flowerplatform.flex_client.core.editor.ui.OpenNodeView;
 	import org.flowerplatform.flex_client.core.link.ILinkHandler;
 	import org.flowerplatform.flex_client.core.link.LinkView;
-	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
-	import org.flowerplatform.flex_client.core.node.NodeExternalInvocator;
+	import org.flowerplatform.flex_client.core.node.FlexHostInvocator;
+	import org.flowerplatform.flex_client.core.node.FlexHostResourceOperationsHandler;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.ResourceDebugControllers;
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
 	import org.flowerplatform.flex_client.core.node.remote.GenericValueDescriptor;
-	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 	import org.flowerplatform.flex_client.core.node_tree.GenericNodeTreeViewProvider;
 	import org.flowerplatform.flex_client.core.node_tree.NodeTreeAction;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
@@ -88,6 +86,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.spinner.ModalSpinner;
+	import org.flowerplatform.js_client.common_js_as.node.IHostServiceInvocator;
 
 	/**
 	 * @author Cristian Spiescu
@@ -130,6 +129,17 @@ package org.flowerplatform.flex_client.core {
 		}
 
 		/**
+		 * The underlying variable is from the global namespace, defined within the js file.
+		 */
+		public function get nodeRegistryManager():* {
+			return _nodeRegistryManager;
+		}
+		
+		public function get resourceNodesManager():FlexHostResourceOperationsHandler {
+			return FlexHostResourceOperationsHandler(nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler);
+		}
+		
+		/**
 		 * key = command name as String (e.g. "openResources")
 		 * value = parameters as String (e.g. text://file1,file2,file3)
 		 */ 
@@ -148,15 +158,7 @@ package org.flowerplatform.flex_client.core {
 		public function getEditorClassFactoryActionProvider():ClassFactoryActionProvider {
 			return editorClassFactoryActionProvider;
 		}
-		
-		public function get nodeRegistryManager():* {
-			return _nodeRegistryManager;
-		}
-		
-		public function get resourceNodesManager():ResourceOperationsHandler {
-			return ResourceOperationsHandler(nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler);
-		}
-		
+			
 		override public function preStart():void {
 			super.preStart();
 			if (INSTANCE != null) {
@@ -177,8 +179,8 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("uploadService");
 			serviceLocator.addService("preferenceService");
 			
-			var resourceOperationsHandler:ResourceOperationsHandler = new ResourceOperationsHandler();
-			_nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IServiceInvocator(serviceLocator), new NodeExternalInvocator());
+			var resourceOperationsHandler:FlexHostResourceOperationsHandler = new FlexHostResourceOperationsHandler();
+			_nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IHostServiceInvocator(serviceLocator), new FlexHostInvocator());
 			
  			updateTimer = new UpdateTimer(5000);
 			
@@ -398,8 +400,7 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(TypeDescriptorRemote);
 			registerClassAliasFromAnnotation(GenericValueDescriptor);
 			registerClassAliasFromAnnotation(AddChildDescriptor);
-			registerClassAliasFromAnnotation(Pair);
-			registerClassAliasFromAnnotation(ServiceContext);
+			registerClassAliasFromAnnotation(Pair);			
 		}
 		
 		override protected function registerMessageBundle():void {
@@ -576,6 +577,6 @@ package org.flowerplatform.flex_client.core {
 	}
 }
 
-include "../../../../../../org.flowerplatform.js_client.core/WebContent/js/node_registry/ResourceOperationsManager.js";	
-include "../../../../../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistryManager.js";	
-include "../../../../../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistry.js";
+include "../../../../../../org.flowerplatform.js_client.common_js_as/WebContent/js/ResourceOperationsManager.js";	
+include "../../../../../../org.flowerplatform.js_client.common_js_as/WebContent/js/NodeRegistryManager.js";	
+include "../../../../../../org.flowerplatform.js_client.common_js_as/WebContent/js/NodeRegistry.js";

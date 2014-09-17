@@ -30,6 +30,9 @@ public class TagsAsListProcessor extends AbstractTagProcessor {
 	private String propertyName;
 	private String keyAttribute;
 
+	/**
+	 *@author Catalin Burcea
+	 **/
 	public TagsAsListProcessor(String propertyName, String keyAttribute) {
 		this.propertyName = propertyName;
 		this.keyAttribute = keyAttribute;

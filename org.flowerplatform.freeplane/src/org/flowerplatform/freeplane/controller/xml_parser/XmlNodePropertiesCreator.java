@@ -33,10 +33,16 @@ public class XmlNodePropertiesCreator {
 
 	private Node node;
 
+	/**
+	 *@author Valentina Bojan
+	 **/
 	public XmlNodePropertiesCreator(Node node) {
 		this.node = node;
 	}
 
+	/**
+	 *@author Valentina Bojan
+	 **/
 	public StringBuffer createXmlFromNodeProperties() {
 		StringBuffer xmlContent = new StringBuffer();
 		String previousTag = null;
@@ -155,9 +161,9 @@ public class XmlNodePropertiesCreator {
 			Object value = entry.getValue();
 
 			Matcher matcher = nodeAttributesPattern.matcher(property);
-			if (matcher.find() && !property.equals(FreeplaneConstants.ICONS) && 
-								  !property.equals(FreeplaneConstants.UNKNOWN) &&
-								  !property.contains(FreeplaneConstants.CONTENT_MARK)) {
+			if (matcher.find() && !property.equals(FreeplaneConstants.ICONS)
+							   && !property.equals(FreeplaneConstants.UNKNOWN)
+							   && !property.contains(FreeplaneConstants.CONTENT_MARK)) {
 				nodeAttributes.append(" " + property + "='" + value + "'");
 				iterator.remove();
 			}

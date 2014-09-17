@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,9 +40,9 @@ import ch.qos.logback.core.Context;
  */
 public class RemoteMethodInvocationListener {
 
-	private final static Logger logger = LoggerFactory.getLogger(RemoteMethodInvocationListener.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RemoteMethodInvocationListener.class);
 	
-	private final static Context loggerContext = (Context) LoggerFactory.getILoggerFactory();
+	private static final Context LOGGER_CONTEXT = (Context) LoggerFactory.getILoggerFactory();
 
 	public String getSessionId() {
 		return CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
@@ -77,7 +77,8 @@ public class RemoteMethodInvocationListener {
 				// the client is not subscribed to this resource anymore, maybe he went offline?
 				// subscribe the client to this resource
 				try {
-					CorePlugin.getInstance().getResourceService().subscribeToParentResource(sessionId, clientResource, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
+					CorePlugin.getInstance().getResourceService().subscribeToParentResource(sessionId, clientResource, new ServiceContext<ResourceService>(CorePlugin
+							.getInstance().getResourceService()));
 				} catch (Exception e) {
 					// the resource could not be loaded; inform the client
 					notFoundResources.add(clientResource);
@@ -102,16 +103,17 @@ public class RemoteMethodInvocationListener {
 	public void postInvoke(RemoteMethodInvocationInfo remoteMethodInvocationInfo) {
 		ContextThreadLocal context = CorePlugin.getInstance().getContextThreadLocal().get();
 		try {
-			if (logger.isDebugEnabled()) {
+			if (LOGGER.isDebugEnabled()) {
 				boolean log = true;
 				if (remoteMethodInvocationInfo.getServiceMethodOrUrl().equals("resourceService.ping()")) {
-					String logPing = loggerContext.getProperty("logNodeServicePingInvocation");
+					String logPing = LOGGER_CONTEXT.getProperty("logNodeServicePingInvocation");
+
 					log = logPing == null ? false : Boolean.parseBoolean(logPing);
 				}
 				if (log) {
 					long endTime = new Date().getTime();
 					long difference = endTime - remoteMethodInvocationInfo.getStartTimestamp();
-					logger.debug("[{}ms] {} invoked", new Object[] { difference, remoteMethodInvocationInfo.getServiceMethodOrUrl() });
+					LOGGER.debug("[{}ms] {}.{}() invoked", new Object[] { difference, remoteMethodInvocationInfo.getServiceMethodOrUrl() });
 				}
 			}
 	
@@ -142,12 +144,12 @@ public class RemoteMethodInvocationListener {
 						
 						resourceNodeIdToUpdates.put(resourceSet, updates);
 						
-						if (logger.isDebugEnabled()) {
+						if (LOGGER.isDebugEnabled()) {
 							int size = -1;
 							if (updates != null) {
 								size = updates.size();
 							}
-							logger.debug("For resource = {}, timestamp = {}, sending {} updates = {}", new Object[] { resourceSet, timestamp, size, updates });
+							LOGGER.debug("For resource = {}, timestamp = {}, sending {} updates = {}", new Object[] { resourceSet, timestamp, size, updates });
 						}
 					}				
 				}

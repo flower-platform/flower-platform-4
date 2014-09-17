@@ -20,7 +20,13 @@ package org.flowerplatform.freeplane;
  * @author Catalin Burcea
  * @author Valentina Bojan
  */
-public class FreeplaneConstants {
+public final class FreeplaneConstants {
+	
+	/**
+	 * @author Valentina Bojan
+	 */
+	private FreeplaneConstants() {
+	}
 
 	// ///////////////////////////////////////////////////////////
 	// xml node properties parsing constants

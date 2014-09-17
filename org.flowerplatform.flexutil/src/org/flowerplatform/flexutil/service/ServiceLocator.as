@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,6 @@ package org.flowerplatform.flexutil.service {
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.Fault;
-	import mx.rpc.events.FaultEvent;
-	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
 	
 	import org.flowerplatform.flexutil.FlexUtilAssets;
@@ -72,9 +70,9 @@ package org.flowerplatform.flexutil.service {
 			}			
 		}
 		
-		public function resultHandler(event:ResultEvent, responder:ServiceResponder):void {
+		public function resultHandler(result:Object, responder:ServiceResponder):void {
 			if (responder.resultHandler != null) {
-				responder.resultHandler(event);
+				responder.resultHandler(result);
 			}
 		}
 			

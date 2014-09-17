@@ -34,7 +34,7 @@ public class ConvertAllAttributesProcessor extends AbstractTagProcessor {
 			}
 			parser.isRoot = false;
 		}
-		parser.convertAllAttributes_processedXmlTags.add(tag);
+		parser.convertAllAttributesProcessedXmlTags.add(tag);
 	}
 
 	@Override

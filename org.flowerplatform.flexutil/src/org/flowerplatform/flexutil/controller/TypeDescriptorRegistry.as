@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,10 @@
 package org.flowerplatform.flexutil.controller {
 	import flash.utils.Dictionary;
 	
+	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.mx_internal;
 	
-	import org.apache.flex.collections.ArrayList;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.Utils;
 	

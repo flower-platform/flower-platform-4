@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,17 +34,22 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class PreferencePropertySetter extends AbstractController implements	IPropertySetter {
 
+	/**
+	 *@author see class
+	 **/
 	public PreferencePropertySetter() {
 		// execute after persistence setter
 		setOrderIndex(100000);
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
+	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		// refresh all properties on client
-		for (Map.Entry<String, Object> entry : node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService()).add(CoreConstants.POPULATE_WITH_PROPERTIES_FORCEFULLY, true)).entrySet()) {
+		for (Map.Entry<String, Object> entry : node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService())
+				.add(CoreConstants.POPULATE_WITH_PROPERTIES_FORCEFULLY, true)).entrySet()) {
 			if (entry.getValue() instanceof PreferencePropertyWrapper) {
-				context.getService().setProperty(node, entry.getKey(), entry.getValue(), new ServiceContext<NodeService>(context.getService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+				context.getService().setProperty(node, entry.getKey(), entry.getValue(), new ServiceContext<NodeService>(context.getService())
+						.add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 			}	
 		}
 		context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
@@ -53,9 +58,11 @@ public class PreferencePropertySetter extends AbstractController implements	IPro
 	@Override
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
 		// refresh all properties on client
-		for (Map.Entry<String, Object> entry : node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService()).add(CoreConstants.POPULATE_WITH_PROPERTIES_FORCEFULLY, true)).entrySet()) {
+		for (Map.Entry<String, Object> entry : node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService())
+				.add(CoreConstants.POPULATE_WITH_PROPERTIES_FORCEFULLY, true)).entrySet()) {
 			if (entry.getValue() instanceof PreferencePropertyWrapper) {
-				context.getService().setProperty(node, entry.getKey(), entry.getValue(), new ServiceContext<NodeService>(context.getService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+				context.getService().setProperty(node, entry.getKey(), entry.getValue(), new ServiceContext<NodeService>(context.getService())
+						.add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 			}			
 		}	
 		context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);

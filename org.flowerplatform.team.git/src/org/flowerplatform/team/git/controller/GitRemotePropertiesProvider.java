@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,8 @@ public class GitRemotePropertiesProvider extends AbstractController implements I
 			List<String> push = new ArrayList<String>();
 			List<String> uris = new ArrayList<String>();
 
-			RemoteConfig config = new RemoteConfig(GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(Utils.getRepo(node.getNodeUri()))).getConfig(), name);
+			RemoteConfig config = new RemoteConfig(GitUtils.getRepository(FileControllerUtils.getFileAccessController()
+					.getFile(Utils.getRepo(node.getNodeUri()))).getConfig(), name);
 
 			for (RefSpec spec : config.getFetchRefSpecs()) {
 				fetch.add(spec.toString());

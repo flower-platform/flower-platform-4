@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
-<<<<<<< Temporary merge branch 1
     <classEntry path="org.flowerplatform.flex_client.team.git.GitPlugin"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.ui.ConfigureBranchView"/>
@@ -25,9 +24,6 @@
     <classEntry path="org.flowerplatform.flex_client.team.git.view.CloneRepoWizardView"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.CheckoutAction"/>
     <classEntry path="org.flowerplatform.flex_client.team.git.action.RebaseAction"/>
-=======
-   
->>>>>>> Temporary merge branch 2
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

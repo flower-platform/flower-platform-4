@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,6 +96,9 @@ public class RemoteMethodInvocationInfo {
 		return (List<String>) getHeaders().get(CoreConstants.RESOURCE_URIS);
 	}
 
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public long getTimestampOfLastRequest() {
 		// may be null if the request comes from the web app
 		Object timestamp = getHeaders().get(CoreConstants.LAST_UPDATE_TIMESTAMP);

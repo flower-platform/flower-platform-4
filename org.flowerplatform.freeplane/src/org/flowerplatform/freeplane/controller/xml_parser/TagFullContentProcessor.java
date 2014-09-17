@@ -27,6 +27,9 @@ public class TagFullContentProcessor extends AbstractTagProcessor {
 
 	private String keyProperty;
 
+	/**
+	 *@author Catalin Burcea
+	 **/
 	public TagFullContentProcessor(String keyProperty) {
 		this.keyProperty = keyProperty;
 	}
@@ -41,11 +44,11 @@ public class TagFullContentProcessor extends AbstractTagProcessor {
 		addEndContent(parser, tag, node, keyProperty);
 
 		// we have reached the end of an unknown tag
-		if (parser.tagFullContent_nesting == 0 && keyProperty == null) {
+		if (parser.tagFullContentNesting == 0 && keyProperty == null) {
 			String currentContent = (String) node.getProperties().get(FreeplaneConstants.UNKNOWN);
 			node.getProperties().put(
 					FreeplaneConstants.UNKNOWN,
-					currentContent == null ? parser.tagFullContent_stringBuffer.toString() : currentContent + "\n\t" + parser.tagFullContent_stringBuffer.toString());
+					currentContent == null ? parser.tagFullContentStringBuffer.toString() : currentContent + "\n\t" + parser.tagFullContentStringBuffer.toString());
 		}
 	}
 }
