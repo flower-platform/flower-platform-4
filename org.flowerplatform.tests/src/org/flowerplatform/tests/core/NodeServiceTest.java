@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,11 +42,15 @@ import org.junit.Test;
  */
 public class NodeServiceTest {
 	private static NodeService nodeService;
-
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		
+		/**
+		 *@author Mariana Gheorghe
+		 **/	
 		class MockChildProvider extends AbstractController implements IChildrenProvider {
 			@SuppressWarnings("rawtypes")
 			@Override

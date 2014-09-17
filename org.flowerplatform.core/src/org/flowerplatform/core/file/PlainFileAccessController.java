@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.flowerplatform.core.CoreConstants;
 
 /**
@@ -84,7 +83,7 @@ public class PlainFileAccessController implements IFileAccessController {
 	
 	@Override
 	public File[] listFiles(Object folder) {
-		return ((File)folder).listFiles();
+		return ((File) folder).listFiles();
 	}
 	
 	@Override
@@ -103,23 +102,23 @@ public class PlainFileAccessController implements IFileAccessController {
 	}
 	
 	@Override
-	public Object getParentFile(Object file){
-		return ((File)file).getParentFile();
+	public Object getParentFile(Object file) {
+		return ((File) file).getParentFile();
 	}
 	
 	@Override
-	public String getParent(Object file){
-		return ((File)file).getParent();
+	public String getParent(Object file) {
+		return ((File) file).getParent();
 	}
 	@Override
 	public boolean rename(Object file, Object dest) {
-		return ((File)file).renameTo((File)dest);
+		return ((File) file).renameTo((File) dest);
 	}
 	
 	@Override
-	public String readFileToString(Object file){
+	public String readFileToString(Object file) {
 		try {
-			return FileUtils.readFileToString((File)file);
+			return FileUtils.readFileToString((File) file);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -128,7 +127,7 @@ public class PlainFileAccessController implements IFileAccessController {
 	@Override
 	public void writeStringToFile(Object file, String str) {
 		try {
-			FileUtils.writeStringToFile((File)file, str);
+			FileUtils.writeStringToFile((File) file, str);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -136,7 +135,7 @@ public class PlainFileAccessController implements IFileAccessController {
 	
 	@Override
 	public boolean isDirectory(Object file) {
-		return ((File)file).isDirectory();
+		return ((File) file).isDirectory();
 	}
 
 	/**
@@ -175,7 +174,7 @@ public class PlainFileAccessController implements IFileAccessController {
 
 	@Override
 	public String getPathRelativeToFile(Object file, Object relativeTo) {
-		String relative = ((File)relativeTo).toURI().relativize(((File)file).toURI()).getPath();
+		String relative = ((File) relativeTo).toURI().relativize(((File) file).toURI()).getPath();
 		if (relative.length() > 0 && relative.endsWith("/")) {
 			relative = relative.substring(0, relative.length() - 1);
 		}
@@ -184,7 +183,7 @@ public class PlainFileAccessController implements IFileAccessController {
 
 	@Override
 	public String getAbsolutePath(Object file) {
-		return ((File)file).getAbsolutePath();
+		return ((File) file).getAbsolutePath();
 	}
 
 	/**
@@ -211,14 +210,14 @@ public class PlainFileAccessController implements IFileAccessController {
 
 	@Override
 	public boolean hasChildren(Object file) {
-		if (((File)file).list() == null) {
+		if (((File) file).list() == null) {
 			return false;
 		}
-		return ((File)file).list().length > 0;
+		return ((File) file).list().length > 0;
 	}
 
 	@Override
 	public long length(Object file) {
-		return ((File)file).length();
+		return ((File) file).length();
 	}
 }

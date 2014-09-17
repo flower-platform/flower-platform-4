@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 	private static final Pattern CUSTOM_ICON_URL_PATTERN = Pattern.compile("servlet/load/(.*?).png");
 	
 	@Override
-	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
+	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 		
 		boolean isPropertySet = false;
@@ -93,212 +93,225 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		// if empty -> additional updates for all properties
 		List<String> addAdditionalSetPropertyUpdatesFor = null;
 		
-		Object propertyValue = value instanceof PropertyWrapper ? ((PropertyWrapper) value).getValue() : value;
-		switch (property) {
-			case MindMapConstants.SIDE:
-				rawNodeData.setLeft(((Integer)propertyValue).intValue()==MindMapConstants.POSITION_LEFT);
-				isPropertySet = true;
-				break;
-			case TEXT:
-				rawNodeData.setText((String) propertyValue);
-				isPropertySet = true;
-				break;
-			case MIN_WIDTH:
-				Integer newMinValue = propertyValue == null ? NodeSizeModel.NOT_SET : (Integer) propertyValue;
-				if (newMinValue < 1) {
-					context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
-					context.getService().setProperty(node, property, new StylePropertyWrapper().setIsDefaultAs(true).setValueAs(MindMapConstants.DEFAULT_MIN_WIDTH), new ServiceContext<NodeService>(context.getService()));
-					return;				
-				} else {
-					NodeSizeModel.createNodeSizeModel(rawNodeData).setMinNodeWidth(newMinValue);		
+		for (String property : properties.keySet()) {
+			Object value = properties.get(property);
+
+			Object propertyValue = value instanceof PropertyWrapper ? ((PropertyWrapper) value).getValue() : value;
+			switch (property) {
+				case MindMapConstants.SIDE:
+					rawNodeData.setLeft(((Integer) propertyValue).intValue() == MindMapConstants.POSITION_LEFT);
 					isPropertySet = true;
-				}				
-				break;
-			case MAX_WIDTH:	
-				Integer newMaxValue = propertyValue == null ? NodeSizeModel.NOT_SET : (Integer) propertyValue;
-				if (newMaxValue < 1) {
-					context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
-					context.getService().setProperty(node, property, new PropertyWrapper().setValueAs(MindMapConstants.DEFAULT_MAX_WIDTH), new ServiceContext<NodeService>(context.getService()));
-					return;								
-				} else {
-					newMaxValue = (Integer) propertyValue;
-					NodeSizeModel.createNodeSizeModel(rawNodeData).setMaxNodeWidth(newMaxValue);	
+					break;
+				case TEXT:
+					rawNodeData.setText((String) propertyValue);
 					isPropertySet = true;
-				}
-				break;
-			case CoreConstants.ICONS:
-				String icons = (String) propertyValue;
-				rawNodeData.getIcons().clear();
-				if (icons != null) {					
-					String[] array = icons.split(CoreConstants.ICONS_SEPARATOR);
-					for (String icon : array) {
-						Matcher matcher = ICON_URL_PATTERN.matcher(icon);
-						if (matcher.find()) {
-							rawNodeData.addIcon(new MindIcon(matcher.group(3)));	
-						} else {
-							Matcher matcher2 = CUSTOM_ICON_URL_PATTERN.matcher(icon);
-							if (matcher2.find()) {
-								Object iconFile;
-								try {
-									iconFile = FileControllerUtils.getFileAccessController().getFile(matcher2.group(1) + PNG_EXTENSION);
-								} catch (Exception e) {
-									throw new RuntimeException(e);
-								}								
-								if (FileControllerUtils.getFileAccessController().isDirectory(iconFile)) {
-									continue;
+					break;
+				case MIN_WIDTH:
+					Integer newMinValue = propertyValue == null ? NodeSizeModel.NOT_SET : (Integer) propertyValue;
+					if (newMinValue < 1) {
+						context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
+						context.getService().setProperty(node, property, new StylePropertyWrapper().setIsDefaultAs(true)
+								.setValueAs(MindMapConstants.DEFAULT_MIN_WIDTH), new ServiceContext<NodeService>(context.getService()));
+						return;				
+					} else {
+						NodeSizeModel.createNodeSizeModel(rawNodeData).setMinNodeWidth(newMinValue);		
+						isPropertySet = true;
+					}				
+					break;
+				case MAX_WIDTH:	
+					Integer newMaxValue = propertyValue == null ? NodeSizeModel.NOT_SET : (Integer) propertyValue;
+					if (newMaxValue < 1) {
+						context.add(CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS, true);
+						context.getService().setProperty(node, property, new PropertyWrapper()
+						.setValueAs(MindMapConstants.DEFAULT_MAX_WIDTH), new ServiceContext<NodeService>(context.getService()));
+						return;								
+					} else {
+						newMaxValue = (Integer) propertyValue;
+						NodeSizeModel.createNodeSizeModel(rawNodeData).setMaxNodeWidth(newMaxValue);	
+						isPropertySet = true;
+					}
+					break;
+				case CoreConstants.ICONS:
+					String icons = (String) propertyValue;
+					rawNodeData.getIcons().clear();
+					if (icons != null) {					
+						String[] array = icons.split(CoreConstants.ICONS_SEPARATOR);
+						for (String icon : array) {
+							Matcher matcher = ICON_URL_PATTERN.matcher(icon);
+							if (matcher.find()) {
+								rawNodeData.addIcon(new MindIcon(matcher.group(3)));	
+							} else {
+								Matcher matcher2 = CUSTOM_ICON_URL_PATTERN.matcher(icon);
+								if (matcher2.find()) {
+									Object iconFile;
+									try {
+										iconFile = FileControllerUtils.getFileAccessController().getFile(matcher2.group(1) + PNG_EXTENSION);
+									} catch (Exception e) {
+										throw new RuntimeException(e);
+									}								
+									if (FileControllerUtils.getFileAccessController().isDirectory(iconFile)) {
+										continue;
+									}
+									String path = FileControllerUtils.getFileAccessController().getPath(iconFile);
+													
+									rawNodeData.addIcon(new UserIcon(FilenameUtils.removeExtension(path), path, FilenameUtils.removeExtension(path)));
 								}
-								String path = FileControllerUtils.getFileAccessController().getPath(iconFile);
-												
-								rawNodeData.addIcon(new UserIcon(FilenameUtils.removeExtension(path), path, FilenameUtils.removeExtension(path)));
-							}
-							
-						}
-					}
-				}				
-				isPropertySet = true;
-				break;
-			case NOTE:
-				String note = (String) propertyValue;
-				NoteModel.createNote(rawNodeData).setXml(note);
 								
-				isPropertySet = true;
-				if (addAdditionalSetPropertyUpdatesFor == null) {
-					addAdditionalSetPropertyUpdatesFor = new ArrayList<String>();
-				}				
-				addAdditionalSetPropertyUpdatesFor.add(CoreConstants.ICONS);
-				break;
-			case NODE_DETAILS:
-				String nodeDetails = (String) propertyValue;
-				DetailTextModel.createDetailText(rawNodeData).setXml(nodeDetails);
-				isPropertySet = true;
-				break;
-			case FONT_FAMILY:	
-				String fontFamily = (String) propertyValue;
-				NodeStyleModel.createNodeStyleModel(rawNodeData).setFontFamilyName(fontFamily);
-				isPropertySet = true;
-				break;
-			case FONT_SIZE:	
-				Integer fontSize = (Integer) propertyValue;				
-				NodeStyleModel.createNodeStyleModel(rawNodeData).setFontSize(fontSize);				
-				isPropertySet = true;
-				break;
-			case FONT_BOLD:	
-				Boolean fontBold = (Boolean) propertyValue;				
-				NodeStyleModel.createNodeStyleModel(rawNodeData).setBold(fontBold);				
-				isPropertySet = true;
-				break;
-			case FONT_ITALIC:	
-				Boolean fontItalic = (Boolean) propertyValue;				
-				NodeStyleModel.createNodeStyleModel(rawNodeData).setItalic(fontItalic);				
-				isPropertySet = true;
-				break;
-			case COLOR_TEXT:	
-				String color = (String) propertyValue;				
-				NodeStyleModel.createNodeStyleModel(rawNodeData).setColor(ColorUtils.stringToColor(color));				
-				isPropertySet = true;
-				break;
-			case COLOR_BACKGROUND:	
-				String backgroundColor = (String) propertyValue;				
-				NodeStyleModel.createNodeStyleModel(rawNodeData).setBackgroundColor(ColorUtils.stringToColor(backgroundColor));				
-				isPropertySet = true;
-				break;
-			case EDGE_COLOR:
-				String edgeColor = (String) propertyValue;
-				EdgeModel.createEdgeModel(rawNodeData).setColor(ColorUtils.stringToColor(edgeColor));
-				isPropertySet = true;
-				break;
-			case EDGE_WIDTH:
-				int edgeWidth = (int) propertyValue;
-				EdgeModel.createEdgeModel(rawNodeData).setWidth(edgeWidth);
-				isPropertySet = true;
-				break;
-			case EDGE_STYLE:
-				String edgeStyleProperty = (String) propertyValue;
-				EdgeStyle edgeStyle = null;
-				switch (edgeStyleProperty) {
-				case EDGE_SMOOTHLY_CURVED:
-					edgeStyle = EdgeStyle.EDGESTYLE_BEZIER;
+							}
+						}
+					}				
+					isPropertySet = true;
 					break;
-				case EDGE_LINEAR:
-					edgeStyle = EdgeStyle.EDGESTYLE_LINEAR;
+				case NOTE:
+					String note = (String) propertyValue;
+					NoteModel.createNote(rawNodeData).setXml(note);
+									
+					isPropertySet = true;
+					if (addAdditionalSetPropertyUpdatesFor == null) {
+						addAdditionalSetPropertyUpdatesFor = new ArrayList<String>();
+					}				
+					addAdditionalSetPropertyUpdatesFor.add(CoreConstants.ICONS);
 					break;
-				case EDGE_HORIZONTAL:
-					edgeStyle = EdgeStyle.EDGESTYLE_HORIZONTAL;
+				case NODE_DETAILS:
+					String nodeDetails = (String) propertyValue;
+					DetailTextModel.createDetailText(rawNodeData).setXml(nodeDetails);
+					isPropertySet = true;
 					break;
-				case EDGE_HIDE:
-					edgeStyle = EdgeStyle.EDGESTYLE_HIDDEN;
+				case FONT_FAMILY:	
+					String fontFamily = (String) propertyValue;
+					NodeStyleModel.createNodeStyleModel(rawNodeData).setFontFamilyName(fontFamily);
+					isPropertySet = true;
 					break;
-				default:
-					edgeStyle = EdgeStyle.EDGESTYLE_BEZIER;
+				case FONT_SIZE:	
+					Integer fontSize = (Integer) propertyValue;				
+					NodeStyleModel.createNodeStyleModel(rawNodeData).setFontSize(fontSize);				
+					isPropertySet = true;
 					break;
-				}
-				EdgeModel.createEdgeModel(rawNodeData).setStyle(edgeStyle);
-				isPropertySet = true;
-				break;
-				
-			case CLOUD_COLOR:
-				String cloudColor = (String) propertyValue;				
-				CloudModel.createModel(rawNodeData).setColor(ColorUtils.stringToColor(cloudColor));				
-				isPropertySet = true;
-				break;
-			case CLOUD_SHAPE:
-				String cloudShape = (String) propertyValue;
-				Shape shape = null;
-				// get shape correspondence from freeplane
-				switch (cloudShape) {
-					case SHAPE_RECTANGLE:
-						shape = Shape.RECT;
+				case FONT_BOLD:	
+					Boolean fontBold = (Boolean) propertyValue;				
+					NodeStyleModel.createNodeStyleModel(rawNodeData).setBold(fontBold);				
+					isPropertySet = true;
+					break;
+				case FONT_ITALIC:	
+					Boolean fontItalic = (Boolean) propertyValue;				
+					NodeStyleModel.createNodeStyleModel(rawNodeData).setItalic(fontItalic);				
+					isPropertySet = true;
+					break;
+				case COLOR_TEXT:	
+					String color = (String) propertyValue;				
+					NodeStyleModel.createNodeStyleModel(rawNodeData).setColor(ColorUtils.stringToColor(color));				
+					isPropertySet = true;
+					break;
+				case COLOR_BACKGROUND:	
+					String backgroundColor = (String) propertyValue;				
+					NodeStyleModel.createNodeStyleModel(rawNodeData).setBackgroundColor(ColorUtils.stringToColor(backgroundColor));				
+					isPropertySet = true;
+					break;
+				case EDGE_COLOR:
+					String edgeColor = (String) propertyValue;
+					EdgeModel.createEdgeModel(rawNodeData).setColor(ColorUtils.stringToColor(edgeColor));
+					isPropertySet = true;
+					break;
+				case EDGE_WIDTH:
+					int edgeWidth = (int) propertyValue;
+					EdgeModel.createEdgeModel(rawNodeData).setWidth(edgeWidth);
+					isPropertySet = true;
+					break;
+				case EDGE_STYLE:
+					String edgeStyleProperty = (String) propertyValue;
+					EdgeStyle edgeStyle = null;
+					switch (edgeStyleProperty) {
+					case EDGE_SMOOTHLY_CURVED:
+						edgeStyle = EdgeStyle.EDGESTYLE_BEZIER;
 						break;
-					case SHAPE_ROUND_RECTANGLE:
-						shape = Shape.ROUND_RECT;
-						break;				
-				}
-				if (shape != null) {
-					CloudModel.createModel(rawNodeData).setShape(shape);
-				} else { // no shape -> remove cloud from node
-					rawNodeData.removeExtension(CloudModel.class);
-				}
-				isPropertySet = true;
-				break;
-			case STYLE_NAME:
-				String styleName = (String) propertyValue;
-				MapModel mapModel = ((NodeModel) node.getRawNodeData()).getMap();
-				
-				Set<IStyle> styles = MapStyleModel.getExtension(mapModel).getStyles();
-				IStyle style = null;
-				for(IStyle availableStyle : styles) {
-					if (availableStyle.toString().equals(styleName)) {
-						style = availableStyle;
+					case EDGE_LINEAR:
+						edgeStyle = EdgeStyle.EDGESTYLE_LINEAR;
+						break;
+					case EDGE_HORIZONTAL:
+						edgeStyle = EdgeStyle.EDGESTYLE_HORIZONTAL;
+						break;
+					case EDGE_HIDE:
+						edgeStyle = EdgeStyle.EDGESTYLE_HIDDEN;
+						break;
+					default:
+						edgeStyle = EdgeStyle.EDGESTYLE_BEZIER;
 						break;
 					}
-				}	
-				if (style != null) {
-					LogicalStyleModel model = LogicalStyleModel.createExtension(rawNodeData);
-					model.setStyle(style);
-				} else {
-					rawNodeData.removeExtension(LogicalStyleModel.class);
-				}
-				isPropertySet = true;
-				if (addAdditionalSetPropertyUpdatesFor == null) {
-					addAdditionalSetPropertyUpdatesFor = new ArrayList<String>();
-				}
+					EdgeModel.createEdgeModel(rawNodeData).setStyle(edgeStyle);
+					isPropertySet = true;
+					break;
+					
+				case CLOUD_COLOR:
+					String cloudColor = (String) propertyValue;				
+					CloudModel.createModel(rawNodeData).setColor(ColorUtils.stringToColor(cloudColor));				
+					isPropertySet = true;
+					break;
+				case CLOUD_SHAPE:
+					String cloudShape = (String) propertyValue;
+					Shape shape = null;
+					// get shape correspondence from freeplane
+					switch (cloudShape) {
+						case SHAPE_RECTANGLE:
+							shape = Shape.RECT;
+							break;
+						case SHAPE_ROUND_RECTANGLE:
+							shape = Shape.ROUND_RECT;
+							break;
+					default:
+						break;				
+					}
+					if (shape != null) {
+						CloudModel.createModel(rawNodeData).setShape(shape);
+					} else { // no shape -> remove cloud from node
+						rawNodeData.removeExtension(CloudModel.class);
+					}
+					isPropertySet = true;
+					break;
+				case STYLE_NAME:
+					String styleName = (String) propertyValue;
+					MapModel mapModel = ((NodeModel) node.getRawNodeData()).getMap();
+					
+					Set<IStyle> styles = MapStyleModel.getExtension(mapModel).getStyles();
+					IStyle style = null;
+					for (IStyle availableStyle : styles) {
+						if (availableStyle.toString().equals(styleName)) {
+							style = availableStyle;
+							break;
+						}
+					}	
+					if (style != null) {
+						LogicalStyleModel model = LogicalStyleModel.createExtension(rawNodeData);
+						model.setStyle(style);
+					} else {
+						rawNodeData.removeExtension(LogicalStyleModel.class);
+					}
+					isPropertySet = true;
+					if (addAdditionalSetPropertyUpdatesFor == null) {
+						addAdditionalSetPropertyUpdatesFor = new ArrayList<String>();
+					}
+					break;
+			default:
 				break;
-		}
-				
-		if (!isPropertySet) {
-			super.setProperty(node, property, value, context);
-		} else {
-			rawNodeData.getMap().setSaved(false);			
+
+			}
+					
+			if (!isPropertySet) {
+				super.setProperties(node, Collections.singletonMap(property, value), context);
+			} else {
+				rawNodeData.getMap().setSaved(false);			
+			}
 		}
 		
 		if (addAdditionalSetPropertyUpdatesFor != null) {
 			if (addAdditionalSetPropertyUpdatesFor.isEmpty()) {				
 				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService())).entrySet()) {
-					context.getService().setProperty(node, entry.getKey(), entry.getValue(), new ServiceContext<NodeService>(context.getService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+					context.getService().setProperty(node, entry.getKey(), entry.getValue(), new ServiceContext<NodeService>(context.getService())
+							.add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 				}	 
 			} else {
 				for (String entry : addAdditionalSetPropertyUpdatesFor) {
-					context.getService().setProperty(node, entry, node.getPropertyValue(entry), new ServiceContext<NodeService>(context.getService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+					context.getService().setProperty(node, entry, node.getPropertyValue(entry), new ServiceContext<NodeService>(context.getService())
+							.add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 				}
 			}
 		}
@@ -316,35 +329,35 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				
 		switch (property) {			
 			case MIN_WIDTH:
-				((NodeSizeModel)rawNodeData.getExtension(NodeSizeModel.class)).setMinNodeWidth(NodeSizeModel.NOT_SET);
+				((NodeSizeModel) rawNodeData.getExtension(NodeSizeModel.class)).setMinNodeWidth(NodeSizeModel.NOT_SET);
 				isPropertyUnset = true;
 				break;
 			case MAX_WIDTH:
-				((NodeSizeModel)rawNodeData.getExtension(NodeSizeModel.class)).setMaxNodeWidth(NodeSizeModel.NOT_SET);
+				((NodeSizeModel) rawNodeData.getExtension(NodeSizeModel.class)).setMaxNodeWidth(NodeSizeModel.NOT_SET);
 				isPropertyUnset = true;
 				break;
 			case COLOR_BACKGROUND:
-				((NodeStyleModel)rawNodeData.getExtension(NodeStyleModel.class)).setBackgroundColor(null);
+				((NodeStyleModel) rawNodeData.getExtension(NodeStyleModel.class)).setBackgroundColor(null);
 				isPropertyUnset = true;
 				break;
 			case COLOR_TEXT:
-				((NodeStyleModel)rawNodeData.getExtension(NodeStyleModel.class)).setColor(null);
+				((NodeStyleModel) rawNodeData.getExtension(NodeStyleModel.class)).setColor(null);
 				isPropertyUnset = true;
 				break;
 			case FONT_BOLD:
-				((NodeStyleModel)rawNodeData.getExtension(NodeStyleModel.class)).setBold(null);
+				((NodeStyleModel) rawNodeData.getExtension(NodeStyleModel.class)).setBold(null);
 				isPropertyUnset = true;
 				break;
 			case FONT_FAMILY:
-				((NodeStyleModel)rawNodeData.getExtension(NodeStyleModel.class)).setFontFamilyName(null);
+				((NodeStyleModel) rawNodeData.getExtension(NodeStyleModel.class)).setFontFamilyName(null);
 				isPropertyUnset = true;
 				break;
 			case FONT_ITALIC:
-				((NodeStyleModel)rawNodeData.getExtension(NodeStyleModel.class)).setItalic(null);
+				((NodeStyleModel) rawNodeData.getExtension(NodeStyleModel.class)).setItalic(null);
 				isPropertyUnset = true;
 				break;
 			case FONT_SIZE:
-				((NodeStyleModel)rawNodeData.getExtension(NodeStyleModel.class)).setFontSize(null);
+				((NodeStyleModel) rawNodeData.getExtension(NodeStyleModel.class)).setFontSize(null);
 				isPropertyUnset = true;
 				break;
 			case CLOUD_COLOR:
@@ -369,11 +382,11 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 				break;
 			// edge	
 			case EDGE_WIDTH:
-				((EdgeModel)rawNodeData.getExtension(EdgeModel.class)).setWidth(EdgeModel.DEFAULT_WIDTH);
+				((EdgeModel) rawNodeData.getExtension(EdgeModel.class)).setWidth(EdgeModel.DEFAULT_WIDTH);
 				isPropertyUnset = true;
 				break;
 			case EDGE_STYLE:
-				((EdgeModel)rawNodeData.getExtension(EdgeModel.class)).setStyle(null);
+				((EdgeModel) rawNodeData.getExtension(EdgeModel.class)).setStyle(null);
 				isPropertyUnset = true;
 				break;
 			case EDGE_COLOR:
@@ -392,11 +405,13 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 		if (addAdditionalUnsetPropertyUpdatesFor != null) {
 			if (addAdditionalUnsetPropertyUpdatesFor.isEmpty()) {
 				for (Map.Entry<String, Object> entry : node.getOrPopulateProperties(new ServiceContext<NodeService>(serviceContext.getService())).entrySet()) {
-					serviceContext.getService().unsetProperty(node, entry.getKey(), new ServiceContext<NodeService>(serviceContext.getService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+					serviceContext.getService().unsetProperty(node, entry.getKey(), new ServiceContext<NodeService>(serviceContext.getService())
+							.add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 				}	 
 			} else {
 				for (String entry : addAdditionalUnsetPropertyUpdatesFor) {
-					serviceContext.getService().unsetProperty(node, entry, new ServiceContext<NodeService>(serviceContext.getService()).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+					serviceContext.getService().unsetProperty(node, entry, new ServiceContext<NodeService>(serviceContext.getService())
+							.add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 				}
 			}
 		}

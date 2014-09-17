@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
+import org.eclipse.jgit.api.CheckoutResult;
 import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.RebaseResult;
 import org.eclipse.jgit.lib.ConfigConstants;
@@ -49,8 +50,15 @@ import org.flowerplatform.core.file.IFileAccessController;
 /**
  * @author Cojocea Marius Eduard
  */
-public class GitUtils {
+public final class GitUtils {
+	
+	private GitUtils() {
+		
+	}
 
+	/**
+	 *@author see class
+	 **/
 	public static Repository getRepository(Object repoFile) {
 		IFileAccessController fac = FileControllerUtils.getFileAccessController();
 
@@ -66,6 +74,9 @@ public class GitUtils {
 		return null;
 	}
 
+	/**
+	 *@author see class
+	 **/
 	public static Object getGitDir(Object file) {
 		IFileAccessController fac = FileControllerUtils.getFileAccessController();
 
@@ -89,10 +100,16 @@ public class GitUtils {
 		return null;
 	}
 
+	/**
+	 * @author Valentina Bojan
+	 */
 	public static boolean isRepository(Object file) {
 		return getGitDir(file) != null;
 	}
 
+	/**
+	 * @author Cojocea Eduard
+	 */
 	public static String getType(String nodeUri) {
 		int indexStart = nodeUri.indexOf("|");
 		int indexEnd = nodeUri.indexOf("$");
@@ -102,6 +119,9 @@ public class GitUtils {
 		return nodeUri.substring(indexStart + 1, indexEnd);
 	}
 	
+	/**
+	 * @author Eduard Cojocea
+	 */
 	public static String getName(String nodeUri) {
 		int indexStart = nodeUri.indexOf("$");
 		int indexEnd = nodeUri.length();
@@ -151,17 +171,17 @@ public class GitUtils {
 		}
 		
 		List<String> conflicts = new ArrayList<>();  
-		if(mergeResult.getConflicts() != null) {			
-			for(String path : mergeResult.getConflicts().keySet()) {
+		if (mergeResult.getConflicts() != null) {			
+			for (String path : mergeResult.getConflicts().keySet()) {
 				if (!conflicts.contains(path)) {
 					conflicts.add(path);
 				}
 			}
 		}		
-		if(!conflicts.isEmpty()) {
+		if (!conflicts.isEmpty()) {
 			sb.append("\nConflicts: ");
 			sb.append("\n");
-			for(String path : conflicts) {
+			for (String path : conflicts) {
 				sb.append(path);
 				sb.append("\n");				
 			}
@@ -170,11 +190,17 @@ public class GitUtils {
 		return sb.toString();
 	}
 
-	public static String getNodeUri(String repoPath,String type,String name) {
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public static String getNodeUri(String repoPath, String type, String name) {
 		return CoreUtils.createNodeUriWithRepo(GIT_SCHEME, repoPath, type + (name != null ? "$" + name : ""));	
 	}
 	
-	public static String getNodeUri(String repoPath,String type){
+	/**
+	 * @author Eduard Cojocea 
+	 */
+	public static String getNodeUri(String repoPath, String type) {
 		return getNodeUri(repoPath, type, null);
 	}
 	
@@ -277,10 +303,41 @@ public class GitUtils {
 	/**
 	 * @author Cristina Constantinescu
 	 */
+	public static String handleCheckoutResult(CheckoutResult checkoutResult) {
+		StringBuilder sb = new StringBuilder();		
+		
+		sb.append("Status: ");
+		sb.append(checkoutResult.getStatus());
+		sb.append("\n");
+		
+		if (CheckoutResult.Status.CONFLICTS.equals(checkoutResult.getStatus()) && checkoutResult.getConflictList() != null) {
+			sb.append("\nConflicts: ");
+			sb.append("\n");
+			for (String conflict : checkoutResult.getConflictList()) {
+				sb.append(conflict);
+				sb.append("\n");
+			}
+		}
+		
+		if (CheckoutResult.Status.NONDELETED.equals(checkoutResult.getStatus()) &&  checkoutResult.getUndeletedList() != null) {
+			sb.append("\nFailed deleting files: ");
+			sb.append("\n");
+			for (String path : checkoutResult.getUndeletedList()) {
+				sb.append(path);				
+				sb.append("\n");
+			}
+		}		
+		return sb.toString();
+	}
+	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public static RemoteConfig getConfiguredRemote(Repository repository) throws IOException {
 		String branch = repository.getBranch();		
-		if (branch == null)
+		if (branch == null) {
 			return null;
+		}
 
 		String remoteName = null;
 		if (!ObjectId.isId(branch)) {
@@ -332,8 +389,9 @@ public class GitUtils {
 		String compareString;
 
 		branchName = repo.getFullBranch();
-		if (branchName == null)
+		if (branchName == null) {
 			return false;
+		}
 		if (refName.startsWith(Constants.R_HEADS)) {
 			// local branch: HEAD would be on the branch
 			compareString = refName;

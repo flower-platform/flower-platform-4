@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,14 @@ import org.flowerplatform.util.UtilConstants;
 /**
  * @author Mariana Gheorghe
  */
-public class CodeSyncConstants {
+public final class CodeSyncConstants {
 
+	/**
+	 * @author see class
+	 */
+	private CodeSyncConstants() {
+		super();
+	}
 	//////////////////////////////////
 	// Node types and categories
 	//////////////////////////////////
@@ -42,7 +48,7 @@ public class CodeSyncConstants {
 	
 	public static final String MATCH = "match";
 			
-	private static final String getFileExtension(String extension) {
+	private static String getFileExtension(String extension) {
 		return "." + extension;
 	}
 	
@@ -80,7 +86,7 @@ public class CodeSyncConstants {
 	
 	public static final String CHILDREN = "children";
 	
-	public static final String MATCH_TYPE ="matchType";
+	public static final String MATCH_TYPE = "matchType";
 	public static final String MATCH_FEATURE = "feature";
 	public static final String MATCH_MODEL_ELEMENT_TYPE = "modelElementType";
 	public static final String MATCH_CHILDREN_MODIFIED_LEFT = "childrenModifiedLeft";

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,12 +22,24 @@ import org.flowerplatform.core.node.remote.Node;
  */
 public interface IResourceHolder {
 
+	/**
+	 *@author see class
+	 **/
 	IResourceHandler getResourceHandler(String scheme);
 	
+	/**
+	 *@author see class
+	 **/
 	Node getNode(String nodeUri);
 	
+	/**
+	 *@author see class
+	 **/
 	Object getResourceData(String resourceUri);
 	
+	/**
+	 *@author see class
+	 **/
 	void registerResourceData(String resourceUri, Object resourceData);
 	
 }

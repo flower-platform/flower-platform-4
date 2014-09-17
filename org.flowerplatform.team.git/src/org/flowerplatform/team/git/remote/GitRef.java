@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,16 +28,25 @@ public class GitRef implements Comparable<GitRef> {
 	
 	private String type;
 	
+	/**
+	 *@author see class
+	 **/
 	public GitRef() {
 		super();
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public GitRef(String name, String type) {
 		this();
 		this.name = name;
 		this.type = type;
 	}
 
+	/**
+	 *@author see class
+	 **/
 	public GitRef(String name, String type, String fullName) {
 		this(name, type);		
 		this.fullName = fullName;

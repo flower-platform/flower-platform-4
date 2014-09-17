@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,6 +71,9 @@ public abstract class AsAbstractAstModelAdapter extends AstModelElementAdapter {
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected ICompilationUnit getCompilationUnit(IDefinition definition) {
 		IASScope scope = definition.getContainingScope();
 		while (!(scope instanceof ASFileScope)) {
@@ -79,6 +82,9 @@ public abstract class AsAbstractAstModelAdapter extends AstModelElementAdapter {
 		return ((ASFileScope) scope).getCompilationUnit();
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected IDefinition getDefinition(Object element) {
 		return (IDefinition) element;
 	}

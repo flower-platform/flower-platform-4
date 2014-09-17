@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,8 +54,11 @@ public class UploadServlet extends HttpServlet {
 
 	public static final String UPLOAD_SERVLET_NAME = "/servlet/upload";
 	
-	private static final Logger logger = LoggerFactory.getLogger(UploadServlet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UploadServlet.class);
 	
+	/**
+	 *@author see class
+	 **/
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		if (!isMultipart) {
@@ -70,7 +73,7 @@ public class UploadServlet extends HttpServlet {
 			return;
 		}
 		
-		logger.trace("Uploading {}", uploadInfo);
+		LOGGER.trace("Uploading {}", uploadInfo);
 		
 		// create temporary upload location file for archive that needs to be unzipped after
 		File file = new File(uploadInfo.getTmpLocation());

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,8 +103,16 @@ package org.flowerplatform.flex_client.core.editor.remote {
 			_properties = new ObjectProxy(input.readObject());
 		} 
 		
-		public function writeExternal(output:IDataOutput):void { 
-			throw new Error("A Node object cannot come from the client. It can only be served by the server to clients");
+		/**
+		 * Needed when calling ObjectUtil.copy(node) on client.
+		 * 
+		 * @see RichTextWithRendererView
+		 * @author Cristina Constantinescu
+		 */
+		public function writeExternal(output:IDataOutput):void {
+			output.writeObject(type); 
+			output.writeObject(nodeUri); 
+			output.writeObject(ObjectProxy(properties).object); 
 		} 
 		
 		public function toString():String {

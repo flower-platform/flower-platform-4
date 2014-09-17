@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,10 +23,10 @@ package org.flowerplatform.flex_client.properties {
 	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
-	import org.flowerplatform.flex_client.properties.action.AddNodeAction;
 	import org.flowerplatform.flex_client.properties.action.NewComposedAction;
 	import org.flowerplatform.flex_client.properties.action.ShowPreferencesAction;
 	import org.flowerplatform.flex_client.properties.action.ShowPropertiesAction;
+	import org.flowerplatform.flex_client.properties.action.NewSiblingComposedAction;
 	import org.flowerplatform.flex_client.properties.controllers.PreferencePropertyDescriptorProvider;
 	import org.flowerplatform.flex_client.properties.controllers.PropertyDescriptorProvider;
 	import org.flowerplatform.flex_client.properties.controllers.RawPropertyDescriptorProvider;
@@ -81,11 +81,13 @@ package org.flowerplatform.flex_client.properties {
 		
 			FlexUtilGlobals.getInstance().registerAction(ShowPropertiesAction);			
 			FlexUtilGlobals.getInstance().registerAction(NewComposedAction);
+			FlexUtilGlobals.getInstance().registerAction(NewSiblingComposedAction);
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ShowPropertiesAction.ID));
 			
 			CorePlugin.getInstance().getEditorClassFactoryActionProvider().addActionClass(NewComposedAction);
+			CorePlugin.getInstance().getEditorClassFactoryActionProvider().addActionClass(NewSiblingComposedAction);
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new PreferencesViewProvider());
 			CorePlugin.getInstance().registerActionToGlobalMenu(new ShowPreferencesAction());

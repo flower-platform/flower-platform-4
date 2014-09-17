@@ -2,7 +2,7 @@
 <!-- 
 	license-start
  
-	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -55,6 +55,8 @@
 			public var option:String = SHOW_ONLY_CONTRIBUTES_TO_CREATION;
 			
 			public var diagramShellContext:DiagramShellContext;
+			
+			public var siblingNodeUri:String;
 						
 			override protected function creationCompleteHandler(event:FlexEvent):void {
 				super.creationCompleteHandler(event);
@@ -99,6 +101,8 @@
 				var propertiesToSetAfterAddingNode:ArrayList = new ArrayList();
 				var context:ServiceContext = new ServiceContext();
 				context.add("type", nodeType);
+				context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, siblingNodeUri);
+				
 				for (var i:int = 0; i < propertyForm.numElements; i++) {
 					if (propertyForm.getElementAt(i) is PropertyLineRenderer) {
 						var propertyItemRenderer:PropertyLineRenderer = PropertyLineRenderer(propertyForm.getElementAt(i));

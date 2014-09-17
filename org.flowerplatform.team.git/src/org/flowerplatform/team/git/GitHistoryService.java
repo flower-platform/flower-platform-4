@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.team.git;
 
 
@@ -8,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.Constants;
@@ -37,13 +51,12 @@ import org.flowerplatform.util.Utils;
 /**
  * @author Vlad Bogdan Manica
  */
-
 public class GitHistoryService {
 
 	/**
 	 * @author Vlad Bogdan Manica
 	 */
-	public List<String> getCommitedData(String nodeUri, String commitId) throws Exception{
+	public List<String> getCommitedData(String nodeUri, String commitId) throws Exception {
 		
 		List<String> commitedFiles = new ArrayList<String>();
 		String repoPath = Utils.getRepo(nodeUri);
@@ -97,7 +110,7 @@ public class GitHistoryService {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	private List<Ref> getBranches(RevCommit commit, Collection<Ref> allRefs, Repository db) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+	private List<Ref> getBranches(RevCommit commit, Collection<Ref> allRefs, Repository db) throws IOException {
 		RevWalk revWalk = new RevWalk(db);
 		try {
 			revWalk.setRetainBody(false);
@@ -116,11 +129,11 @@ public class GitHistoryService {
 		Repository repo = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		WebWalk walk = getWebWalk(nodeUri);
 		RevCommit commit = walk.parseCommit(repo.resolve(commitId));
-		List<Ref> branches = getBranches((WebCommit)commit, getAllBranches(repo), repo);
+		List<Ref> branches = getBranches((WebCommit) commit, getAllBranches(repo), repo);
 
 		List<String> branchesNames = new ArrayList<String>();
 		for (int i = 0; i < branches.size(); i++) {
-			branchesNames.add( branches.get(i).getName().substring((branches.get(i).getName()).indexOf('/', 5)+1));
+			branchesNames.add(branches.get(i).getName().substring((branches.get(i).getName()).indexOf('/', 5) + 1));
 		}
 		return branchesNames;
 	}
@@ -143,8 +156,8 @@ public class GitHistoryService {
 		List<Node> result = new ArrayList<Node>();
 		
 		for (WebCommit commit : commitsAsArray) {
-			ArrayList<String> parents = new ArrayList<String>();
-			ArrayList<String> childs = new ArrayList<String>();
+			ArrayList<Node> parents = new ArrayList<Node>();
+			ArrayList<Node> children = new ArrayList<Node>();
 			commit.parseBody();
 			
 			Node entry = new Node(nodeUri, null);
@@ -161,7 +174,7 @@ public class GitHistoryService {
 			person = commit.getCommitterIdent();
 			entry.getProperties().put(GitConstants.COMMITTER, person.getName());
 			entry.getProperties().put(GitConstants.COMMITTER_EMAIL, person.getEmailAddress());
-			entry.getProperties().put(GitConstants.COMMITER_DATE, person.getWhen());
+			entry.getProperties().put(GitConstants.COMMITTER_DATE, person.getWhen());
 			
 			WebCommitPlotRenderer renderer = new WebCommitPlotRenderer(nodeUri, commit);
 			renderer.paint();
@@ -169,37 +182,28 @@ public class GitHistoryService {
 			entry.getProperties().put(GitConstants.DRAWINGS, renderer.getDrawings());
 			
 			for (int i = 0; i < commit.getParentCount(); i++) {					
-				WebCommit p = (WebCommit)commit.getParent(i);
+				WebCommit p = (WebCommit) commit.getParent(i);
 				p.parseBody();						
 				Node parent = new Node(nodeUri, null);
-				parent.getProperties().put(GitConstants.COMMIT_ID, p.getId().name());
+				parent.getProperties().put(GitConstants.COMMIT_ID, p.getName());
 				parent.getProperties().put(GitConstants.LABEL, p.getShortMessage());
-				parents.add(p.getName());
-				parents.add(p.getShortMessage());
+				parents.add(parent);
 			}				
-			
-			entry.getProperties().put(GitConstants.PARENT, parents);
+			entry.getProperties().put(GitConstants.PARENTS, parents);
 
 			for (int i = 0; i < commit.getChildCount(); i++) {
-				WebCommit p = (WebCommit)commit.getChild(i);
+				WebCommit p = (WebCommit) commit.getChild(i);
 				p.parseBody();					
 				Node child = new Node(nodeUri, null);
-				child.getProperties().put(GitConstants.COMMIT_ID, p.getId().name());
+				child.getProperties().put(GitConstants.COMMIT_ID, p.getName());
 				child.getProperties().put(GitConstants.LABEL, p.getShortMessage());
-				childs.add(p.getName());
-				childs.add(p.getShortMessage());
+				children.add(child);
 			}			
-			
-			entry.getProperties().put(GitConstants.CHILD, childs);		
+			entry.getProperties().put(GitConstants.CHILDREN, children);		
 			
 			List<String> currentBranches = new ArrayList<String>();
 			for (int i = 0; i < commit.getRefCount(); i++) {
-				int index = commit.getRef(i).getName().lastIndexOf("/");
-				if (index > 0) {
-					currentBranches.add(commit.getRef(i).getName().substring(index+1));
-				} else {
-					currentBranches.add(commit.getRef(i).getName());
-				}
+				currentBranches.add(Repository.shortenRefName(commit.getRef(i).getName())); 
 			}
 			entry.getProperties().put(GitConstants.BRANCHES, currentBranches);
 			
@@ -228,7 +232,7 @@ public class GitHistoryService {
 			setupWalk(walk, repo, null);
 		} else {
 			String file = FileControllerUtils.getFilePathFromNodeUri(nodeUri);
-			if (file != null && file.equals(GitConstants.DOT_GIT_SCHEME)) {
+			if (file != null && file.contains(Constants.DOT_GIT)) {
 				setupWalk(walk, repo, null);
 			} else {
 				setupWalk(walk, repo, file);				
@@ -289,7 +293,7 @@ public class GitHistoryService {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	private void markStartAllRefs(Repository repo, RevWalk walk, String prefix)	throws IOException, MissingObjectException, IncorrectObjectTypeException {
+	private void markStartAllRefs(Repository repo, RevWalk walk, String prefix)	throws IOException {
 		for (Entry<String, Ref> refEntry : repo.getRefDatabase().getRefs(prefix).entrySet()) {
 			Ref ref = refEntry.getValue();
 			if (ref.isSymbolic()) {
@@ -312,23 +316,25 @@ public class GitHistoryService {
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	private void markStartRef(Repository repo, RevWalk walk, Ref ref) throws IOException, IncorrectObjectTypeException {
+	private void markStartRef(Repository repo, RevWalk walk, Ref ref) throws IOException {
 		try {
 			Object refTarget = walk.parseAny(ref.getLeaf().getObjectId());
 			if (refTarget instanceof RevCommit) {
 				walk.markStart((RevCommit) refTarget);
 			}
+			//CHECKSTYLE:OFF
 		} catch (MissingObjectException e) {
 			// If there is a ref which points to Nirvana then we should simply
 			// ignore this ref. We should not let a corrupt ref cause that the
 			// history view is not filled at all
+			//CHECKSTYLE:ON
 		}
 	}
 
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	private void markUninteresting(Repository repo, RevWalk walk, String prefix) throws IOException, MissingObjectException, IncorrectObjectTypeException {
+	private void markUninteresting(Repository repo, RevWalk walk, String prefix) throws IOException {
 		for (Entry<String, Ref> refEntry : repo.getRefDatabase().getRefs(prefix).entrySet()) {
 			Ref ref = refEntry.getValue();
 			if (ref.isSymbolic()) {

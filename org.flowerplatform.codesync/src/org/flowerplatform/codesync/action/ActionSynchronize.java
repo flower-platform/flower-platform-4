@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,17 +18,21 @@ package org.flowerplatform.codesync.action;
 import org.flowerplatform.codesync.Diff;
 import org.flowerplatform.codesync.Match;
 
+/**
+ *@author Mariana Gheorghe
+ **/
 public class ActionSynchronize {
 
-	public static ActionSynchronize INSTANCE = new ActionSynchronize();
+	public static final ActionSynchronize INSTANCE = new ActionSynchronize();
 	
 	/**
 	 * @author Cristi
 	 * @author Mariana
 	 */
 	public ActionResult[] execute(Match match) {
-		if (match.isConflict() || match.isChildrenConflict())
+		if (match.isConflict() || match.isChildrenConflict()) {
 			throw new IllegalArgumentException("The match (or one of its children) are conflicted.");
+		}
 		boolean childrenConflict = false;
 		boolean childrenModifiedLeft = false;
 		boolean childrenModifiedRight = false;

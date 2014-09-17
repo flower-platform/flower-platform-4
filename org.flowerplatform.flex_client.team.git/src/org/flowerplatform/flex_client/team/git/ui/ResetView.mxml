@@ -2,7 +2,7 @@
 <!-- 
 	license-start
  
-	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -28,22 +28,31 @@
 		<![CDATA[
 			import mx.events.FlexEvent;
 			
-			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.team.git.GitConstants;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.Utils;
 			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
 			import org.flowerplatform.flexutil.tree.HierarchicalModelWrapper;
 			
 			public var node:Node;
+			
+			// used for Git History View
+			[Bindable]
+			public var useNodeAsCommitId:Boolean;
 				
 			override protected function creationCompleteHandler(event:FlexEvent):void {
 				tree.initializeTree(CorePlugin.getInstance().createNodeUriWithRepo(
 					GitConstants.GIT_SCHEME, 
 					CorePlugin.getInstance().getRepository(node.nodeUri), 
 					GitConstants.GIT_REPO_TYPE));
+				if (useNodeAsCommitId) {					
+					Utils.makePseudoDisabled(textInput);
+					textInput.text = node.getPropertyValue(GitConstants.ID);
+					tree.visible = tree.includeInLayout = false;
+				}
 			}
 			
 			private function viewRemovedHandler(event:ViewRemovedEvent):void {
@@ -51,11 +60,13 @@
 			}
 			
 			protected function treeClickHandler(event:MouseEvent):void {
-				var selectedNode:Node = Node(HierarchicalModelWrapper(tree.selectedItem).treeNode);
-				if(selectedNode.type == GitConstants.GIT_LOCAL_BRANCH_TYPE ||
-					selectedNode.type == GitConstants.GIT_REMOTE_BRANCH_TYPE ||
-					selectedNode.type == GitConstants.GIT_TAG_TYPE){
-					textInput.text = selectedNode.getPropertyValue(GitConstants.FULL_NAME);
+				if (tree.selectedItem != null) {
+					var selectedNode:Node = Node(HierarchicalModelWrapper(tree.selectedItem).treeNode);
+					if(selectedNode.type == GitConstants.GIT_LOCAL_BRANCH_TYPE ||
+						selectedNode.type == GitConstants.GIT_REMOTE_BRANCH_TYPE ||
+						selectedNode.type == GitConstants.GIT_TAG_TYPE){
+						textInput.text = selectedNode.getPropertyValue(GitConstants.FULL_NAME);
+					}	
 				}
 			}
 			

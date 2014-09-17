@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,9 @@ public class JavaTypeProvider extends FileTypeProvider {
 
 	private Map<Class<?>, String> directMap = new HashMap<Class<?>, String>();
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public JavaTypeProvider() {
 		directMap.put(EnumDeclaration.class, ENUM);
 		directMap.put(AnnotationTypeDeclaration.class, ANNOTATION_TYPE);
@@ -87,8 +90,8 @@ public class JavaTypeProvider extends FileTypeProvider {
 		} else if (object instanceof Expression || object instanceof Type) {
 			ASTNode node = (ASTNode) object;
 			StructuralPropertyDescriptor descriptor = node.getLocationInParent();
-			if (descriptor.equals(TypeDeclaration.SUPER_INTERFACE_TYPES_PROPERTY) ||
-					descriptor.equals(EnumDeclaration.SUPER_INTERFACE_TYPES_PROPERTY)) {
+			if (descriptor.equals(TypeDeclaration.SUPER_INTERFACE_TYPES_PROPERTY) 
+					|| descriptor.equals(EnumDeclaration.SUPER_INTERFACE_TYPES_PROPERTY)) {
 				return SUPER_INTERFACE;
 			} else if (descriptor.equals(EnumConstantDeclaration.ARGUMENTS_PROPERTY)) {
 				return ENUM_CONSTANT_ARGUMENT;

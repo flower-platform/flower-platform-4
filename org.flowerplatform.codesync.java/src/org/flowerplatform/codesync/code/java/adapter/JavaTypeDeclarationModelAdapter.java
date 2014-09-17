@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
-import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
@@ -44,6 +43,9 @@ import org.flowerplatform.core.CoreConstants;
  */
 public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAdapter {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public JavaTypeDeclarationModelAdapter() {
 		valueFeatures.add(CodeSyncJavaConstants.DOCUMENTATION);
 		valueFeatures.add(CodeSyncJavaConstants.SUPER_CLASS);
@@ -176,6 +178,9 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, modelAdapterSet, codeSyncAlgorithm);
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected ASTNode createCorrespondingModelElement(AST ast, String type) {
 		ASTNode child = null;
 		if (CodeSyncJavaConstants.CLASS.equals(type)) {

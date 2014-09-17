@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,15 +40,22 @@ package org.flowerplatform.flex_client.properties.action {
 		
 		public var childType:String;
 		
-		public function AddNodeAction(descriptor:AddChildDescriptor = null)	{
+		public var asSibling:Boolean;
+		
+		public var siblingNodeUri:String;
+		
+		public function AddNodeAction(descriptor:AddChildDescriptor = null, asSibling:Boolean = false, childNodeUri:String = null) {
 			super();
 			
 			childType = descriptor.childType;
-				
+					
 			label = descriptor.label;
 			icon = descriptor.icon;
 			orderIndex = descriptor.orderIndex;
-			parentId = NewComposedAction.ID;
+			
+			this.asSibling = asSibling;
+			this.siblingNodeUri = childNodeUri;
+			this.parentId = asSibling ? NewSiblingComposedAction.ID : NewComposedAction.ID; 
 		}
 		
 		override public function get visible():Boolean {			
@@ -63,7 +70,13 @@ package org.flowerplatform.flex_client.properties.action {
 			var context:ServiceContext = new ServiceContext();
 			context.add("type", childType);
 			
-			var parentNode:Node = Node(selection.getItemAt(0));
+			var parentNode:Node;
+			if (asSibling == true) {
+				context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, siblingNodeUri);
+				parentNode = Node(selection.getItemAt(0)).parent;
+			} else {
+				parentNode = Node(selection.getItemAt(0));
+			}
 			
 			var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
 				.getExpectedTypeDescriptor(childType).getAdditiveControllers(CoreConstants.PROPERTY_DESCRIPTOR, null);
@@ -81,6 +94,7 @@ package org.flowerplatform.flex_client.properties.action {
 				createNodeView.parentNode = parentNode;
 				createNodeView.nodeType = childType;
 				createNodeView.diagramShellContext = diagramShellContext;
+				createNodeView.siblingNodeUri = siblingNodeUri;
 				
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 					.setTitle(Resources.getMessage("action.new.label", [label]))
