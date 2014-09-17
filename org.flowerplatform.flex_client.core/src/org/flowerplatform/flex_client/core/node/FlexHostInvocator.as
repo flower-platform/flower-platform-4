@@ -4,6 +4,8 @@ package org.flowerplatform.flex_client.core.node {
 	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.js_client.common_js_as.node.IHostInvocator;
+	
 	
 	/**
 	 * @author Cristina Constantinescu

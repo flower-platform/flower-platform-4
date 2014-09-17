@@ -24,12 +24,13 @@ package org.flowerplatform.flex_client.core.node {
 	import org.flowerplatform.flex_client.core.editor.action.SaveAction;
 	import org.flowerplatform.flex_client.core.editor.action.SaveAllAction;
 	import org.flowerplatform.flex_client.core.editor.action.ShowCommandStackAction;
+	import org.flowerplatform.flex_client.core.editor.ui.ResourceNodesListView;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
-	import org.flowerplatform.flex_client.core.editor.ui.ResourceNodesListView;
+	import org.flowerplatform.js_client.common_js_as.node.IHostResourceOperationsHandler;
 	
 	/**
 	 * @author Cristina Constantinescu

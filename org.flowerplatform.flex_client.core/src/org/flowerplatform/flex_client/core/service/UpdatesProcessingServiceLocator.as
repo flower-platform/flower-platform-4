@@ -21,18 +21,16 @@ package org.flowerplatform.flex_client.core.service {
 	import mx.messaging.ChannelSet;
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.Fault;
-	import mx.rpc.events.FaultEvent;
-	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
-	import org.flowerplatform.flex_client.core.node.IHostServiceInvocator;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.service.ServiceResponder;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
+	import org.flowerplatform.js_client.common_js_as.node.IHostServiceInvocator;
 
 	/**
 	 * Custom behavior to get updates registered after each message invocation.

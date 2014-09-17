@@ -13,20 +13,14 @@
  * 
  * license-end
  */
-package org.flowerplatform.flex_client.core.node {
-	
-	import org.flowerplatform.flex_client.core.editor.remote.Node;
-
+package org.flowerplatform.js_client.common_js_as.node {
+		
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public interface INodeChangeListener {
-		
-		function nodeRemoved(node:Node):void;
-		
-		function nodeAdded(node:Node):void;
-		
-		function nodeUpdated(node:Node, property:String, oldValue:Object, newValue:Object):void;
+	public interface IHostServiceInvocator {
+	
+		function invoke(serviceIdAndMethodName:String, parameters:Array = null, resultCallback:Function = null, faultCallback:Function = null):void;
 		
 	}
 }

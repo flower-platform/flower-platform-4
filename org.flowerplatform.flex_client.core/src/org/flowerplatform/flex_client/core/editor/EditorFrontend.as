@@ -24,7 +24,6 @@ package org.flowerplatform.flex_client.core.editor {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.INodeRegistryManagerListener;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
@@ -35,6 +34,7 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
+	import org.flowerplatform.js_client.common_js_as.node.INodeRegistryManagerListener;
 	
 	/**
 	 * @author Mariana Gheorghe

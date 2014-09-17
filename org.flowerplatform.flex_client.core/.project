@@ -26,4 +26,11 @@
 		<nature>com.adobe.flexbuilder.project.flexlibnature</nature>
 		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src_flex_common_js_as</name>
+			<type>2</type>
+			<location>PARENT-1-PROJECT_LOC/org.flowerplatform.js_client.common_js_as/src_flex</location>
+		</link>
+	</linkedResources>
 </projectDescription>

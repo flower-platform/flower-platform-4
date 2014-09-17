@@ -13,7 +13,7 @@
  * 
  * license-end
  */
-package org.flowerplatform.flex_client.core.node {
+package org.flowerplatform.js_client.common_js_as.node {
 	import mx.collections.IList;
 	
 	/**

@@ -55,7 +55,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.link.LinkView;
 	import org.flowerplatform.flex_client.core.node.FlexHostInvocator;
 	import org.flowerplatform.flex_client.core.node.FlexHostResourceOperationsHandler;
-	import org.flowerplatform.flex_client.core.node.IHostServiceInvocator;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.ResourceDebugControllers;
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
@@ -87,6 +86,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.spinner.ModalSpinner;
+	import org.flowerplatform.js_client.common_js_as.node.IHostServiceInvocator;
 
 	/**
 	 * @author Cristian Spiescu
