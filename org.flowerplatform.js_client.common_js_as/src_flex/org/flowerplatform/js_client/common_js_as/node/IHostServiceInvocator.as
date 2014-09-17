@@ -16,6 +16,9 @@
 package org.flowerplatform.js_client.common_js_as.node {
 		
 	/**
+	 * Implemented within the host system. The implementation should invoke the
+	 * service methods on the server.
+	 * 
 	 * @author Cristina Constantinescu
 	 */
 	public interface IHostServiceInvocator {

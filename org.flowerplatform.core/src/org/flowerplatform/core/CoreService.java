@@ -29,6 +29,9 @@ public class CoreService {
 				.get().getSession().getId();
 	}
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	@PUT @Path("/login")
 	public void login() {
 		

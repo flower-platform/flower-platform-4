@@ -26,6 +26,9 @@ public class SubscriptionInfo {
 	
 	private String resourceSet;
 
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public SubscriptionInfo() {	
 	}
 

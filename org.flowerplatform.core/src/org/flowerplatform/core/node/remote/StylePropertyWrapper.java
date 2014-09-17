@@ -37,6 +37,9 @@ public class StylePropertyWrapper extends PropertyWrapper {
 		//CHECKSTYLE:ON
 	}
 
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public StylePropertyWrapper() {
 		super();		
 	}	

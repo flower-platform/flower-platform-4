@@ -19,6 +19,10 @@ package org.flowerplatform.js_client.common_js_as.node {
 	import org.flowerplatform.flex_client.core.editor.remote.FullNodeIdWithChildren;
 	
 	/**
+	 * Implemented within the host system. Some of the methods are factory methods, i.e.
+	 * the host implementation creates instances that will be managed by the JS code. And
+	 * other methods perform various tasks within the host system.
+	 *
 	 * @author Cristina Constantinescu
 	 */
 	public interface IHostInvocator {

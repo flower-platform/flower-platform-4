@@ -129,6 +129,17 @@ package org.flowerplatform.flex_client.core {
 		}
 
 		/**
+		 * The underlying variable is from the global namespace, defined within the js file.
+		 */
+		public function get nodeRegistryManager():* {
+			return _nodeRegistryManager;
+		}
+		
+		public function get resourceNodesManager():FlexHostResourceOperationsHandler {
+			return FlexHostResourceOperationsHandler(nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler);
+		}
+		
+		/**
 		 * key = command name as String (e.g. "openResources")
 		 * value = parameters as String (e.g. text://file1,file2,file3)
 		 */ 
@@ -147,15 +158,7 @@ package org.flowerplatform.flex_client.core {
 		public function getEditorClassFactoryActionProvider():ClassFactoryActionProvider {
 			return editorClassFactoryActionProvider;
 		}
-		
-		public function get nodeRegistryManager():* {
-			return _nodeRegistryManager;
-		}
-		
-		public function get resourceNodesManager():FlexHostResourceOperationsHandler {
-			return FlexHostResourceOperationsHandler(nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler);
-		}
-		
+			
 		override public function preStart():void {
 			super.preStart();
 			if (INSTANCE != null) {

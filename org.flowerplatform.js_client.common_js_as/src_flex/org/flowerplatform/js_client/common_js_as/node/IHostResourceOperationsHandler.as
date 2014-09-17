@@ -17,6 +17,8 @@ package org.flowerplatform.js_client.common_js_as.node {
 	import mx.collections.IList;
 	
 	/**
+	 * Implemented within the host system. 
+	 * 
 	 * @author Cristina Constantinescu
 	 */
 	public interface IHostResourceOperationsHandler	{

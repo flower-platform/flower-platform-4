@@ -15,10 +15,6 @@
  */
 package org.flowerplatform.core.node.remote;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
-
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceSetService;
