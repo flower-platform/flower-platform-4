@@ -648,6 +648,9 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/team.git/copy.gif")]
 		public static const copy:Class;
+		
+		[Embed(source="/team.git/new_tag_obj.gif")]
+		public static const createTag:Class;
 	}
 }
 		

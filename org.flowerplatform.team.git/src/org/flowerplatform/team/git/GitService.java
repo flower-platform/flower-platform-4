@@ -33,6 +33,7 @@ import static org.flowerplatform.team.git.GitConstants.NETWORK_TIMEOUT_SEC;
 import static org.flowerplatform.team.git.GitConstants.PREVIOUS_AUTHOR;
 import static org.flowerplatform.team.git.GitConstants.PREVIOUS_COMMIT_MESSAGE;
 import static org.flowerplatform.team.git.GitConstants.TEPORARY_LOCATION;
+import static org.flowerplatform.team.git.GitConstants.GIT_TAGS_TYPE;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -58,6 +59,7 @@ import org.eclipse.jgit.api.MergeCommand.FastForwardMode;
 import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.RebaseResult;
+import org.eclipse.jgit.api.TagCommand;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.RevertCommand;
 import org.eclipse.jgit.api.Status;
@@ -1001,6 +1003,32 @@ public class GitService {
 		for (String file : filesToRemove) {
 			git.reset().addPath(file).call();
 		}
-	}	
+	}
+	
+	/**
+	 * @author Cristina Brinza
+	 * 
+	 * Create Tag
+	 */
+	public void createTag(String nodeUri, String tagName, String tagMessage, String commitId, boolean forceUpdate) throws Exception {
+		String repoPath = Utils.getRepo(nodeUri);
+		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
+		
+		TagCommand tagCommand = new Git(repository).tag().setName(tagName).setMessage(tagMessage).setForceUpdate(forceUpdate);
+		if (!commitId.equals("")) {
+			 ObjectId id = repository.resolve(commitId);
+			 RevWalk walk = new RevWalk(repository);
+			 RevCommit commit = walk.parseCommit(id);
+			 tagCommand.setObjectId(commit);
+		}
+		tagCommand.call();
+		
+		// refresh Tags node
+		String tagsUri = GitUtils.getNodeUri(repoPath, GIT_TAGS_TYPE);
+		CorePlugin.getInstance().getResourceSetService().addUpdate(
+				CorePlugin.getInstance().getResourceService().getNode(tagsUri), 
+				new Update().setFullNodeIdAs(tagsUri).setTypeAs(UPDATE_REQUEST_REFRESH), 
+				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+	}
 }
 
