@@ -10,15 +10,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
+import org.apache.oltu.oauth2.client.response.GitHubTokenResponse;
 import org.apache.oltu.oauth2.client.response.OAuthAuthzResponse;
-import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
+import org.apache.oltu.oauth2.common.OAuthProviderType;
+import org.apache.oltu.oauth2.common.domain.credentials.BasicCredentialsBuilder;
+import org.apache.oltu.oauth2.common.domain.credentials.Credentials;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
+import org.flowerplatform.core.CorePlugin;
 
 /**
- * Client application redirection endpoint. Trades the authorization
- * code for a token that will be used to obtain protected resources.
+ * Client application redirection endpoint. Trades the authorization code for a
+ * token that will be used to obtain protected resources from the resource server.
  * 
  * @author Mariana Gheorghe
  */
@@ -28,40 +32,45 @@ public class OAuth2RedirectServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String code = null;
 		try {
-			OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(req);
-			code = oar.getCode();
-		} catch (OAuthProblemException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+			// get authorization code and provider from the request
+			OAuthAuthzResponse authAuthzResponse = OAuthAuthzResponse.oauthCodeAuthzResponse(req);
+			String code = authAuthzResponse.getCode();
+			String provider = authAuthzResponse.getParam("provider").toUpperCase();
 
-		System.out.println("REDIRECTED " + code);
+			// get token location and client credentials based on provider
+			String tokenLocation = OAuthProviderType.valueOf(provider).getTokenEndpoint();
+			Credentials credentials = getCredentials(provider);
 
-		try {
+			// create token request
 			OAuthClientRequest oauthRequest = OAuthClientRequest
-					.tokenLocation("http://localhost:8080/org.flowerplatform.host.web_app/oauth/token")
+					.tokenLocation(tokenLocation)
+					.setClientId(credentials.getClientId())
+					.setClientSecret(credentials.getClientSecret())
 					.setGrantType(GrantType.AUTHORIZATION_CODE)
-					.setClientId("clientId")
-					.setClientSecret("clientSecret")
-					.setRedirectURI("http://localhost:8080/org.flowerplatform.host.web_app/")
-					.setCode(code).buildQueryMessage();
+					.setCode(code)
+					.buildQueryMessage();
 
-			// create OAuth client that uses custom http client under the hood
-			OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
-
-			OAuthJSONAccessTokenResponse oAuthResponse = oAuthClient.accessToken(oauthRequest, OAuthJSONAccessTokenResponse.class);
-
-			String accessToken = oAuthResponse.getAccessToken();
-			Long expiresIn = oAuthResponse.getExpiresIn();
-			System.out.println("GET TOKEN " + accessToken);
-
+			// sync call to get token
+			OAuthClient oauthClient = new OAuthClient(new URLConnectionClient());
+			GitHubTokenResponse oauthTokenResponse = oauthClient.accessToken(oauthRequest, GitHubTokenResponse.class);
+			
+			String accessToken = oauthTokenResponse.getAccessToken();
+			
+			// forward to login servlet
+			req.getRequestDispatcher("/oauth/login?provider=" + provider + "&accessToken=" + accessToken).forward(req, resp);
 		} catch (OAuthSystemException | OAuthProblemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-
+	}
+	
+	private Credentials getCredentials(String provider) {
+		String clientId = CorePlugin.getInstance().getFlowerProperties().getProperty("oauth.clientId." + provider);
+		String clientSecret = CorePlugin.getInstance().getFlowerProperties().getProperty("oauth.clientSecret." + provider);
+		return BasicCredentialsBuilder.credentials()
+				.setClientId(clientId)
+				.setClientSecret(clientSecret)
+				.build();
 	}
 
 }

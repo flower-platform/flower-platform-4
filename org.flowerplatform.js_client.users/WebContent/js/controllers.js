@@ -39,11 +39,31 @@ flowerProject.lazy.controller('AuthCtrl',  ['$scope', '$location', 'Auth',
 			redirectToMain();
 		};
 	
+		var redirectUri = 'http://localhost:8080/org.flowerplatform.host.web_app/oauth/redirect';
+		
+		var providers = {
+			'github': {
+				uri		  : 'https://github.com/login/oauth/authorize',
+				client_id : 'a4101c760942cd94905f',
+				scope	  : 'user'
+			}
+		}
+		
 		// bound to form view
 		$scope.loginInfo = {};
 	
-		$scope.performLogin = function() {
-			Auth.performLogin($scope.loginInfo).$promise.then(keepLogin);
+		$scope.performLogin = function(provider) {
+			logger.debug(provider);
+			if (provider != undefined) {
+				var auth = providers[provider].uri;
+				auth += '?client_id=' + providers[provider].client_id;
+				auth += '&scope=' + providers[provider].scope;
+				auth += '&redirect_uri=' + redirectUri + '?provider=' + provider;
+				logger.debug(auth);
+				document.location.href = auth;
+			} else {
+				Auth.performLogin($scope.loginInfo).$promise.then(keepLogin);
+			}
 		}
  	
 }]);

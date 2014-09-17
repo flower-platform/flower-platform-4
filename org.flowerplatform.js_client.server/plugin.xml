@@ -15,8 +15,15 @@
    <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
-            alias="/login"
-            class="org.flowerplatform.js_client.server.UserValidatorServlet">
+            alias="/oauth/redirect"
+            class="org.flowerplatform.js_client.server.oauth.OAuth2RedirectServlet">
+      </servlet>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+            alias="/oauth/login"
+            class="org.flowerplatform.js_client.server.oauth.OAuth2LoginServlet">
       </servlet>
    </extension>
    <extension
@@ -24,13 +31,6 @@
       <servlet
             alias="/oauth/authorize"
             class="org.flowerplatform.js_client.server.oauth.OAuth2AuthorizationServlet">
-      </servlet>
-   </extension>
-   <extension
-         point="org.eclipse.equinox.http.registry.servlets">
-      <servlet
-            alias="/oauth/redirect"
-            class="org.flowerplatform.js_client.server.oauth.OAuth2RedirectServlet">
       </servlet>
    </extension>
    <extension

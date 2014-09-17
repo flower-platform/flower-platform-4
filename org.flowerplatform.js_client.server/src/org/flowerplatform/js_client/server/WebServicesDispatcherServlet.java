@@ -26,10 +26,7 @@ public class WebServicesDispatcherServlet extends ServletContainer {
 			if (sessionIdFromFlex != null) {
 				String sessionId = request.getSession().getId();
 				if (!sessionIdFromFlex.equals(sessionId)) {
-					String contextPath = request.getContextPath();
-					boolean secure = request.isSecure();
-					String setCookie = String.format("JSESSIONID=%s; Path=%s/; HttpOnly" + (secure ? "; Secure" : ""), sessionIdFromFlex, contextPath);
-					response.addHeader("Set-Cookie", setCookie);
+					JsClientServerPlugin.getInstance().setCookie(request, response, "JSESSIONID", sessionIdFromFlex, true);
 				}
 			}
 

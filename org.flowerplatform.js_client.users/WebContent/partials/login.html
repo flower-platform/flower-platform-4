@@ -1,6 +1,12 @@
 <form class="well col-sm-4" role="form">
 
 	<div class="form-group">
+		<button type="submit" class="btn btn-primary" ng-click="performLogin('github')">
+			<i class="icon-ok icon-white"></i> Sign in with GitHub
+		</button>
+	</div>
+
+	<div class="form-group">
 		<label class="control-label required">Username</label> 
 		<input type="text" class="form-control" ng-model="loginInfo.username">
 	</div>

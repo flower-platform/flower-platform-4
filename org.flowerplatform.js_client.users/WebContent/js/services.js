@@ -26,21 +26,21 @@ flowerProject.lazy.factory('Auth', ['$resource', function($resource) {
 		performLogout: 	{ method: 'POST', params: { op: 'logout' } }
 	});
 	
-	var key_currentUser = 'currentUser';
+	var key_currentUser = 'current_user';
 	
 	/**
 	 * Getter/setter for current user cookie.
 	 */
-	f.currentUser = function(val) { 
+	f.currentUser = function(val) {
 		if (val !== undefined) {
-			// set
+			logger.debug('set current user');
 			if (val == null) {
 				$.removeCookie(key_currentUser);
 			} else {
 				$.cookie(key_currentUser, val);
 			}
 		} else {
-			// get
+			logger.debug('get current user');
 			return $.cookie(key_currentUser);
 		}
 	};

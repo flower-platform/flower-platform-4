@@ -43,3 +43,4 @@ Import-Package: javax.servlet,
 Eclipse-RegisterBuddy: org.flowerplatform.util
 Bundle-ActivationPolicy: lazy
 Export-Package: com.fasterxml.jackson.databind
+Bundle-Activator: org.flowerplatform.js_client.server.JsClientServerPlugin
