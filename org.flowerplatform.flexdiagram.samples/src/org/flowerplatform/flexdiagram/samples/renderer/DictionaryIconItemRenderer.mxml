@@ -32,8 +32,8 @@
 		</s:Rect>
 		
 		<s:HGroup id="group">
-			<mx:Label id="labelKey"/>
-			<mx:Label id="labelValue" />
+			<s:Label id="labelKey"/>
+			<s:Label id="labelValue" />
 		</s:HGroup>
 	</s:Group>
 	

@@ -28,6 +28,8 @@ package org.flowerplatform.flexutil {
 		public static const COMMAND:String = "COMMAND";
 		public static const SHIFT:String = "SHIFT";
 		public static const ALTERNATE:String = "ALTERNATE";
+		public static const PROPERTY_DESCRIPTOR:String = "propertyDescriptor";
+
 		
 	}
 }

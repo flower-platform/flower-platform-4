@@ -18,7 +18,7 @@
 <s:Application implements="org.flowerplatform.flexdiagram.samples.IModelHolder"
 			   xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:props="org.flowerplatform.flexutil.properties.ui.*"
+			   xmlns:ns="org.flowerplatform.flexutil.samples.properties_component_sample.*"
 			   creationComplete="creationCompleteHandler(event)"
 			   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:samples="org.flowerplatform.flexdiagram.samples.*" xmlns:flexdiagram="org.flowerplatform.flexdiagram.*" xmlns:renderer="org.flowerplatform.flexdiagram.renderer.*" xmlns:infinitegroup="org.flowerplatform.flexdiagram.util.infinitegroup.*" xmlns:mindmap="org.flowerplatform.flexdiagram.samples.mindmap.*" xmlns:mindmap1="org.flowerplatform.flexdiagram.mindmap.*">
 	<fx:Script>
@@ -70,7 +70,7 @@
 				var context:DiagramShellContext = diagramShell.getNewDiagramShellContext();
 				MindMapDiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {ControllerUtils.getMindMapModelController(context, diagramShell.getRoot(context)).setExpanded(context, diagramShell.getRoot(context), true)});
 			
-				propertiesComponent.refreshForm(rootModel,true);
+			//	propertiesComponent.refreshForm(rootModel,true);
 
 			}
 			
@@ -89,6 +89,5 @@
 	<infinitegroup:InfiniteScroller id="scroller" width="100%" height="100%" >
 		<mindmap1:MindMapDiagramRenderer id="diagramRenderer" viewPortRectOffsetTowardOutside="0" width="100%" height="100%" />
 	</infinitegroup:InfiniteScroller>	
-	<props:PropertiesComponent width="50%" height="100%" id="propertiesComponent"/>
-
+	<ns:ListWithPropertiesSample width="50%" height="100%" id="propertiesComponent"/>
 </s:Application>

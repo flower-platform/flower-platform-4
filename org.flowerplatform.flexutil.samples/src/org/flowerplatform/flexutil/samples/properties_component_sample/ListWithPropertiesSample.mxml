@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:ns="org.flowerplatform.flexutil.properties.ui.*"
+		 creationComplete="creationCompleteHandler(event)">
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			
+			import spark.events.ListEvent;
+			
+			import org.flowerplatform.flexutil.FlexUtilConstants;
+			import org.flowerplatform.flexutil.Pair;
+			import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
+			import org.flowerplatform.flexutil.properties.PropertiesConstants;
+			import org.flowerplatform.flexutil.properties.PropertiesHelper;
+			import org.flowerplatform.flexutil.properties.remote.PropertyDescriptor;
+			
+			[Bindable]
+			public var objectsList:ArrayCollection = new ArrayCollection();
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				itemsList.addEventListener(mx.events.ListEvent.ITEM_CLICK, listClickHandler);
+				PropertiesHelper.getInstance().nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
+				
+				var propertyDescriptor:PropertyDescriptor = new PropertyDescriptor();
+				propertyDescriptor.propertyLineRenderer = PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_CATEGORY;
+				propertyDescriptor.type = PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_STRING
+				propertyDescriptor.name = "a";
+				
+				//.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_NUMBER_STEPPER)
+				//	.setNameAs(MIN_WIDTH).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
+				//	.setCategoryAs(resourcesPlugin.getMessage("nodeShape")).setOrderIndexAs(300)
+					
+				PropertiesHelper.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("pair")
+					.addAdditiveController(FlexUtilConstants.PROPERTY_DESCRIPTOR, propertyDescriptor);
+					
+					
+				var pair1:Pair = new Pair();
+				pair1.a = 1;
+				pair1.b = 2;
+				objectsList.addItem(pair1);
+				var pair2:Pair = new Pair();
+				pair2.a = 3;
+				pair2.b = 4;
+				objectsList.addItem(pair2);
+				
+			}
+			
+			public function listClickHandler(event:MouseEvent):void {
+				propertiesComponent.refreshForm(itemsList.selectedItem);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
+	<s:List id="itemsList" dataProvider="{objectsList}" />
+	
+	<ns:PropertiesComponent id="propertiesComponent"/>
+</s:Group>
