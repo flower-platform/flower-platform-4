@@ -1015,7 +1015,7 @@ public class GitService {
 		Repository repository = GitUtils.getRepository(FileControllerUtils.getFileAccessController().getFile(repoPath));
 		
 		TagCommand tagCommand = new Git(repository).tag().setName(tagName).setMessage(tagMessage).setForceUpdate(forceUpdate);
-		if (!commitId.equals("")) {
+		if (!commitId.isEmpty()) {
 			 ObjectId id = repository.resolve(commitId);
 			 RevWalk walk = new RevWalk(repository);
 			 RevCommit commit = walk.parseCommit(id);
