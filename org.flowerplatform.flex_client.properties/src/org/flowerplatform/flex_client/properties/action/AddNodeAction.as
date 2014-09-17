@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.flex_client.properties.action {
 	
+	import flash.utils.Dictionary;
+	
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
@@ -22,7 +24,6 @@ package org.flowerplatform.flex_client.properties.action {
 	import org.flowerplatform.flex_client.core.editor.action.DiagramShellAwareActionBase;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flex_client.properties.ui.CreateNodeView;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -40,15 +41,25 @@ package org.flowerplatform.flex_client.properties.action {
 		
 		public var childType:String;
 		
-		public function AddNodeAction(descriptor:AddChildDescriptor = null)	{
+		public var asSibling:Boolean;
+		
+		public var childNodeUri:String;
+		
+		public function AddNodeAction(descriptor:AddChildDescriptor = null, asSibling:Boolean = false, childNodeUri:String = null) {
 			super();
 			
 			childType = descriptor.childType;
-				
+					
 			label = descriptor.label;
 			icon = descriptor.icon;
 			orderIndex = descriptor.orderIndex;
-			parentId = NewComposedAction.ID;
+			if (asSibling == true) {
+				this.asSibling = true;
+				this.childNodeUri = childNodeUri;
+				parentId = SiblingComposedAction.ID;
+			} else {
+				parentId = NewComposedAction.ID;				
+			}
 		}
 		
 		override public function get visible():Boolean {			
@@ -60,10 +71,14 @@ package org.flowerplatform.flex_client.properties.action {
 		 * @author Sebastian Solomon
 		 */
 		override public function run():void {
-			var context:ServiceContext = new ServiceContext();
-			context.add("type", childType);
-			
-			var parentNode:Node = Node(selection.getItemAt(0));
+			var context:Object = new Object();
+			context["type"] = childType;
+			if (asSibling == true) {
+				context[CoreConstants.INSERT_BEFORE_FULL_NODE_ID] = childNodeUri;
+				parentNode =  Node(selection.getItemAt(0)).parent;
+			} else {
+				var parentNode:Node = Node(selection.getItemAt(0));
+			}
 			
 			var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
 				.getExpectedTypeDescriptor(childType).getAdditiveControllers(CoreConstants.PROPERTY_DESCRIPTOR, null);

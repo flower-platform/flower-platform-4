@@ -5,21 +5,22 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.flowerplatform.js_client.java.ClientNode;
-import org.flowerplatform.js_client.java.ClientSubscriptionInfo;
-import org.flowerplatform.js_client.java.INodeChangeListener;
+import org.flowerplatform.core.node.remote.SubscriptionInfo;
 import org.flowerplatform.js_client.java.JsClientJavaUtils;
-import org.flowerplatform.js_client.java.JsExternalInvocator;
-import org.flowerplatform.js_client.java.JsList;
-import org.flowerplatform.js_client.java.JsResourceOperationsHandler;
+import org.flowerplatform.js_client.java.node.ClientNode;
+import org.flowerplatform.js_client.java.node.INodeChangeListener;
+import org.flowerplatform.js_client.java.node.JavaHostInvocator;
+import org.flowerplatform.js_client.java.node.JavaHostResourceOperationsHandler;
 import org.flowerplatform.tests.js_client.java.JSClientJavaTestUtils.RecordingServiceInvocator;
 import org.flowerplatform.util.Pair;
 import org.junit.AfterClass;
@@ -39,20 +40,35 @@ public class JsClientNodeRegistryManagerTest {
 	private static Context ctx;
 	private static Scriptable scope;
 	
+	/**
+	 * @author see class
+	 * @throws Exception
+	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		ctx = Context.enter();
 		scope = ctx.initStandardObjects();	
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/").getAbsolutePath() + "/../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistry.js"), StandardCharsets.UTF_8), null, 1, null);
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/").getAbsolutePath() + "/../../org.flowerplatform.js_client.core/WebContent/js/node_registry/ResourceOperationsManager.js"), StandardCharsets.UTF_8), null, 1, null);
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/").getAbsolutePath() + "/../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistryManager.js"), StandardCharsets.UTF_8), null, 1, null);		
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/")
+				.getAbsolutePath() + "/../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistry.js"), StandardCharsets.UTF_8), null, 1, null);
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/")
+				.getAbsolutePath() + "/../../org.flowerplatform.js_client.core/WebContent/js/node_registry/ResourceOperationsManager.js"), StandardCharsets.UTF_8), null, 1, null);
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/")
+				.getAbsolutePath() + "/../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistryManager.js"), StandardCharsets.UTF_8), null, 1, null);		
 	}
 	
+	/**
+	 * @author see class
+	 * @throws Exception
+	 */
 	@AfterClass
 	public static void setUpAfterClass() throws Exception {
 		Context.exit();
 	}
-	
+
+	/**
+	 * test client code that get executed while expanding a node
+	 * @throws Exception
+	 */
 	@Test
 	public void expand() throws Exception {
 		
@@ -72,16 +88,16 @@ public class JsClientNodeRegistryManagerTest {
 		ClientNode child2 = JSClientJavaTestUtils.createClientNode("child2");
 		ClientNode child3 = JSClientJavaTestUtils.createClientNode("child3");
 		
-		JsList<ClientNode> getChildrenResponseList1 = new JsList<ClientNode>();
+		List<ClientNode> getChildrenResponseList1 = new ArrayList<ClientNode>();
 		getChildrenResponseList1.add(child1);
 		
-		JsList<ClientNode> getChildrenResponseList2 = new JsList<ClientNode>();
+		List<ClientNode> getChildrenResponseList2 = new ArrayList<ClientNode>();
 		getChildrenResponseList2.add(child2);
 		
-		JsList<ClientNode> getChildrenResponseList3 = new JsList<ClientNode>();
+		List<ClientNode> getChildrenResponseList3 = new ArrayList<ClientNode>();
 		getChildrenResponseList3.add(child3);
 		
-		ClientSubscriptionInfo subcriptionInfoResponse = new ClientSubscriptionInfo();
+		SubscriptionInfo subcriptionInfoResponse = new SubscriptionInfo();
 		ClientNode resourceNodeToSubscribeTo = JSClientJavaTestUtils.createClientNode("clientNodeToSubscribeTo");
 
 		NativeObject propertiesDirty = new NativeObject();
@@ -90,13 +106,14 @@ public class JsClientNodeRegistryManagerTest {
 		
 		subcriptionInfoResponse.setResourceNode(resourceNodeToSubscribeTo);
 		subcriptionInfoResponse.setRootNode(resourceNode3);
-		subcriptionInfoResponse.setResourceSet("myTestResourceSet");;
+		subcriptionInfoResponse.setResourceSet("myTestResourceSet");
 		
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
-				new RecordingServiceInvocator().setExpectedResults(new Object[] {getChildrenResponseList1, getChildrenResponseList2, subcriptionInfoResponse, getChildrenResponseList3}),
-				new JsExternalInvocator()});
+				new JavaHostResourceOperationsHandler(), 
+				new RecordingServiceInvocator()
+				.setExpectedResults(new Object[] {getChildrenResponseList1, getChildrenResponseList2, subcriptionInfoResponse, getChildrenResponseList3}),
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 		
 		// create nodeRegistry
@@ -120,15 +137,15 @@ public class JsClientNodeRegistryManagerTest {
 		
 		// it should just expand
 		assertNotNull(resourceNode1.getChildren());
-		assertEquals(1, resourceNode1.getChildren().length);
+		assertEquals(1, resourceNode1.getChildren().size());
 		
 		assertNotNull(resourceNode2.getChildren());
-		assertEquals(1, resourceNode2.getChildren().length);
+		assertEquals(1, resourceNode2.getChildren().size());
 		
 		NativeObject properties3 = new NativeObject(); // it's something like a Map<,>, but gets translated in JavaScript
 		properties3.put("autoSubscribeOnExpand", properties3, true);
 		
-		JsList<Pair<String, String>> subscribableResources = new JsList<Pair<String, String>>();
+		List<Pair<String, String>> subscribableResources = new ArrayList<Pair<String, String>>();
 		Pair<String, String> subscribableResource = new Pair<String, String>("fpp:user/repo|resourceFileUri", "mindmap");
 		subscribableResources.add(0, subscribableResource);
 		properties3.put("subscribableResources", properties3, subscribableResources);
@@ -137,19 +154,24 @@ public class JsClientNodeRegistryManagerTest {
 		
 		// test if the resource node is subscribed; if it has 3 children => is is successfully subscribed 
 		assertNotNull(resourceNode3.getChildren());
-		assertEquals(child3, resourceNode3.getChildren().getItemAt(0));
+		assertEquals(child3, resourceNode3.getChildren().get(0));
 		verify(listener).nodeAdded(child1);
 		verify(listener).nodeAdded(child2);
 		verify(listener).nodeAdded(child3);
 		// test if linked to node registry
-		NativeArray resourceUris =  (NativeArray)(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceUrisForResourceSet", "myTestResourceSet"));
+		NativeArray resourceUris =  (NativeArray) (JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceUrisForResourceSet", "myTestResourceSet"));
 		assertTrue(resourceUris.get(0).equals("scheme:user/repo|clientNodeToSubscribeTo"));
 		
-		NativeJavaObject resourceSet =  (NativeJavaObject)(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetForResourceUri", "scheme:user/repo|clientNodeToSubscribeTo"));
-		String resourceSetAsString = (String)resourceSet.unwrap();
+		NativeJavaObject resourceSet =  (NativeJavaObject) 
+				(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetForResourceUri", "scheme:user/repo|clientNodeToSubscribeTo"));
+		String resourceSetAsString = (String) resourceSet.unwrap();
 		assertTrue(resourceSetAsString.equals("myTestResourceSet"));
 	}
 	
+	/**
+	 * tests client code that gets executed when collapsing a node that doesn't have any change 
+	 * @throws Exception
+	 */
 	@Test
 	public void collapseNotDirtyResourceNode() throws Exception {
 		// create resource node and expand it; then collapse it
@@ -160,15 +182,15 @@ public class JsClientNodeRegistryManagerTest {
 		ClientNode child2 = JSClientJavaTestUtils.createClientNode("child2");
 		ClientNode child3 = JSClientJavaTestUtils.createClientNode("child3");
 		
-		JsList<ClientNode> getChildrenResponseList1 = new JsList<ClientNode>();
+		List<ClientNode> getChildrenResponseList1 = new ArrayList<ClientNode>();
 		getChildrenResponseList1.add(child1);
 		getChildrenResponseList1.add(child2);
 
-		JsList<ClientNode> getChildrenResponseList2 = new JsList<ClientNode>();
+		List<ClientNode> getChildrenResponseList2 = new ArrayList<ClientNode>();
 		getChildrenResponseList2.add(child3);
 		
-		ClientSubscriptionInfo subscriptionInfoResponse1 = new ClientSubscriptionInfo();
-		ClientSubscriptionInfo subscriptionInfoResponse2 = new ClientSubscriptionInfo();
+		SubscriptionInfo subscriptionInfoResponse1 = new SubscriptionInfo();
+		SubscriptionInfo subscriptionInfoResponse2 = new SubscriptionInfo();
 		ClientNode resourceFileNode1 = JSClientJavaTestUtils.createClientNode("resourceFileNode1");
 		ClientNode resourceFileNode2 = JSClientJavaTestUtils.createClientNode("resourceFileNode2");
 		NativeObject propertyDirty = new NativeObject();
@@ -178,17 +200,18 @@ public class JsClientNodeRegistryManagerTest {
 
 		subscriptionInfoResponse1.setResourceNode(resourceFileNode1);
 		subscriptionInfoResponse1.setRootNode(resourceNode1);
-		subscriptionInfoResponse1.setResourceSet("myTestResourceSet");;
+		subscriptionInfoResponse1.setResourceSet("myTestResourceSet");
 
 		subscriptionInfoResponse2.setResourceNode(resourceFileNode2);
 		subscriptionInfoResponse2.setRootNode(resourceNode2);
-		subscriptionInfoResponse2.setResourceSet("myTestResourceSet");;
+		subscriptionInfoResponse2.setResourceSet("myTestResourceSet");
 
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
-				new RecordingServiceInvocator().setExpectedResults(new Object[] {subscriptionInfoResponse1, getChildrenResponseList1, subscriptionInfoResponse2, getChildrenResponseList2}),
-				new JsExternalInvocator()});
+				new JavaHostResourceOperationsHandler(), 
+				new RecordingServiceInvocator()
+				.setExpectedResults(new Object[] {subscriptionInfoResponse1, getChildrenResponseList1, subscriptionInfoResponse2, getChildrenResponseList2}),
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 		
 		// create nodeRegistry
@@ -203,7 +226,7 @@ public class JsClientNodeRegistryManagerTest {
 		
 		NativeObject resourceNodeProperties1 = new NativeObject(); // it's something like a Map<,>, but gets translated in JavaScript
 		resourceNodeProperties1.put("autoSubscribeOnExpand", resourceNodeProperties1, true);
-		JsList<Pair<String, String>> subscribableResources1 = new JsList<Pair<String, String>>();
+		List<Pair<String, String>> subscribableResources1 = new ArrayList<Pair<String, String>>();
 		Pair<String, String> subscribableResource1 = new Pair<String, String>("scheme:user/repo|resourceFileNode1", "mindmap");
 		// register resourceFileNode1
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", resourceFileNode1, null, -1);
@@ -215,7 +238,7 @@ public class JsClientNodeRegistryManagerTest {
 		// same thing for resourceNode2
 		NativeObject resourceNodeProperties2 = new NativeObject();
 		resourceNodeProperties2.put("autoSubscribeOnExpand", resourceNodeProperties2, true);
-		JsList<Pair<String, String>> subscribableResources2 = new JsList<Pair<String, String>>();
+		List<Pair<String, String>> subscribableResources2 = new ArrayList<Pair<String, String>>();
 		Pair<String, String> subscribableResource2 = new Pair<String, String>("scheme:user/repo|resourceFileNode2", "mindmap");
 		// register resourceFileNode2
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", resourceFileNode2, null, -1);
@@ -226,26 +249,27 @@ public class JsClientNodeRegistryManagerTest {
 		
 		// test if the resource node is subscribed; if it has child 3 a children => is is successfully subscribed 
 		assertNotNull(resourceNode1.getChildren());
-		assertEquals(child1, resourceNode1.getChildren().getItemAt(0));
-		assertEquals(child2, resourceNode1.getChildren().getItemAt(1));
+		assertEquals(child1, resourceNode1.getChildren().get(0));
+		assertEquals(child2, resourceNode1.getChildren().get(1));
 		verify(listener).nodeAdded(child1);
 		verify(listener).nodeAdded(child2);
 		
 		// test if linked to node registry
-		NativeArray resourceUris =  (NativeArray)(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceUrisForResourceSet", "myTestResourceSet"));
+		NativeArray resourceUris =  (NativeArray) (JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceUrisForResourceSet", "myTestResourceSet"));
 		assertEquals(2, resourceUris.size());
 		assertEquals("scheme:user/repo|resourceFileNode1", resourceUris.get(0));
 		assertEquals("scheme:user/repo|resourceFileNode2", resourceUris.get(1));
 		
-		NativeJavaObject resourceSet =  (NativeJavaObject)(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetForResourceUri", "scheme:user/repo|resourceFileNode1"));
-		String resourceSetAsString = (String)resourceSet.unwrap();
+		NativeJavaObject resourceSet =  (NativeJavaObject) 
+				(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetForResourceUri", "scheme:user/repo|resourceFileNode1"));
+		String resourceSetAsString = (String) resourceSet.unwrap();
 		assertTrue(resourceSetAsString.equals("myTestResourceSet"));
 		
 		// everything is successfully subscribed; now let's test if we can unsubscribe/collapse
 		
 		JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "collapse", nodeRegistry, resourceNode1);
 		// check for: unlink from node registry; you should unlink the first one
-		resourceUris =  (NativeArray)(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceUrisForResourceSet", "myTestResourceSet"));
+		resourceUris =  (NativeArray) (JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceUrisForResourceSet", "myTestResourceSet"));
 		assertEquals(1, resourceUris.size());
 		assertEquals("scheme:user/repo|resourceFileNode2", resourceUris.get(0));
 		// assert the nodes were removed from map
@@ -261,6 +285,10 @@ public class JsClientNodeRegistryManagerTest {
 		verify(listener).nodeRemoved(child3);
 	}
 
+	/**
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void getAllDirtyResourceSetsTest() throws Exception {
 		// create a dirty and a clean resource node
@@ -268,7 +296,7 @@ public class JsClientNodeRegistryManagerTest {
 		ClientNode dirtyResourceNode = JSClientJavaTestUtils.createResourceClientNode("dirtyResourceNode");
 		ClientNode cleanResourceNode = JSClientJavaTestUtils.createResourceClientNode("cleanResourceNode");
 		
-		ClientSubscriptionInfo dirtyResourceSubscriptionInfoResponse = new ClientSubscriptionInfo();
+		SubscriptionInfo dirtyResourceSubscriptionInfoResponse = new SubscriptionInfo();
 		ClientNode dirtyResourceFileNode = JSClientJavaTestUtils.createClientNode("dirtyResourceFileNode");
 		NativeObject propertyDirty = new NativeObject();
 		propertyDirty.put("isDirty", propertyDirty, true);
@@ -277,7 +305,7 @@ public class JsClientNodeRegistryManagerTest {
 		dirtyResourceSubscriptionInfoResponse.setRootNode(dirtyResourceNode);
 		dirtyResourceSubscriptionInfoResponse.setResourceSet("dirtyResourceSet");
 
-		ClientSubscriptionInfo cleanResourceSubscriptionInfoResponse = new ClientSubscriptionInfo();
+		SubscriptionInfo cleanResourceSubscriptionInfoResponse = new SubscriptionInfo();
 		ClientNode cleanResourceFileNode = JSClientJavaTestUtils.createClientNode("cleanResourceFileNode");
 		NativeObject propertyClean = new NativeObject();
 		propertyClean.put("isDirty", propertyClean, false);
@@ -288,9 +316,9 @@ public class JsClientNodeRegistryManagerTest {
 		
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
+				new JavaHostResourceOperationsHandler(), 
 				new RecordingServiceInvocator().setExpectedResults(new Object[] {dirtyResourceSubscriptionInfoResponse, null, cleanResourceSubscriptionInfoResponse, null}),
-				new JsExternalInvocator()});
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 		
 		// create nodeRegistry
@@ -302,7 +330,7 @@ public class JsClientNodeRegistryManagerTest {
 		
 		NativeObject dirtyResourceNodeProperties = new NativeObject(); // it's something like a Map<,>, but gets translated in JavaScript
 		dirtyResourceNodeProperties.put("autoSubscribeOnExpand", dirtyResourceNodeProperties, true);
-		JsList<Pair<String, String>> dirtySubscribableResources = new JsList<Pair<String, String>>();
+		List<Pair<String, String>> dirtySubscribableResources = new ArrayList<Pair<String, String>>();
 		Pair<String, String> dirtySubscribableResource = new Pair<String, String>("scheme:user/repo|dirtyResourceFileNode", "mindmap");
 		// register dirtyResourceFileNode
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", dirtyResourceFileNode, null, -1);
@@ -313,7 +341,7 @@ public class JsClientNodeRegistryManagerTest {
 
 		NativeObject cleanResourceNodeProperties = new NativeObject(); // it's something like a Map<,>, but gets translated in JavaScript
 		cleanResourceNodeProperties.put("autoSubscribeOnExpand", cleanResourceNodeProperties, true);
-		JsList<Pair<String, String>> cleanSubscribableResources = new JsList<Pair<String, String>>();
+		List<Pair<String, String>> cleanSubscribableResources = new ArrayList<Pair<String, String>>();
 		Pair<String, String> cleanSubscribableResource = new Pair<String, String>("scheme:user/repo|cleanResourceFileNode", "mindmap");
 		// register cleanResourceFileNode
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", cleanResourceFileNode, null, -1);
@@ -322,16 +350,18 @@ public class JsClientNodeRegistryManagerTest {
 		cleanResourceNode.setProperties(cleanResourceNodeProperties);
 		JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "expand", nodeRegistry, cleanResourceNode, null);
 		
-		NativeJavaObject resourceSet =  (NativeJavaObject)(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetForResourceUri", "scheme:user/repo|dirtyResourceFileNode"));
-		String resourceSetAsString = (String)resourceSet.unwrap();
+		NativeJavaObject resourceSet =  (NativeJavaObject)
+				(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetForResourceUri", "scheme:user/repo|dirtyResourceFileNode"));
+		String resourceSetAsString = (String) resourceSet.unwrap();
 		assertEquals("dirtyResourceSet", resourceSetAsString);
 		
-		resourceSet =  (NativeJavaObject)(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetForResourceUri", "scheme:user/repo|cleanResourceFileNode"));
-		resourceSetAsString = (String)resourceSet.unwrap();
+		resourceSet =  (NativeJavaObject) 
+				(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetForResourceUri", "scheme:user/repo|cleanResourceFileNode"));
+		resourceSetAsString = (String) resourceSet.unwrap();
 		assertEquals("cleanResourceSet", resourceSetAsString);
 		
 		// test if one the dirty one is returned 
-		NativeArray resourceUris =  (NativeArray)(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getAllDirtyResourceSets", true, null));
+		NativeArray resourceUris =  (NativeArray) (JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getAllDirtyResourceSets", true, null));
 		assertEquals(1, resourceUris.size());
 		assertEquals("dirtyResourceSet", resourceUris.get(0));
 		

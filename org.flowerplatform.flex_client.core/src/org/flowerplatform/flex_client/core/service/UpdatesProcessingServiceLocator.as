@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,18 +21,16 @@ package org.flowerplatform.flex_client.core.service {
 	import mx.messaging.ChannelSet;
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.Fault;
-	import mx.rpc.events.FaultEvent;
-	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
-	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.service.ServiceResponder;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
+	import org.flowerplatform.js_client.common_js_as.node.IHostServiceInvocator;
 
 	/**
 	 * Custom behavior to get updates registered after each message invocation.
@@ -50,7 +48,7 @@ package org.flowerplatform.flex_client.core.service {
 	 * @author Cristina Constantinescu
 	 * @author Mariana Gheorghe
 	 */ 
-	public class UpdatesProcessingServiceLocator extends ServiceLocator implements IServiceInvocator {
+	public class UpdatesProcessingServiceLocator extends ServiceLocator implements IHostServiceInvocator {
 		
 		private var communicationErrorViewContent:IViewContent;
 		
@@ -84,9 +82,7 @@ package org.flowerplatform.flex_client.core.service {
 			return operation;
 		}
 		
-		override public function resultHandler(event:ResultEvent, responder:ServiceResponder):void {			
-			var result:Object = event.result;
-			
+		override public function resultHandler(result:Object, responder:ServiceResponder):void {
 			if (result.hasOwnProperty(CoreConstants.LAST_UPDATE_TIMESTAMP)) {
 				CorePlugin.getInstance().lastUpdateTimestampOfServer = result[CoreConstants.LAST_UPDATE_TIMESTAMP];
 				CorePlugin.getInstance().lastUpdateTimestampOfClient = new Date().time;

@@ -26,7 +26,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
 	JsClientNodeRegistryTest.class,
-	JsClientNodeRegistryManagerTest.class
 //	NodeRegistryScriptTest.class
 })
 public class JsClientJavaTestSuite extends EclipseIndependentTestSuite {

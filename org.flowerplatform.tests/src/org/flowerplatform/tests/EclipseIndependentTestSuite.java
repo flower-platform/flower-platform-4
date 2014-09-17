@@ -45,6 +45,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
+//CHECKSTYLE:OFF
 /**
  * @author Mariana Gheorghe
  */
@@ -59,12 +60,16 @@ import org.osgi.framework.BundleContext;
 })
 public class EclipseIndependentTestSuite {
 	
-	public static String WORKSPACE_LOCATION = "workspace";
+	public static String workspaceLocation = "workspace";
 	
 	public static NodeService nodeService;
-	
+//CHECKSTYLE:ON	
 	public static String sessionId = "mockSessionId";
-	
+		
+	/**
+	 * @author see class
+	 * @throws Exception
+	 */
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		// populated from FlowerFrameworkLauncher in the servlet container
@@ -113,18 +118,27 @@ public class EclipseIndependentTestSuite {
 		}
 	}
 
+	/**
+	 * copy test files into the runtime workspace location
+	 * @param from
+	 * @param dir
+	 */
 	public static void copyFiles(String from, String dir) {
-		File to = new File(WORKSPACE_LOCATION, dir);
+		File to = new File(workspaceLocation, dir);
 		try {
 			FileUtils.copyDirectory(new File(from), to);
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot copy files needed for test", e);
 		}
 	}
-
+	
+	/**
+	 * removes files from runtime workspace after testing has finished
+	 * @param dir
+	 */
 	public static void deleteFiles(String dir) {
 		try {
-			FileUtils.deleteDirectory(new File(WORKSPACE_LOCATION, dir));
+			FileUtils.deleteDirectory(new File(workspaceLocation, dir));
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot delete files ", e);
 		}

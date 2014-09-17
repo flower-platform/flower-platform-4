@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,22 +23,26 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * 
+ *
  * @author Florin
- * 
+ *
  */
 public class FileIterator implements Iterator<File> {
 
 	private Queue<File> queue = new LinkedList<File>();
-
+	
 	private FileFilter secondLevelFileFilter;
 
 	private boolean isChildLevel = true;
-	
+/**
+ * @author Mariana Gheorghe
+ */
 	public FileIterator(File rootFolder) {
 		queue.add(rootFolder);
 	}
-
+/**
+ * @author Mariana Gheorghe
+ */
 	public FileIterator(File workspaceFolder, FileFilter secondLevelFileFilter) {
 		this.secondLevelFileFilter = secondLevelFileFilter;
 		queue.add(workspaceFolder);

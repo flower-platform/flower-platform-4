@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,9 @@ import java.util.Set;
 public class TypeDescriptorDebugWrapper {
 
 	private TypeDescriptor descriptor;
-	
+	/**
+	 *@author see class
+	 **/
 	public TypeDescriptorDebugWrapper(TypeDescriptor descriptor) {
 		this.descriptor = descriptor;
 	}
@@ -39,15 +41,21 @@ public class TypeDescriptorDebugWrapper {
 	public Set<String> getSingleControllersKeys() {
 		return descriptor.singleControllers.keySet();
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	public boolean isCachedSingleController(String type) {
 		return descriptor.singleControllers.get(type).wasCached();
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	public Object getSelfSingleController(String type) {
 		return descriptor.singleControllers.get(type).getSelfValue();
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	public Object getCachedSingleController(String type) {
 		return descriptor.getCachedSingleController(type, null, false, false);
 	}
@@ -55,15 +63,21 @@ public class TypeDescriptorDebugWrapper {
 	public Set<String> getAdditiveControllersKeys() {
 		return descriptor.additiveControllers.keySet();
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	public boolean isCachedAdditiveController(String type) {
 		return descriptor.additiveControllers.get(type).wasCached();
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	public List<? extends IController> getSelfAdditiveControllers(String type) {
 		return descriptor.additiveControllers.get(type).getSelfValue();
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	public List<? extends IController> getCachedAdditiveControllers(String type) {
 		return descriptor.getCachedAdditiveControllers(type, null, false, false);
 	}

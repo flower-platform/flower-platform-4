@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,24 @@ package org.flowerplatform.util.file;
  */
 public abstract class FileHolder {
 
+	/**
+	 *@author see class
+	 **/
 	public abstract boolean exists();
 	
+	/**
+	 *@author see class
+	 **/
 	public abstract String getPath();
 	
+	/**
+	 *@author see class
+	 **/
 	public abstract String getName();
 	
+	/**
+	 *@author see class
+	 **/
 	public abstract String getContent();
 	
 }

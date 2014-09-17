@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,35 +35,47 @@ public class TestMatch {
 	public List<TestMatch> children = new ArrayList<TestMatch>();
 	
 	public boolean tested;
-
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public TestMatch(Object matchKey, MatchType matchType) {
 		this(matchKey, matchType, false, false);
 	}
-	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public TestMatch(Object matchKey, MatchType matchType, boolean isConflict, boolean isChildrenConflict) {
 		this.matchKey = matchKey;
 		this.matchType = matchType;
 		this.isConflict = isConflict;
 		this.isChildrenConflict = isChildrenConflict;
 	}
-	
-	public TestMatch addChild(Object matchKey, MatchType matchType) {
-		return addChild(matchKey, matchType, false, false);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	public TestMatch addChild(Object matchKeyParameter, MatchType matchTypeParameter) {
+		return addChild(matchKeyParameter, matchTypeParameter, false, false);
 	}
-	
-	public TestMatch addChild(Object matchKey, MatchType matchType, boolean isConflict, boolean isChildrenConflict) {
-		TestMatch child = new TestMatch(matchKey, matchType, isConflict, isChildrenConflict);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	public TestMatch addChild(Object matchKeyParameter, MatchType matchTypeParameter, boolean isConflictParameter, boolean isChildrenConflictParameter) {
+		TestMatch child = new TestMatch(matchKeyParameter, matchTypeParameter, isConflictParameter, isChildrenConflictParameter);
 		children.add(child);
 		child.parent = this;
 		return child;
 	}
-	
-	public TestMatch addSibling(Object matchKey, MatchType matchType) {
-		return addSibling(matchKey, matchType, false, false);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	public TestMatch addSibling(Object matchKeyParameter, MatchType matchTypeParameter) {
+		return addSibling(matchKeyParameter, matchTypeParameter, false, false);
 	}
-	
-	public TestMatch addSibling(Object matchKey, MatchType matchType, boolean isConflict, boolean isChildrenConflict) {
-		return parent.addChild(matchKey, matchType, isConflict, isChildrenConflict);
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	public TestMatch addSibling(Object matchKeyParameter, MatchType matchTypeParameter, boolean isConflictParameter, boolean isChildrenConflictParameter) {
+		return parent.addChild(matchKeyParameter, matchTypeParameter, isConflictParameter, isChildrenConflictParameter);
 	}
 
 	@Override

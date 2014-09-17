@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,11 +42,14 @@ public class ChildrenUpdate extends Update {
 		this.targetNode = targetNode;
 	}
 
+	//CHECKSTYLE:OFF
+
 	public ChildrenUpdate setTargetNodeAs(Node targetNode) {
 		this.targetNode = targetNode;
 		return this;
 	}
-	
+	//CHECKSTYLE:ON
+
 	public String getFullTargetNodeAddedBeforeId() {
 		return fullTargetNodeAddedBeforeId;
 	}
@@ -55,8 +58,11 @@ public class ChildrenUpdate extends Update {
 		this.fullTargetNodeAddedBeforeId = fullTargetNodeAddedBeforeId;
 	}
 
-	public ChildrenUpdate setFullTargetNodeAddedBeforeIdAs(String fullTargetNodeAddedBeforeId) {
-		this.fullTargetNodeAddedBeforeId = fullTargetNodeAddedBeforeId;
+	/**
+	 * @author Claudiu Matei
+	 */
+	public ChildrenUpdate setFullTargetNodeAddedBeforeIdAs(String fullTargetNodeAddedBeforeIdValue) {
+		this.fullTargetNodeAddedBeforeId = fullTargetNodeAddedBeforeIdValue;
 		return this;
 	}
 		
@@ -69,12 +75,17 @@ public class ChildrenUpdate extends Update {
 		this.removedNodes = removedNodes;
 	}
 
-	
-	public ChildrenUpdate setRemovedNodesAs(List<ChildrenUpdate> removedNodes) {
-		this.removedNodes = removedNodes;
+	/**
+	 * @author Claudiu Matei
+	 */
+	public ChildrenUpdate setRemovedNodesAs(List<ChildrenUpdate> nodesRemoved) {
+		this.removedNodes = nodesRemoved;
 		return this;
 	}
 	
+	/**
+	 * @author Claudiu Matei
+	 */
 	public String toString() {
 		return "ChildrenUpdate [type=" + getType() + " targetNode=" + targetNode + " node=" + getFullNodeId() + ", timestamp=" + getTimestamp() + "]";
 	}

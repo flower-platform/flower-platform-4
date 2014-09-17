@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,13 +35,22 @@ public abstract class FilteredIterable<IN, OUT> implements Iterator<OUT>, Iterab
 
 	private OUT next;
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public FilteredIterable(Iterator<IN> masterIterator) {
 		super();
 		this.masterIterator = masterIterator;
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected abstract boolean isAccepted(IN candidate);
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	@SuppressWarnings("unchecked")
 	protected OUT convert(IN input) {
 		return (OUT) input;

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,13 +37,15 @@ import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
-import org.flowerplatform.resources.ResourcesPlugin;
 
 /**
  * @author Sebastian Solomon
  */
 public class FileSystemControllers {
 	
+	/**
+	 *@author see class
+	 **/
 	public void registerControllers() {
 		FileChildrenController fileChildrenController = new FileChildrenController();
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.fileContainer")
@@ -62,10 +64,14 @@ public class FileSystemControllers {
 		.addAdditiveController(PROPERTY_SETTER, filePropertiesController)
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setContributesToCreationAs(true).setMandatoryAs(true).setOrderIndexAs(-10))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_SIZE).setReadOnlyAs(true))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_IS_DIRECTORY).setReadOnlyAs(true).setContributesToCreationAs(true).setMandatoryAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setOrderIndexAs(-5))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_CREATION_TIME).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DATE).setOrderIndexAs(10))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_MODIFIED_TIME).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DATE).setOrderIndexAs(11))
-		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_ACCESS_TIME).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DATE).setOrderIndexAs(12))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_IS_DIRECTORY).setReadOnlyAs(true).setContributesToCreationAs(true)
+				.setMandatoryAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setOrderIndexAs(-5))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_CREATION_TIME).setReadOnlyAs(true)
+				.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DATE).setOrderIndexAs(10))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_MODIFIED_TIME).setReadOnlyAs(true)
+				.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DATE).setOrderIndexAs(11))
+		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_ACCESS_TIME).setReadOnlyAs(true)
+				.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DATE).setOrderIndexAs(12))
 		.addCategory("category.fileContainer");
 		
 		CorePlugin.getInstance().getResourceService().addResourceHandler(FILE_SCHEME, new FileSystemResourceHandler());

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -11,20 +12,24 @@ import static org.mockito.Mockito.verify;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.NodeWithChildren;
+import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
 import org.flowerplatform.core.node.update.remote.PropertyUpdate;
 import org.flowerplatform.core.node.update.remote.Update;
-import org.flowerplatform.js_client.java.ClientChildrenUpdate;
-import org.flowerplatform.js_client.java.ClientNode;
-import org.flowerplatform.js_client.java.ClientNodeWithChildren;
-import org.flowerplatform.js_client.java.INodeChangeListener;
 import org.flowerplatform.js_client.java.JsClientJavaUtils;
-import org.flowerplatform.js_client.java.JsExternalInvocator;
-import org.flowerplatform.js_client.java.JsList;
-import org.flowerplatform.js_client.java.JsResourceOperationsHandler;
+import org.flowerplatform.js_client.java.node.ClientNode;
+import org.flowerplatform.js_client.java.node.INodeChangeListener;
+import org.flowerplatform.js_client.java.node.JavaHostInvocator;
+import org.flowerplatform.js_client.java.node.JavaHostResourceOperationsHandler;
 import org.flowerplatform.tests.js_client.java.JSClientJavaTestUtils.RecordingServiceInvocator;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,62 +45,76 @@ public class JsClientNodeRegistryTest {
 	private static Context ctx;
 	private static Scriptable scope;
 	
+	/**
+	 * @author see class
+	 * @throws Exception
+	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		ctx = Context.enter();
 		scope = ctx.initStandardObjects();	
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/").getAbsolutePath() + "/../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistry.js"), StandardCharsets.UTF_8), null, 1, null);
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/").getAbsolutePath() + "/../../org.flowerplatform.js_client.core/WebContent/js/node_registry/ResourceOperationsManager.js"), StandardCharsets.UTF_8), null, 1, null);
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/").getAbsolutePath() + "/../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistryManager.js"), StandardCharsets.UTF_8), null, 1, null);		
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/")
+				.getAbsolutePath() + "/../../org.flowerplatform.js_client.common_js_as/WebContent/js/NodeRegistry.js"), StandardCharsets.UTF_8), null, 1, null);
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/")
+				.getAbsolutePath() + "/../../org.flowerplatform.js_client.common_js_as/WebContent/js/ResourceOperationsManager.js"), StandardCharsets.UTF_8), null, 1, null);
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/")
+				.getAbsolutePath() + "/../../org.flowerplatform.js_client.common_js_as/WebContent/js/NodeRegistryManager.js"), StandardCharsets.UTF_8), null, 1, null);		
 	}
 	
+	/**
+	 * @author see class
+	 * @throws Exception
+	 */
 	@AfterClass
 	public static void setUpAfterClass() throws Exception {
 		Context.exit();
 	}
-		
+	/**
+	 * @author see class	
+	 * @throws Exception	
+	 * @author Cristina Constantinescu
+	 */
 	@Test
 	public void expand() throws Exception {
 		ClientNode parent = JSClientJavaTestUtils.createClientNode("parent");
 		ClientNode child1 = JSClientJavaTestUtils.createClientNode("child1");
 		ClientNode child2 = JSClientJavaTestUtils.createClientNode("child2");
 		ClientNode child3 = JSClientJavaTestUtils.createClientNode("child3");
-		
-		JsList<ClientNode> list = new JsList<ClientNode>();
+				
+		List<ClientNode> list = new ArrayList<>();
 		list.add(child1);
 		list.add(child2);
 		list.add(child3);
-		
+				
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
+				new JavaHostResourceOperationsHandler(), 
 				new RecordingServiceInvocator().setExpectedResults(new Object[] {list}), 
-				new JsExternalInvocator()});
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
-		
+					
 		// create nodeRegistry
 		Scriptable nodeRegistry = (Scriptable) ctx.evaluateString(scope, "_nodeRegistryManager.createNodeRegistry();", null, 1, null);
-		
-		INodeChangeListener listener = mock(INodeChangeListener.class);
+
+		INodeChangeListener listener = mock(INodeChangeListener.class);					
 		// add NodeChangedListener in nodeRegistry
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "addNodeChangeListener", listener);
-		
+	
 		// register parent node
-		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", parent, null, -1);
+		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", parent, null, -1);		
 		verify(listener).nodeAdded(parent);
 		
 		// expand parent node
 		JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "expand", nodeRegistry, parent, null);
-		
+				
 		// verify children
-		assertNotNull(parent.getChildren());
-		assertEquals(3, parent.getChildren().length);
+		assertNotNull(parent.getChildren());	
+		assertEquals(3, parent.getChildren().size());
 		
 		verify(listener).nodeAdded(child1);
 		verify(listener).nodeAdded(child2);
-		verify(listener).nodeAdded(child3);
+		verify(listener).nodeAdded(child3);			
 	}
-	
 	
 	/**
 	 * @author Elena Posea
@@ -108,9 +127,9 @@ public class JsClientNodeRegistryTest {
 				
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
+				new JavaHostResourceOperationsHandler(), 
 				new RecordingServiceInvocator(), 
-				new JsExternalInvocator()});
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 		
 		// create nodeRegistry
@@ -133,7 +152,7 @@ public class JsClientNodeRegistryTest {
 		
 		// verify children
 		assertNotNull(parent.getChildren());
-		assertEquals(1, parent.getChildren().length);
+		assertEquals(1, parent.getChildren().size());
 		
 		// verify getNodeById is not null/ node is registered
 		assertNotNull(JsClientJavaUtils.invokeJsFunction(nodeRegistry, "getNodeById", child.getNodeUri()));
@@ -153,9 +172,9 @@ public class JsClientNodeRegistryTest {
 				
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
+				new JavaHostResourceOperationsHandler(), 
 				new RecordingServiceInvocator(), 
-				new JsExternalInvocator()});
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 					
 		// create nodeRegistry
@@ -205,9 +224,9 @@ public class JsClientNodeRegistryTest {
 				
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
+				new JavaHostResourceOperationsHandler(), 
 				new RecordingServiceInvocator(), 
-				new JsExternalInvocator()});
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 		
 		// create nodeRegistry
@@ -249,7 +268,7 @@ public class JsClientNodeRegistryTest {
 	@Test
 	public void refreshProperties() throws Exception {
 		ClientNode node = JSClientJavaTestUtils.createClientNode("node");
-		ClientNodeWithChildren newNodeWithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("newNodeWithChildren");
+		NodeWithChildren newNodeWithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("newNodeWithChildren");
 		
 		NativeObject oldProperties = new NativeObject(); 
 		oldProperties.put("propertyA", oldProperties, "valueA"); // it's something like a Map<,>, but gets translated in JavaScript
@@ -263,9 +282,9 @@ public class JsClientNodeRegistryTest {
 		
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
+				new JavaHostResourceOperationsHandler(), 
 				new RecordingServiceInvocator().setExpectedResults(new Object[] {newNodeWithChildren}), 
-				new JsExternalInvocator()});
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 					
 		// create nodeRegistry
@@ -293,14 +312,14 @@ public class JsClientNodeRegistryTest {
 		ClientNode node = JSClientJavaTestUtils.createClientNode("node");
 		ClientNode child1 = JSClientJavaTestUtils.createClientNode("child1");
 		ClientNode child2 = JSClientJavaTestUtils.createClientNode("child2");
-		ClientNodeWithChildren newNodeWithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("newNodeWithChildren");
+		NodeWithChildren newNodeWithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("newNodeWithChildren");
 		
 		
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
+				new JavaHostResourceOperationsHandler(), 
 				new RecordingServiceInvocator().setExpectedResults(new Object[] {newNodeWithChildren}), 
-				new JsExternalInvocator()});
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 					
 		// create nodeRegistry
@@ -331,8 +350,8 @@ public class JsClientNodeRegistryTest {
 		for (Object key: properties.keySet()) {
 			if (!newProperties.containsKey(key)) {
 				return false;
-			}else{
-				if(!newProperties.get(key).equals(properties.get(key))){
+			} else {
+				if (!newProperties.get(key).equals(properties.get(key))) {
 					return false;
 				}
 			}
@@ -363,12 +382,12 @@ public class JsClientNodeRegistryTest {
 		ClientNode child1 = JSClientJavaTestUtils.createClientNode("child1");
 		ClientNode child2 = JSClientJavaTestUtils.createClientNode("child2");
 		
-		ClientNodeWithChildren newNodeWithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("newNodeWithChildren");
-		ClientNodeWithChildren newChild3 = JSClientJavaTestUtils.createClientNodeWithChildren("child3");
-		ClientNodeWithChildren newChild0 = JSClientJavaTestUtils.createClientNodeWithChildren("child0");
-		ClientNodeWithChildren newChild1 = JSClientJavaTestUtils.createClientNodeWithChildren("child1");
+		NodeWithChildren newNodeWithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("newNodeWithChildren");
+		NodeWithChildren newChild3 = JSClientJavaTestUtils.createClientNodeWithChildren("child3");
+		NodeWithChildren newChild0 = JSClientJavaTestUtils.createClientNodeWithChildren("child0");
+		NodeWithChildren newChild1 = JSClientJavaTestUtils.createClientNodeWithChildren("child1");
 		
-		JsList<ClientNodeWithChildren> children = new JsList<ClientNodeWithChildren>();
+		List<NodeWithChildren> children = new ArrayList<NodeWithChildren>();
 		children.add(newChild3);
 		children.add(newChild0);
 		children.add(newChild1); // different index than before (was 1, now it's 2)
@@ -380,9 +399,9 @@ public class JsClientNodeRegistryTest {
 		
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
+				new JavaHostResourceOperationsHandler(), 
 				new RecordingServiceInvocator().setExpectedResults(new Object[] {newNodeWithChildren}), 
-				new JsExternalInvocator()});
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 					
 		// create nodeRegistry
@@ -406,9 +425,14 @@ public class JsClientNodeRegistryTest {
 		verify(listener).nodeAdded(child1); // same child, added on a different place
 		
 		// child1 should be preserved/ neither added nor removed
-		verify(listener, never()).nodeAdded(newChild1.getNode());
+		 verify(listener, never()).nodeAdded(newChild1.getNode());
+
+		// in order to avoid overriding equals for ClientNode
+		// MyMatcher<Node> baseMatcher = new MyMatcher<Node>();
+		// baseMatcher.setChild(child1);
+		// verify(listener, never()).nodeAdded(argThat(baseMatcher));		
 		
-		JsList<ClientNode> expectedChildren = new JsList<ClientNode>();
+		List<Node> expectedChildren = new ArrayList<Node>();
 		expectedChildren.add(child0); // should preserve this one
 		expectedChildren.add(newChild3.getNode());
 		expectedChildren.add(child1); // it should keep the old instance, just the index inside the list should be different
@@ -428,15 +452,15 @@ public class JsClientNodeRegistryTest {
 		ClientNode child1 = JSClientJavaTestUtils.createClientNode("child1");
 		ClientNode child2 = JSClientJavaTestUtils.createClientNode("child2");
 		
-		ClientNodeWithChildren rootWithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("root");
+		NodeWithChildren rootWithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("root");
 		
 		NativeObject properties = new NativeObject(); // it's something like a Map<,>, but gets translated in JavaScript
 		properties.put("flagToCheckRefreshGotExecuted", properties, true); 
 		rootWithChildren.getNode().setProperties(properties);
 		
-		JsList<ClientNodeWithChildren> children = new JsList<ClientNodeWithChildren>();
-		ClientNodeWithChildren child1WithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("child1");
-		ClientNodeWithChildren child2WithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("child2");
+		List<NodeWithChildren> children = new ArrayList<NodeWithChildren>();
+		NodeWithChildren child1WithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("child1");
+		NodeWithChildren child2WithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("child2");
 		children.add(child1WithChildren);
 		children.add(child2WithChildren);
 		
@@ -444,9 +468,9 @@ public class JsClientNodeRegistryTest {
 		
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
+				new JavaHostResourceOperationsHandler(), 
 				new RecordingServiceInvocator().setExpectedResults(new Object[] {rootWithChildren}), // return this as the refreshed version of root
-				new JsExternalInvocator()});
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 		
 		// create nodeRegistry
@@ -463,7 +487,7 @@ public class JsClientNodeRegistryTest {
 		// try to update this node
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "processUpdates", new Object[] {null}); // try to process no updates
 		
-		Boolean refreshGotExecuted = (Boolean)((NativeObject)root.getProperties()).get("flagToCheckRefreshGotExecuted");
+		Boolean refreshGotExecuted = (Boolean) ((NativeObject) root.getProperties()).get("flagToCheckRefreshGotExecuted");
 		assertNotNull(refreshGotExecuted);
 	}
 	
@@ -479,11 +503,11 @@ public class JsClientNodeRegistryTest {
 		ClientNode child1 = JSClientJavaTestUtils.createClientNode("child1");
 		ClientNode child2 = JSClientJavaTestUtils.createClientNode("child2");
 		
-		ClientNodeWithChildren rootWithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("root");
+		NodeWithChildren rootWithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("root");
 		
-		JsList<ClientNodeWithChildren> children = new JsList<ClientNodeWithChildren>();
-		ClientNodeWithChildren child1WithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("child1");
-		ClientNodeWithChildren child2WithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("child2");
+		List<NodeWithChildren> children = new ArrayList<NodeWithChildren>();
+		NodeWithChildren child1WithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("child1");
+		NodeWithChildren child2WithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("child2");
 		children.add(child1WithChildren);
 		children.add(child2WithChildren);
 		
@@ -492,9 +516,9 @@ public class JsClientNodeRegistryTest {
 		
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
+				new JavaHostResourceOperationsHandler(), 
 				new RecordingServiceInvocator().setExpectedResults(new Object[]{new PropertyUpdate()}),
-				new JsExternalInvocator()});
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 		
 		// create nodeRegistry
@@ -534,9 +558,9 @@ public class JsClientNodeRegistryTest {
 		
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
+				new JavaHostResourceOperationsHandler(), 
 				new RecordingServiceInvocator(),
-				new JsExternalInvocator()});
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 		
 		// create nodeRegistry
@@ -569,7 +593,7 @@ public class JsClientNodeRegistryTest {
 		puRemoveOldPropertyToBeRemoved.setIsUnset(true);
 		puRemoveOldPropertyToBeRemoved.setKey("oldPropertyToBeRemoved");
 		
-		JsList<Update> updates = new JsList<Update>();
+		List<Update> updates = new ArrayList<Update>();
 		updates.add(puNewProperty);
 		updates.add(puNewValueForOldProperty);
 		updates.add(puRemoveOldPropertyToBeRemoved);
@@ -595,9 +619,9 @@ public class JsClientNodeRegistryTest {
 		
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
+				new JavaHostResourceOperationsHandler(), 
 				new RecordingServiceInvocator(),
-				new JsExternalInvocator()});
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 		
 		// create nodeRegistry
@@ -610,7 +634,7 @@ public class JsClientNodeRegistryTest {
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "addNodeChangeListener", listener);
 		
 		// try to apply updates to this node (propertyUpdates)
-		ClientChildrenUpdate childrenUpdateAdd = new ClientChildrenUpdate();
+		ChildrenUpdate childrenUpdateAdd = new ChildrenUpdate();
 		childrenUpdateAdd.setFullNodeId(node.getNodeUri());
 		childrenUpdateAdd.setType("ADDED");
 		ClientNode targetNodeFirstChild = JSClientJavaTestUtils.createClientNode("targetNode1");
@@ -623,7 +647,7 @@ public class JsClientNodeRegistryTest {
 		sendChildrenFlag.setValue(true);
 		sendChildrenFlag.setKey("hasChildren");
 		
-		JsList<Update> updates = new JsList<Update>();
+		List<Update> updates = new ArrayList<Update>();
 		updates.add(sendChildrenFlag);
 		updates.add(childrenUpdateAdd);
 		
@@ -660,9 +684,9 @@ public class JsClientNodeRegistryTest {
 		
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
-				new JsResourceOperationsHandler(), 
+				new JavaHostResourceOperationsHandler(), 
 				new RecordingServiceInvocator(),
-				new JsExternalInvocator()});
+				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 		
 		// create nodeRegistry
@@ -677,12 +701,12 @@ public class JsClientNodeRegistryTest {
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "addNodeChangeListener", listener);
 		
 		// try to apply updates to this node (propertyUpdates)
-		ClientChildrenUpdate childrenUpdateRemove1 = new ClientChildrenUpdate();
+		ChildrenUpdate childrenUpdateRemove1 = new ChildrenUpdate();
 		childrenUpdateRemove1.setFullNodeId(node.getNodeUri());
 		childrenUpdateRemove1.setType("REMOVED");
 		childrenUpdateRemove1.setTargetNode(firstChild);
 		
-		ClientChildrenUpdate childrenUpdateRemove2 = new ClientChildrenUpdate();
+		ChildrenUpdate childrenUpdateRemove2 = new ChildrenUpdate();
 		childrenUpdateRemove2.setFullNodeId(node.getNodeUri());
 		childrenUpdateRemove2.setType("REMOVED");
 		childrenUpdateRemove2.setTargetNode(secondChild);
@@ -696,7 +720,7 @@ public class JsClientNodeRegistryTest {
 		// TODO: cum facem legat de flag? in mod normal serverul are grija ca daca trimite un update pt sters ultimul/adaugat primul copil,
 		// sa mai trimita un update pt flag; il mai trimit e artificial in teste, cat sa subliniez faptul ca ar trebui trimis separat de catre server?
 		
-		JsList<Update> updates = new JsList<Update>();
+		List<Update> updates = new ArrayList<Update>();
 		// this update we send here in tests by hand; in real code, this update is automatically send by server when it send an remove update for the last child
 		updates.add(sendChildrenFlag);
 		updates.add(childrenUpdateRemove2);
@@ -715,5 +739,33 @@ public class JsClientNodeRegistryTest {
 		verify(listener).nodeUpdated(node, "hasChildren", null, false);
 		
 	}
-
 }
+
+/**
+ * 
+ * @author Elena Posea
+ *
+ * @param <T>
+ */
+//class MyMatcher<T> extends BaseMatcher<T> {
+//		public Node child1;
+//		
+//		public void setChild(Node child) {
+//			child1 = child;
+//		}
+//		
+//		@Override
+//		public void describeTo(Description description) {
+//			// nothing to do
+//		}
+//		
+//		@Override
+//		public boolean matches(Object item) {
+//			// an instance of Node that is not the same instance as child1 but has the same uri
+//			if (item instanceof Node) {
+//				Node realItem = (Node) item;
+//				return child1 != realItem && child1.getNodeUri().equals(realItem.getNodeUri());
+//			 }
+//			 return false;
+//		};
+//}

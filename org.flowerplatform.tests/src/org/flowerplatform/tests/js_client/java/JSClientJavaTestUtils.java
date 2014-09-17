@@ -1,23 +1,35 @@
 package org.flowerplatform.tests.js_client.java;
 
-import org.flowerplatform.js_client.java.ClientNode;
-import org.flowerplatform.js_client.java.ClientNodeWithChildren;
-import org.flowerplatform.js_client.java.ServiceInvocator;
+import org.flowerplatform.core.node.remote.NodeWithChildren;
+import org.flowerplatform.js_client.java.node.AbstractServiceInvocator;
+import org.flowerplatform.js_client.java.node.ClientNode;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
-import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 
 /**
  * @author Cristina Constantinescu
  */
-public class JSClientJavaTestUtils {
+public final class JSClientJavaTestUtils {
 
-	public static class RecordingServiceInvocator extends ServiceInvocator {
+	private JSClientJavaTestUtils() {
+		// for checkstyle
+	}
+	/**
+	 * 
+	 * @author see class
+	 *
+	 */
+	public static class RecordingServiceInvocator extends AbstractServiceInvocator {
 
 		private Object[] expectedResults;
 		private int indexOfLastInvocationResult = -1;
 			
+		/**
+		 * @author: see class
+		 * @param result
+		 * @return
+		 */
 		public RecordingServiceInvocator setExpectedResults(Object[] result) {
 			this.expectedResults = result;
 			indexOfLastInvocationResult = -1;
@@ -33,6 +45,11 @@ public class JSClientJavaTestUtils {
 		}		
 	}
 	
+	/**
+	 * 
+	 * @param fragment
+	 * @return
+	 */
 	public static ClientNode createClientNode(String fragment) {
 		ClientNode node = new ClientNode();
 		node.setNodeUri(String.format("scheme:user/repo|%s", fragment));
@@ -40,6 +57,25 @@ public class JSClientJavaTestUtils {
 		return node;
 	}
 	
+	/**
+	 * 
+	 * @param fragment
+	 * @return
+	 */
+	public static NodeWithChildren createClientNodeWithChildren(String fragment) {
+		NodeWithChildren node = new NodeWithChildren();
+		ClientNode cn = new ClientNode();
+		cn.setNodeUri(String.format("scheme:user/repo|%s", fragment));
+		cn.setType("type");
+		node.setNode(cn);
+		return node;
+	}
+
+	/**
+	 * 
+	 * @param fragment
+	 * @return
+	 */
 	public static ClientNode createResourceClientNode(String fragment) {
 		ClientNode node = new ClientNode();
 		node.setNodeUri(String.format("file:user/repo|%s", fragment));
@@ -47,11 +83,4 @@ public class JSClientJavaTestUtils {
 		return node;
 	}
 
-	public static ClientNodeWithChildren createClientNodeWithChildren(String fragment) {
-		ClientNodeWithChildren node = new ClientNodeWithChildren();
-		node.setNode(new ClientNode());
-		node.setNodeUri(String.format("scheme:user/repo|%s", fragment));
-		node.setType("type");
-		return node;
-	}
 }

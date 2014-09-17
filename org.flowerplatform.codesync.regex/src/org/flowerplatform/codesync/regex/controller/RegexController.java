@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,9 @@ public class RegexController extends AbstractController implements IPropertiesPr
 
 	private final Pattern macroPattern = Pattern.compile("%(.*?)%");
 	
+	/**
+	 *@author see class
+	 **/
 	public RegexController() {
 		super();
 		// invoked after the persistence providers
@@ -61,11 +64,12 @@ public class RegexController extends AbstractController implements IPropertiesPr
 	}
 	
 	@Override
-	public void setProperties(Node node, Map<String,Object> properties, ServiceContext<NodeService> context) {
+	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		for (String property : properties.keySet()) {
 			if (property.equals(REGEX_WITH_MACROS)) {
 				node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService()));
-				context.getService().setProperty(node, FULL_REGEX, node.getPropertyValue(FULL_REGEX), new ServiceContext<NodeService>(context.getService()).add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+				context.getService().setProperty(node, FULL_REGEX, node.getPropertyValue(FULL_REGEX), new ServiceContext<NodeService>(context.getService())
+						.add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 			}
 		}
 	}

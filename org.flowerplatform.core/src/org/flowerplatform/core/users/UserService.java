@@ -22,6 +22,9 @@ public class UserService {
 
 	private List<Node> users = new ArrayList<Node>();
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	public UserService() {
 		users.add(newTestUser("John"));
 		users.add(newTestUser("Jane"));
@@ -46,6 +49,9 @@ public class UserService {
 		return users;
 	}
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	@GET @Path("/{nodeUri}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Node getUser(@PathParam("nodeUri") String nodeUri) {
@@ -57,6 +63,9 @@ public class UserService {
 		return null;
 	}
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Node saveUser(Node user) {
@@ -74,6 +83,9 @@ public class UserService {
 		return mem;
 	}
 	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	@DELETE @Path("/{nodeUri}")
 	public void deleteUser(@PathParam("nodeUri") String nodeUri) {
 		for (Node user : users) {

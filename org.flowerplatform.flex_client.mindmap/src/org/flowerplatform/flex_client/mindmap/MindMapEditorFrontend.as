@@ -108,7 +108,7 @@ package org.flowerplatform.flex_client.mindmap {
 					FlexUtilGlobals.getInstance().workbench.closeView(this, true, true);
 				} else {
 					// collapse the node
-					nodeRegistry.collapse(nodeRegistry.getNodeById(resourceNodeUri));
+					nodeRegistry.collapse(nodeRegistry.getNodeById(resourceNodeUri), true);
 				}
 			}
 		}

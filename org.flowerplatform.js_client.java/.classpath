@@ -5,12 +5,12 @@
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/hk2-api-2.3.0-b05.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/glassfish/hk2/hk2-api/2.3.0-b05/hk2-api-2.3.0-b05-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/hk2-locator-2.3.0-b05.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/glassfish/hk2/hk2-locator/2.3.0-b05/hk2-locator-2.3.0-b05-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/hk2-utils-2.3.0-b05.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-annotations-2.3.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-core-2.3.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-annotations-2.3.2.jar" sourcepath="C:/Users/PowerUser/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.3.2/jackson-annotations-2.3.2-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-core-2.3.2.jar" sourcepath="C:/Users/PowerUser/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.3.2/jackson-core-2.3.2-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-databind-2.3.2.jar" sourcepath="C:/Users/PowerUser/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.3.2/jackson-databind-2.3.2-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-jaxrs-base-2.3.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-jaxrs-json-provider-2.3.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-module-jaxb-annotations-2.3.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-jaxrs-json-provider-2.3.2.jar" sourcepath="C:/Users/PowerUser/.m2/repository/com/fasterxml/jackson/jaxrs/jackson-jaxrs-json-provider/2.3.2/jackson-jaxrs-json-provider-2.3.2-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/jackson-module-jaxb-annotations-2.3.2.jar" sourcepath="C:/Users/PowerUser/.m2/repository/com/fasterxml/jackson/module/jackson-module-jaxb-annotations/2.3.2/jackson-module-jaxb-annotations-2.3.2-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/javassist-3.18.1-GA.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/javax.annotation-api-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/javax.inject-2.3.0-b05.jar"/>

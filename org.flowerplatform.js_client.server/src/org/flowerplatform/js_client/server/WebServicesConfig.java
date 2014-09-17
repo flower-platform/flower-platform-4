@@ -1,6 +1,7 @@
 package org.flowerplatform.js_client.server;
 
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.js_client.server.jackson.ExceptionMapper;
 import org.flowerplatform.js_client.server.remote.JavaClientMethodInvocationService;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -25,7 +26,8 @@ public class WebServicesConfig extends ResourceConfig {
 		register(new RemoteMethodInvocationWriterInterceptor());
 		
 		register(JacksonFeature.class);
-		register(new ObjectMapperProvider());
+		register(JsClientServerPlugin.getInstance().getObjectMapperProvider());
+		register(ExceptionMapper.class);
 		
 		register(LoggingFilter.class);
 	}

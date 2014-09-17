@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,21 +43,34 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class ResourceSetService {
 
-	protected final static Logger logger = LoggerFactory.getLogger(ResourceSetService.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(ResourceSetService.class);
 	
 	static final String PROP_RESOURCE_UPDATES_MARGIN = "resourceUpdatesMargin"; 
 	static final String PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN = "0"; 
 	
+	/**
+	 *@author see class
+	 **/
 	public ResourceSetService() {
-		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties.AddIntegerProperty(PROP_RESOURCE_UPDATES_MARGIN, PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN));
+		CorePlugin.getInstance().getFlowerProperties().addProperty(new FlowerProperties
+				.AddIntegerProperty(PROP_RESOURCE_UPDATES_MARGIN, PROP_DEFAULT_PROP_RESOURCE_UPDATES_MARGIN));
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public abstract String addToResourceSet(String resourceSet, String resourceUri);
 	
+	/**
+	 *@author see class
+	 **/
 	public abstract void removeFromResourceSet(String resourceSet, String resourceUri);
 	
+	/**
+	 *@author see class
+	 **/
 	public void save(String resourceSet, ServiceContext<ResourceSetService> context) {
-		logger.debug("Save resource set {}", resourceSet);
+		LOGGER.debug("Save resource set {}", resourceSet);
 		ServiceContext<ResourceService> resourceServiceContext = new ServiceContext<ResourceService>();
 		resourceServiceContext.setContext(context.getContext());
 		for (String resourceUri : getResourceUris(resourceSet)) {
@@ -65,8 +78,11 @@ public abstract class ResourceSetService {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public void reload(String resourceSet, ServiceContext<ResourceSetService> context) {
-		logger.debug("Reload resource set {}", resourceSet);
+		LOGGER.debug("Reload resource set {}", resourceSet);
 		doReload(resourceSet);
 		ServiceContext<ResourceService> resourceServiceContext = new ServiceContext<ResourceService>();
 		resourceServiceContext.setContext(context.getContext());
@@ -75,8 +91,14 @@ public abstract class ResourceSetService {
 		}
 	}
 
+	/**
+	 *@author see class
+	 **/
 	protected abstract void doReload(String resourceSet);
 	
+	/**
+	 *@author see class
+	 **/
 	public abstract void addUpdate(String resourceSet, Update update);
 	
 	/**
@@ -101,6 +123,9 @@ public abstract class ResourceSetService {
 		addUpdate(resourceSet, update);		
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public List<Update> getUpdates(String resourceSet, long timestampOfLastRequest) {
 		List<Update> updates = getUpdates(resourceSet);
 		List<Update> updatesAddedAfterLastRequest = new ArrayList<Update>();
@@ -108,8 +133,9 @@ public abstract class ResourceSetService {
 			return updatesAddedAfterLastRequest;
 		}
 		
-		if (timestampOfLastRequest > 0 && 
-			getLoadedTimestamp(resourceSet) > timestampOfLastRequest + Integer.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_RESOURCE_UPDATES_MARGIN))) {
+		if (timestampOfLastRequest > 0 
+				&& getLoadedTimestamp(resourceSet) > timestampOfLastRequest + Integer
+				.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_RESOURCE_UPDATES_MARGIN))) {
 			// if resource was reloaded after -> tell client to perform full refresh
 			return null;
 		}
@@ -127,12 +153,24 @@ public abstract class ResourceSetService {
 		return updatesAddedAfterLastRequest;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	protected abstract List<Update> getUpdates(String resourceSet);
 	
+	/**
+	 *@author see class
+	 **/
 	protected abstract long getLoadedTimestamp(String resourceSet);
 	
+	/**
+	 *@author see class
+	 **/
 	public abstract List<String> getResourceSets();
 	
+	/**
+	 *@author see class
+	 **/
 	public abstract List<String> getResourceUris(String resourceSet);
 
 	/**
@@ -141,7 +179,7 @@ public abstract class ResourceSetService {
 	public String getResourceSet(String nodeUri) {
 		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(nodeUri);
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
-		String resourceSet = (String)resourceNode.getOrPopulateProperties(context).get(CoreConstants.RESOURCE_SET);
+		String resourceSet = (String) resourceNode.getOrPopulateProperties(context).get(CoreConstants.RESOURCE_SET);
 		if (resourceSet == null) {
 			resourceSet = resourceNode.getNodeUri();
 		}
@@ -170,8 +208,8 @@ public abstract class ResourceSetService {
 	 * @author Claudiu Matei 
 	 */
 	public void addCommand(Command command) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("For resource = {} adding command = {}", command.getResourceSet(), command);
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("For resource = {} adding command = {}", command.getResourceSet(), command);
 		}
 		
 		Node commandStackNode = CorePlugin.getInstance().getCommandStackResourceHandler().createCommandStackNode(command.getResourceSet()); 
@@ -263,10 +301,9 @@ public abstract class ResourceSetService {
 	 */
 	private void undoUpdate(Update update) {
 		if (update instanceof PropertyUpdate) {
-			undoPropertyUpdate((PropertyUpdate)update);
-		}
-		else if (update instanceof ChildrenUpdate) {
-			undoChildrenUpdate((ChildrenUpdate)update);
+			undoPropertyUpdate((PropertyUpdate) update);
+		} else if (update instanceof ChildrenUpdate) {
+			undoChildrenUpdate((ChildrenUpdate) update);
 		}
 	}
 	
@@ -284,8 +321,7 @@ public abstract class ResourceSetService {
 		
 		if (update.getHasOldValue()) {
 			CorePlugin.getInstance().getNodeService().setProperty(node, update.getKey(), update.getOldValue(), context);
-		}
-		else {
+		} else {
 			CorePlugin.getInstance().getNodeService().unsetProperty(node, update.getKey(), context);
 		}
 	}
@@ -314,17 +350,18 @@ public abstract class ResourceSetService {
 				ChildrenUpdate update = removedNodes.get(i);
 				Node removedNode = update.getTargetNode();
 				Node removedNodeParent = CorePlugin.getInstance().getResourceService().getNode(update.getFullNodeId());
-				if (i==0) {
+				if (i == 0) {
 					context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, childrenUpdate.getFullTargetNodeAddedBeforeId());
 					nodeService.addChild(removedNodeParent, removedNode, context);
 					context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, null);
-				}
-				else {
+				} else {
 					nodeService.addChild(removedNodeParent, removedNode, context);
 				}
 				Map<String, Object> properties = removedNode.getProperties();
 				nodeService.setProperties(removedNode, properties, context);
 			}
+			break;
+		default:
 			break;
 		}
 	}
@@ -336,12 +373,14 @@ public abstract class ResourceSetService {
 		try {
 			CorePlugin.getInstance().getLockManager().lock(resourceSet);
 			String commandToRedoId = getCommandToRedoId(resourceSet);
-			Command command=getCommand(resourceSet, commandId);
+			Command command = getCommand(resourceSet, commandId);
 			Integer comp = compareCommands(resourceSet, commandId, commandToRedoId);
 			if (command == null) {
-				throw new IllegalArgumentException(String.format("For resource %s command %s doesn't exist. Current command to redo is: %s", resourceSet, commandId,	commandToRedoId));
+				throw new IllegalArgumentException(String.format("For resource %s command %s doesn't exist. Current command to redo is: %s",
+						resourceSet, commandId,	commandToRedoId));
 			} else if (comp == null || comp < 0) {
-				throw new IllegalArgumentException(String.format("For resource %s command %s has already been redone. Current command to redo is: %s", resourceSet, commandId, commandToRedoId));
+				throw new IllegalArgumentException(String.format("For resource %s command %s has already been redone. Current command to redo is: %s", 
+						resourceSet, commandId, commandToRedoId));
 			} else {
 				List<Command> commands = getCommands(resourceSet, commandToRedoId, commandId);
 				for (int i = 0; i < commands.size(); i++) {
@@ -366,10 +405,10 @@ public abstract class ResourceSetService {
 	 */
 	private void redoUpdate(Update update) {
 		if (update instanceof PropertyUpdate) {
-			redoPropertyUpdate((PropertyUpdate)update);
+			redoPropertyUpdate((PropertyUpdate) update);
 		}
 		if (update instanceof ChildrenUpdate) {
-			redoChildrenUpdate((ChildrenUpdate)update);
+			redoChildrenUpdate((ChildrenUpdate) update);
 		}
 	}
 	
@@ -387,8 +426,7 @@ public abstract class ResourceSetService {
 		context.add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, controllerList);
 		if (update.getIsUnset()) {
 			nodeService.unsetProperty(node, update.getKey(), context); 
-		}
-		else {
+		} else {
 			nodeService.setProperty(node, update.getKey(), update.getValue(), context);
 		}
 	}
@@ -413,6 +451,8 @@ public abstract class ResourceSetService {
 		case CoreConstants.UPDATE_CHILD_REMOVED:
 			Node targetNode =  CorePlugin.getInstance().getResourceService().getNode(update.getTargetNode().getNodeUri());
 			CorePlugin.getInstance().getNodeService().removeChild(node, targetNode, context);
+			break;
+		default:
 			break;
 		}
 	}

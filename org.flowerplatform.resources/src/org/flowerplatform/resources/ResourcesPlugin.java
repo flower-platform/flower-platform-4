@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,18 +19,21 @@ import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 
+/**
+ *@author Mariana Gheorghe
+ **/
 public class ResourcesPlugin extends AbstractFlowerJavaPlugin {
 	
-	protected static ResourcesPlugin INSTANCE;
+	protected static ResourcesPlugin instance;
 	
 	public static ResourcesPlugin getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		INSTANCE = this;
+		instance = this;
 	}
 
 	@Override

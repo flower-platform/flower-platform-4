@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,12 +15,7 @@
  */
 package org.flowerplatform.core.node.remote;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
-
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.RemoteMethodInvocationListener;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.resource.ResourceSetService;
 import org.flowerplatform.util.Utils;
@@ -32,7 +27,10 @@ import org.flowerplatform.util.Utils;
  */
 public class ResourceServiceRemote {
 
-	public SubscriptionInfo subscribeToParentResource(String nodeUri) {		
+	/**
+	 *@author see class
+	 **/
+	public SubscriptionInfo subscribeToParentResource(String nodeUri) {
 		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
 		return CorePlugin.getInstance().getResourceService()
 				.subscribeToParentResource(sessionId, nodeUri, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
@@ -56,6 +54,9 @@ public class ResourceServiceRemote {
 				new ServiceContext<ResourceSetService>(CorePlugin.getInstance().getResourceSetService()));
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public void reload(String resourceNodeId) {
 		CorePlugin.getInstance().getResourceSetService().reload(resourceNodeId, 
 				new ServiceContext<ResourceSetService>(CorePlugin.getInstance().getResourceSetService()));
