@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Freeplane_client
+Bundle-SymbolicName: org.flowerplatform.freeplane.client1;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.flowerplatform.util,
+ org.eclipse.osgi,
+ org.freeplane.core
+Bundle-Activator: org.flowerplatform.freeplane.client.FreeplanePlugin
