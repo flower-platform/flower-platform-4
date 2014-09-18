@@ -6,6 +6,7 @@ import javax.ws.rs.ext.Provider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.js_client.java.jackson.ClientNodeInstantiator;
 import org.flowerplatform.js_client.java.jackson.TypeResolverBuilder;
+import org.flowerplatform.js_client.java.jackson.UntypedObjectDeserializer;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -29,12 +30,15 @@ public class JsClientJavaObjectMapperProvider implements ContextResolver<ObjectM
 		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-		objectMapper.registerModule(new SimpleModule().addValueInstantiator(Node.class, new ClientNodeInstantiator()));
-
+		SimpleModule module = new SimpleModule();
+		module.addDeserializer(Object.class, new UntypedObjectDeserializer());
+		module.addValueInstantiator(Node.class, new ClientNodeInstantiator());
+		objectMapper.registerModule(module);
+		
 		com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder<?> typer = new TypeResolverBuilder(DefaultTyping.NON_FINAL);
-	    typer = typer.init(JsonTypeInfo.Id.CLASS, null);
-	    typer = typer.inclusion(JsonTypeInfo.As.PROPERTY);
-	    objectMapper.setDefaultTyping(typer);
+		typer = typer.init(JsonTypeInfo.Id.CLASS, null);
+		typer = typer.inclusion(JsonTypeInfo.As.PROPERTY);
+		objectMapper.setDefaultTyping(typer);
 	}
 	
 	@Override

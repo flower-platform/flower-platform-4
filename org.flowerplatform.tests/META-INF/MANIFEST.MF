@@ -20,12 +20,13 @@ Require-Bundle: org.eclipse.jdt.core,
  org.flowerplatform.codesync.java,
  org.flowerplatform.codesync.sdiff,
  org.flowerplatform.mindmap,
- org.flowerplatform.freeplane
+ org.flowerplatform.freeplane,
+ org.flowerplatform.js_client.java
 Bundle-Activator: org.flowerplatform.tests.TestActivator
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib-from-maven/mockito-all-1.9.5.jar,
  .
 Export-Package: org.flowerplatform.tests
 Import-Package: javax.servlet,
- javax.servlet.http
-
+ javax.servlet.http,
+ org.flowerplatform.js_client.java.node

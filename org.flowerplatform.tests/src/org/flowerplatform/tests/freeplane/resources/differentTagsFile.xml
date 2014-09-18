@@ -1,0 +1,37 @@
+<node BACKGROUND_COLOR='#ff3366' COLOR='#ffff99' CREATED='1409904418111' ID='ID_93279313' LINK='#ID_1532596670' MODIFIED='1409905083387' TEXT='Node1'>
+	<arrowlink COLOR='#000000' SHAPE='CUBIC_CURVE' TRANSPARENCY='80'/>
+	<attribute NAME='attribute1' VALUE='value1'/>
+	<cloud COLOR='#ccffff' SHAPE='ARC'/>
+	<edge COLOR='#660000'/>
+	<font BOLD='true' ITALIC='true' NAME='Serif' SIZE='12'/>
+	<hook NAME='AutomaticEdgeColor' COUNTER='4'/>
+	<hook NAME='MapStyle'>
+		<properties show_note_icons='true' show_icon_for_attributes='true'></properties>
+		<map_styles>
+			<stylenode LOCALIZED_TEXT='styles.root_node'>
+				<stylenode LOCALIZED_TEXT='styles.predefined' POSITION='right'>
+					<stylenode LOCALIZED_TEXT='default' MAX_WIDTH='600' COLOR='#000000' STYLE='as_parent'>
+						<font NAME='SansSerif' SIZE='10' BOLD='false' ITALIC='false'></font>
+						<icon BUILTIN='yes'></icon>
+					</stylenode>
+					<stylenode LOCALIZED_TEXT='defaultstyle.note'></stylenode>
+					<stylenode LOCALIZED_TEXT='defaultstyle.floating'>
+						<edge STYLE='hide_edge'></edge>
+						<cloud COLOR='#f0f0f0' SHAPE='ROUND_RECT'></cloud>
+					</stylenode>
+				</stylenode>
+			</stylenode>
+		</map_styles>
+	</hook>
+	<icon BUILTIN='stop-sign'/>
+	<icon BUILTIN='password'/>
+	<richcontent TYPE='DETAILS'>
+		<html><head></head><body><p>Node1_details</p></body></html>
+	</richcontent>
+	<richcontent TYPE='NEW_TYPE'>
+		<node></node>
+	</richcontent>
+	<richcontent TYPE='NOTE'>
+		<html><head></head><body><p>Node1_Note</p></body></html>
+	</richcontent>
+</node>

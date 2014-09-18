@@ -74,6 +74,9 @@ NodeRegistryManager.prototype.getResourceUrisForResourceSet = function(resourceS
 	if (resourceSet == null) {
 		resourceUris = [];
 	}
+	if (resourceUris == null) { // if null or undefined (== does both)
+		return null;
+	}
 	return resourceUris;
 };
 
@@ -164,9 +167,10 @@ NodeRegistryManager.prototype.expand = function(nodeRegistry, node, context) {
 		nodeRegistry.expand(node, context);
 	} else {
 		var subscribableResources = node.properties[Constants.SUBSCRIBABLE_RESOURCES];
-		if (subscribableResources != null && subscribableResources.length > 0) {
+		var size = this.hostInvocator.getLength(subscribableResources);
+		if (subscribableResources != null && size > 0) {
 			// a subscribable node => subscribe to the first resource
-			var subscribableResource = subscribableResources.getItemAt(0);
+			var subscribableResource = this.hostInvocator.getItemAt(subscribableResources, 0);
 			this.subscribe(subscribableResource.a, nodeRegistry, function(rootNode, resourceNode) {
 				nodeRegistry.expand(node, context);
 			});
@@ -209,8 +213,9 @@ NodeRegistryManager.prototype.collapseHandler = function(node, nodeRegistry, dir
 NodeRegistryManager.prototype.getResourceUrisForSubTree = function(node, nodeRegistry, dirtyResourceUris, savedResourceUris) {
 	var subscribableResources = node.properties[Constants.SUBSCRIBABLE_RESOURCES];
 	if (subscribableResources != null) {	
-		for (var i = 0; i < subscribableResources.length; i++){
-			var resourceUri = subscribableResources.getItemAt(i).a;				
+		var size = this.hostInvocator.getLength(subscribableResources);
+		for (var i = 0; i < size; i++){
+			var resourceUri = this.hostInvocator.getItemAt(subscribableResources, i).a;
 			var resourceNode = nodeRegistry.getNodeById(resourceUri);
 			if (resourceNode != null) {
 				if (resourceNode.properties[Constants.IS_DIRTY]) {
@@ -253,7 +258,7 @@ NodeRegistryManager.prototype.hasSubscribableResource = function(node, resourceU
 NodeRegistryManager.prototype.subscribe = function(nodeId, nodeRegistry, subscribeResultCallback, subscribeFaultCallback) {
 	var self = this;
 	this.hostServiceInvocator.invoke("resourceService.subscribeToParentResource", [nodeId], 
-		function (subscriptionInfo) {			
+		function (subscriptionInfo) {
 			subscriptionInfo.rootNode = nodeRegistry.mergeOrRegisterNode(subscriptionInfo.rootNode);			
 			if (subscriptionInfo.resourceNode != null) {				
 				subscriptionInfo.resourceNode = nodeRegistry.mergeOrRegisterNode(subscriptionInfo.resourceNode);				
@@ -292,6 +297,9 @@ NodeRegistryManager.prototype.removeNodeRegistries = function(nodeRegistries) {
 
 NodeRegistryManager.prototype.getResourceSetsForResourceUris = function(resourceUris) {
 	var resourceSets = [];
+//	var size = this.hostInvocator.getLength(resourceUris);
+//	for (var i = 0; i < size; i++) {	
+//		var resourceSet = this.resourceUriToResourceSet[String(this.hostInvocator.getItemAt(resourceUris, i))];
 	for (var i = 0; i < resourceUris.length; i++) {	
 		var resourceSet = this.resourceUriToResourceSet[resourceUris[i]];
 		if (resourceSets.indexOf(resourceSet) < 0) {

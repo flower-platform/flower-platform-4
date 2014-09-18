@@ -12,7 +12,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.flowerplatform.core.node.remote.SubscriptionInfo;
@@ -28,8 +30,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.NativeJavaObject;
-import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 
 /**
@@ -48,12 +48,10 @@ public class JsClientNodeRegistryManagerTest {
 	public static void setUpBeforeClass() throws Exception {
 		ctx = Context.enter();
 		scope = ctx.initStandardObjects();	
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/")
-				.getAbsolutePath() + "/../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistry.js"), StandardCharsets.UTF_8), null, 1, null);
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/")
-				.getAbsolutePath() + "/../../org.flowerplatform.js_client.core/WebContent/js/node_registry/ResourceOperationsManager.js"), StandardCharsets.UTF_8), null, 1, null);
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/")
-				.getAbsolutePath() + "/../../org.flowerplatform.js_client.core/WebContent/js/node_registry/NodeRegistryManager.js"), StandardCharsets.UTF_8), null, 1, null);		
+		String pathToJsFolder = FileUtils.getFile("src/").getAbsolutePath() + "/../../org.flowerplatform.js_client.common_js_as/WebContent/js";
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(pathToJsFolder + "/NodeRegistry.js"), StandardCharsets.UTF_8), null, 1, null);
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(pathToJsFolder + "/ResourceOperationsManager.js"), StandardCharsets.UTF_8), null, 1, null);
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(pathToJsFolder + "/NodeRegistryManager.js"), StandardCharsets.UTF_8), null, 1, null);		
 	}
 	
 	/**
@@ -74,12 +72,11 @@ public class JsClientNodeRegistryManagerTest {
 		
 		// node null, or node not null and no autoSubscribeOnExpand flag, or node not null and autoSubscribeOnExpand flag on false
 		ClientNode resourceNode1 = JSClientJavaTestUtils.createResourceClientNode("resourceNode1");
-		NativeObject properties1 = new NativeObject(); // it's something like a Map<,>, but gets translated in JavaScript
-		resourceNode1.setProperties(properties1);
+		resourceNode1.setProperties(new HashMap<String, Object>());
 		
 		ClientNode resourceNode2 = JSClientJavaTestUtils.createResourceClientNode("resourceNode2");
-		NativeObject properties2 = new NativeObject(); // it's something like a Map<,>, but gets translated in JavaScript
-		properties2.put("autoSubscribeOnExpand", properties2, false);
+		Map<String, Object> properties2 = new HashMap<String, Object>();
+		properties2.put("autoSubscribeOnExpand", false);
 		resourceNode1.setProperties(properties2);
 		
 		ClientNode resourceNode3 = JSClientJavaTestUtils.createResourceClientNode("resourceNode3");
@@ -100,8 +97,8 @@ public class JsClientNodeRegistryManagerTest {
 		SubscriptionInfo subcriptionInfoResponse = new SubscriptionInfo();
 		ClientNode resourceNodeToSubscribeTo = JSClientJavaTestUtils.createClientNode("clientNodeToSubscribeTo");
 
-		NativeObject propertiesDirty = new NativeObject();
-		propertiesDirty.put("isDirty", propertiesDirty, false);
+		Map<String, Object> propertiesDirty = new HashMap<String, Object>();
+		propertiesDirty.put("isDirty", false);
 		resourceNodeToSubscribeTo.setProperties(propertiesDirty);
 		
 		subcriptionInfoResponse.setResourceNode(resourceNodeToSubscribeTo);
@@ -142,13 +139,13 @@ public class JsClientNodeRegistryManagerTest {
 		assertNotNull(resourceNode2.getChildren());
 		assertEquals(1, resourceNode2.getChildren().size());
 		
-		NativeObject properties3 = new NativeObject(); // it's something like a Map<,>, but gets translated in JavaScript
-		properties3.put("autoSubscribeOnExpand", properties3, true);
+		Map<String, Object> properties3 = new HashMap<String, Object>();
+		properties3.put("autoSubscribeOnExpand", true);
 		
 		List<Pair<String, String>> subscribableResources = new ArrayList<Pair<String, String>>();
 		Pair<String, String> subscribableResource = new Pair<String, String>("fpp:user/repo|resourceFileUri", "mindmap");
 		subscribableResources.add(0, subscribableResource);
-		properties3.put("subscribableResources", properties3, subscribableResources);
+		properties3.put("subscribableResources", subscribableResources);
 		resourceNode3.setProperties(properties3);
 		JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "expand", nodeRegistry, resourceNode3, null);
 		
@@ -162,12 +159,19 @@ public class JsClientNodeRegistryManagerTest {
 		NativeArray resourceUris =  (NativeArray) (JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceUrisForResourceSet", "myTestResourceSet"));
 		assertTrue(resourceUris.get(0).equals("scheme:user/repo|clientNodeToSubscribeTo"));
 		
-		NativeJavaObject resourceSet =  (NativeJavaObject) 
-				(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetForResourceUri", "scheme:user/repo|clientNodeToSubscribeTo"));
-		String resourceSetAsString = (String) resourceSet.unwrap();
+		NativeArray resourceSet =  (NativeArray)
+				(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetsForResourceUris", 
+						getNewJavaScriptListWithOneElement("scheme:user/repo|clientNodeToSubscribeTo")));
+		String resourceSetAsString = (String) resourceSet.get(0);
+
 		assertTrue(resourceSetAsString.equals("myTestResourceSet"));
 	}
 	
+	private NativeArray getNewJavaScriptListWithOneElement(String element) {
+		NativeArray na = new NativeArray(new Object[] {element});
+		return na;
+	}
+
 	/**
 	 * tests client code that gets executed when collapsing a node that doesn't have any change 
 	 * @throws Exception
@@ -193,8 +197,8 @@ public class JsClientNodeRegistryManagerTest {
 		SubscriptionInfo subscriptionInfoResponse2 = new SubscriptionInfo();
 		ClientNode resourceFileNode1 = JSClientJavaTestUtils.createClientNode("resourceFileNode1");
 		ClientNode resourceFileNode2 = JSClientJavaTestUtils.createClientNode("resourceFileNode2");
-		NativeObject propertyDirty = new NativeObject();
-		propertyDirty.put("isDirty", propertyDirty, false);
+		Map<String, Object> propertyDirty = new HashMap<String, Object>();
+		propertyDirty.put("isDirty", false);
 		resourceFileNode1.setProperties(propertyDirty);
 		resourceFileNode2.setProperties(propertyDirty);
 
@@ -224,26 +228,26 @@ public class JsClientNodeRegistryManagerTest {
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", resourceNode1, null, -1);
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", resourceNode2, null, -1);
 		
-		NativeObject resourceNodeProperties1 = new NativeObject(); // it's something like a Map<,>, but gets translated in JavaScript
-		resourceNodeProperties1.put("autoSubscribeOnExpand", resourceNodeProperties1, true);
+		Map<String, Object> resourceNodeProperties1 = new HashMap<String, Object>();
+		resourceNodeProperties1.put("autoSubscribeOnExpand", true);
 		List<Pair<String, String>> subscribableResources1 = new ArrayList<Pair<String, String>>();
 		Pair<String, String> subscribableResource1 = new Pair<String, String>("scheme:user/repo|resourceFileNode1", "mindmap");
 		// register resourceFileNode1
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", resourceFileNode1, null, -1);
 		subscribableResources1.add(subscribableResource1);
-		resourceNodeProperties1.put("subscribableResources", resourceNodeProperties1, subscribableResources1);
+		resourceNodeProperties1.put("subscribableResources", subscribableResources1);
 		resourceNode1.setProperties(resourceNodeProperties1);
 		JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "expand", nodeRegistry, resourceNode1, null);
 
 		// same thing for resourceNode2
-		NativeObject resourceNodeProperties2 = new NativeObject();
-		resourceNodeProperties2.put("autoSubscribeOnExpand", resourceNodeProperties2, true);
+		Map<String, Object> resourceNodeProperties2 = new HashMap<String, Object>();
+		resourceNodeProperties2.put("autoSubscribeOnExpand", true);
 		List<Pair<String, String>> subscribableResources2 = new ArrayList<Pair<String, String>>();
 		Pair<String, String> subscribableResource2 = new Pair<String, String>("scheme:user/repo|resourceFileNode2", "mindmap");
 		// register resourceFileNode2
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", resourceFileNode2, null, -1);
 		subscribableResources2.add(subscribableResource2);
-		resourceNodeProperties2.put("subscribableResources", resourceNodeProperties2, subscribableResources2);
+		resourceNodeProperties2.put("subscribableResources", subscribableResources2);
 		resourceNode2.setProperties(resourceNodeProperties2);
 		JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "expand", nodeRegistry, resourceNode2, null);
 		
@@ -260,9 +264,11 @@ public class JsClientNodeRegistryManagerTest {
 		assertEquals("scheme:user/repo|resourceFileNode1", resourceUris.get(0));
 		assertEquals("scheme:user/repo|resourceFileNode2", resourceUris.get(1));
 		
-		NativeJavaObject resourceSet =  (NativeJavaObject) 
-				(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetForResourceUri", "scheme:user/repo|resourceFileNode1"));
-		String resourceSetAsString = (String) resourceSet.unwrap();
+		NativeArray resourceSet =  (NativeArray)
+				(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetsForResourceUris", 
+						getNewJavaScriptListWithOneElement("scheme:user/repo|resourceFileNode1")));
+		String resourceSetAsString = (String) resourceSet.get(0);
+
 		assertTrue(resourceSetAsString.equals("myTestResourceSet"));
 		
 		// everything is successfully subscribed; now let's test if we can unsubscribe/collapse
@@ -298,8 +304,8 @@ public class JsClientNodeRegistryManagerTest {
 		
 		SubscriptionInfo dirtyResourceSubscriptionInfoResponse = new SubscriptionInfo();
 		ClientNode dirtyResourceFileNode = JSClientJavaTestUtils.createClientNode("dirtyResourceFileNode");
-		NativeObject propertyDirty = new NativeObject();
-		propertyDirty.put("isDirty", propertyDirty, true);
+		Map<String, Object> propertyDirty = new HashMap<String, Object>();
+		propertyDirty.put("isDirty", true);
 		dirtyResourceFileNode.setProperties(propertyDirty);
 		dirtyResourceSubscriptionInfoResponse.setResourceNode(dirtyResourceFileNode);
 		dirtyResourceSubscriptionInfoResponse.setRootNode(dirtyResourceNode);
@@ -307,8 +313,8 @@ public class JsClientNodeRegistryManagerTest {
 
 		SubscriptionInfo cleanResourceSubscriptionInfoResponse = new SubscriptionInfo();
 		ClientNode cleanResourceFileNode = JSClientJavaTestUtils.createClientNode("cleanResourceFileNode");
-		NativeObject propertyClean = new NativeObject();
-		propertyClean.put("isDirty", propertyClean, false);
+		Map<String, Object> propertyClean = new HashMap<String, Object>();
+		propertyClean.put("isDirty", false);
 		cleanResourceFileNode.setProperties(propertyClean);
 		cleanResourceSubscriptionInfoResponse.setResourceNode(cleanResourceFileNode);
 		cleanResourceSubscriptionInfoResponse.setRootNode(cleanResourceNode);
@@ -328,36 +334,38 @@ public class JsClientNodeRegistryManagerTest {
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", dirtyResourceNode, null, -1);
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", cleanResourceNode, null, -1);
 		
-		NativeObject dirtyResourceNodeProperties = new NativeObject(); // it's something like a Map<,>, but gets translated in JavaScript
-		dirtyResourceNodeProperties.put("autoSubscribeOnExpand", dirtyResourceNodeProperties, true);
+		Map<String, Object> dirtyResourceNodeProperties = new HashMap<String, Object>();
+		dirtyResourceNodeProperties.put("autoSubscribeOnExpand", true);
 		List<Pair<String, String>> dirtySubscribableResources = new ArrayList<Pair<String, String>>();
 		Pair<String, String> dirtySubscribableResource = new Pair<String, String>("scheme:user/repo|dirtyResourceFileNode", "mindmap");
 		// register dirtyResourceFileNode
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", dirtyResourceFileNode, null, -1);
 		dirtySubscribableResources.add(dirtySubscribableResource);
-		dirtyResourceNodeProperties.put("subscribableResources", dirtyResourceNodeProperties, dirtySubscribableResources);
+		dirtyResourceNodeProperties.put("subscribableResources", dirtySubscribableResources);
 		dirtyResourceNode.setProperties(dirtyResourceNodeProperties);
 		JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "expand", nodeRegistry, dirtyResourceNode, null);
 
-		NativeObject cleanResourceNodeProperties = new NativeObject(); // it's something like a Map<,>, but gets translated in JavaScript
-		cleanResourceNodeProperties.put("autoSubscribeOnExpand", cleanResourceNodeProperties, true);
+		Map<String, Object> cleanResourceNodeProperties = new HashMap<String, Object>();
+		cleanResourceNodeProperties.put("autoSubscribeOnExpand", true);
 		List<Pair<String, String>> cleanSubscribableResources = new ArrayList<Pair<String, String>>();
 		Pair<String, String> cleanSubscribableResource = new Pair<String, String>("scheme:user/repo|cleanResourceFileNode", "mindmap");
 		// register cleanResourceFileNode
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "registerNode", cleanResourceFileNode, null, -1);
 		cleanSubscribableResources.add(cleanSubscribableResource);
-		cleanResourceNodeProperties.put("subscribableResources", cleanResourceNodeProperties, cleanSubscribableResources);
+		cleanResourceNodeProperties.put("subscribableResources", cleanSubscribableResources);
 		cleanResourceNode.setProperties(cleanResourceNodeProperties);
 		JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "expand", nodeRegistry, cleanResourceNode, null);
 		
-		NativeJavaObject resourceSet =  (NativeJavaObject)
-				(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetForResourceUri", "scheme:user/repo|dirtyResourceFileNode"));
-		String resourceSetAsString = (String) resourceSet.unwrap();
+		NativeArray resourceSet =  (NativeArray)
+				(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetsForResourceUris",
+						getNewJavaScriptListWithOneElement("scheme:user/repo|dirtyResourceFileNode")));
+		String resourceSetAsString = (String) resourceSet.get(0);
 		assertEquals("dirtyResourceSet", resourceSetAsString);
 		
-		resourceSet =  (NativeJavaObject) 
-				(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetForResourceUri", "scheme:user/repo|cleanResourceFileNode"));
-		resourceSetAsString = (String) resourceSet.unwrap();
+		resourceSet =  (NativeArray) 
+				(JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSetsForResourceUris",
+						getNewJavaScriptListWithOneElement("scheme:user/repo|cleanResourceFileNode")));
+		resourceSetAsString = (String) resourceSet.get(0);
 		assertEquals("cleanResourceSet", resourceSetAsString);
 		
 		// test if one the dirty one is returned 

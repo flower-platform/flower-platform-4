@@ -13,22 +13,20 @@
  * 
  * license-end
  */
-package org.flowerplatform.tests.js_client.java;
+package org.flowerplatform.freeplane.resource;
 
-import org.flowerplatform.tests.EclipseIndependentTestSuite;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.flowerplatform.mindmap.MindMapConstants;
+import org.freeplane.features.map.NodeModel;
 
 /**
+ * @author Mariana Gheorghe
  * @author Cristina Constantinescu
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-	JsClientNodeRegistryManagerTest.class,
-	JsClientNodeRegistryTest.class,
-	NodeRegistryScriptTest.class
-})
-public class JsClientJavaTestSuite extends EclipseIndependentTestSuite {
-		
+public class FreeplaneMindmapResourceHandler1 extends FreeplaneMindmapResourceHandler {
+	
+	@Override
+	protected String getType(String nodeUri, NodeModel nodeModel) {
+		return MindMapConstants.MINDMAP_NODE_TYPE_1;
+	}
+
 }

@@ -24,6 +24,9 @@ import com.fasterxml.jackson.databind.jsontype.impl.AsWrapperTypeSerializer;
 /**
  * Created to provide our {@link AsPropertyTypeSerializer} and {@link AsPropertyTypeDeserializer}.
  * 
+ * <p>
+ * Note: A similar class exists on server side too.
+ * 
  * @see JsClientJavaObjectMapperProvider
  * @see UntypedObjectDeserializer
  * 

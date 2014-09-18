@@ -13,12 +13,11 @@ import org.mozilla.javascript.Scriptable;
 public final class JSClientJavaTestUtils {
 
 	private JSClientJavaTestUtils() {
-		// for checkstyle
-	}
+		
+	};
+	
 	/**
-	 * 
-	 * @author see class
-	 *
+	 * @author Cristina Constantinescu
 	 */
 	public static class RecordingServiceInvocator extends AbstractServiceInvocator {
 
@@ -26,9 +25,7 @@ public final class JSClientJavaTestUtils {
 		private int indexOfLastInvocationResult = -1;
 			
 		/**
-		 * @author: see class
-		 * @param result
-		 * @return
+		 * @author Cristina Constantinescu
 		 */
 		public RecordingServiceInvocator setExpectedResults(Object[] result) {
 			this.expectedResults = result;
@@ -46,9 +43,7 @@ public final class JSClientJavaTestUtils {
 	}
 	
 	/**
-	 * 
-	 * @param fragment
-	 * @return
+	 * @author Cristina Constantinescu
 	 */
 	public static ClientNode createClientNode(String fragment) {
 		ClientNode node = new ClientNode();

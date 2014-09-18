@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,11 +31,8 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.js_client.java.JsClientJavaPlugin;
 import org.flowerplatform.resources.ResourcesPlugin;
-import org.flowerplatform.tests.codesync.CodeSyncTestSuite;
-import org.flowerplatform.tests.controllers.FileSystemControllersTest;
-import org.flowerplatform.tests.core.CommandStackTest;
-import org.flowerplatform.tests.core.CoreTestSuite;
 import org.flowerplatform.tests.js_client.java.JsClientJavaTestSuite;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.junit.BeforeClass;
@@ -44,7 +41,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-
 //CHECKSTYLE:OFF
 /**
  * @author Mariana Gheorghe
@@ -59,16 +55,16 @@ import org.osgi.framework.BundleContext;
 	JsClientJavaTestSuite.class
 })
 public class EclipseIndependentTestSuite {
-	
+
 	public static String workspaceLocation = "workspace";
 	
 	public static NodeService nodeService;
+
 //CHECKSTYLE:ON	
+	
 	public static String sessionId = "mockSessionId";
-		
 	/**
-	 * @author see class
-	 * @throws Exception
+	 * @author Mariana Gheorghe
 	 */
 	@BeforeClass
 	public static void beforeClass() throws Exception {
@@ -77,6 +73,7 @@ public class EclipseIndependentTestSuite {
 		
 		startPlugin(new ResourcesPlugin());
 		startPlugin(new CorePlugin());
+		startPlugin(new JsClientJavaPlugin());
 		nodeService = CorePlugin.getInstance().getNodeService();
 		
 		HttpServletRequest req = mock(HttpServletRequest.class);
@@ -117,11 +114,8 @@ public class EclipseIndependentTestSuite {
 			e.printStackTrace();
 		}
 	}
-
 	/**
-	 * copy test files into the runtime workspace location
-	 * @param from
-	 * @param dir
+	 * @author Mariana Gheorghe
 	 */
 	public static void copyFiles(String from, String dir) {
 		File to = new File(workspaceLocation, dir);
@@ -131,10 +125,10 @@ public class EclipseIndependentTestSuite {
 			throw new RuntimeException("Cannot copy files needed for test", e);
 		}
 	}
-	
+
 	/**
-	 * removes files from runtime workspace after testing has finished
-	 * @param dir
+	 * @author Mariana Gheorghe
+
 	 */
 	public static void deleteFiles(String dir) {
 		try {

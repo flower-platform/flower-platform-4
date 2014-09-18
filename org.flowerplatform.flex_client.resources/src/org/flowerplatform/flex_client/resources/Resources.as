@@ -84,14 +84,14 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/core/table_gear.png")]
 		public static const tableGear:Class;
 		
-		[Embed(source="/core/url_icon.png")]
-		public static const urlIcon:Class;
-		
 		[Embed(source="/core/undo.png")]
 		public static const undoIcon:Class;
 		
 		[Embed(source="/core/redo.png")]
 		public static const redoIcon:Class;
+
+		[Embed(source="/core/url_icon.png")]
+		public static const urlIcon:Class;
 		
 		// Properties
 		
@@ -108,7 +108,6 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/mindmap/icons/checkout.gif")]
 		public static const checkoutIcon:Class;
 		
-
 		[Embed(source="/mindmap/images.png")]
 		public static const imagesIcon:Class;
 		
@@ -606,7 +605,7 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/team.git/gitDiffFromWorkspaceAndPatch.png")]
 		public static const gitDiffFromWorkspaceAndPatch:Class;
-		
+
 		[Embed(source="/team.git/switch.gif")]
 		public static const switchIcon:Class;
 		

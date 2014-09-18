@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -13,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +28,6 @@ import org.flowerplatform.js_client.java.node.INodeChangeListener;
 import org.flowerplatform.js_client.java.node.JavaHostInvocator;
 import org.flowerplatform.js_client.java.node.JavaHostResourceOperationsHandler;
 import org.flowerplatform.tests.js_client.java.JSClientJavaTestUtils.RecordingServiceInvocator;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,32 +44,28 @@ public class JsClientNodeRegistryTest {
 	private static Scriptable scope;
 	
 	/**
-	 * @author see class
-	 * @throws Exception
+	 * @author Cristina Constantinescu
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		ctx = Context.enter();
 		scope = ctx.initStandardObjects();	
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/")
-				.getAbsolutePath() + "/../../org.flowerplatform.js_client.common_js_as/WebContent/js/NodeRegistry.js"), StandardCharsets.UTF_8), null, 1, null);
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/")
-				.getAbsolutePath() + "/../../org.flowerplatform.js_client.common_js_as/WebContent/js/ResourceOperationsManager.js"), StandardCharsets.UTF_8), null, 1, null);
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(FileUtils.getFile("src/")
-				.getAbsolutePath() + "/../../org.flowerplatform.js_client.common_js_as/WebContent/js/NodeRegistryManager.js"), StandardCharsets.UTF_8), null, 1, null);		
+		
+		String pathToJsFolder = FileUtils.getFile("src/").getAbsolutePath() + "/../../org.flowerplatform.js_client.common_js_as/WebContent/js";
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(pathToJsFolder + "/NodeRegistry.js"), StandardCharsets.UTF_8), null, 1, null);
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(pathToJsFolder + "/ResourceOperationsManager.js"), StandardCharsets.UTF_8), null, 1, null);
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(pathToJsFolder + "/NodeRegistryManager.js"), StandardCharsets.UTF_8), null, 1, null);		
 	}
 	
 	/**
-	 * @author see class
-	 * @throws Exception
+	 * @author Cristina Constantinescu
 	 */
 	@AfterClass
 	public static void setUpAfterClass() throws Exception {
 		Context.exit();
 	}
+		
 	/**
-	 * @author see class	
-	 * @throws Exception	
 	 * @author Cristina Constantinescu
 	 */
 	@Test
@@ -270,14 +264,14 @@ public class JsClientNodeRegistryTest {
 		ClientNode node = JSClientJavaTestUtils.createClientNode("node");
 		NodeWithChildren newNodeWithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("newNodeWithChildren");
 		
-		NativeObject oldProperties = new NativeObject(); 
-		oldProperties.put("propertyA", oldProperties, "valueA"); // it's something like a Map<,>, but gets translated in JavaScript
-		oldProperties.put("propertyB", oldProperties, "valueB");
+		Map<String, Object> oldProperties = new HashMap<String, Object>(); 
+		oldProperties.put("propertyA", "valueA");
+		oldProperties.put("propertyB", "valueB");
 		node.setProperties(oldProperties);
 		
-		NativeObject newProperties = new NativeObject();
-		newProperties.put("propertyA", newProperties, "newValueA");
-		newProperties.put("propertyC", newProperties, "valueC");
+		Map<String, Object> newProperties = new HashMap<String, Object>();
+		newProperties.put("propertyA", "newValueA");
+		newProperties.put("propertyC", "valueC");
 		newNodeWithChildren.getNode().setProperties(newProperties);
 		
 		// create nodeRegistryManager
@@ -297,7 +291,7 @@ public class JsClientNodeRegistryTest {
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "refresh", node);
 		// assertEquals((NativeObject)node.getProperties(), newProperties);
 		
-		NativeObject afterRefreshProperties = (NativeObject) node.getProperties();
+		NativeObject afterRefreshProperties = node.getProperties();
 		assertTrue("properties not changed properly", afterRefreshProperties != null && sameMap(afterRefreshProperties, newProperties));
 	}
 	
@@ -454,8 +448,8 @@ public class JsClientNodeRegistryTest {
 		
 		NodeWithChildren rootWithChildren = JSClientJavaTestUtils.createClientNodeWithChildren("root");
 		
-		NativeObject properties = new NativeObject(); // it's something like a Map<,>, but gets translated in JavaScript
-		properties.put("flagToCheckRefreshGotExecuted", properties, true); 
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put("flagToCheckRefreshGotExecuted", true); 
 		rootWithChildren.getNode().setProperties(properties);
 		
 		List<NodeWithChildren> children = new ArrayList<NodeWithChildren>();
@@ -517,7 +511,7 @@ public class JsClientNodeRegistryTest {
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {
 				new JavaHostResourceOperationsHandler(), 
-				new RecordingServiceInvocator().setExpectedResults(new Object[]{new PropertyUpdate()}),
+				new RecordingServiceInvocator(), //.setExpectedResults(new Object[]{new PropertyUpdate()}),
 				new JavaHostInvocator()});
 		scope.put("_nodeRegistryManager", scope, nodeRegistryManager);
 		
@@ -533,7 +527,13 @@ public class JsClientNodeRegistryTest {
 		// add NodeChangedListener in nodeRegistry
 		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "addNodeChangeListener", listener);
 		// try to update this node
-		JsClientJavaUtils.invokeJsFunction(nodeRegistry, "processUpdates", root); // try to process one update
+		PropertyUpdate puNewProperty = new PropertyUpdate();
+		puNewProperty.setFullNodeId(root.getNodeUri());
+		puNewProperty.setType("UPDATED");
+		puNewProperty.setIsUnset(false);
+		puNewProperty.setKey("newProperty");
+		puNewProperty.setValue("valueForNewProperty");
+
 		// node not found TODO: should I check for anything? if nothing throws any exception, it should be fine
 		// verific ca nu s-a adaugat in map
 	}
@@ -547,14 +547,14 @@ public class JsClientNodeRegistryTest {
 	public void onUpdateProperty() throws Exception {
 		ClientNode node = JSClientJavaTestUtils.createClientNode("node");
 		
-		NativeObject oldProperties = new NativeObject(); 
-		oldProperties.put("oldPropertyToBeRemoved", oldProperties, "notImportantValue");
-		oldProperties.put("oldProperty", oldProperties, "oldValueForOldProperty"); // it's something like a Map<,>, but gets translated in JavaScript
+		Map<String, Object> oldProperties = new HashMap<String, Object>(); 
+		oldProperties.put("oldPropertyToBeRemoved", "notImportantValue");
+		oldProperties.put("oldProperty", "oldValueForOldProperty");
 		node.setProperties(oldProperties);
 		
-		NativeObject newProperties = new NativeObject();
-		newProperties.put("newProperty", newProperties, "valueForNewProperty");
-		newProperties.put("oldProperty", newProperties, "newValueForOldProperty");
+		Map<String, Object> newProperties = new HashMap<String, Object>();
+		newProperties.put("newProperty", "valueForNewProperty");
+		newProperties.put("oldProperty", "newValueForOldProperty");
 		
 		// create nodeRegistryManager
 		Scriptable nodeRegistryManager = ctx.newObject(scope, "NodeRegistryManager", new Object[] {

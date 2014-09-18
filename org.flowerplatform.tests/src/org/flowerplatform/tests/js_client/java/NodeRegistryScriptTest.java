@@ -19,7 +19,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.js_client.java.JsClientJavaPlugin;
 import org.flowerplatform.js_client.java.JsClientJavaUtils;
 import org.flowerplatform.js_client.java.node.ClientNode;
@@ -110,17 +109,19 @@ public class NodeRegistryScriptTest {
 			JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "addListener", new NodeRegistryManagerListener());
 				
 			// create nodeRegistry
-			NativeObject nodeRegistry = (NativeObject) cx.evaluateString(scope, "_nodeRegistryManager.createNodeRegistry();", null, 1, null);
+			final NativeObject nodeRegistry = (NativeObject) cx.evaluateString(scope, "_nodeRegistryManager.createNodeRegistry();", null, 1, null);
 		
 			// add NodeChangedListener in nodeRegistry
 			JsClientJavaUtils.invokeJsFunction(nodeRegistry, "addNodeChangeListener", new NodeChangedListener());
 			
 			// subscribe
-			JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "subscribe", "fpm:user1/repo-1|tt.mm", nodeRegistry, 
+			JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "subscribe", "fpm1:user1/repo-2|test1.mm", nodeRegistry, 
 				new IFunctionInvoker() {
 					@Override
 					public void call(Object instance, Object... params) {
-						System.out.println("subscribeOKCallback -> " + ((Node) params[0]).getProperties());						
+						JsClientJavaUtils.invokeJsFunction(nodeRegistry, "expand", params[0], null);
+						
+						System.out.println(((ClientNode) ((ClientNode) params[0]).getChildren().get(0)).properties);
 					}
 				}, 
 				new IFunctionInvoker() {
@@ -128,18 +129,9 @@ public class NodeRegistryScriptTest {
 					public void call(Object instance, Object... params) {
 						System.out.println("subscribeFailedCallback -> " + params[0].toString());						
 					}
-				});
-
-			// get root node
-			Object node = (Object) JsClientJavaUtils.invokeJsFunction(nodeRegistry, "getNodeById", "fpm:user1/repo-1|tt.mm");
-			
-			// expand root node
-			JsClientJavaUtils.invokeJsFunction(nodeRegistry, "expand", node, null);
-			
-			System.out.println(node);
+				});			
 		} finally {
-		    Context.exit();
+			Context.exit();
 		}
-	}
-	
+	}	
 }
