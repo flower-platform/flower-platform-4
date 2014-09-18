@@ -1,18 +1,24 @@
 package org.flowerplatform.tests.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.flowerplatform.tests.EclipseIndependentTestSuite;
 import org.flowerplatform.tests.TestUtil;
+import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.Utils;
-import org.junit.Before;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.file.download.DownloadServlet;
 import org.flowerplatform.core.file.download.remote.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 /**
@@ -28,9 +34,9 @@ public class DownloadTest {
 	
 	public static final String[] files = {"mindmap1.mm", "mindmap2.mm", "file.txt"};
 	
-	public DownloadService downloadService;
-	
 	public static List<String> testNodeUris;
+	
+	public static DownloadService downloadService;
 
 	@BeforeClass
 	public static void beforeClass() {
@@ -40,16 +46,13 @@ public class DownloadTest {
 		testNodeUris.add(Utils.getUri("fpm", DOWNLOAD + files[0]));
 		testNodeUris.add(Utils.getUri("fpm", DOWNLOAD + files[1]));
 		testNodeUris.add(Utils.getUri("txt", DOWNLOAD + files[2]));
-	}
-	
-	@Before
-	public void before() {
+		
 		downloadService = new DownloadService();
 		when(downloadService.getSessionId()).thenReturn("dummy-session");
 	}
 	
 	@Test
-	public void testPrepareDownloadFunctionSingleFile() throws Throwable{
+	public void testPrepareDownloadSingleFile() throws Throwable {
 		
 		//doReturn("dummy-session").when(downloadService).getSessionId();
 		for (int i = 0; i < NO_TESTS; i++) {
@@ -69,7 +72,7 @@ public class DownloadTest {
 	}
 	
 	@Test
-	public void testPrepareDownloadFunctionZipArchive() throws Throwable{
+	public void testPrepareDownloadZipArchive() throws Throwable{
 		String downloadLink = downloadService.prepareDownload(testNodeUris);
 		
 		int first = DownloadServlet.DOWNLOAD_SERVLET_NAME.length();
@@ -88,6 +91,38 @@ public class DownloadTest {
 		assertEquals("sessionId doesn't match!", sessionId, "dummy-session");
 		assertEquals("Timestamp doesn't match!", timestamp, fileNameTimestamp);
 		assertEquals("Wrong extension!", fileNameExtension, ".zip");
+		
+		// find temporary archive and check every file in it
+		String temporaryDownloadFolderName = UtilConstants.TEMP_FOLDER.getAbsolutePath() + "/" + DOWNLOAD;
+		File temporaryDownloadFolder = new File(temporaryDownloadFolderName);
+		assertTrue("Temporary download folder not created!", temporaryDownloadFolder.exists());
+		
+		File archive = new File(UtilConstants.TEMP_FOLDER.getAbsolutePath() + "/" + DOWNLOAD + "/" + temporaryDownloadFolder.list()[0]);
+		File unzippedDirectory = new File(DIR + "/" + "unzipped");
+		unzippedDirectory.mkdirs();
+		
+		CoreUtils.unzipArchive(archive, unzippedDirectory);
+		File archiveDirectory = new File(unzippedDirectory.getAbsolutePath() + "/" + unzippedDirectory.list()[0]);
+		assertTrue("Number of files in archive incorrect!", archiveDirectory.list().length == NO_TESTS);
+		
+		ArrayList<String> fileNamesToArchive = new ArrayList<String>(Arrays.asList(files));
+		ArrayList<String> fileNamesInArchive = new ArrayList<String>(Arrays.asList(archiveDirectory.list()));
+		
+		for (String fileNameToArchive : fileNamesToArchive) {
+			boolean found = fileNamesInArchive.contains(fileNameToArchive);
+			if (!found) {
+				fail(String.format("File with filename '%s' not found in archive!", fileNameToArchive));
+			}
+		}
+		
+		// delete temporary download folder
+		CoreUtils.delete(new File(UtilConstants.TEMP_FOLDER.getAbsolutePath()));
+		CoreUtils.delete(new File(unzippedDirectory.getAbsolutePath()));;
+	}
+	
+	@AfterClass
+	public static void afterClass() {
+		EclipseIndependentTestSuite.deleteFiles("download");
 	}
 	
 }

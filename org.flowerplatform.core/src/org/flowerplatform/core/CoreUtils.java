@@ -84,6 +84,12 @@ public class CoreUtils {
 				while ((len = in.read(buf)) > 0) {					
 					zip.write(buf, 0, len);
 				}
+				
+				try {
+					in.close();
+				} catch (IOException e) {
+					//
+				}
 			}
 		}
 	}
