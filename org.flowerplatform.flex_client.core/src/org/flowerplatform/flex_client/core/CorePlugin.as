@@ -127,6 +127,18 @@ package org.flowerplatform.flex_client.core {
 		public static function getInstance():CorePlugin {
 			return INSTANCE;
 		}
+		
+		/**
+		 * The underlying variable is from the global namespace, defined within the js file.
+		 */
+		public function get nodeRegistryManager():* {
+			return _nodeRegistryManager;
+		}
+		
+		// TODO: rename the varible; rename the class: FlexHostResourceOperationsHandler
+		public function get resourceNodesManager():ResourceOperationsHandler {
+			return ResourceOperationsHandler(nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler);
+		}
 
 		/**
 		 * The underlying variable is from the global namespace, defined within the js file.
@@ -158,7 +170,7 @@ package org.flowerplatform.flex_client.core {
 		public function getEditorClassFactoryActionProvider():ClassFactoryActionProvider {
 			return editorClassFactoryActionProvider;
 		}
-			
+		
 		override public function preStart():void {
 			super.preStart();
 			if (INSTANCE != null) {
