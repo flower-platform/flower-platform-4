@@ -42,7 +42,7 @@ public class MindMapAddNodeController extends AbstractController implements IAdd
 		newNodeModel.setLeft(parentRawNodeData.isLeft());
 
 		parentRawNodeData.insert(newNodeModel, currentModelAtInsertionPoint != null ? (parentRawNodeData
-				.getChildPosition(currentModelAtInsertionPoint) + 1) : parentRawNodeData.getChildCount());
+				.getChildPosition(currentModelAtInsertionPoint)) : parentRawNodeData.getChildCount());
 		parentRawNodeData.getMap().setSaved(false);
 		
 		// set the id on the node instance
