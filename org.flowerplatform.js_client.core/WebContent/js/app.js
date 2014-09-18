@@ -93,9 +93,9 @@ flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', '$htt
 		routeConfig.route.resolve.deps = function($q, $rootScope) {
 			return loadRouteDependencies($q, $rootScope, routeConfig);
 		};
-		routeConfig.route.resolve.syncCookies = function($q) {
-			return syncCookies($q);
-		};
+//		routeConfig.route.resolve.syncCookies = function($q) {
+//			return syncCookies($q);
+//		};
 		// add route
 		$routeProvider.when(routeConfig.path, routeConfig.route);
 		logger.debug('route added ' + routeConfig.path);

@@ -19,7 +19,7 @@ public class UserValidator {
 	public Principal validateUser(String login, String password) {
 		// TODO implement
 //		if (login.equals("a") && password.equals("a")) {
-			return new UserPrincipal(login);
+			return new UserPrincipal(login, null);
 //		};
 //		return null;
 	}

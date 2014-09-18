@@ -1,8 +1,8 @@
 <form class="well col-sm-4" role="form">
 
-	<div class="form-group">
-		<button type="submit" class="btn btn-primary" ng-click="performLogin('github')">
-			<i class="icon-ok icon-white"></i> Sign in with GitHub
+	<div class="form-group" ng-repeat="oauthProvider in oauthProviders">
+		<button type="submit" class="btn btn-primary" ng-click="performLogin(oauthProvider)">
+			<i class="icon-ok icon-white"></i> {{oauthProvider.label}}
 		</button>
 	</div>
 

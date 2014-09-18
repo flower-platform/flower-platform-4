@@ -4,8 +4,8 @@
 	</div>
 	<div class="panel-body">
 		<ul class="nav nav-pills nav-stacked">
-			<li ng-class="{active: currentPath == '/users/{{user.messageResult.nodeUri}}'}" ><a ng-href="#/users/{{user.messageResult.nodeUri}}">General</a></li>	
-			<li ng-class="{active: currentPath == '/users/{{user.messageResult.nodeUri}}/settings'}"><a ng-href="#/users/{{user.messageResult.nodeUri}}/settings">Account settings</a></li>
+			<li ng-class="{active: currentPath == '/users/{{currentUser.messageResult.nodeUri}}'}" ><a ng-href="#/users/{{currentUser.messageResult.nodeUri}}">General</a></li>	
+			<li ng-class="{active: currentPath == '/users/{{currentUser.messageResult.nodeUri}}/settings'}"><a ng-href="#/users/{{currentUser.messageResult.nodeUri}}/settings">Account settings</a></li>
 		</ul>
 	</div>
 </div> 

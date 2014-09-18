@@ -21,32 +21,12 @@ flowerProject.lazy.factory('User', ['$resource', function($resource) {
 
 flowerProject.lazy.factory('Auth', ['$resource', function($resource) {
 	
-	var f = $resource('../ws-dispatcher/users/:op', {}, {
+	return $resource('../ws-dispatcher/users/:op', {}, {
+		currentUser:	{ method: 'GET', params: {op: 'login' } },
 		performLogin: 	{ method: 'POST', params: { op: 'login' } },
 		performLogout: 	{ method: 'POST', params: { op: 'logout' } }
 	});
 	
-	var key_currentUser = 'current_user';
-	
-	/**
-	 * Getter/setter for current user cookie.
-	 */
-	f.currentUser = function(val) {
-		if (val !== undefined) {
-			logger.debug('set current user');
-			if (val == null) {
-				$.removeCookie(key_currentUser);
-			} else {
-				$.cookie(key_currentUser, val);
-			}
-		} else {
-			logger.debug('get current user');
-			return $.cookie(key_currentUser);
-		}
-	};
-	
-	return f;
-
 }]);
 
 /**

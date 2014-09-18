@@ -79,7 +79,7 @@
 			
 			import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
 			import org.flowerplatform.flex_client.core.CorePlugin;
-			import org.flowerplatform.flex_client.core.user.UserAuthenticationManager;
+			import org.flowerplatform.flex_client.core.users.UserAuthenticationManager;
 			import org.flowerplatform.flex_client.host_app.mobile.view_content_host.WorkbenchMobileSplitViewHost;
 			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.CommunicationErrorView;
 			import org.flowerplatform.flex_client.host_app.mobile.view_edit_server_account.EditServerAccountView;

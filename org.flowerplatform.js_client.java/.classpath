@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/jersey-client-2.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/commons-codec-1.8.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib-from-maven/json-20131018.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib-from-maven/json-20131018.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/json/json/20131018/json-20131018-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/org.apache.oltu.oauth2.client-1.0.0.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/apache/oltu/oauth2/org.apache.oltu.oauth2.client/1.0.0/org.apache.oltu.oauth2.client-1.0.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/org.apache.oltu.oauth2.common-1.0.0.jar" sourcepath="C:/Users/PowerUser/.m2/repository/org/apache/oltu/oauth2/org.apache.oltu.oauth2.common/1.0.0/org.apache.oltu.oauth2.common-1.0.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-from-maven/slf4j-api-1.6.1.jar"/>

@@ -68,6 +68,10 @@ routesConfig.push({
 	route: {
 		templateUrl: '../js_client.users/partials/login.html',
 		controller: 'AuthCtrl',
-		resolve: {}
+		resolve: {
+			oauthProviders: function($http) {
+				return $http.get('../ws-dispatcher/oauthProviders');
+			}
+		}
 	}
 });

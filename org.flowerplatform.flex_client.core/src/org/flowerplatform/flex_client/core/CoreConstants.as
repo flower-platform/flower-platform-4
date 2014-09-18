@@ -159,7 +159,6 @@ package org.flowerplatform.flex_client.core {
 		// Users
 		//////////////////////////////////
 		
-		public static const CURRENT_USER:String = "currentUser";
 		public static const JSESSIONID:String = "jsessionid";
 		
 	}

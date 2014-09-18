@@ -3,6 +3,8 @@ package org.flowerplatform.js_client.server;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.js_client.server.oauth.OAuth2ProviderService;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -21,6 +23,8 @@ public class JsClientServerPlugin extends AbstractFlowerJavaPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		INSTANCE = this;
+		
+		CorePlugin.getInstance().getServiceRegistry().registerService("oauthProviderService", new OAuth2ProviderService());
 	}
 
 	public void setCookie(HttpServletRequest request, HttpServletResponse response, String name, String value, boolean httpOnly) {

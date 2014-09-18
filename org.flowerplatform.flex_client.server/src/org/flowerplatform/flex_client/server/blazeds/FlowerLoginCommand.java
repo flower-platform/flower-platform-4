@@ -20,9 +20,17 @@ public class FlowerLoginCommand implements LoginCommand {
 
 	@Override
 	public Principal doAuthentication(String username, Object credentials) {
-		// TODO check if same username??
 		Principal principal = userValidator.getCurrentUserPrincipal(FlexContext.getHttpRequest().getSession());
-		if (principal == null) {
+		if (principal != null) {
+			// there is already a user logged in for this session
+			// this can happen when the login was done from JS
+			// validate same username
+			if (!username.equals(principal.getName())) {
+				throw new RuntimeException("Trying to log in with a different user");
+			}
+		} else {
+			// no user logged in
+			// authenticate the user
 			principal = userValidator.validateUser(username, credentials.toString());
 			if (principal != null) {
 				userValidator.setCurrentUserPrincipal(FlexContext.getHttpRequest().getSession(), principal);

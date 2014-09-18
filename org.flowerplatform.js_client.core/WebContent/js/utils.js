@@ -51,6 +51,11 @@ function getURLParam(name) {
 	}
 }
 
+/**
+ * @param flex callback
+ * @param js callback
+ * @param args
+ */
 function callFlexCallback() {
 	var args = Array.prototype.slice.call(arguments, 0);
 	if (args[1] != null) {

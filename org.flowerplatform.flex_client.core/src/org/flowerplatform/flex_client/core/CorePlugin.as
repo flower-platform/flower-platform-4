@@ -19,7 +19,6 @@ package org.flowerplatform.flex_client.core {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
-	import mx.controls.Alert;
 	import mx.core.UIComponent;
 	import mx.messaging.ChannelSet;
 	import mx.messaging.channels.AMFChannel;
@@ -67,7 +66,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.core.service.UpdatesProcessingServiceLocator;
 	import org.flowerplatform.flex_client.core.shortcut.AssignHotKeyAction;
-	import org.flowerplatform.flex_client.core.user.UserAuthenticationManager;
+	import org.flowerplatform.flex_client.core.users.UserAuthenticationManager;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
@@ -180,6 +179,7 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("downloadService");
 			serviceLocator.addService("uploadService");
 			serviceLocator.addService("preferenceService");
+			serviceLocator.addService("userService");
 			
 			var resourceOperationsHandler:ResourceOperationsManager = new ResourceOperationsManager();
 			nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IServiceInvocator(serviceLocator), resourceOperationsHandler);
@@ -388,18 +388,7 @@ package org.flowerplatform.flex_client.core {
 				.setLabel("Show Current User")
 				.setParentId(CoreConstants.DEBUG)
 				.setFunctionDelegate(function():void {
-					if (FlexUtilGlobals.getInstance().isMobile) {
-						trace("Current User: " + userAuthenticationManager.currentUser);
-					} else {
-						Alert.show("Current User: " + userAuthenticationManager.currentUser);
-					}
-				}));
-			
-			registerActionToGlobalMenu(new ActionBase()
-				.setLabel("Login")
-				.setParentId(CoreConstants.DEBUG)
-				.setFunctionDelegate(function():void {
-					CorePlugin.getInstance().userAuthenticationManager.login("test abd", "sd");
+					userAuthenticationManager.getCurrentUser();
 				}));
 			
 			registerActionToGlobalMenu(new ActionBase()

@@ -1,5 +1,7 @@
 package org.flowerplatform.js_client.server.oauth;
 
+import java.util.Map;
+
 import org.apache.oltu.oauth2.common.token.OAuthToken;
 import org.flowerplatform.core.users.UserPrincipal;
 
@@ -13,8 +15,8 @@ public class OAuth2UserPrincipal extends UserPrincipal {
 
 	private OAuthToken token;
 
-	public OAuth2UserPrincipal(String username, OAuthToken token) {
-		super(username);
+	public OAuth2UserPrincipal(String username, Map<String, Object> info, OAuthToken token) {
+		super(username, info);
 		this.token = token;
 	}
 

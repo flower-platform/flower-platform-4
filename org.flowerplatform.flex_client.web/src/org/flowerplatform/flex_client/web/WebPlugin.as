@@ -25,9 +25,8 @@ package org.flowerplatform.flex_client.web {
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.action.ActionBase;
 	import org.flowerplatform.flexutil.global_menu.GlobalMenuBar;
-	import org.flowerplatform.flexutil.iframe.FlowerIFrameViewProvider;
-	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
 	
@@ -58,15 +57,20 @@ package org.flowerplatform.flex_client.web {
 			// TODO VB: Show login popup if no user authenticated or enter main application.
 			super.start();
 			
-			// TODO VB: Make sure that the user is not already logged in.
-			if (CorePlugin.getInstance().channelSet.authenticated == false) {
-				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
-					.setViewContent(new LoginForm())
-					.setTitle("Login")
-					.show();
-			} else {
-				enterApplication();
-			}
+			CorePlugin.getInstance().globalMenuActionProvider.addAction(new ActionBase()
+				.setId("login")
+				.setParentId(CoreConstants.DEBUG)
+				.setLabel("Login")
+				.setFunctionDelegate(function():void {
+					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+						.setViewContent(new LoginForm())
+						.setTitle("Login")
+						.setWidth(500)
+						.setHeight(450)
+						.show();
+				}));
+			
+			enterApplication();
 		}
 		
 		public function enterApplication():void {	
@@ -83,11 +87,6 @@ package org.flowerplatform.flex_client.web {
 			
 			CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "virtual:user/repo|root");
 			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
-			
-			// test for embedded IFrame
-			var viewLayoutData:ViewLayoutData = new ViewLayoutData(FlowerIFrameViewProvider.ID, "js_client.core/index.html");
-			viewLayoutData.isEditor = true;
-			FlexUtilGlobals.getInstance().workbench.addEditorView(viewLayoutData, true);
 		}
 		
 		override protected function registerMessageBundle():void {

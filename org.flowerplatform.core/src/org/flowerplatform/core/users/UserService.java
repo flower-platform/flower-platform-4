@@ -46,9 +46,18 @@ public class UserService {
 		return node;
 	}
 	
+	/**
+	 * @return full list of users
+	 */
 	@GET
 	public List<Node> getUsers() {
-		return users;
+		if (getCurrentUser() == null) {
+			return users;
+		}
+		List<Node> test = new ArrayList<Node>();
+		test.addAll(users);
+		test.add(getCurrentUser());
+		return test;
 	}
 	
 	/**
@@ -62,7 +71,7 @@ public class UserService {
 				return user;
 			}
 		}
-		return null;
+		return getCurrentUser();
 	}
 	
 	/**
@@ -110,12 +119,16 @@ public class UserService {
 		if (userPrincipal == null) {
 			return null;
 		}
-		for (Node user : users) {
-			if (user.getNodeUri().endsWith(userPrincipal.getName())) {
-				return user;
-			}
-		}
-		throw new RuntimeException("User not found");
+//		for (Node user : users) {
+//			if (user.getNodeUri().endsWith(userPrincipal.getName())) {
+//				return user;
+//			}
+//		}
+		
+		String login = userPrincipal.getName();
+		Node node = new Node("user:test|" + login, "user");
+		node.setProperties(((UserPrincipal) userPrincipal).getInfo());
+		return node;
 	}
 	
 	/**

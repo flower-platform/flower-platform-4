@@ -1,4 +1,5 @@
-package org.flowerplatform.flex_client.core.user {
+package org.flowerplatform.flex_client.core.users {
+	import mx.controls.Alert;
 	import mx.rpc.AsyncResponder;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.events.FaultEvent;
@@ -6,6 +7,7 @@ package org.flowerplatform.flex_client.core.user {
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
 	/**
@@ -13,7 +15,11 @@ package org.flowerplatform.flex_client.core.user {
 	 */
 	public class UserAuthenticationManager {
 		
-		public var currentUser:String;
+		public function getCurrentUser():void {
+			CorePlugin.getInstance().serviceLocator.invoke("userService.getCurrentUser", null, function(user:Node):void {
+				Alert.show(user == null ? "null" : user.nodeUri);
+			});
+		}
 		
 		public function login(username:String, password:String, loginSuccessHandler:Function = null):void {
 			var token:AsyncToken = CorePlugin.getInstance().channelSet.login(username, password); 
@@ -26,9 +32,7 @@ package org.flowerplatform.flex_client.core.user {
 		}
 		
 		protected function loginResultEventHandler(event:ResultEvent, token:Object = null):void {
-			currentUser = event.message.headers[CoreConstants.CURRENT_USER];
 			// cookies will be set on the first iFrame that will open
-			FlexUtilGlobals.getInstance().cookiesForJs[CoreConstants.CURRENT_USER] = currentUser;
 			FlexUtilGlobals.getInstance().cookiesForJs[CoreConstants.JSESSIONID] = event.message.headers[CoreConstants.JSESSIONID];
 		}
 		
@@ -42,9 +46,6 @@ package org.flowerplatform.flex_client.core.user {
 		}
 		
 		protected function logoutResultEventHandler(event:ResultEvent, token:Object = null):void {
-			currentUser = null;
-			// unset currentUser cookie
-			FlexUtilGlobals.getInstance().cookiesForJs[CoreConstants.CURRENT_USER] = null;
 			FlexUtilGlobals.getInstance().cookiesForJs[CoreConstants.JSESSIONID] = event.message.headers[CoreConstants.JSESSIONID];
 		}
 		

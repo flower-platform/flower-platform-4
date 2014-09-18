@@ -9,6 +9,11 @@
 	padding: 40px;
 }
 
+.user-avatar {
+	width: 64px;
+	height: 64px;
+}
+
 .navbar-header {
   float: none;
 }
