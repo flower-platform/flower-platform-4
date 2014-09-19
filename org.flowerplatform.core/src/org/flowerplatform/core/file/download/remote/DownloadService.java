@@ -193,7 +193,7 @@ public class DownloadService implements ISessionListener {
 				throw e;
 			}
 		}
-		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();		
+		String sessionId = getSessionId();		
 		long timestamp = System.currentTimeMillis();
 		String downloadId = String.format("%s.%s", sessionId, timestamp);	
 				
@@ -225,4 +225,11 @@ public class DownloadService implements ISessionListener {
 		return String.format("%s/%s/%s", DownloadServlet.DOWNLOAD_SERVLET_NAME, downloadId, fileName); // download link
 	}	
 
+	/**
+	 * needed for tests
+	 */
+	public String getSessionId() {
+		return CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
+	}
+	
 }

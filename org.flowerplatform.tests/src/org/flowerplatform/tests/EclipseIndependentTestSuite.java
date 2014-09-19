@@ -55,6 +55,7 @@ import org.osgi.framework.BundleContext;
 	CommandStackTest.class,
 	CoreTestSuite.class
 })
+
 public class EclipseIndependentTestSuite {
 //CHECKSTYLE:ON	
 	public static String workspaceLocation = "workspace";

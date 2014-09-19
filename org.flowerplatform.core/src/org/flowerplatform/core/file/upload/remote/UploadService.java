@@ -112,7 +112,7 @@ public class UploadService implements ISessionListener {
 		String path = FileControllerUtils.getFilePathWithRepo(fullNodeId);
 		Object file = CorePlugin.getInstance().getFileAccessController().getFile(path);
 		
-		String sessionId = CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();		
+		String sessionId = getSessionId();		
 		long timestamp = System.currentTimeMillis();
 		String uploadId = String.format("%s.%s", sessionId, timestamp);	
 				
@@ -147,4 +147,10 @@ public class UploadService implements ISessionListener {
 		}		
 	}
 	
+	/**
+	 * needed for tests
+	 */
+	public String getSessionId() {
+		return CorePlugin.getInstance().getRequestThreadLocal().get().getSession().getId();
+	}
 }
