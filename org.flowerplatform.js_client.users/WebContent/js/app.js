@@ -62,4 +62,44 @@ routesConfig.push({
 	}
 });
 
+routesConfig.push({
+	path: '/:id/Dashboard',
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
+	route: {
+		templateUrl: 'partials/composed/sideMenuLayout.html',
+		controller: 'ComposedCtrl',
+		resolve: {
+			contentTemplate : function() {
+				return 'userDashboard';
+			},
+			sideMenuTemplate : function() {
+				return 'userSideMenu';
+			},
+			sideMenuContentTemplate : function() {
+				return 'userRepositorySideMenuContent';
+			}
+		}
+	}
+});
+
+routesConfig.push({
+	path: '/Dashboard/Search',
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
+	route: {
+		templateUrl: 'partials/composed/sideMenuLayout.html',
+		controller: 'ComposedCtrl',
+		resolve: {
+			contentTemplate : function() {
+				return 'searchRepository';
+			},
+			sideMenuTemplate : function() {
+				return 'userSideMenu';
+			},
+			sideMenuContentTemplate : function() {
+				return 'userRepositorySideMenuContent';
+			}
+		}
+	}
+});
+
 

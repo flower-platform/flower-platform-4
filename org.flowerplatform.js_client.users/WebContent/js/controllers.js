@@ -8,7 +8,7 @@ flowerProject.lazy.controller('UserSideMenuCtrl', ['$scope', '$location', '$rout
   		// Side Menu
   		$scope.currentPath = $location.path();
   		
-  		$scope.userID = Login.userID;
+  		$scope.nodeUri = Login.userID;
   		$scope.userName = Login.userName;
   		$scope.isAdmin = Login.isAdmin;
   		$scope.repo = Login.repo;
@@ -151,5 +151,70 @@ flowerProject.lazy.controller('NavigationCtrl', ['$scope', '$location','UserNode
 	   $scope.currentRoute = $location.path();
 	   $scope.uri = UserNodeUri.getProperty();
 	   $scope.decodeUri = decodeURIComponent($scope.uri);
+}]);
+
+flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$location', 'UserRepositories',
+       function($scope, $routeParams, $location, UserRepositories) {
+	
+	/* get available extensions and repositories */
+	$scope.extensions = UserRepositories.getExtensions();
+	$scope.repositories = UserRepositories.getRepositories();
+	$scope.repositoryDescription = "Here will be a short description of repository.Post no so what deal evil rent by real in. But her ready least set lived spite solid. " +
+								   "September how men saw tolerably two behaviour arranging. She offices for highest and replied one venture pasture." +
+								   "Applauded no discovery in newspaper allowance am northward." +
+								   "Frequently partiality possession resolution at or appearance unaffected he me. ";
+	
+	$scope.setRepo = function(currentRepo) {
+		logger.debug(currentRepo.dependecies);
+        $scope.currentRepo = currentRepo;
+	};		
+	
+	/**
+	 * Create Repository
+	 */
+	$scope.createRepository = function() {
+		$scope.repositories.unshift({ name : '', description : '' });
+	};
+	
+	/**
+	 * Open Repository
+	 */
+	$scope.open = function() {
+	};
+	
+	/**
+	 * Apply Extension to Repository
+	 */
+	$scope.applyExtension = function() {
+	};
+	
+	/**
+	 * Unapply Extension to Repository
+	 */
+	$scope.unapplyExtension = function() {
+	};
+	
+	$scope.searchRepository = function(repoName) {
+		for(var index in $scope.repositories) {
+			if($scope.repositories[index].name == repoName) {
+				$scope.findRepository = $scope.repositories[index];
+			}
+		}		
+	};
+	
+	$scope.save = function(initialName, newRepositoryName, newRepositoryDescription) {
+		$scope.newName = newRepositoryName;
+		$scope.newDes = newRepositoryDescription;
+		$scope.initialName = initialName;
+		logger.debug("initialName " + $scope.initialName + " newName " + $scope.newDes + " newDescrip " + $scope.newName);
+
+		for (var index in $scope.repositories) {
+			if($scope.repositories[index].name == $scope.initialName) {
+				$scope.repositories[index].name = $scope.newName;
+				$scope.repositories[index].description = $scope.newDes;
+			}
+		}
+	};
+	
 }]);
 

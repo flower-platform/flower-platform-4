@@ -399,33 +399,32 @@ public class CommandStackTest {
 		resourceSetService.resetCommandStack(RESOURCE_NODE_URI);
 
 		Node node = nodeService.getChildren(rootNode, context).get(0);
-
+//CHECKSTYLE:OFF
 		String newNodeId;
-		List<Command> commands;
-		
+		{
 			context.add("type", MindMapConstants.MINDMAP_NODE_TYPE);
 			remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
 			newNodeId = nodeServiceRemote.addChild(node.getNodeUri(), context);
 			remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
-			commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
+			List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
 
 			assertEquals("Command to undo has index 0", resourceSetService.getCommandToUndoId(RESOURCE_NODE_URI), commands.get(0).getId());
 			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(RESOURCE_NODE_URI), null);
-		
+		}
 
-		
+		{
 			String property = "text", newValue = "Test";
 			remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
 			nodeServiceRemote.setProperty(newNodeId, property, newValue);
 			remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
-			commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
+			List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
 
 			assertEquals("Command to undo has index 1", resourceSetService.getCommandToUndoId(RESOURCE_NODE_URI), commands.get(1).getId());
 			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(RESOURCE_NODE_URI), null);
-		
+		}
 
-		 
-			 commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
+		 {
+			 List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
 			 resourceSetService.undo(RESOURCE_NODE_URI, commands.get(0).getId());
 			
 			 assertEquals("Command to undo is null",
@@ -433,10 +432,10 @@ public class CommandStackTest {
 			 assertEquals("Command to redo has index 0",
 			 resourceSetService.getCommandToRedoId(RESOURCE_NODE_URI),
 			 commands.get(0).getId());
-		 
+		 }
 		
-		 
-			 commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
+		 {
+			 List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
 			 resourceSetService.redo(RESOURCE_NODE_URI, commands.get(commands.size() - 1).getId());
 			
 			 assertEquals("Command to undo has index 1",
@@ -444,10 +443,10 @@ public class CommandStackTest {
 			 commands.get(1).getId());
 			 assertEquals("Command to redo is null",
 			 resourceSetService.getCommandToRedoId(RESOURCE_NODE_URI), null);
-		 
+		 }
 
-		
-			commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
+		{
+			List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
 
 			try {
 				resourceSetService.redo(RESOURCE_NODE_URI, commands.get(1).getId());
@@ -458,10 +457,10 @@ public class CommandStackTest {
 
 			assertEquals("Command to undo has index 1", resourceSetService.getCommandToUndoId(RESOURCE_NODE_URI), commands.get(1).getId());
 			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(RESOURCE_NODE_URI), null);
-		
+		}
 
-		
-			commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
+		{
+			List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
 
 			try {
 				resourceSetService.redo(RESOURCE_NODE_URI, "000");
@@ -472,18 +471,18 @@ public class CommandStackTest {
 
 			assertEquals("Command to undo has index 1", resourceSetService.getCommandToUndoId(RESOURCE_NODE_URI), commands.get(1).getId());
 			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(RESOURCE_NODE_URI), null);
-		
+		}
 
-		
-			commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
+		{
+			List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
 			resourceSetService.undo(RESOURCE_NODE_URI, commands.get(1).getId());
 
 			assertEquals("Command to undo has index 0", resourceSetService.getCommandToUndoId(RESOURCE_NODE_URI), commands.get(0).getId());
 			assertEquals("Command to redo has index 1", resourceSetService.getCommandToRedoId(RESOURCE_NODE_URI), commands.get(1).getId());
-		
+		}
 
-		
-			commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
+		{
+			List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
 
 			try {
 				resourceSetService.undo(RESOURCE_NODE_URI, commands.get(1).getId());
@@ -494,10 +493,10 @@ public class CommandStackTest {
 
 			assertEquals("Command to undo has index 0", resourceSetService.getCommandToUndoId(RESOURCE_NODE_URI), commands.get(0).getId());
 			assertEquals("Command to redo has index 1", resourceSetService.getCommandToRedoId(RESOURCE_NODE_URI), commands.get(1).getId());
-		
+		}
 
-		
-			commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
+		{
+			List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
 
 			try {
 				resourceSetService.undo(RESOURCE_NODE_URI, "000");
@@ -508,13 +507,12 @@ public class CommandStackTest {
 
 			assertEquals("Command to undo has index 0", resourceSetService.getCommandToUndoId(RESOURCE_NODE_URI), commands.get(0).getId());
 			assertEquals("Command to redo has index 1", resourceSetService.getCommandToRedoId(RESOURCE_NODE_URI), commands.get(1).getId());
-		
+		}
 
-		
-			commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
+		{
+			List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
 			Command testCommand = commands.get(1);
-			property = "text";
-			newValue = "Test 2";
+			String property = "text", newValue = "Test 2";
 			remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
 			nodeServiceRemote.setProperty(newNodeId, property, newValue);
 			remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
@@ -529,48 +527,46 @@ public class CommandStackTest {
 			}
 			assertEquals("Command to undo has index 1", resourceSetService.getCommandToUndoId(RESOURCE_NODE_URI), commands.get(1).getId());
 			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(RESOURCE_NODE_URI), null);
-		
+		}
 
-		
-			property = "text";
-			newValue = "Test 3";
+		{
+			String property = "text", newValue = "Test 3";
 			remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
 			nodeServiceRemote.setProperty(newNodeId, property, newValue);
 			remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
-			commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
+			List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
 
 			assertEquals("Command to undo has index 2", resourceSetService.getCommandToUndoId(RESOURCE_NODE_URI), commands.get(2).getId());
 			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(RESOURCE_NODE_URI), null);
-		
+		}
 
-		
-			property = "text";
-			newValue = "Test 4";
+		{
+			String property = "text", newValue = "Test 4";
 			remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
 			nodeServiceRemote.setProperty(newNodeId, property, newValue);
 			remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
-			commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
+			List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
 
 			assertEquals("Command to undo has index 3", resourceSetService.getCommandToUndoId(RESOURCE_NODE_URI), commands.get(3).getId());
 			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(RESOURCE_NODE_URI), null);
-		
+		}
 
-		
-			commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
+		{
+			List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
 			resourceSetService.undo(RESOURCE_NODE_URI, commands.get(1).getId());
 
 			assertEquals("Command to undo has index 0", resourceSetService.getCommandToUndoId(RESOURCE_NODE_URI), commands.get(0).getId());
 			assertEquals("Command to redo has index 1", resourceSetService.getCommandToRedoId(RESOURCE_NODE_URI), commands.get(1).getId());
-		
+		}
 
-		
-			commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
+		{
+			List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
 			resourceSetService.redo(RESOURCE_NODE_URI, commands.get(3).getId());
 
 			assertEquals("Command to undo has index 3", resourceSetService.getCommandToUndoId(RESOURCE_NODE_URI), commands.get(3).getId());
 			assertEquals("Command to redo is null", resourceSetService.getCommandToRedoId(RESOURCE_NODE_URI), null);
-		
-
+		}
+//CHECKSTYLE:ON
 	}
 
 }

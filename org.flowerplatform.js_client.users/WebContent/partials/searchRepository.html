@@ -1,0 +1,26 @@
+<!-- Search repository view -->
+<div ng-controller="UserDashboardCtrl">
+	<h2>Search</h2>
+	<br>
+	<div class="row">
+		<div class="col-sm-8">
+			<div class="input-group">
+				<input type="text" class="form-control" ng-model="repository" ng-keyup="$event.keyCode == 13 ? searchRepository(repository) : null" ng-class="repo=findRepository">
+				<span class="input-group-btn">
+				  <button class="btn btn-default" type="button" ng-click="searchRepository(repository); repo=findRepository">Search</button>
+				</span>
+			</div>
+		</div>
+	</div>
+	<hr>
+	
+	<div class="row">
+		<div class="col-sm-8">
+			<div ng-show="!findRepository">
+				<em>Type the name of repository that you want to search</em>
+			</div>
+			<div ng-model="repo" ng-include src="'../js_client.users/partials/repositoryPanel.html'" ng-show="findRepository"></div>
+		</div>
+	</div>
+	
+</div>

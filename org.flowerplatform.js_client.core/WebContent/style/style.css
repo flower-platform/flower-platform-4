@@ -9,16 +9,21 @@ body {
 }
 
 /* style for right view */
-#col-side-menu, #side-menu {
+#col-side-menu,#side-menu {
 	position: absolute;
 	right: 0;
 	height: 100%;
-    min-height: 100%;
-    min-width: 50%;
+    min-height: 100%;   
     overflow: hidden;
 }
-
+#side-menu {
+	 min-width: 100%;
+}
 #user-panel {
+	padding-top: 0%;
+	margin-top: -3%;
+	padding-left: 3%;
+	padding-right: 3%;
 	position: absolute;
 	right: 0;
     background:RGB(219,217,214);
@@ -35,8 +40,7 @@ body {
 
 /* style for navbar */
 .navbar-menu {
-	padding-top: 40px;
-	border-right: 10px solid transparent;
+	padding-top: 15%;
 }
 .navbar-header {
   float: none;
@@ -76,3 +80,10 @@ body {
 .list-group {
 	border-right: 10px solid transparent;
 }
+
+/* style for popup apply-unpply extensions */
+.modal .modal-body {
+    max-height: 700px;
+    overflow-y: auto;
+}
+

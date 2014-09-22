@@ -109,11 +109,8 @@ public class RemoteMethodInvocationListener {
 				String serviceId = remoteMethodInvocationInfo.getServiceId();
 				String methodName = remoteMethodInvocationInfo.getMethodName();
 				boolean log = true;
-
-				
 				if (methodName != null && methodName.equals("ping")) {
 					String logPing = LOGGER_CONTEXT.getProperty("logNodeServicePingInvocation");
-
 					log = logPing == null ? false : Boolean.parseBoolean(logPing);
 				}
 				if (log) {

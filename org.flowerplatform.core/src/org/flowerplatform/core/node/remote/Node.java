@@ -50,7 +50,7 @@ public class Node implements Externalizable {
 	private Object rawNodeData;
 	
 	/**
-	 *@author Mariana Gheorghe
+	 * TODO
 	 */
 	public Node() {
 		super();
@@ -58,7 +58,7 @@ public class Node implements Externalizable {
 
 	/**
 	 *@author Mariana Gheorghe
-	 */
+	 **/
 	public Node(String nodeUri, String type) {
 		setNodeUri(nodeUri);
 		setType(type);
@@ -80,6 +80,7 @@ public class Node implements Externalizable {
 		this.nodeUri = nodeUri;
 	}
 	
+	@XmlTransient
 	public String getScheme() {
 		return Utils.getScheme(nodeUri);
 	}
@@ -134,7 +135,7 @@ public class Node implements Externalizable {
 	public void setRawNodeData(Object rawNodeData) {
 		this.rawNodeData = rawNodeData;
 	}
-		
+	
 	/**
 	 *@author see class
 	 **/
