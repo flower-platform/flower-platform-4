@@ -137,8 +137,8 @@ public class Node implements Externalizable {
 	}
 	
 	/**
-	 *@author see class
-	 **/
+	 * @author 
+	 */
 	public Object getPropertyValue(String property) {
 		Object propertyObj = getPropertyValueOrWrapper(property);
 		if (propertyObj instanceof PropertyWrapper) {
@@ -148,8 +148,8 @@ public class Node implements Externalizable {
 	}
 	
 	/**
-	 *@author see class
-	 **/
+	 * @author
+	 */
 	public Object getPropertyValueOrWrapper(String property) {
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
 		if (!getOrPopulateProperties(context).containsKey(property)) {

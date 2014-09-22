@@ -17,6 +17,7 @@ Export-Package: org.flowerplatform.core,
  org.flowerplatform.core.node.update.controller,
  org.flowerplatform.core.node.update.remote,
  org.flowerplatform.core.preference.remote,
+ org.flowerplatform.core.repositories,
  org.flowerplatform.core.session
 Bundle-ClassPath: lib-from-maven/commons-fileupload-1.3.1.jar,
  lib-from-maven/commons-io-2.2.jar,
@@ -24,7 +25,8 @@ Bundle-ClassPath: lib-from-maven/commons-fileupload-1.3.1.jar,
 Require-Bundle: org.eclipse.osgi,
  org.eclipse.equinox.http.registry,
  org.flowerplatform.resources,
- org.flowerplatform.util
+ org.flowerplatform.util,
+ org.eclipse.jgit;bundle-version="3.4.1"
 Bundle-Activator: org.flowerplatform.core.CorePlugin
 Import-Package: javax.servlet,
  javax.servlet.http

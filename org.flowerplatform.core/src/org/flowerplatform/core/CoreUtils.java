@@ -205,4 +205,25 @@ public final class CoreUtils {
 		}
 		return false;
 	}
+	
+	/**
+	 * @author Cristina Brinza
+	 */
+	public static String getRepositoryName(String login, String repo) {
+		return login + "/" + repo;
+	}
+	
+	/**
+	 * @author Cristina Brinza
+	 */
+	public static String getRepositoryNodeUri(String login, String repo) {
+		return CoreConstants.USERS_PATH + "#" + getRepositoryName(login, repo);
+	}
+	
+	/**
+	 * @author Cristina Brinza
+	 */
+	public static String getUriFromFragment(String fragment) {
+		return CoreConstants.USERS_PATH + "#" + fragment;
+	}
 }

@@ -221,7 +221,10 @@ public final class CoreConstants {
 	public static final String DEFAULT_SUFFIX = ".default";
 	public static final String GLOBAL_SUFFIX = ".global";
 	public static final String USER_SUFFIX = ".user";
-		
+	public static final String PNG_EXTENSION = ".png";
+	
+	public static final String LOAD_FILE_SERVLET = UtilConstants.SERVLET + "/load";
+
 	public static final String REPO_ROOT = "D:/data/git/flower-platform-4/flower-platform-4/runtime-workspace";
 	
 	
@@ -235,8 +238,23 @@ public final class CoreConstants {
 	public static final String HASH_ALGORITHM = "SHA-256";
 	public static final String PASS_CHANGED = "Password changed !";
 	public static final String PASS_NOT_CHANGED = "Password doesn't match !";
-	public static final String PNG_EXTENSION = ".png";
+	public static final String OWNED_REPOSITORIES = "ownedRepositories";
+	public static final String MEMBER_IN_REPOSITORIES = "memberInRepositories";
+	public static final String STARRED_REPOSITORIES = "starredRepositories";
+
 	
-	public static final String LOAD_FILE_SERVLET = UtilConstants.SERVLET + "/load";
-	
+	//////////////////////////////////
+	// Repositories
+	//////////////////////////////////
+	public static final String REPOSITORIES = "repositories";
+	public static final String REPOSITORY = "repositoryy";
+	public static final String DESCRIPTION = "description";
+	public static final String MEMBERS = "members";
+	public static final String STARRED_BY = "starredBy";
+	public static final String EXTENSIONS = "extensions";
+	public static final String REPOSITORIES_URI = USERS_PATH + "#" + REPOSITORIES;
+	public static final String GENERAL_PURPOSE = "generalPurpose";
+	public static final String EXTENSION_DESCRIPTOR = "extensionMetadata";
+	public static final String FILESYSTEM_EXTENSION = "fileSystemExtension";
+
 }

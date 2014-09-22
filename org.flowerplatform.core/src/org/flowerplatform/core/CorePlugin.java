@@ -27,6 +27,14 @@ import static org.flowerplatform.core.CoreConstants.USERS;
 import static org.flowerplatform.core.CoreConstants.USER;
 
 import java.io.File;
+import static org.flowerplatform.core.CoreConstants.GENERAL_PURPOSE;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static org.flowerplatform.core.CoreConstants.REPOSITORIES;
+import static org.flowerplatform.core.CoreConstants.REPOSITORY;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
@@ -58,6 +66,8 @@ import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.core.preference.PreferencePropertiesProvider;
 import org.flowerplatform.core.preference.PreferencePropertySetter;
 import org.flowerplatform.core.preference.remote.PreferencesServiceRemote;
+import org.flowerplatform.core.repositories.ExtensionMetadata;
+import org.flowerplatform.core.repositories.RepositoriesService;
 import org.flowerplatform.core.repository.RepositoryChildrenProvider;
 import org.flowerplatform.core.repository.RepositoryPropertiesProvider;
 import org.flowerplatform.core.repository.RootChildrenProvider;
@@ -82,7 +92,6 @@ import ch.qos.logback.core.joran.spi.JoranException;
  * @author Cristina Constantinescu
  * @author Mariana Gheorghe
  */
-@SuppressWarnings("restriction")
 public class CorePlugin extends AbstractFlowerJavaPlugin {
 
 	protected static CorePlugin instance;
@@ -294,6 +303,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getServiceRegistry().registerService("uploadService", new UploadService());
 		getServiceRegistry().registerService("preferenceService", new PreferencesServiceRemote());
 		getServiceRegistry().registerService("userService", new UserService());
+		getServiceRegistry().registerService("repositoriesService", new RepositoriesService());
 		
 		new ResourceUnsubscriber().start();
 		
@@ -303,6 +313,18 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USERS);
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USER);
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORIES);
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY);
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GENERAL_PURPOSE)
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("fileSystem").setLabel("File System")
+					.setDependencies(new ArrayList<String>(Arrays.asList("mda", "freePlane"))))
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("git").setLabel("Git")
+					.setDependencies(new ArrayList<String>(Arrays.asList("fileSystem", "codeSync"))))
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("codeSync").setLabel("Code Sync")
+					.setDependencies(new ArrayList<String>(Arrays.asList("mda"))))
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("mda").setLabel("MDA"))
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("freePlane").setLabel("FreePlane"));
+				
 
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ROOT_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RootPropertiesProvider())
@@ -338,9 +360,10 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(CoreConstants.PREFERENCE_CATEGORY_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTY_SETTER, new PreferencePropertySetter())
 			// TODO CC: to remove when working at preferences persistence
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING)
-					.setNameAs("value").setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_PREFERENCE).setReadOnlyAs(true));
-			
+
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING).setNameAs("value")
+					.setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_PREFERENCE).setReadOnlyAs(true));
+
 		new FileSystemControllers().registerControllers();
 		new ResourceDebugControllers().registerControllers();
 		new TypeDescriptorRegistryDebugControllers().registerControllers();

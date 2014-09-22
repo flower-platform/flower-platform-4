@@ -193,7 +193,7 @@
 				if (serverAccounts == null || serverAccounts.length == 0 ) {
 					// add FP hub
 					var hub:ServerAccount = new ServerAccount();
-					hub.host = "http://localhost:8080/org.flowerplatform.host.web_app/";
+					hub.host = "http://hub.flower-platform.com/";
 					hub.friendlyName = "Flower Platform Hub";
 					hub.user = "";
 					hub.isDefault = true;
