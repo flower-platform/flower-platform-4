@@ -31,8 +31,8 @@
 			<br>
 			<label>Extensions:</label>
 			&nbsp;
-			<div style="display: inline;" ng-repeat="ext in repo.extensions">
-				<span class="label" style="color: black; background-color: {{ext.color}};">{{ext.label}}</span>
+			<div style="display: inline;" ng-repeat="extension in repo.extensions">
+				<span class="label" style="color: black; background-color: {{extension.color}};">{{extension.label}}</span>
 			</div>
 			<button type="button" class="btn btn-default btn-sm" style="float:right;" data-toggle="modal" data-target="#myModal" ng-click="setRepo(repo)">Apply/Unapply Extensions</button>
 		</div>

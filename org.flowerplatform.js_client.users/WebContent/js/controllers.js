@@ -165,7 +165,6 @@ flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$
 								   "Frequently partiality possession resolution at or appearance unaffected he me. ";
 	
 	$scope.setRepo = function(currentRepo) {
-		logger.debug(currentRepo.dependecies);
         $scope.currentRepo = currentRepo;
 	};		
 	
@@ -185,15 +184,36 @@ flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$
 	/**
 	 * Apply Extension to Repository
 	 */
-	$scope.applyExtension = function() {
+	$scope.applyExtension = function(extension) {
+		logger.debug("before " + $scope.currentRepo.extensions);
+		for (var index in $scope.repositories) {
+			if($scope.repositories[index].name == $scope.currentRepo.name) {
+				$scope.repositories[index].extensions.push(extension);
+			}
+		}
+		logger.debug("after " + $scope.currentRepo.extensions);
 	};
 	
 	/**
 	 * Unapply Extension to Repository
 	 */
-	$scope.unapplyExtension = function() {
+	$scope.unapplyExtension = function(extension) {
+		logger.debug("before " + $scope.currentRepo.extensions + " extension " + extension);
+		for (var index in $scope.repositories) {
+			if ($scope.repositories[index].name == $scope.currentRepo.name) {
+				for (var indexExt in $scope.repositories[index].extensions) {
+					if ($scope.repositories[index].extensions[indexExt].label == extension) {
+						$scope.repositories[index].extensions.splice(indexExt,1);
+					}
+				}
+			}
+		}
+		logger.debug("after " + $scope.currentRepo.extensions);
 	};
 	
+	/**
+	 * Search repository 
+	 */
 	$scope.searchRepository = function(repoName) {
 		for(var index in $scope.repositories) {
 			if($scope.repositories[index].name == repoName) {
@@ -202,6 +222,9 @@ flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$
 		}		
 	};
 	
+	/**
+	 * Save - edit 
+	 */
 	$scope.save = function(initialName, newRepositoryName, newRepositoryDescription) {
 		$scope.newName = newRepositoryName;
 		$scope.newDes = newRepositoryDescription;

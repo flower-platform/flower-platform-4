@@ -9,21 +9,21 @@
 						<span class="sr-only">Close</span>
 					</button>
 					<h4>Available Extensions</h4>
-					<div ng-repeat="ext in extensions" id="accordion-parent">
-						<div class="panel-group" id="accordion" ng-model="ext.label">
+					<div ng-repeat="extension in extensions" id="accordion-parent">
+						<div class="panel-group" id="accordion" ng-model="extension">
 							<div class="panel panel-default">
-								<div class="panel-heading" style="background-color: {{ext.color}};">
+								<div class="panel-heading" style="background-color: {{extension.color}};">
 									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion-parent" href="{{'#' + ext.label}}" ng-bind="ext.label" ng-click="apply = !apply" ></a>
-										<button type="button" class="btn btn-default" ng-show="apply" ng-click="applyExtension()" style="float:right; margin-top: -9px;">Apply</button>
+										<a data-toggle="collapse" data-parent="#accordion-parent" href="{{'#' + extension.label}}" ng-click="apply = !apply" >{{extension.label}}</a>
+										<button type="button" class="btn btn-default" ng-show="apply" ng-model="extension" ng-click="applyExtension(extension)" style="float:right; margin-top: -9px;">Apply</button>
 									</h4>
 								</div>
-								<div id="{{ext.label}}" class="panel-collapse collapse">
+								<div id="{{extension.label}}" class="panel-collapse collapse">
 									<div class="panel-body">
 										Depends on: &nbsp;
-										<span class="label" ng-repeat="depend in ext.dependencies" style="color: black; background-color: {{depend.color}};">{{depend.label}}</span>
+										<span class="label" ng-repeat="dependence in extension.dependencies" style="color: black; background-color: {{dependence.color}};">{{dependence.label}}</span>
 										<br><br>
-										<label>{{ext.description}}</label>
+										<label>{{extension.description}}</label>
 									</div>
 								</div>
 							</div>
@@ -32,21 +32,21 @@
 					
 					<br>
 					<h4>Applied Extensions</h4>
-					<div ng-repeat="appliedExt in currentRepo.extensions">
+					<div ng-repeat="appliedExtension in currentRepo.extensions">
 						<div class="panel-group" id="accordion">
 							<div class="panel panel-default">
-								<div class="panel-heading" style="background-color: {{appliedExt.color}};">
+								<div class="panel-heading" style="background-color: {{appliedExtension.color}};">
 									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion" href="{{'#' + appliedExt.label + $index}}" ng-click="unapply = !unapply">{{appliedExt.label}}</a>
-										<button type="button" class="btn btn-default" ng-show="unapply" ng-click="unapplyExtension()" style="float:right; margin-top: -9px;">Unapply</button>
+										<a data-toggle="collapse" data-parent="#accordion" href="{{'#' + appliedExtension.label + $index}}" ng-click="unapply = !unapply">{{appliedExtension.label}}</a>
+										<button type="button" class="btn btn-default" ng-show="unapply" ng-model="appliedExtension.label" ng-click="unapplyExtension(appliedExtension.label)" style="float:right; margin-top: -9px;">Unapply</button>
 									</h4>
 								</div>
-								<div id="{{appliedExt.label + $index}}" class="panel-collapse collapse">
+								<div id="{{appliedExtension.label + $index}}" class="panel-collapse collapse">
 									<div class="panel-body">
 										Depends on: &nbsp;
-										<span class="label" ng-repeat="dependencies in appliedExt.dependencies" style="color: black; background-color: {{dependencies.color}};">{{dependencies.label}}</span>
+										<span class="label" ng-repeat="dependence in appliedExtension.dependencies" style="color: black; background-color: {{dependence.color}};">{{dependence.label}}</span>
 										<br><br>
-										<label>{{appliedExt.description}}</label>
+										<label>{{appliedExtension.description}}</label>
 									</div>
 								</div>
 							</div>
