@@ -315,9 +315,15 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORIES);
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY);
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GENERAL_PURPOSE)
-			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("fileSystem").setLabel("File System"))
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("fileSystem").setLabel("File System")
+					.setDependencies(new ArrayList<String>(Arrays.asList("mda", "freePlane"))))
 			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("git").setLabel("Git")
-					.setDependencies(new ArrayList<String>(Arrays.asList("fileSystem"))));
+					.setDependencies(new ArrayList<String>(Arrays.asList("fileSystem", "codeSync"))))
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("codeSync").setLabel("Code Sync")
+					.setDependencies(new ArrayList<String>(Arrays.asList("mda"))))
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("mda").setLabel("MDA"))
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("freePlane").setLabel("FreePlane"));
+				
 
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ROOT_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RootPropertiesProvider())

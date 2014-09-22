@@ -3,6 +3,7 @@ package org.flowerplatform.core.repositories;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -156,6 +157,7 @@ public class RepositoriesService {
 		Node repositoryNode = resourceService.getNode(getUriFromFragment(oldName));
 		
 		nodeService.setProperty(repositoryNode, CoreConstants.NAME, newNameWithoutRepo, new ServiceContext<NodeService>());
+		//nodeService.setProperty(repositoryNode, "ID", newName, new ServiceContext<NodeService>());
 		
 		// update OWNED_REPOSITORIES
 		Node ownerNode = resourceService.getNode(getUriFromFragment((String) repositoryNode.getPropertyValue(CoreConstants.USER)));
@@ -343,23 +345,25 @@ public class RepositoriesService {
 	 */
 	public void applyExtension(String login, String repoName, String extensionId) {
 		Node repositoryNode = resourceService.getNode(getRepositoryNodeUri(login, repoName));
-		List<String> extensions = (List<String>) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
-		if (!extensions.contains(extensionId)) {
-			extensions.add(extensionId);
-		} else {
-			throw new RuntimeException(String.format("This extension already exists for repository '%s'", repoName));
+		//List<String> extensions = (List<String>) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
+		List<String> extensionsString = (List<String>) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
+		List<ExtensionInfoInFile> extensions = fromListStringToExtensionInfoInFile(extensionsString);
+				
+		if (contains(extensions, extensionId)) {
+			throw new RuntimeException(String.format("Extension with ID '%s' already exists for repository '%s'", extensionId, repoName));
 		}
-		
-		// add extension dependencies to extensions
-//		ExtensionMetadata extensionMetadata = getExtensionMetadataForExtensionId(extensionId);
-//		for (String extensionDependency : extensionMetadata.getDependencies()) {
-//			if (!extensions.contains(extensionDependency)) {
-//				extensions.add(extensionDependency);
-//			}
-//		}
 
-		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, extensions, new ServiceContext<NodeService>());
+		ExtensionInfoInFile newExtensionAdded = new ExtensionInfoInFile();
+		newExtensionAdded.setId(extensionId);
+		newExtensionAdded.setTransitive(false);
 		
+		extensions.add(newExtensionAdded);
+			
+		applyDependencies(extensionId, null, extensions);
+		
+		// save List<String> in file instead of List<ExtensionInfoInFile>
+		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, fromExtensionInfoInFileToListString(extensions), new ServiceContext<NodeService>());
+			
 		// save file
 		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
 	}
@@ -367,21 +371,68 @@ public class RepositoriesService {
 	/**
 	 * @author see class
 	 */
+	private void applyDependencies(String extensionId, String parentExtensionId, List<ExtensionInfoInFile> extensions) {
+		ExtensionMetadata extensionMetadata = getExtensionMetadataForExtensionId(extensionId);
+		ExtensionInfoInFile extensionInfo;
+		
+		for (String extensionDependency : extensionMetadata.getDependencies()) {
+			
+			int i;
+			for (i = 0; i < extensions.size(); i++) {
+				extensionInfo = extensions.get(i);
+				if (extensionInfo.getId().equals(extensionDependency)) {
+					if (!extensionInfo.contains(extensionDependency)) {
+						extensionInfo.addDependency(extensionId);
+					}
+					break;
+				}
+			}
+			
+			if (i == extensions.size()) {
+				extensionInfo = new ExtensionInfoInFile();
+				extensionInfo.setId(extensionDependency);
+				extensionInfo.setTransitive(true);
+				if (!extensionInfo.contains(extensionDependency)) {
+					extensionInfo.addDependency(extensionId);
+				}
+				extensions.add(extensionInfo);
+			}
+			
+			applyDependencies(extensionDependency, extensionId, extensions);
+			
+//			if (!extensions.contains(extensionDependency)) {
+//				extensions.add(extensionDependency);
+//				applyDependencies(extensionDependency, extensions);
+//			}
+		}
+		
+	}
+	
+	/**
+	 * @author see class
+	 */
 	public void unapplyExtension(String login, String repoName, String extensionId) {
 		Node repositoryNode = resourceService.getNode(getRepositoryNodeUri(login, repoName));
-		List<String> extensions = (List<String>) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
-		if (extensions.contains(extensionId)) {
-			extensions.remove(extensionId);
-		} else {
-			throw new RuntimeException(String.format("This extension doesn't exist for repository '%s'", repoName));
+		List<ExtensionInfoInFile> extensions = (List<ExtensionInfoInFile>) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
+		
+		if (!contains(extensions, extensionId)) {
+			throw new RuntimeException(String.format("The extension with ID '%s' doesn't exist for repository '%s'", extensionId, repoName));
 		}
+		
+//		if (extensions.contains(extensionId)) {
+//			extensions.remove(extensionId);
+//		} else {
+//			throw new RuntimeException(String.format("This extension doesn't exist for repository '%s'", repoName));
+//		}
 		
 		// delete extension dependencies
 //		ExtensionMetadata extensionMetadata = getExtensionMetadataForExtensionId(extensionId);
 //		for (String extensionDependency : extensionMetadata.getDependencies()) {
 //			extensions.remove(extensionDependency);
 //		}
-	
+		
+		
+		
 		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, extensions, new ServiceContext<NodeService>());
 		
 		// save file
@@ -393,7 +444,7 @@ public class RepositoriesService {
 	 */
 	protected List<AbstractController> getExtensionDescriptors() {
 		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(CoreConstants.GENERAL_PURPOSE);
-		return descriptor.getAdditiveControllers(CoreConstants.EXTENSION_DESCRIPTOR, CoreConstants.FILESYSTEM_EXTENSION);
+		return descriptor.getAdditiveControllers(CoreConstants.EXTENSION_DESCRIPTOR, null);
 	}
 	
 	/**
@@ -423,10 +474,6 @@ public class RepositoriesService {
 		
 		return extensionsIds;
 	}
-	
-	/**
-	 * @author
-	 */
 	
 	/**
 	 * @author see class
@@ -464,4 +511,44 @@ public class RepositoriesService {
 		throw new RuntimeException(String.format("No metadata found for extension '%s'", extensionId));
 	}
 	
+	/**
+	 * @author see class
+	 */
+	private boolean contains(List<ExtensionInfoInFile> extensions, String extensionId) {
+		for (ExtensionInfoInFile extensionInfoInFile : extensions) {
+			if (extensionInfoInFile.getId().equals(extensionId)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private List<String> fromExtensionInfoInFileToListString(List<ExtensionInfoInFile> extensions) {
+		List<String> result = new ArrayList<String>();
+		for (ExtensionInfoInFile element : extensions) {
+			result.add(element.toString());
+		}
+		return result;
+	}
+	
+	private static List<ExtensionInfoInFile> fromListStringToExtensionInfoInFile(List<String> extensions) {
+		List<ExtensionInfoInFile> result = new ArrayList<ExtensionInfoInFile>();
+		for (String string : extensions) {
+			String[] parts = string.split("$");
+			ExtensionInfoInFile element = new ExtensionInfoInFile();
+			element.setId(parts[0]);
+			element.setTransitive(parts[1].equals("true") ? true : false);
+			element.setExtensionsThatDependOnThis(fromStringToArrayList(parts[2]));
+			result.add(element);
+		}
+		return result;
+	}
+	
+	private static List<String> fromStringToArrayList(String string) {
+		if (!string.equals("()")) {
+			return new ArrayList<String>(Arrays.asList((string.substring(1, string.length() - 1)).split("#")));
+		} else {
+			return new ArrayList<String>();
+		}
+	}
 }

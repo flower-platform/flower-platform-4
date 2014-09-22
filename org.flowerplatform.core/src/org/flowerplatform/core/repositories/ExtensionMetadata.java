@@ -24,7 +24,7 @@ public class ExtensionMetadata extends AbstractController implements IDescriptor
 	
 	private String unapplyMessage;
 	
-	private int color;
+	private String color;
 		
 	public String getId() {
 		return id;
@@ -92,12 +92,12 @@ public class ExtensionMetadata extends AbstractController implements IDescriptor
 	}
 	//CHECKSTYLE:ON
 	
-	public int getColor() {
+	public String getColor() {
 		return color;
 	}
 	
 	//CHECKSTYLE:OFF
-	public ExtensionMetadata setColor(int color) {
+	public ExtensionMetadata setColor(String color) {
 		this.color = color;
 		return this;
 	}

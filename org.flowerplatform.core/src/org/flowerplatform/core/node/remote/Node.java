@@ -137,7 +137,7 @@ public class Node implements Externalizable {
 	}
 	
 	/**
-	 * 
+	 * @author 
 	 */
 	public Object getPropertyValue(String property) {
 		Object propertyObj = getPropertyValueOrWrapper(property);
@@ -146,9 +146,9 @@ public class Node implements Externalizable {
 		}
 		return propertyObj;
 	}
-
+	
 	/**
-	 * 
+	 * @author
 	 */
 	public Object getPropertyValueOrWrapper(String property) {
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
