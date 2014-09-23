@@ -21,6 +21,7 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.util.StringList;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.IController;
 import org.flowerplatform.util.controller.TypeDescriptor;
@@ -72,9 +73,9 @@ public class RepositoriesService {
 		nodeService.setProperty(repositoryNode, CoreConstants.USER, login, new ServiceContext<NodeService>());
 		nodeService.setProperty(repositoryNode, CoreConstants.NAME, repoName, new ServiceContext<NodeService>());
 		nodeService.setProperty(repositoryNode, CoreConstants.DESCRIPTION, description, new ServiceContext<NodeService>());
-		nodeService.setProperty(repositoryNode, CoreConstants.MEMBERS, new ArrayList<String>(), new ServiceContext<NodeService>());
-		nodeService.setProperty(repositoryNode, CoreConstants.STARRED_BY, new ArrayList<String>(), new ServiceContext<NodeService>());
-		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, new ArrayList<String>(), new ServiceContext<NodeService>());
+		nodeService.setProperty(repositoryNode, CoreConstants.MEMBERS, new StringList(), new ServiceContext<NodeService>());
+		nodeService.setProperty(repositoryNode, CoreConstants.STARRED_BY, new StringList(), new ServiceContext<NodeService>());
+		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, new StringList(), new ServiceContext<NodeService>());
 		
 		// update user data
 		Node userNode = resourceService.getNode(getUriFromFragment(login));
@@ -82,7 +83,7 @@ public class RepositoriesService {
 		// owned repos
 		List<String> ownedRepos = (List<String>) userNode.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
 		if (ownedRepos == null) {
-			ownedRepos = new ArrayList<String>();
+			ownedRepos = new StringList();
 		}
 		ownedRepos.add(getRepositoryName(login, repoName));
 		nodeService.setProperty(userNode, CoreConstants.OWNED_REPOSITORIES, ownedRepos, new ServiceContext<NodeService>());
@@ -168,7 +169,7 @@ public class RepositoriesService {
 		
 		// update OWNED_REPOSITORIES
 		Node ownerNode = resourceService.getNode(getUriFromFragment((String) repositoryNode.getPropertyValue(CoreConstants.USER)));
-		List<String> ownedRepos = (ArrayList<String>) ownerNode.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
+		List<String> ownedRepos = (List<String>) ownerNode.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
 		ownedRepos.remove(oldName); ownedRepos.add(newName);
 		nodeService.setProperty(ownerNode, CoreConstants.OWNED_REPOSITORIES, ownedRepos, new ServiceContext<NodeService>());
 		
@@ -221,7 +222,7 @@ public class RepositoriesService {
 		// update user info - MEMBER_IN_REPOSITORIES
 		List<String> repositoriesWhereMember = (List<String>) newMemberNode.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES);
 		if (repositoriesWhereMember == null) {
-			repositoriesWhereMember = new ArrayList<String>();
+			repositoriesWhereMember = new StringList();
 		}
 		repositoriesWhereMember.add(getRepositoryName(login, repoName));
 		nodeService.setProperty(newMemberNode, CoreConstants.MEMBER_IN_REPOSITORIES, repositoriesWhereMember, new ServiceContext<NodeService>());
@@ -248,7 +249,7 @@ public class RepositoriesService {
 		// update user info - STARRED_REPOSITORIES
 		List<String> starredRepositories = (List<String>) userWhoStarredNode.getPropertyValue(CoreConstants.STARRED_REPOSITORIES);
 		if (starredRepositories == null) {
-			starredRepositories = new ArrayList<String>();
+			starredRepositories = new StringList();
 		}
 		starredRepositories.add(getRepositoryName(login, repoName));
 		nodeService.setProperty(userWhoStarredNode, CoreConstants.STARRED_REPOSITORIES, starredRepositories, new ServiceContext<NodeService>());
@@ -352,11 +353,10 @@ public class RepositoriesService {
 	 */
 	public void applyExtension(String login, String repoName, String extensionId) {
 		Node repositoryNode = resourceService.getNode(getRepositoryNodeUri(login, repoName));
-		//List<String> extensions = (List<String>) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
-		List<String> extensionsString = (List<String>) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
-		List<ExtensionInfoInFile> extensions = fromListStringToExtensionInfoInFile(extensionsString);
+		StringList extensionsString = (StringList) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
+		List<ExtensionInfoInFile> extensions = fromStringListToExtensionInfoInFile(extensionsString);
 				
-		if (contains(extensions, extensionId)) {
+		if (get(extensions, extensionId) != null) {
 			throw new RuntimeException(String.format("Extension with ID '%s' already exists for repository '%s'", extensionId, repoName));
 		}
 
@@ -369,7 +369,7 @@ public class RepositoriesService {
 		applyDependencies(extensionId, null, extensions);
 		
 		// save List<String> in file instead of List<ExtensionInfoInFile>
-		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, fromExtensionInfoInFileToListString(extensions), new ServiceContext<NodeService>());
+		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, fromExtensionInfoInFileToStringList(extensions), new ServiceContext<NodeService>());
 			
 		// save file
 		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
@@ -420,11 +420,24 @@ public class RepositoriesService {
 	 */
 	public void unapplyExtension(String login, String repoName, String extensionId) {
 		Node repositoryNode = resourceService.getNode(getRepositoryNodeUri(login, repoName));
-		List<ExtensionInfoInFile> extensions = (List<ExtensionInfoInFile>) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
-		
-		if (!contains(extensions, extensionId)) {
+		StringList extensionsString = (StringList) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
+		List<ExtensionInfoInFile> extensions = fromStringListToExtensionInfoInFile(extensionsString);
+		ExtensionInfoInFile extension = get(extensions, extensionId);
+
+		if (extension == null) {
 			throw new RuntimeException(String.format("The extension with ID '%s' doesn't exist for repository '%s'", extensionId, repoName));
 		}
+		
+		if (extension.getExtensionsThatDependOnThis().size() != 0) {
+			throw new RuntimeException(String.format("Cannot delete extension with ID '%s'. Another extensions (e.g. '%s') depend on it", 
+					extensionId, 
+					extension.getExtensionsThatDependOnThis().get(0)));
+		}
+		
+		extensions.remove(extension);
+		
+		// remove it's dependencies
+		unapplyDependencies(extensionId, extensions);
 		
 //		if (extensions.contains(extensionId)) {
 //			extensions.remove(extensionId);
@@ -438,12 +451,37 @@ public class RepositoriesService {
 //			extensions.remove(extensionDependency);
 //		}
 		
-		
-		
 		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, extensions, new ServiceContext<NodeService>());
 		
 		// save file
 		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
+	}
+	
+	/**
+	 * @author see class
+	 */
+	private void unapplyDependencies(String extensionId, List<ExtensionInfoInFile> extensions) {
+		ExtensionMetadata extensionMetadata = getExtensionMetadataForExtensionId(extensionId);
+		ExtensionInfoInFile extensionInfo;
+		
+		for (String extensionDependency : extensionMetadata.getDependencies()) {
+			
+			int i;
+			for (i = 0; i < extensions.size(); i++) {
+				extensionInfo = extensions.get(i);
+				if (extensionInfo.getId().equals(extensionDependency)) {
+					if (!extensionInfo.isTransitive()) {
+						throw new RuntimeException(String.format("Extension '%s' cannot be deleted. It was added before the extension wanted to be deleted!", 
+								extensionInfo.getId()));
+					}
+					
+					extensions.remove(extensionInfo);
+					break;
+				}
+			}
+			
+			unapplyDependencies(extensionDependency, extensions);
+		}
 	}
 	
 	/**
@@ -530,30 +568,51 @@ public class RepositoriesService {
 		return false;
 	}
 	
-	private List<String> fromExtensionInfoInFileToListString(List<ExtensionInfoInFile> extensions) {
-		List<String> result = new ArrayList<String>();
+	/**
+	 * @author see class
+	 */
+	private ExtensionInfoInFile get(List<ExtensionInfoInFile> extensions, String extensionId) {
+		for (ExtensionInfoInFile extensionInfoInFile : extensions) {
+			if (extensionInfoInFile.getId().equals(extensionId)) {
+				return extensionInfoInFile;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * @author see class
+	 */
+	public StringList fromExtensionInfoInFileToStringList(List<ExtensionInfoInFile> extensions) {
+		StringList result = new StringList();
 		for (ExtensionInfoInFile element : extensions) {
 			result.add(element.toString());
 		}
 		return result;
 	}
 	
-	private static List<ExtensionInfoInFile> fromListStringToExtensionInfoInFile(List<String> extensions) {
+	/**
+	 * @author see class
+	 */
+	public static List<ExtensionInfoInFile> fromStringListToExtensionInfoInFile(StringList extensions) {
 		List<ExtensionInfoInFile> result = new ArrayList<ExtensionInfoInFile>();
 		for (String string : extensions) {
-			String[] parts = string.split("$");
+			String[] parts = string.split(":");
 			ExtensionInfoInFile element = new ExtensionInfoInFile();
 			element.setId(parts[0]);
 			element.setTransitive(parts[1].equals("true") ? true : false);
-			element.setExtensionsThatDependOnThis(fromStringToArrayList(parts[2]));
+			element.setExtensionsThatDependOnThis(fromStringToArrayList(parts[2], "()", "#"));
 			result.add(element);
 		}
 		return result;
 	}
 	
-	private static List<String> fromStringToArrayList(String string) {
-		if (!string.equals("()")) {
-			return new ArrayList<String>(Arrays.asList((string.substring(1, string.length() - 1)).split("#")));
+	/**
+	 * @author see class
+	 */
+	public static List<String> fromStringToArrayList(String string, String emptyValue, String separator) {
+		if (!string.equals(emptyValue)) {
+			return new ArrayList<String>(Arrays.asList((string.substring(1, string.length() - 1)).split(separator)));
 		} else {
 			return new ArrayList<String>();
 		}

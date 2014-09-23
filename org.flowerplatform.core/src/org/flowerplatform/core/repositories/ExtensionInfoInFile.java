@@ -71,6 +71,13 @@ public class ExtensionInfoInFile {
 	
 	/**
 	 * @author see class
+	 */
+//	public int get(String extensionId) {
+//		return extensionsThatDependOnThis.(extensionId);
+//	}
+	
+	/**
+	 * @author see class
 	 * This is needed for the serialization / deserialization of extensions in users file
 	 */
 	public String toStringList() {
@@ -88,6 +95,6 @@ public class ExtensionInfoInFile {
 	
 	@Override
 	public String toString() {
-		return id + "$" + isTransitive + "$" + toStringList();
+		return id + ":" + isTransitive + ":" + toStringList();
 	}
 }
