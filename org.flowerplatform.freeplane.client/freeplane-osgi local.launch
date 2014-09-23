@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.EquinoxLauncher">
+<booleanAttribute key="append.args" value="true"/>
+<booleanAttribute key="automaticAdd" value="true"/>
+<booleanAttribute key="automaticValidate" value="false"/>
+<stringAttribute key="bad_container_name" value="launch_config"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="true"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/freeplane-osgi local"/>
+<booleanAttribute key="default" value="true"/>
+<booleanAttribute key="default_auto_start" value="true"/>
+<intAttribute key="default_start_level" value="1"/>
+<stringAttribute key="deselected_workspace_plugins" value="freeplane_plugin_script_test,org.flowerplatform.codesync,org.flowerplatform.codesync.as,org.flowerplatform.codesync.java,org.flowerplatform.codesync.regex,org.flowerplatform.codesync.sdiff,org.flowerplatform.flex_client.codesync,org.flowerplatform.flex_client.codesync.regex,org.flowerplatform.flex_client.codesync.sdiff,org.flowerplatform.flex_client.core,org.flowerplatform.flex_client.host_app,org.flowerplatform.flex_client.host_app.config.web,org.flowerplatform.flex_client.mindmap,org.flowerplatform.flex_client.properties,org.flowerplatform.flex_client.server,org.flowerplatform.flex_client.team.git,org.flowerplatform.flex_client.text,org.flowerplatform.flex_client.web,org.flowerplatform.host.servletbridge.registry,org.flowerplatform.js_client.host_app.config.web,org.flowerplatform.js_client.server,org.flowerplatform.js_client.users,org.flowerplatform.team.git,org.flowerplatform.tests,org.flowerplatform.text,org.freeplane.plugin.bugreport,org.freeplane.plugin.formula,org.freeplane.plugin.help,org.freeplane.plugin.latex,org.freeplane.plugin.openmaps,org.freeplane.plugin.script,org.freeplane.plugin.svg,org.freeplane.plugin.workspace,org.freeplane.uispec4j"/>
+<booleanAttribute key="includeOptional" value="true"/>
+<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+<listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
+<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.JAVA_COMMAND" value="java"/>
+<stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -console"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dosgi.debug=debug.properties -ea &quot;-Dorg.freeplane.globalresourcedir=${workspace_loc:freeplane/external-resources}&quot; -Dorg.freeplane.nosplash=true -Dorg.freeplane.main.application.FreeplaneSecurityManager.disable=true"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:freeplane/..}"/>
+<stringAttribute key="pde.version" value="3.3"/>
+<booleanAttribute key="show_selected_only" value="true"/>
+<stringAttribute key="target_bundles" value="javax.annotation@default:default,javax.inject@default:default,javax.servlet@default:default,javax.xml@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.runtime.compatibility.registry@default:false,org.eclipse.core.runtime@default:true,org.eclipse.equinox.app@default:default,org.eclipse.equinox.common@default:true,org.eclipse.equinox.http.registry@default:default,org.eclipse.equinox.jsp.jasper.registry@default:default,org.eclipse.equinox.jsp.jasper@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.osgi.services@default:default,org.eclipse.osgi@-1:true"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useCustomFeatures" value="false"/>
+<booleanAttribute key="useDefaultConfigArea" value="true"/>
+<stringAttribute key="workspace_bundles" value="freeplane_uitest@default:false,org.flowerplatform.core@default:false,org.flowerplatform.freeplane.client1@default:default,org.flowerplatform.freeplane@default:false,org.flowerplatform.host.servletbridge.extensionbundle@default:false,org.flowerplatform.js_client.common_js_as@default:default,org.flowerplatform.js_client.core@default:false,org.flowerplatform.js_client.java@default:false,org.flowerplatform.mindmap@default:false,org.flowerplatform.resources@default:false,org.flowerplatform.util@default:false,org.freeplane.core@default:default"/>
+<stringAttribute key="yk-options" value="&#10;snapshots-dir=&#10;additional-options2=onexit\=snapshot&#10;startup=0&#10;"/>
+</launchConfiguration>

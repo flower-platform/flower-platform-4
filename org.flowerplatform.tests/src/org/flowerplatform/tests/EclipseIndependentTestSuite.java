@@ -31,11 +31,13 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.js_client.java.JsClientJavaPlugin;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.tests.codesync.CodeSyncTestSuite;
 import org.flowerplatform.tests.controllers.FileSystemControllersTest;
 import org.flowerplatform.tests.core.CommandStackTest;
 import org.flowerplatform.tests.core.CoreTestSuite;
+import org.flowerplatform.tests.js_client.java.JsClientJavaTestSuite;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -53,12 +55,16 @@ import org.osgi.framework.BundleContext;
 	CodeSyncTestSuite.class,
 	FileSystemControllersTest.class,
 	CommandStackTest.class,
-	CoreTestSuite.class
+	CoreTestSuite.class,
+	JsClientJavaTestSuite.class
 })
 public class EclipseIndependentTestSuite {
-//CHECKSTYLE:ON	
+
 	public static String workspaceLocation = "workspace";
+	
 	public static NodeService nodeService;
+
+//CHECKSTYLE:ON	
 	
 	public static String sessionId = "mockSessionId";
 	/**
@@ -71,6 +77,7 @@ public class EclipseIndependentTestSuite {
 		
 		startPlugin(new ResourcesPlugin());
 		startPlugin(new CorePlugin());
+		startPlugin(new JsClientJavaPlugin());
 		nodeService = CorePlugin.getInstance().getNodeService();
 		
 		HttpServletRequest req = mock(HttpServletRequest.class);

@@ -53,9 +53,9 @@ public class Node implements Externalizable {
 	 * Needed for deserialization.
 	 */
 	public Node() {
-		super();
+		// nothing to do
 	}
-
+	
 	public Node(String nodeUri, String type) {
 		setNodeUri(nodeUri);
 		setType(type);

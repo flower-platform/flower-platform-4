@@ -14,9 +14,9 @@
  * license-end
  */
 package org.flowerplatform.flexutil.controller {
+	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	
-	import org.apache.flex.collections.ArrayList;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	
 	/**

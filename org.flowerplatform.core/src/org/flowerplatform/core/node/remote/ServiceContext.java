@@ -84,4 +84,11 @@ public class ServiceContext<T> {
 		return this;
 	}
 
+	/**
+	 *@author see class
+	 **/
+	public void addInContext(String key, Object value) {		
+		add(key, value);		
+	}
+	
 }

@@ -28,7 +28,7 @@ public class SubscriptionInfo {
 	
 	public SubscriptionInfo() {
 	}
-	
+
 	public SubscriptionInfo(Node rootNode) {
 		this(rootNode, null, null);
 	}

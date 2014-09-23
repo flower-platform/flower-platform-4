@@ -35,7 +35,6 @@
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
-			import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flex_client.team.git.GitConstants;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -74,8 +73,8 @@
 						remotes = new spark.components.DropDownList();											
 					}		
 					
-					var serviceContext:ServiceContext = new ServiceContext();
-					serviceContext.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
+					var serviceContext:Object = new Object();
+					serviceContext[CoreConstants.POPULATE_WITH_PROPERTIES] = true;
 					
 					var remotesNodeUri:String = CorePlugin.getInstance().createNodeUriWithRepo(GitConstants.GIT_SCHEME, CorePlugin.getInstance().getRepository(nodeUri), GitConstants.GIT_REMOTES_TYPE);
 					CorePlugin.getInstance().serviceLocator.invoke("nodeService.getChildren", [remotesNodeUri, serviceContext] ,

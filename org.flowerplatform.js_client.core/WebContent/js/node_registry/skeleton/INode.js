@@ -1,9 +1,0 @@
-/*
-Node {
-
-	children; 
-	
-	nodeUri;
-	
-}
-*/

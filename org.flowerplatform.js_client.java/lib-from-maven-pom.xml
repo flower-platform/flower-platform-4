@@ -31,6 +31,7 @@
 			<groupId>org.mozilla</groupId>
 			<artifactId>rhino</artifactId>
 			<version>1.7R4</version>
+<<<<<<< HEAD
 		</dependency>
 		
 		<dependency>
@@ -38,5 +39,8 @@
 			<artifactId>org.apache.oltu.oauth2.client</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+=======
+		</dependency>		
+>>>>>>> origin/GH115-process-all-properties
 	</dependencies>
 </project>

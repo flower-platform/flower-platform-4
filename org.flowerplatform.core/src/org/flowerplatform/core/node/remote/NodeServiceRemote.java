@@ -20,6 +20,7 @@ import static org.flowerplatform.core.CoreConstants.TYPE_KEY;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.MissingResourceException;
 
 import org.flowerplatform.core.CoreConstants;
@@ -40,13 +41,12 @@ public class NodeServiceRemote {
 	/**
 	 *@author see class
 	 **/
-	public List<Node> getChildren(String nodeUri, ServiceContext<NodeService> context) {
-		if (context == null) {
-			context = new ServiceContext<NodeService>(getNodeService());
-		} else {
-			context.setService(getNodeService());
+	public List<Node> getChildren(String nodeUri, Map<String, Object> context) {
+		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>(getNodeService());
+		if (context != null) {			
+			serviceContext.setContext(context);	
 		}
-		return getNodeService().getChildren(CorePlugin.getInstance().getResourceService().getNode(nodeUri), context);		
+		return getNodeService().getChildren(CorePlugin.getInstance().getResourceService().getNode(nodeUri), serviceContext);		
 	}
 
 	/**
@@ -88,11 +88,10 @@ public class NodeServiceRemote {
 	 * @author Sebastian Solomon
 	 * @author Claudiu Matei
 	 */
-	public String addChild(String parentNodeUri, ServiceContext<NodeService> context) {
-		if (context == null) {
-			context = new ServiceContext<NodeService>(getNodeService());
-		} else {
-			context.setService(getNodeService());
+	public String addChild(String parentNodeUri, Map<String, Object> context) {
+		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>(getNodeService());
+		if (context != null) {			
+			serviceContext.setContext(context);	
 		}
 				
 		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentNodeUri);
@@ -109,7 +108,7 @@ public class NodeServiceRemote {
 		String commandTitle = ResourcesPlugin.getInstance().getMessage("commandStack.command.addChild", nodeLabel);
 		rss.startCommand(rss.getResourceSet(parentNodeUri), commandTitle);
 		
-		getNodeService().addChild(parent, child, context);
+		getNodeService().addChild(parent, child, serviceContext);
 		
 		child.getOrPopulateProperties(new ServiceContext<NodeService>(getNodeService()));
 		

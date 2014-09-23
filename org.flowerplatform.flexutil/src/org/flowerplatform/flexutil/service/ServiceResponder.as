@@ -53,11 +53,11 @@ package org.flowerplatform.flexutil.service {
 					FlexUtilGlobals.getInstance().cookiesForJs[key] = evt.message.headers[key];
 				}
 			}
-			serviceLocator.resultHandler(ResultEvent(data), this);
+			serviceLocator.resultHandler(ResultEvent(data).result, this);
 		}
 		
 		public function fault(info:Object):void {
-			serviceLocator.faultHandler(FaultEvent(info), this);
+			serviceLocator.faultHandler(info != null ? FaultEvent(info).fault : null, this);
 		}
 		
 	}

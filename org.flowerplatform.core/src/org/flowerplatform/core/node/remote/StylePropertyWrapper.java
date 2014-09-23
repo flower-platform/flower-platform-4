@@ -36,5 +36,12 @@ public class StylePropertyWrapper extends PropertyWrapper {
 		return this;
 		//CHECKSTYLE:ON
 	}
+
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public StylePropertyWrapper() {
+		super();		
+	}	
 	
 }

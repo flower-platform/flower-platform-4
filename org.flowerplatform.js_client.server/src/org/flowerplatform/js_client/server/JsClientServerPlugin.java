@@ -9,13 +9,25 @@ import org.flowerplatform.js_client.server.oauth.server.OAuth2Service;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * @author Mariana Gheorghe
  */
 public class JsClientServerPlugin extends AbstractFlowerJavaPlugin {
 
+	private ObjectMapperProvider objectMapperProvider = new ObjectMapperProvider();
+
 	protected static JsClientServerPlugin INSTANCE;
-		
+	
+	public ObjectMapperProvider getObjectMapperProvider() {
+		return objectMapperProvider;
+	}
+
+	public ObjectMapper getObjectMapper() {
+		return objectMapperProvider.getContext(null);
+	}
+	
 	public static JsClientServerPlugin getInstance() {
 		return INSTANCE;
 	}
