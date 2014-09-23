@@ -161,7 +161,7 @@ package org.flowerplatform.flex_client.core.node {
 								// get targetNodeAddedBefore from registry 
 								var targetNodeAddedBeforeInRegistry:Node = getNodeById(ChildrenUpdate(update).fullTargetNodeAddedBeforeId);
 								if (targetNodeAddedBeforeInRegistry != null) { // exists, get its index in children list
-									index = nodeFromRegistry.children.getItemIndex(targetNodeAddedBeforeInRegistry)+1;	
+									index = nodeFromRegistry.children.getItemIndex(targetNodeAddedBeforeInRegistry);	
 								}
 							}								
 							registerNode(ChildrenUpdate(update).targetNode, nodeFromRegistry, index);								

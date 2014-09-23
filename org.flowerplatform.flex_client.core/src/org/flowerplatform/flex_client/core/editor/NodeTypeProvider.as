@@ -18,7 +18,6 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	
 	/**
 	 * @author Cristina Constantinescu

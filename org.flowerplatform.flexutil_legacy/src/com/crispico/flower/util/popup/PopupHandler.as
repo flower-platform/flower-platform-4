@@ -17,8 +17,13 @@ package com.crispico.flower.util.popup {
 	
 	import com.crispico.flower.util.layout.Workbench;
 	
+	import flash.events.Event;
+	import flash.events.FocusEvent;
+	import flash.events.MouseEvent;
+	
 	import mx.collections.ArrayCollection;
 	import mx.core.UIComponent;
+	import mx.managers.FocusManager;
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
@@ -70,9 +75,14 @@ package com.crispico.flower.util.popup {
 			return this;
 		}
 		
-		public function show(modal:Boolean=true):void {
-			if (_viewIdInWorkbench != null) {			
-				var workbench:Workbench = Workbench(FlexUtilGlobals.getInstance().workbench);
+		public function show(modal:Boolean=true):void {			
+			var workbench:Workbench = Workbench(FlexUtilGlobals.getInstance().workbench);		
+			
+			// each time the popup is active, remove focus from active view
+			// this handler will be put on each popup open and it will be removed at popup disposed
+			var gainFocusHandler:Function = function(event:MouseEvent):void {workbench.activeViewList.removeActiveView(false);};
+			
+			if (_viewIdInWorkbench != null) {				
 				var undockedViews:ArrayCollection = WorkbenchLayoutData(workbench.rootLayout).undockedViews;
 				for each (var view:Object in undockedViews) {
 					if (ViewLayoutData(view).viewId == _viewIdInWorkbench) {
@@ -84,9 +94,11 @@ package com.crispico.flower.util.popup {
 				var component:UIComponent = workbench.getComponentById(String(_viewIdInWorkbench));
 				if (component != null) {
 					workbench.closeView(component, false, false);
-				}				
-				workbench.addViewInPopupWindow(_viewIdInWorkbench, NaN, NaN, _width, _height, false, component, new ViewPopupWindowViewHost());		
-			} else {
+				}			
+				var popup:ViewPopupWindowViewHost = new ViewPopupWindowViewHost();
+				popup.addEventListener(MouseEvent.CLICK, gainFocusHandler);
+				workbench.addViewInPopupWindow(_viewIdInWorkbench, NaN, NaN, _width, _height, false, component, popup);					
+			} else {				
 				var resizablePopup:ResizablePopupWindowViewHost = new ResizablePopupWindowViewHost(_viewContent);
 				
 				resizablePopup.title = _title;
@@ -98,6 +110,7 @@ package com.crispico.flower.util.popup {
 					resizablePopup.width = _width;
 				}						
 				resizablePopup.showPopup(NaN, NaN, null, modal);
+				resizablePopup.addEventListener(MouseEvent.CLICK, gainFocusHandler);
 			}	
 		}
 		
