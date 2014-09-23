@@ -8,10 +8,10 @@ flowerProject.lazy.controller('UserSideMenuCtrl', ['$scope', '$location', '$rout
   		// Side Menu
   		$scope.currentPath = $location.path();
   		
+  		$scope.userID = Login.userID;
   		$scope.nodeUri = Login.userID;
   		$scope.userName = Login.userName;
   		$scope.isAdmin = Login.isAdmin;
-  		$scope.repo = Login.repo;
   		$scope.content = $route.current.scope.template_sideMenuContentTemplate.url;
   	
   }]);
@@ -153,8 +153,12 @@ flowerProject.lazy.controller('NavigationCtrl', ['$scope', '$location','UserNode
 	   $scope.decodeUri = decodeURIComponent($scope.uri);
 }]);
 
-flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$location', 'UserRepositories',
-       function($scope, $routeParams, $location, UserRepositories) {
+flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$location', 'UserRepositories', 'Login', 'Repository',
+       function($scope, $routeParams, $location, UserRepositories, Login, Repository) {
+	
+	
+	$scope.nodeUri = Login.nodeUri;
+	$scope.newrepo = Repository.get({ id: $scope.nodeUri });
 	
 	/* get available extensions and repositories */
 	$scope.extensions = UserRepositories.getExtensions();

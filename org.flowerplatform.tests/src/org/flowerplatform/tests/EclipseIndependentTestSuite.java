@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.tests;
 
+//CHECKSTYLE:OFF
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

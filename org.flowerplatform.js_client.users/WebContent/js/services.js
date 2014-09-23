@@ -2,6 +2,7 @@
 
 logger.debug('init user services');
 
+//service for users
 flowerProject.lazy.factory('User', ['$resource', function($resource) {
 	
 	var getMessageResult = function(response) {
@@ -20,25 +21,21 @@ flowerProject.lazy.factory('User', ['$resource', function($resource) {
 }]);
 
 flowerProject.lazy.factory('ChangeSettings' , ['$resource', function($resource) {
-	var getMessageResult = function(response) {
-		var messageResult = response.resource.messageResult;
-		return messageResult;
-	};
 	
 	return $resource('http://localhost:8080/org.flowerplatform.host.web_app/ws-dispatcher/users/:id/:path', {}, {
 		changeSettings: { method: 'POST',  params: { id: '@id' , path: '@path' } }
 	});
 }]);
 
+// service for current user
 flowerProject.lazy.factory('Login', [function() {
 	
 	return {
-		userID:  encodeURIComponent("fpp:|.users#ID_1960040384"),
-		userName: 'John Johnson',
-		login: 'John',
-		nodeUri: "fpp:|.users#ID_1960040384",
-		isAdmin: true,
-		repo: 'Repository'
+		userID:  encodeURIComponent("fpp:|.users#user2-random2"),
+		userName: 'user 2',
+		login: 'user2-random2',
+		nodeUri: "fpp:|.users#user2-random2",
+		isAdmin: true
 	};
 	
 }]);
@@ -55,6 +52,15 @@ flowerProject.lazy.service('UserNodeUri', function () {
        }
    };
 });
+
+//Repository service
+flowerProject.lazy.factory('Repository', ['$resource', function($resource) {
+	
+	return $resource('http://localhost:8080/org.flowerplatform.host.web_app/ws-dispatcher/repository/:id', {}, {
+		get:	{ method: 'GET', params: { id: '@id' } }
+	});
+	
+}]);
 
 flowerProject.lazy.service('UserRepositories', function() {
 	
@@ -83,19 +89,6 @@ flowerProject.lazy.service('UserRepositories', function() {
 			return repositories;
 		}
 	};
-});
-
-flowerProject.lazy.service('Repository', function () {
-	 var currentRepository = '';
-
-  return {
-      getProperty: function () {
-          return currentRepository;
-      },
-      setProperty: function(value) {
-    	  currentRepository = encodeURIComponent(value);
-      }
-  };
 });
 
 /**

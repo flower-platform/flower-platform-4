@@ -28,8 +28,8 @@
 								<li><a>Logout</a></li>
 								<li><a ng-href="#/users/{{userID}}">Profile</a></li>
 								<hr style="margin: 0.1em auto;">
-								<li><a ng-class="{hidden:!{{isAdmin}}}" ng-href="#/{{nodeUri}}/Dashboard">Dashboard/My Repositories</a>
-					        	<li><a ng-class="{hidden:!{{isAdmin}}}" ng-href="#/Dashboard/Search/">Search Repository</a>
+								<li><a ng-class="{hidden:!{{isAdmin}}}" ng-href="#/repository/{{nodeUri}}">Dashboard/My Repositories</a>
+					        	<li><a ng-class="{hidden:!{{isAdmin}}}" ng-href="#/search">Search Repository</a>
 		 			        	<li><a ng-href="#/users/" ng-class="{hidden:!{{isAdmin}}}">Users</a>
 					      	</ul>
 					    </div>

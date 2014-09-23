@@ -6,6 +6,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -28,6 +34,7 @@ import static org.flowerplatform.core.CoreUtils.getRepositoryNodeUri;
  *
  */
 @SuppressWarnings("unchecked")
+@Path("/repository")
 public class RepositoriesService {
 	
 	private ResourceService resourceService = CorePlugin.getInstance().getResourceService();
@@ -551,4 +558,19 @@ public class RepositoriesService {
 			return new ArrayList<String>();
 		}
 	}
+	
+	/**
+	 * 
+	 * @author Andreea Tita
+	 */
+	@GET @Path("/{nodeUri}")	
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<String> getUserRepositories(@PathParam("nodeUri") String nodeUri) {
+		ServiceContext<ResourceService> context = new ServiceContext<ResourceService>();
+		context.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
+		Node user = CorePlugin.getInstance().getResourceService().getNode(nodeUri, context);
+		
+		return (ArrayList<String>) user.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
+	}
+	
 }

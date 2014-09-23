@@ -1,5 +1,5 @@
 package org.flowerplatform.tests.core.repositories;
-
+//CHECKSTYLE:OFF
 import static org.flowerplatform.tests.EclipseIndependentTestSuite.startPlugin;
 import static org.flowerplatform.core.CoreConstants.FLOWER_PLATFORM_WORKSPACE;
 

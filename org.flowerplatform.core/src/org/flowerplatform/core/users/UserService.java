@@ -34,6 +34,8 @@ import org.flowerplatform.core.node.resource.ResourceService;
 @Path("/users")
 public class UserService {
 	
+	ResourceService resourceService = CorePlugin.getInstance().getResourceService();
+	
 	/**
 	 * @author Mariana Gheorghe
 	 */
@@ -49,7 +51,7 @@ public class UserService {
 	@GET
 	public List<Node> getUsers() {
 		new ResourceServiceRemote().subscribeToParentResource(CoreConstants.USERS_PATH);
-		Node node =  CorePlugin.getInstance().getResourceService().getNode(CoreConstants.USERS_PATH);
+		Node node =  CorePlugin.getInstance().getResourceService().getNode(CoreConstants.USERS_URI);
 		
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
 		context.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
@@ -81,6 +83,13 @@ public class UserService {
 	}
 	
 	/**
+	 * @author PowerUser
+	 */
+	public String getUserNodeUri(String login) {
+		return CoreConstants.USERS_PATH + "#" + login; 
+	}
+	
+	/**
 	 * @author Mariana Gheorghe
 	 * @author Andreea Tita
 	 */
@@ -88,14 +97,18 @@ public class UserService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Node saveUser(Node user) throws UnsupportedEncodingException {
 
-	 Node parent = CorePlugin.getInstance().getResourceService().getNode(CoreConstants.USERS_PATH);
+	 Node parent = CorePlugin.getInstance().getResourceService().getNode(CoreConstants.USERS_URI);
 		if (user.getType() == null) {
-			user.setType(CoreConstants.USER);
+			String login = (String) user.getProperties().get("login");
+			Node newUser = new Node(getUserNodeUri(login), CoreConstants.USER);
+			newUser.setProperties(user.getProperties());
+			
 			CorePlugin.getInstance().getNodeService().addChild(
 					parent, 
-					user, 
+					newUser, 
 					new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(CoreConstants.POPULATE_WITH_PROPERTIES, true));
-			
+		
+			user = newUser;
 		}
 		
 		Node currentUser = CorePlugin.getInstance().getResourceService().getNode(user.getNodeUri());
@@ -111,6 +124,8 @@ public class UserService {
 		CorePlugin.getInstance().getNodeService().setProperty(currentUser, "email", user.getProperties().get("email"), new ServiceContext<NodeService>());
 		CorePlugin.getInstance().getNodeService().setProperty(currentUser, "login", user.getProperties().get("login"),  new ServiceContext<NodeService>());
 		
+		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
+		
 		return currentUser;
 	}
 	
@@ -122,9 +137,11 @@ public class UserService {
 	public void deleteUser(@PathParam("nodeUri") String nodeUri) {
 		
 		CorePlugin.getInstance().getNodeService().removeChild(
-				CorePlugin.getInstance().getResourceService().getNode(CoreConstants.USERS_PATH), 
+				CorePlugin.getInstance().getResourceService().getNode(CoreConstants.USERS_URI), 
 				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		
+		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
 	}
 	
 	/**
@@ -147,6 +164,8 @@ public class UserService {
 			CorePlugin.getInstance().getNodeService().setProperty(currentUser, "hashPassword", hashPassword, new ServiceContext<NodeService>());
 		}*/
 		
+		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
+		
 		return CoreConstants.PASS_NOT_CHANGED;
 	}
 	
@@ -159,6 +178,8 @@ public class UserService {
 		
 		CorePlugin.getInstance().getNodeService().setProperty(currentUser, "login", login, new ServiceContext<NodeService>());
 
+		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
+		
 		return currentUser;
 	}
 	
