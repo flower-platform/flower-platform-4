@@ -35,6 +35,6 @@
 		]]>
 	</fx:Script>
 	
-	<iframe:FlowerIFrame id="iFrame" url="js_client.core/index.html#/login" initialize="iFrameCreatedHandler(event)"/>
+	<iframe:FlowerIFrame id="iFrame" url="js_client.core/index.html#/auth" initialize="iFrameCreatedHandler(event)"/>
 	
 </s:Group>

@@ -1,4 +1,4 @@
-package org.flowerplatform.js_client.server.oauth;
+package org.flowerplatform.js_client.server.oauth.server;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -8,18 +8,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.oltu.oauth2.as.issuer.MD5Generator;
-import org.apache.oltu.oauth2.as.issuer.OAuthIssuer;
-import org.apache.oltu.oauth2.as.issuer.OAuthIssuerImpl;
 import org.apache.oltu.oauth2.as.request.OAuthTokenRequest;
 import org.apache.oltu.oauth2.as.response.OAuthASResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
+import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
- * Token endpoint. Generates a token for a valid
- * authorization code.
+ * Token endpoint. Generates an access token for a valid authorization code.
  * 
  * @author Mariana Gheorghe
  */
@@ -29,42 +27,37 @@ public class OAuth2TokenServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-		System.out.println("GENERATE TOKEN");
-
-		OAuthTokenRequest oauthRequest = null;
-		OAuthIssuer oauthIssuerImpl = new OAuthIssuerImpl(new MD5Generator());
-
 		try {
-
-			oauthRequest = new OAuthTokenRequest(req);
-
-			// validateClient(oauthRequest);
-
+			// get authorization code from request
+			OAuthTokenRequest oauthRequest = new OAuthTokenRequest(req);
 			String authzCode = oauthRequest.getCode();
+			String clientId = oauthRequest.getClientId();
 
-			// some code
-
-			String accessToken = oauthIssuerImpl.accessToken();
-			String refreshToken = oauthIssuerImpl.refreshToken();
-			System.out.println("TOKEN " + accessToken);
-
-			// some code
-
-			OAuthResponse oauthResponse;
-
-			oauthResponse = OAuthASResponse.tokenResponse(HttpServletResponse.SC_OK).setAccessToken(accessToken)
-					.setExpiresIn("3600").setRefreshToken(refreshToken).buildJSONMessage();
-
+			// validate authorization code
+			Node user = getService().validateAuthorizationCode(authzCode, clientId);
+			if (user == null) {
+				throw OAuthProblemException.error("Invalid authorization code");
+			}
+			
+			// generate access token
+			String accessToken = getService().createAccessToken(user, clientId);
+			
+			// write response
+			OAuthResponse oauthResponse = OAuthASResponse
+					.tokenResponse(HttpServletResponse.SC_OK)
+					.setAccessToken(accessToken)
+					.buildJSONMessage();
 			resp.setStatus(oauthResponse.getResponseStatus());
 			PrintWriter pw = resp.getWriter();
 			pw.print(oauthResponse.getBody());
 			pw.flush();
-			pw.close();
 		} catch (OAuthSystemException | OAuthProblemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
+	private OAuth2Service getService() {
+		return (OAuth2Service) CorePlugin.getInstance().getServiceRegistry().getService("oauthService");
+	}
+	
 }

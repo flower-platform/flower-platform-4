@@ -48,27 +48,47 @@ flowerProject.lazy.controller('AuthCtrl',  ['$scope', '$location', 'oauthProvide
 	
 		$scope.oauthProviders = oauthProviders.data.messageResult.providers;
 		
-		// bound to form view
-		$scope.loginInfo = {};
-	
 		$scope.performLogin = function(provider) {
 			logger.debug(provider);
 			if (provider != undefined) {
 				var auth = provider.uri;
 				auth += '?client_id=' + provider.clientId;
 				auth += '&scope=' + provider.scope;
+				auth += '&response_type=code';
 				auth += '&state=' + oauthProviders.data.messageResult.state;
 				logger.debug(auth);
 				var popup = window.open(auth, 'name', 'width=1100,height=600');
 				if (window.focus) {
 					popup.focus();
 				}
-			} else {
-				Auth.performLogin($scope.loginInfo).$promise.then(loginSuccessHandler);
 			}
 		}
  	
 }]);
+
+flowerProject.lazy.controller('LoginCtrl', ['$scope', '$location', 'Auth', function($scope, $location, Auth) {
+
+	var loginSuccessHandler = function(user) {
+		logger.debug(user);
+		var url = $location.url();
+		var index = url.indexOf('return_to');
+		if (index > 0) {
+			url = url.slice(index + 10);
+			url = decodeURIComponent(url);
+			logger.debug(url);
+			window.location.href = "../" + url;
+		}
+	}
+	
+	// bound to form view
+	$scope.loginInfo = {};
+	
+	$scope.performLogin = function() {
+		Auth.performLogin($scope.loginInfo).$promise.then(loginSuccessHandler);
+	}
+	
+}]);
+
 
 flowerProject.lazy.controller('UserListCtrl', ['$scope', '$location', 'User', 'Template', 
    	function($scope, $location, User, Template) {

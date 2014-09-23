@@ -1,4 +1,4 @@
-package org.flowerplatform.js_client.server.oauth;
+package org.flowerplatform.js_client.server.oauth.client;
 
 import javax.xml.bind.annotation.XmlTransient;
 

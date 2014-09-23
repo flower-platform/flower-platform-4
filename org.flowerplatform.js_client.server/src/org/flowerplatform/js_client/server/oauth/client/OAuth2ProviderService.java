@@ -1,4 +1,4 @@
-package org.flowerplatform.js_client.server.oauth;
+package org.flowerplatform.js_client.server.oauth.client;
 
 import java.util.HashMap;
 import java.util.Map;

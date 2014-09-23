@@ -1,4 +1,4 @@
-package org.flowerplatform.js_client.server.oauth;
+package org.flowerplatform.js_client.server.oauth.client;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -43,7 +43,7 @@ public class OAuth2LoginServlet extends HttpServlet {
 		userValidator.setCurrentUserPrincipal(request.getSession(), userPrincipal);
 		
 		// go to login page, let the browser handle it
-		response.sendRedirect("/org.flowerplatform.host.web_app/js_client.core/index.html#/login");
+		response.sendRedirect("/org.flowerplatform.host.web_app/js_client.core/index.html#/auth");
 	}
 
 }

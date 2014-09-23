@@ -1,4 +1,4 @@
-package org.flowerplatform.js_client.server.oauth;
+package org.flowerplatform.js_client.server.oauth.client;
 
 import java.io.IOException;
 
@@ -11,7 +11,9 @@ import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.GitHubTokenResponse;
+import org.apache.oltu.oauth2.client.response.OAuthAccessTokenResponse;
 import org.apache.oltu.oauth2.client.response.OAuthAuthzResponse;
+import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -46,7 +48,12 @@ public class OAuth2RedirectServlet extends HttpServlet {
 			String provider = authAuthzResponse.getParam("provider");
 			
 			// get token location and client credentials based on provider
-			String tokenLocation = OAuthProviderType.valueOf(provider.toUpperCase()).getTokenEndpoint();
+			String tokenLocation = null;
+			if ("flower_platform".equals(provider)) {
+				tokenLocation = "http://csp41:9090/org.flowerplatform.host.web_app/oauth/token";
+			} else {
+				tokenLocation = OAuthProviderType.valueOf(provider.toUpperCase()).getTokenEndpoint();
+			}
 			OAuth2Provider credentials = ((OAuth2ProviderService) CorePlugin.getInstance().getServiceRegistry()
 					.getService("oauthProviderService")).getOAuthProvider(provider);
 			
@@ -57,11 +64,13 @@ public class OAuth2RedirectServlet extends HttpServlet {
 					.setClientSecret(credentials.getClientSecret())
 					.setGrantType(GrantType.AUTHORIZATION_CODE)
 					.setCode(code)
+					.setRedirectURI(req.getRequestURL().toString())
 					.buildQueryMessage();
 
 			// sync call to get token
 			OAuthClient oauthClient = new OAuthClient(new URLConnectionClient());
-			GitHubTokenResponse oauthTokenResponse = oauthClient.accessToken(oauthRequest, GitHubTokenResponse.class);
+			OAuthAccessTokenResponse oauthTokenResponse = oauthClient.accessToken(oauthRequest, 
+					provider.equals("github") ? GitHubTokenResponse.class : OAuthJSONAccessTokenResponse.class); // special case for GH
 			
 			String accessToken = oauthTokenResponse.getAccessToken();
 			

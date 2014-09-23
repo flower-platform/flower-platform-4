@@ -63,10 +63,10 @@ routesConfig.push({
 });
 
 routesConfig.push({
-	path: '/login',
+	path: '/auth',
 	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
 	route: {
-		templateUrl: '../js_client.users/partials/login.html',
+		templateUrl: '../js_client.users/partials/auth.html',
 		controller: 'AuthCtrl',
 		resolve: {
 			oauthProviders: function($http) {
@@ -74,4 +74,14 @@ routesConfig.push({
 			}
 		}
 	}
+});
+
+routesConfig.push({
+	path: '/login',
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
+	route: {
+		templateUrl: '../js_client.users/partials/login.html',
+		controller: 'LoginCtrl',
+		resolve: {}
+	},
 });

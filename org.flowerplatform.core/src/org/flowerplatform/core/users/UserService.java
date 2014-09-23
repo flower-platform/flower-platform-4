@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -38,6 +39,7 @@ public class UserService {
 		node.getProperties().put("login", login);
 		node.getProperties().put("name", login + " " + login + "son");
 		node.getProperties().put("email", login + "@domain.com");
+		node.getProperties().put("avatar", "http://localhost:8080/org.flowerplatform.host.web_app/servlet/public-resources/org.flowerplatform.resources/images/core/file.gif");
 		
 		//set an admin
 		if (login.equals("Jim")) {
@@ -114,8 +116,20 @@ public class UserService {
 	 */
 	@GET @Path("/login")
 	public Node getCurrentUser() {
-		Principal userPrincipal = userValidator.getCurrentUserPrincipal(
-				CorePlugin.getInstance().getRequestThreadLocal().get().getSession());
+		HttpServletRequest req = CorePlugin.getInstance().getRequestThreadLocal().get();
+		if (req == null) {
+			return null;
+		}
+		return getCurrentUser(req);
+	}
+	
+	/**
+	 * @param req
+	 * @return the current user (saved in the session)
+	 */
+	public Node getCurrentUser(HttpServletRequest req) {
+		Principal userPrincipal = userValidator.getCurrentUserPrincipal(req.getSession());
+		System.out.println(req.getSession().getId());
 		if (userPrincipal == null) {
 			return null;
 		}
@@ -125,10 +139,7 @@ public class UserService {
 //			}
 //		}
 		
-		String login = userPrincipal.getName();
-		Node node = new Node("user:test|" + login, "user");
-		node.setProperties(((UserPrincipal) userPrincipal).getInfo());
-		return node;
+		return ((UserPrincipal) userPrincipal).getUser();
 	}
 	
 	/**
@@ -143,7 +154,7 @@ public class UserService {
 			if (user.getNodeUri().endsWith(username)) {
 				userValidator.setCurrentUserPrincipal(
 						CorePlugin.getInstance().getRequestThreadLocal().get().getSession(), 
-						userValidator.validateUser(username, null));
+						new UserPrincipal(user));
 				return user;
 			}
 		}

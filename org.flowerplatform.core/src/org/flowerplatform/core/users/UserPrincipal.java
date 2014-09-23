@@ -1,31 +1,31 @@
 package org.flowerplatform.core.users;
 
 import java.security.Principal;
-import java.util.Map;
+
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * @author Valentina-Camelia Bojan
  * @author Mariana Gheorghe
  */
-public class UserPrincipal implements Principal { 
-    private String username;
-    
-    private Map<String, Object> info;
-    
-    public UserPrincipal() {
-    	// nothing to do
-    }
-    
-    public UserPrincipal(String username, Map<String, Object> info) {
-        this.username = username;
-        this.info = info;
-    }
-    
-    public String getName() { 
-        return username; 
-    } 
-    
-    public Map<String, Object> getInfo() { 
-        return info; 
-    } 
-} 
+public class UserPrincipal implements Principal {
+
+	private Node user;
+
+	public UserPrincipal() {
+		// nothing to do
+	}
+
+	public UserPrincipal(Node user) {
+		this.user = user;
+	}
+
+	public String getName() {
+		return user.getNodeUri();
+	}
+	
+	public Node getUser() {
+		return user;
+	}
+
+}
