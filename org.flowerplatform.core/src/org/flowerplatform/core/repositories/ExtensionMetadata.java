@@ -106,10 +106,10 @@ public class ExtensionMetadata extends AbstractController implements IDescriptor
 	@Override
 	public String toString() {
 		return "ExtensionMetadata [id=" + id + ", label=" + label 
-				+ ", description" + description 
-				+ ", dependencies" + dependencies
-				+ ", applyMessage" + applyMessage
-				+ ", unapplyMessage" + unapplyMessage
-				+ ", RGB" + color + "]";
+				+ ", description=" + description 
+				+ ", dependencies=" + dependencies
+				+ ", applyMessage=" + applyMessage
+				+ ", unapplyMessage=" + unapplyMessage
+				+ ", color=" + color + "]";
 	}
 }

@@ -68,14 +68,7 @@ public class ExtensionInfoInFile {
 	public boolean contains(String extensionId) {
 		return extensionsThatDependOnThis.contains(extensionId);
 	}
-	
-	/**
-	 * @author see class
-	 */
-//	public int get(String extensionId) {
-//		return extensionsThatDependOnThis.(extensionId);
-//	}
-	
+		
 	/**
 	 * @author see class
 	 * This is needed for the serialization / deserialization of extensions in users file

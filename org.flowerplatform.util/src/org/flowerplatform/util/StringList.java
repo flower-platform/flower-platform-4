@@ -24,7 +24,7 @@ public class StringList extends ArrayList<String> {
 	 */
 	public StringList(String string) {
 		super();
-		if (!string.equals("()")) {
+		if (!string.equals("[]")) {
 			String[] result = (string.substring(1, string.length() - 1)).split(", ");
 			for (int index = 0; index < result.length; index++) {
 				this.add(result[index]);
