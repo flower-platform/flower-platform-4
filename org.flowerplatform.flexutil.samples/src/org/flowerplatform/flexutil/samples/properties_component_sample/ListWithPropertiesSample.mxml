@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:ns="org.flowerplatform.flexutil.properties.ui.*"
@@ -10,11 +10,7 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
-			import mx.events.ListEvent;
 			
-			import spark.events.ListEvent;
-			
-			import org.flowerplatform.flexutil.FlexUtilConstants;
 			import org.flowerplatform.flexutil.Pair;
 			import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 			import org.flowerplatform.flexutil.properties.PropertiesConstants;
@@ -25,9 +21,8 @@
 			public var objectsList:ArrayCollection = new ArrayCollection();
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
-				itemsList.addEventListener(mx.events.ListEvent.ITEM_CLICK, listClickHandler);
+				itemsList.addEventListener(MouseEvent.CLICK, listClickHandler);
 				PropertiesHelper.getInstance().nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
-				
 				var propertyDescriptor:PropertyDescriptor = new PropertyDescriptor();
 				propertyDescriptor.propertyLineRenderer = PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_CATEGORY;
 				propertyDescriptor.type = PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_STRING
@@ -37,8 +32,8 @@
 				//	.setNameAs(MIN_WIDTH).setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_STYLABLE)
 				//	.setCategoryAs(resourcesPlugin.getMessage("nodeShape")).setOrderIndexAs(300)
 					
-				PropertiesHelper.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("pair")
-					.addAdditiveController(FlexUtilConstants.PROPERTY_DESCRIPTOR, propertyDescriptor);
+				PropertiesHelper.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor("mindmapNodeProperty")
+					.addAdditiveController(PropertiesConstants.PROPERTY_DESCRIPTOR_PROVIDER, propertyDescriptor);
 					
 					
 				var pair1:Pair = new Pair();
@@ -53,6 +48,8 @@
 			}
 			
 			public function listClickHandler(event:MouseEvent):void {
+				PropertiesHelper.getInstance().propertyModelAdapter = new PairModelAdapter();
+
 				propertiesComponent.refreshForm(itemsList.selectedItem);
 			}
 			
@@ -63,4 +60,4 @@
 	<s:List id="itemsList" dataProvider="{objectsList}" />
 	
 	<ns:PropertiesComponent id="propertiesComponent"/>
-</s:Group>
+</s:VGroup>

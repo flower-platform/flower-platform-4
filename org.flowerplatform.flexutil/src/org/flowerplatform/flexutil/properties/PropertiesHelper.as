@@ -7,7 +7,6 @@ package org.flowerplatform.flexutil.properties {
 	import org.flowerplatform.flexutil.controller.ComposedTypeProvider;
 	import org.flowerplatform.flexutil.controller.IPropertyModelAdapter;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
-	import org.flowerplatform.flexutil.properties.controllers.PropertyDescriptorProvider;
 	import org.flowerplatform.flexutil.properties.property_line_renderer.CategoryPropertyLineRenderer;
 	import org.flowerplatform.flexutil.properties.property_line_renderer.IPropertyLineRenderer;
 	import org.flowerplatform.flexutil.properties.property_line_renderer.PropertyLineRenderer;
@@ -20,6 +19,7 @@ package org.flowerplatform.flexutil.properties {
 	import org.flowerplatform.flexutil.properties.property_renderer.NumericStepperPropertyRenderer;
 	import org.flowerplatform.flexutil.properties.property_renderer.StringPropertyRenderer;
 	import org.flowerplatform.flexutil.properties.remote.IPropertyDescriptor;
+	import org.flowerplatform.flexutil.properties.remote.PropertyDescriptor;
 	
 	/**
 	 * @author Balutoiu Diana
@@ -71,12 +71,12 @@ package org.flowerplatform.flexutil.properties {
 			
 			var propertyDescriptor:IPropertyDescriptor;
 			for (var i:int = 0; i < providers.length; i++) {				
-				propertyDescriptor = PropertyDescriptorProvider(providers.getItemAt(i)).getPropertyDescriptor(context, nodeObject, property);
+				propertyDescriptor = PropertyDescriptor(providers.getItemAt(i));
 				if (propertyDescriptor != null) {
 					break;
 				}
 			}			
-			return propertyDescriptor;			
+			return propertyDescriptor;				
 		}
 		
 		public function getNewPropertyRendererInstance(type:String):IPropertyRenderer {
