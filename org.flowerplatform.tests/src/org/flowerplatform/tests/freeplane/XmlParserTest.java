@@ -146,10 +146,9 @@ public class XmlParserTest {
 		handler.parseXML(oldXmlContent);
 		
 		XmlNodePropertiesCreator xmlCreator = new XmlNodePropertiesCreator(oldNode);
-		String newXmlContent = xmlCreator.createXmlFromNodeProperties().toString();
 		Node newNode = new Node(null, null);
 		handler = new XmlNodePropertiesParser(newNode);
-		handler.parseXML(newXmlContent);
+		handler.parseXML(xmlCreator.getXmlContent());
 		
 		assertEqualsMaps(newNode.getProperties(), oldNode.getProperties());
 	}

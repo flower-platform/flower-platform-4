@@ -43,7 +43,7 @@ public class XmlNodePropertiesCreator {
 	/**
 	 *@author Valentina Bojan
 	 **/
-	public StringBuffer createXmlFromNodeProperties() {
+	public String getXmlContent() {
 		StringBuffer xmlContent = new StringBuffer();
 		String previousTag = null;
 		Map<String, Object> nodeProperties = new TreeMap<String, Object>(node.getProperties());
@@ -133,7 +133,7 @@ public class XmlNodePropertiesCreator {
 		xmlContent.append(closeTag("", previousTag));
 		xmlContent.append("</" + FreeplaneConstants.NODE + ">");
 
-		return xmlContent;
+		return xmlContent.toString();
 	}
 
 	/**

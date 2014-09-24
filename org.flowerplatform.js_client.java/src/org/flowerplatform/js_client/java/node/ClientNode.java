@@ -35,6 +35,10 @@ public class ClientNode extends Node {
 		this.properties = nobj;
 	}
 	
+	public Object getPropertyValue(String property) {		
+		return properties.get(property);
+	}
+	
 	public List<ClientNode> getChildren() {
 		return children;
 	}
