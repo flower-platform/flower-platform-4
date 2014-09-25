@@ -5,7 +5,7 @@
 	
 	<!-- user repositories -->
 	<div>
-		<h3 style="display: inline;">My Repositories is {{newrepo}}</h3>
+		<h3 style="display: inline;">My Repositories</h3>
 		<div class="btn-group" style="float : right; display: inline;">
 			<a class="btn btn-default" href="" ng-click="createRepository();"> 
 				<span class="icon-ok">Create</span>
@@ -15,7 +15,7 @@
 	<hr>
 	
 	<div>
-		<div ng-repeat="repo in repositories">
+		<div ng-repeat="repo in repositories.messageResult">
 			<div ng-include src="'../js_client.users/partials/repositoryPanel.html'"></div>
 		</div>
 	</div>

@@ -53,8 +53,8 @@ import org.osgi.framework.BundleContext;
 @SuiteClasses({ 
 	//CodeSyncTestSuite.class,
 	//FileSystemControllersTest.class,
-	//CommandStackTest.class,
-	CoreTestSuite.class
+	CommandStackTest.class,
+	//CoreTestSuite.class
 })
 public class EclipseIndependentTestSuite {
 //CHECKSTYLE:ON	

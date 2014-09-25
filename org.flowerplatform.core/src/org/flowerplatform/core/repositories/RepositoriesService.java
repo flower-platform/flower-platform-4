@@ -2,10 +2,11 @@ package org.flowerplatform.core.repositories;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -19,6 +20,7 @@ import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.util.StringList;
@@ -40,7 +42,7 @@ public class RepositoriesService {
 	
 	private ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 	private NodeService nodeService = CorePlugin.getInstance().getNodeService();
-
+	
 	/**
 	 * @author see class
 	 */
@@ -330,12 +332,18 @@ public class RepositoriesService {
 	/**
 	 * @author see class
 	 */
-	public List<Node> getRepositoriesForUserAsNode(String login) {
+	@GET @Path("/{nodeUri}")	
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Node> getRepositoriesForUserAsNode(@PathParam("nodeUri") String nodeUri) {
+		//new ResourceServiceRemote().subscribeToParentResource(CoreConstants.USERS_PATH);
 		List<Node> repositories = new ArrayList<Node>();
-		Node user = resourceService.getNode(getUriFromFragment(login));
+		
+		ServiceContext<ResourceService> context = new ServiceContext<ResourceService>();
+		context.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
+		Node user = resourceService.getNode(nodeUri, context);
 		
 		for (String ownedRepository : (List<String>) user.getPropertyValue(CoreConstants.OWNED_REPOSITORIES)) {
-			repositories.add(resourceService.getNode(getRepositoryNodeUri(login, ownedRepository)));
+			repositories.add(resourceService.getNode(getUriFromFragment(ownedRepository), context));
 		}
 		
 		return repositories;
@@ -388,7 +396,7 @@ public class RepositoriesService {
 			for (i = 0; i < extensions.size(); i++) {
 				extensionInfo = extensions.get(i);
 				if (extensionInfo.getId().equals(extensionDependency)) {
-					if (!extensionInfo.contains(extensionDependency)) {
+					if (!extensionInfo.contains(extensionId)) {
 						extensionInfo.addDependency(extensionId);
 					}
 					break;
@@ -495,7 +503,10 @@ public class RepositoriesService {
 	/**
 	 * @author see class
 	 */
+	@GET @Path("//allExtensions")	
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<ExtensionMetadata> getAllExtensions() {
+		new ResourceServiceRemote().subscribeToParentResource(CoreConstants.USERS_PATH);
 		List<AbstractController> extensionDescriptors = getExtensionDescriptors();
 		List<ExtensionMetadata> extensions = new ArrayList<ExtensionMetadata>();
 		
@@ -619,17 +630,28 @@ public class RepositoriesService {
 	}
 	
 	/**
-	 * 
-	 * @author Andreea Tita
+	 * @author see class
 	 */
-	@GET @Path("/{nodeUri}")	
+	@GET @Path("/{nodeUri}/extensions")	
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<String> getUserRepositories(@PathParam("nodeUri") String nodeUri) {
+	public List<ExtensionMetadata> getExtensionsForRepository(@PathParam("nodeUri") String nodeUri) throws UnsupportedEncodingException {
+		nodeUri = URLDecoder.decode(nodeUri, "UTF-8");
+		List<ExtensionMetadata> extensions = new ArrayList<ExtensionMetadata>();
+	  
 		ServiceContext<ResourceService> context = new ServiceContext<ResourceService>();
 		context.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
-		Node user = CorePlugin.getInstance().getResourceService().getNode(nodeUri, context);
+		Node repository = resourceService.getNode(nodeUri, context);
 		
-		return (ArrayList<String>) user.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
-	}
+		StringList extensionsString = (StringList) repository.getPropertyValue(CoreConstants.EXTENSIONS);
+		List<ExtensionInfoInFile> extensionsInfoInFile = fromStringListToExtensionInfoInFile(extensionsString);
+		  
+		for (ExtensionInfoInFile extensionInfoInFile : extensionsInfoInFile) {
+			ExtensionMetadata extensionMetadata = getExtensionMetadataForExtensionId(extensionInfoInFile.getId());
+			extensions.add(extensionMetadata);
+		}
+  
+		return extensions;
+
+	 }
 	
 }

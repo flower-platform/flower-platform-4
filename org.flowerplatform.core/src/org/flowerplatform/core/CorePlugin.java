@@ -317,13 +317,18 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY);
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GENERAL_PURPOSE)
 			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("fileSystem").setLabel("File System")
-					.setDependencies(new ArrayList<String>(Arrays.asList("mda", "freePlane"))))
+					.setDependencies(new ArrayList<String>(Arrays.asList("mda", "freePlane"))).setColor("#2E8B57")
+					.setDescription("Here will be a short description of this extension"))
 			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("git").setLabel("Git")
-					.setDependencies(new ArrayList<String>(Arrays.asList("fileSystem", "codeSync"))))
+					.setDependencies(new ArrayList<String>(Arrays.asList("fileSystem", "codeSync"))).setColor("#008080")
+					.setDescription("Here will be a short description of this extension"))
 			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("codeSync").setLabel("Code Sync")
-					.setDependencies(new ArrayList<String>(Arrays.asList("mda"))))
-			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("mda").setLabel("MDA"))
-			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("freePlane").setLabel("FreePlane"));
+					.setDependencies(new ArrayList<String>(Arrays.asList("mda"))).setColor("#708090")
+					.setDescription("Here will be a short description of this extension"))
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("mda").setLabel("MDA").setColor("#B0E0E6")
+					.setDescription("Here will be a short description of this extension"))
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("freePlane").setLabel("FreePlane").setColor("#F5DEB3")
+					.setDescription("Here will be a short description of this extension"));
 				
 
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ROOT_TYPE)

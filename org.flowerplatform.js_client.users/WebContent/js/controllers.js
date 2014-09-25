@@ -156,27 +156,44 @@ flowerProject.lazy.controller('NavigationCtrl', ['$scope', '$location','UserNode
 flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$location', 'UserRepositories', 'Login', 'Repository',
        function($scope, $routeParams, $location, UserRepositories, Login, Repository) {
 	
-	
 	$scope.nodeUri = Login.nodeUri;
-	$scope.newrepo = Repository.get({ id: $scope.nodeUri });
+	/* get all available extensions */
+	$scope.availableExtensions = Repository.getAllExtensions({ path: "allExtensions" });
+	/* get all repositories */
+	$scope.repositories = Repository.get({ id: $scope.nodeUri });
 	
-	/* get available extensions and repositories */
-	$scope.extensions = UserRepositories.getExtensions();
-	$scope.repositories = UserRepositories.getRepositories();
+	/* get all extensions of a repository */
+	$scope.getExtensions = function (repoUri){
+		return Repository.getExtensionsForRepository({ id: encodeURIComponent(repoUri), path: "extensions" });
+	};
+	
+	/* get all dependence properties */
+	$scope.getDependence = function (dependenceName) {
+		for (var index in $scope.availableExtensions.messageResult) {
+				if ($scope.availableExtensions.messageResult[index].id == dependenceName) {
+					return $scope.availableExtensions.messageResult[index];					
+				}
+		}
+	};
+	
+	//$scope.repositories = UserRepositories.getRepositories();
 	$scope.repositoryDescription = "Here will be a short description of repository.Post no so what deal evil rent by real in. But her ready least set lived spite solid. " +
 								   "September how men saw tolerably two behaviour arranging. She offices for highest and replied one venture pasture." +
 								   "Applauded no discovery in newspaper allowance am northward." +
 								   "Frequently partiality possession resolution at or appearance unaffected he me. ";
 	
-	$scope.setRepo = function(currentRepo) {
-        $scope.currentRepo = currentRepo;
+	/* save current repository extensions for popup - it doesn't know about it */
+	$scope.setExtensions = function(repoExtensions) {
+		logger.debug("current repo" + repoExtensions.messageResult);
+        $scope.currentRepoExtensions = repoExtensions;
 	};		
 	
 	/**
 	 * Create Repository
 	 */
 	$scope.createRepository = function() {
-		$scope.repositories.unshift({ name : '', description : '' });
+		logger.debug("repo is: " + $scope.repositories.messageResult);
+		$scope.repositories.messageResult.unshift({ name : '', description : '' });
 	};
 	
 	/**
