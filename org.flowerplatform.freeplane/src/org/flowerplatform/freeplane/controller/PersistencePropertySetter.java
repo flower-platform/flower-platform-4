@@ -24,6 +24,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyWrapper;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.mindmap.MindMapConstants;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 import org.freeplane.features.attribute.Attribute;
 import org.freeplane.features.attribute.NodeAttributeTableModel;
@@ -37,6 +38,8 @@ public class PersistencePropertySetter extends AbstractController implements IPr
 	@Override
 	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
+
+		changeID(node, rawNodeData);
 		
 		for (String property : properties.keySet()) {
 			Object value = properties.get(property); 
@@ -98,4 +101,14 @@ public class PersistencePropertySetter extends AbstractController implements IPr
 		node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService())).remove(property);
 	}
 	
+	/**
+	 * @author Cristina Brinza
+	 */
+	public void changeID(Node node, NodeModel rawNodeData) {
+		String fragment = Utils.getFragment(node.getNodeUri());
+		if (fragment != null && !fragment.equals(rawNodeData.getID())) {
+			rawNodeData.setID(fragment);
+			node.setRawNodeData(rawNodeData);
+		}
+	}
 }

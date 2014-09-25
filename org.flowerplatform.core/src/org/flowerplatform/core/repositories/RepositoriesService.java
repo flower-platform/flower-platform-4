@@ -6,12 +6,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.lib.Repository;
@@ -71,13 +75,15 @@ public class RepositoriesService {
 		nodeService.addChild(
 				repositoriesNode, 
 				repositoryNode, 
-				new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, true));
-		nodeService.setProperty(repositoryNode, CoreConstants.USER, login, new ServiceContext<NodeService>());
-		nodeService.setProperty(repositoryNode, CoreConstants.NAME, repoName, new ServiceContext<NodeService>());
-		nodeService.setProperty(repositoryNode, CoreConstants.DESCRIPTION, description, new ServiceContext<NodeService>());
-		nodeService.setProperty(repositoryNode, CoreConstants.MEMBERS, new StringList(), new ServiceContext<NodeService>());
-		nodeService.setProperty(repositoryNode, CoreConstants.STARRED_BY, new StringList(), new ServiceContext<NodeService>());
-		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, new StringList(), new ServiceContext<NodeService>());
+				new ServiceContext<NodeService>(nodeService));
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(CoreConstants.USER, login);
+		properties.put(CoreConstants.NAME, repoName);
+		properties.put(CoreConstants.DESCRIPTION, description);
+		properties.put(CoreConstants.MEMBERS, new StringList());
+		properties.put(CoreConstants.STARRED_BY, new StringList());
+		properties.put(CoreConstants.EXTENSIONS, new StringList());
+		nodeService.setProperties(repositoryNode, properties, new ServiceContext<NodeService>());
 		
 		// update user data
 		Node userNode = resourceService.getNode(getUriFromFragment(login));
@@ -165,9 +171,10 @@ public class RepositoriesService {
 		String newName = getRepositoryName(login, newNameWithoutRepo);
 		
 		Node repositoryNode = resourceService.getNode(getUriFromFragment(oldName));
-		
+
+		// this changes also the ID. See PersistencePropertySetter for details
+		repositoryNode.setNodeUri(getRepositoryNodeUri(login, newNameWithoutRepo));
 		nodeService.setProperty(repositoryNode, CoreConstants.NAME, newNameWithoutRepo, new ServiceContext<NodeService>());
-		//nodeService.setProperty(repositoryNode, "ID", newName, new ServiceContext<NodeService>());
 		
 		// update OWNED_REPOSITORIES
 		Node ownerNode = resourceService.getNode(getUriFromFragment((String) repositoryNode.getPropertyValue(CoreConstants.USER)));
@@ -322,9 +329,6 @@ public class RepositoriesService {
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
 		context.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
 		List<Node> repositories = CorePlugin.getInstance().getNodeService().getChildren(repositoriesNode, context);
-//		for (Node repository : repositories) {
-//			repository.setNodeUri(URLEncoder.encode(repository.getNodeUri()));
-//		}
 	
 		return repositories;
 	}
@@ -364,7 +368,7 @@ public class RepositoriesService {
 		StringList extensionsString = (StringList) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
 		List<ExtensionInfoInFile> extensions = fromStringListToExtensionInfoInFile(extensionsString);
 				
-		if (get(extensions, extensionId) != null) {
+		if (getExtensionInfoInFile(extensions, extensionId) != null) {
 			throw new RuntimeException(String.format("Extension with ID '%s' already exists for repository '%s'", extensionId, repoName));
 		}
 
@@ -414,11 +418,6 @@ public class RepositoriesService {
 			}
 			
 			applyDependencies(extensionDependency, extensionId, extensions);
-			
-//			if (!extensions.contains(extensionDependency)) {
-//				extensions.add(extensionDependency);
-//				applyDependencies(extensionDependency, extensions);
-//			}
 		}
 		
 	}
@@ -430,7 +429,7 @@ public class RepositoriesService {
 		Node repositoryNode = resourceService.getNode(getRepositoryNodeUri(login, repoName));
 		StringList extensionsString = (StringList) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
 		List<ExtensionInfoInFile> extensions = fromStringListToExtensionInfoInFile(extensionsString);
-		ExtensionInfoInFile extension = get(extensions, extensionId);
+		ExtensionInfoInFile extension = getExtensionInfoInFile(extensions, extensionId);
 
 		if (extension == null) {
 			throw new RuntimeException(String.format("The extension with ID '%s' doesn't exist for repository '%s'", extensionId, repoName));
@@ -442,24 +441,13 @@ public class RepositoriesService {
 					extension.getExtensionsThatDependOnThis().get(0)));
 		}
 		
+		List<String> removedExtensions = new ArrayList<String>(Arrays.asList(extension.getId()));
 		extensions.remove(extension);
 		
 		// remove it's dependencies
-		unapplyDependencies(extensionId, extensions);
+		unapplyDependencies(extensionId, extensions, removedExtensions);
 		
-//		if (extensions.contains(extensionId)) {
-//			extensions.remove(extensionId);
-//		} else {
-//			throw new RuntimeException(String.format("This extension doesn't exist for repository '%s'", repoName));
-//		}
-		
-		// delete extension dependencies
-//		ExtensionMetadata extensionMetadata = getExtensionMetadataForExtensionId(extensionId);
-//		for (String extensionDependency : extensionMetadata.getDependencies()) {
-//			extensions.remove(extensionDependency);
-//		}
-		
-		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, extensions, new ServiceContext<NodeService>());
+		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, fromExtensionInfoInFileToStringList(extensions), new ServiceContext<NodeService>());
 		
 		// save file
 		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
@@ -468,27 +456,24 @@ public class RepositoriesService {
 	/**
 	 * @author see class
 	 */
-	private void unapplyDependencies(String extensionId, List<ExtensionInfoInFile> extensions) {
+	private void unapplyDependencies(String extensionId, List<ExtensionInfoInFile> extensions, List<String> removedExtensions) {
 		ExtensionMetadata extensionMetadata = getExtensionMetadataForExtensionId(extensionId);
 		ExtensionInfoInFile extensionInfo;
 		
 		for (String extensionDependency : extensionMetadata.getDependencies()) {
-			
-			int i;
-			for (i = 0; i < extensions.size(); i++) {
-				extensionInfo = extensions.get(i);
-				if (extensionInfo.getId().equals(extensionDependency)) {
-					if (!extensionInfo.isTransitive()) {
-						throw new RuntimeException(String.format("Extension '%s' cannot be deleted. It was added before the extension wanted to be deleted!", 
-								extensionInfo.getId()));
-					}
-					
-					extensions.remove(extensionInfo);
-					break;
+			extensionInfo = getExtensionInfoInFile(extensions, extensionDependency);
+			for (String removedExtension : removedExtensions) {
+				if (extensionInfo.getExtensionsThatDependOnThis().contains(removedExtension)) {
+					extensionInfo.removeDependency(removedExtension);
 				}
 			}
 			
-			unapplyDependencies(extensionDependency, extensions);
+			if (extensionInfo.isTransitive() && extensionInfo.getExtensionsThatDependOnThis().size() == 0) {
+				extensions.remove(extensionInfo);
+				removedExtensions.add(extensionInfo.getId());	
+			}
+			
+			unapplyDependencies(extensionDependency, extensions, removedExtensions);
 		}
 	}
 	
@@ -566,23 +551,11 @@ public class RepositoriesService {
 
 		throw new RuntimeException(String.format("No metadata found for extension '%s'", extensionId));
 	}
-	
+		
 	/**
 	 * @author see class
 	 */
-	private boolean contains(List<ExtensionInfoInFile> extensions, String extensionId) {
-		for (ExtensionInfoInFile extensionInfoInFile : extensions) {
-			if (extensionInfoInFile.getId().equals(extensionId)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * @author see class
-	 */
-	private ExtensionInfoInFile get(List<ExtensionInfoInFile> extensions, String extensionId) {
+	public static ExtensionInfoInFile getExtensionInfoInFile(List<ExtensionInfoInFile> extensions, String extensionId) {
 		for (ExtensionInfoInFile extensionInfoInFile : extensions) {
 			if (extensionInfoInFile.getId().equals(extensionId)) {
 				return extensionInfoInFile;
