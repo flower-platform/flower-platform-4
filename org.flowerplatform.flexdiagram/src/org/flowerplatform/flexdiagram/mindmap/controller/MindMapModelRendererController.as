@@ -16,12 +16,14 @@
 package org.flowerplatform.flexdiagram.mindmap.controller {
 	import mx.collections.IList;
 	import mx.core.IVisualElement;
+	import mx.events.PropertyChangeEvent;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.renderer.ClassReferenceRendererController;
 	import org.flowerplatform.flexdiagram.mindmap.GenericMindMapConnector;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -30,10 +32,13 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 		
 		public var mindMapConnectorClass:Class;
 		
-		public function MindMapModelRendererController(rendererClass:Class, mindMapConnectorClass:Class, orderIndex:int = 0) {
-			super(rendererClass, orderIndex);
+		public function MindMapModelRendererController(rendererClassFactory:ClassFactoryWithConstructor, mindMapConnectorClass:Class, orderIndex:int = 0) {
+			super(rendererClassFactory, orderIndex);
 			removeRendererIfModelIsDisposed = true;
 			this.mindMapConnectorClass = mindMapConnectorClass;
+		}
+		
+		public function rendererModelChangedHandler(context:DiagramShellContext, renderer:IVisualElement, model:Object, event:PropertyChangeEvent):void {
 		}
 		
 		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {			

@@ -13,17 +13,15 @@
  * 
  * license-end
  */
-package org.flowerplatform.flexdiagram.controller {
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
+package org.flowerplatform.flexutil.controller {
 	
 	/**
-	 * @see DiagramShell
-	 * @see ControllerUtils
 	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
 	 */ 
 	public interface ITypeProvider {
 		
-		function getType(context:DiagramShellContext, model:Object):String;
+		function getType(model:Object):String;
 		
 	}
 }

@@ -19,9 +19,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	import mx.collections.IList;
 	import mx.events.PropertyChangeEvent;
 	
-	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;

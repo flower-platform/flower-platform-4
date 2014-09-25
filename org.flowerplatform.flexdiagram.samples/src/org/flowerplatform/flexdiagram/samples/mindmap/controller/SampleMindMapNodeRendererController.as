@@ -14,32 +14,38 @@
 * license-end
 */
 package org.flowerplatform.flexdiagram.samples.mindmap.controller {
+	import mx.core.IVisualElement;
+	import mx.events.PropertyChangeEvent;
+	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.GenericMindMapConnector;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
-	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapNodeWithDetailsRenderer;
+	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapNodeRendererWithDetailsCS;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	
 	/**
 	 * @author AlexandraTopoloaga
+	 * @author Cristian Spiescu
 	 */
 	public class SampleMindMapNodeRendererController extends MindMapModelRendererController {
 		
-		public function SampleMindMapNodeRendererController(rendererClass:Class, orderIndex:int = 0) {
-			super(rendererClass, GenericMindMapConnector, orderIndex);
+		public function SampleMindMapNodeRendererController(rendererClassFactory:ClassFactoryWithConstructor, orderIndex:int = 0) {
+			super(rendererClassFactory, GenericMindMapConnector, orderIndex);
 		}
 		
-		/**
-		 * Return the <code>SampleMindMapNodeWithDetailsRenderer</code> for nodes with details or notes.
-		 * 
-		 * @author Mariana Gheorghe
-		 * @author AlexandraTopoloaga
-		 */
+		override public function rendererModelChangedHandler(context:DiagramShellContext, renderer:IVisualElement, model:Object, event:PropertyChangeEvent):void {
+			if (event != null && "details" == event.property && !(renderer is Class(getRendererClass(context, model)))) {
+				// the value of this property dictates the renderer; 
+				// it has been changed, and the proposed renderer class != the actual class
+				context.diagramShell.shouldRefreshVisualChildren(context, context.diagramShell.rootModel);
+			}
+		}
+	
 		override public function getRendererClass(context:DiagramShellContext, model:Object):Class {
 			var data:SampleMindMapModel = SampleMindMapModel(model);
-			if ((data.note && String(data.note).length > 0) ||
-				((data.details) && String(data.details).length > 0)) {
-				return SampleMindMapNodeWithDetailsRenderer;
+			if (data.details != null && data.details != "") {
+				return SampleMindMapNodeRendererWithDetailsCS;
 			}
 			return super.getRendererClass(context, model);
 		}

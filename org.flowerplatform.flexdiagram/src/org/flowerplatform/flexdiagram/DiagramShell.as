@@ -23,7 +23,6 @@ package org.flowerplatform.flexdiagram {
 	import flash.ui.MultitouchInputMode;
 	import flash.utils.Dictionary;
 	
-	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.IDataRenderer;
 	import mx.core.IInvalidating;
@@ -36,7 +35,6 @@ package org.flowerplatform.flexdiagram {
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
-	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.ModelExtraInfoController;
@@ -49,7 +47,8 @@ package org.flowerplatform.flexdiagram {
 	import org.flowerplatform.flexdiagram.tool.Tool;
 	import org.flowerplatform.flexdiagram.tool.WakeUpTool;
 	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
-	import org.flowerplatform.flexutil.FactoryWithInitialization;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
+	import org.flowerplatform.flexutil.controller.ITypeProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
@@ -74,18 +73,14 @@ package org.flowerplatform.flexdiagram {
 		
 		public var registry:TypeDescriptorRegistry;
 		
-		private var _typeProvider:ITypeProvider;
+		public var typeProvider:ITypeProvider;
 			
-		public function set typeProvider(provider:ITypeProvider):void {			
-			_typeProvider = provider;
-		}
-		
 		/**
 		 * @see ControllerUtils
 		 */ 
 		public function getType(context:DiagramShellContext, model:Object):String {
-			if (_typeProvider != null) {				
-				var type:String = _typeProvider.getType(context, model);
+			if (typeProvider != null) {				
+				var type:String = typeProvider.getType(model);
 				if (type != null) {
 					return type;
 				}
@@ -201,8 +196,8 @@ package org.flowerplatform.flexdiagram {
 		/**
 		 *@author Diana Balutoiu
 		 */
-		public function registerTool(id:String, tool:FactoryWithInitialization):void {
-			tools[id] = tool.newInstance(true, this);
+		public function registerTool(id:String, tool:ClassFactoryWithConstructor):void {
+			tools[id] = tool.newInstanceWithConstructorParameter(this);
 		}
 				
 		public function addInModelMapIfNecesssary(context:DiagramShellContext, model:Object):Boolean {

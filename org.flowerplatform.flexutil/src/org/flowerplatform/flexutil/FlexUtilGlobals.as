@@ -121,7 +121,7 @@ package org.flowerplatform.flexutil {
 		 * @author Alina Bratu
 		 */
 		public function registerAction(generator:Class):void {
-			actionRegistry[Object(generator).ID] = new FactoryWithInitialization(generator);
+			actionRegistry[Object(generator).ID] = new ClassFactoryWithConstructor(generator);
 		}
 			
 		public function registerActionInstance(instance:IAction):void {
@@ -134,8 +134,8 @@ package org.flowerplatform.flexutil {
 				if (obj is ActionBase) {
 					return ActionBase(obj);
 				}
-				if (obj is FactoryWithInitialization) {
-					return FactoryWithInitialization(obj).newInstance();
+				if (obj is ClassFactoryWithConstructor) {
+					return ClassFactoryWithConstructor(obj).newInstance();
 				}
 			}
 			return null;

@@ -35,11 +35,11 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 		
 		public var fontFamily:String;
 		public var fontSize:Number;
-		public var fontWeight:Boolean;
-		public var fontStyle:Boolean;
+		public var fontBold:Boolean;
+		public var fontItalic:Boolean;
 		
 		public var textColor:uint;
-		public var background:uint;
+		public var backgroundColor:uint;
 		
 		public var cloudColor:uint;
 		public var cloudType:String;

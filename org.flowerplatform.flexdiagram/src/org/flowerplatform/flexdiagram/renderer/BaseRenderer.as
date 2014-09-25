@@ -1,83 +1,106 @@
-/* license-start
- * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation version 3.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
- * 
- * license-end
- */
-package org.flowerplatform.flexdiagram.mindmap {
+package org.flowerplatform.flexdiagram.renderer {
 	import flash.display.GradientType;
 	import flash.events.Event;
+	import flash.events.IEventDispatcher;
 	import flash.geom.Matrix;
 	import flash.system.Capabilities;
 	
 	import mx.collections.IList;
 	import mx.core.DPIClassification;
 	import mx.core.FlexGlobals;
+	import mx.core.IVisualElement;
+	import mx.core.IVisualElementContainer;
 	import mx.core.UIComponent;
 	import mx.events.CollectionEvent;
 	import mx.events.PropertyChangeEvent;
-	import mx.events.ResizeEvent;
 	
 	import spark.components.DataGroup;
 	import spark.components.DataRenderer;
+	import spark.components.Group;
 	import spark.components.IItemRenderer;
 	import spark.components.supportClasses.InteractionState;
 	import spark.components.supportClasses.InteractionStateDetector;
 	import spark.layouts.HorizontalLayout;
+	import spark.layouts.VerticalLayout;
 	import spark.primitives.BitmapImage;
 	
 	import flashx.textLayout.conversion.TextConverter;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
+	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	import org.flowerplatform.flexutil.focusable_component.FocusableRichText;
-	
+
 	/**
-	 * @author Cristina Constantinescu
-	 * @author Alexandra Topoloaga
+	 * Base renderer for diagram elements. It was initially used for mind map nodes, but it has
+	 * been generalized. Now <code>MindMapNodeRenderer</code> is used for mind map nodes, and this class
+	 * can be used, e.g. for 2nd level children of a class diagam (e.g. attributes).
+	 * 
+	 * <p>
+	 * To see visual properties that are supported take a look at the constants around: 
+	 * <code>FlexDiagramConstants.BASE_RENDERER_FONT_FAMILY</code>.
+	 * 
+	 * <p>
+	 * This renderer can be used in a diagram, or stand alone (e.g. as a renderer in a list). For the
+	 * second case, <code>typeNodeRegistry</code> should be provided at construction (which can be
+	 * provided by the <code>IFactory</code> instance that creates the renderer).
+	 * 
+	 * <p>
+	 * This class can be subclassed if needed. Although, for the most common use cases it can be used
+	 * "as-is", because logic for property access is delegated to controllers, via a <code>ValuesProvider</code>
+	 * controller, which is retrieved using <code>featureForValuesProvider</code>.
+	 * 
+	 * @author Cristian Spiescu
 	 */
-	public class AbstractMindMapNodeRenderer extends DataRenderer implements IDiagramShellContextAware, IItemRenderer {
+	public class BaseRenderer extends DataRenderer implements IDiagramShellContextAware, IItemRenderer {
+		
+		/**************************************************************************
+		 * Constants.
+		 *************************************************************************/
+		protected static const CIRCLE_RADIUS:int = 3;
 		
 		protected static const BACKGROUND_COLOR_DEFAULT:uint = 0xFFFFFFFF;
-
-		protected static const circleRadius:int = 3;
-			
+		
 		protected static const TEXT_COLOR_DEFAULT:uint = 0x000000;
 		
 		protected static const FONT_FAMILY_DEFAULT:String = "SansSerif";
 		
-		protected static const SCREEN_DPI:Number = (Capabilities.screenDPI == 72 ? 96 : Capabilities.screenDPI) / 72;
+		protected static const FONT_SIZE_DEFAULT:Number = 9;
 		
-		public static const CLOUD_TYPE_NONE:String = "ARC";
+		/**************************************************************************
+		 * Attributes.
+		 *************************************************************************/
 		
-		public static const CLOUD_TYPE_RECTANGLE:String = "RECT";
-		
-		public static const CLOUD_TYPE_ROUNDED_RECTANGLE:String = "ROUND_RECT";
-				
 		protected var _label:FocusableRichText;
 		
-		protected var backgroundColor:uint = BACKGROUND_COLOR_DEFAULT;
+		protected var _backgroundColor:uint = BACKGROUND_COLOR_DEFAULT;
 		
 		protected var _context:DiagramShellContext;
 		
-		protected var _cloudColor:uint;
-		
-		protected var _cloudType:String;
-		
 		protected var _icons:IList;
 		
-		public var showSelected:Boolean = false;
+		/**
+		 * Inspired from the Freeplane renderer, that increases the font a little bit.
+		 */
+		public var fontSizeCorrection:Number = (Capabilities.screenDPI == 72 ? 96 : Capabilities.screenDPI) / 72;
+		
+		/**
+		 * @see Class doc.
+		 */
+		public var featureForValuesProvider:String;
+		
+		/**
+		 * @see Class doc.
+		 */
+		public var typeDescriptorRegistry:TypeDescriptorRegistry;
+		
+		public var canHaveChildren:Boolean;
+		
+		protected var iconsAndLabelArea:Group;
 		
 		/**************************************************************************
 		 * Graphic properties supported by this renderer.
@@ -85,72 +108,42 @@ package org.flowerplatform.flexdiagram.mindmap {
 		public function set text(value:String):void {
 			if (value != null) {
 				_label.textFlow = TextConverter.importToFlow(value , Utils.isHTMLText(value) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);	
+			} else {
+				_label.textFlow = null;
 			}
 		}
 		
 		public function set fontFamily(value:String):void {
-			if (value == null) {
-				value = FONT_FAMILY_DEFAULT;
-			}
 			_label.setStyle("fontFamily", Utils.getSupportedFontFamily(value));
 		}
 		
 		public function set fontSize(value:Number):void {
-			if (value == 0) {
-				value = 9;
-			} 
-			_label.setStyle("fontSize", (SCREEN_DPI * value));
+			_label.setStyle("fontSize", (fontSizeCorrection * value));
 		}
 		
-		public function set fontWeight(value:Boolean):void {
+		public function set fontBold(value:Boolean):void {
 			_label.setStyle("fontWeight", value == true ? "bold" : "normal");
 		}
 		
-		public function set fontStyle(value:Boolean):void {
+		public function set fontItalic(value:Boolean):void {
 			_label.setStyle("fontStyle", value == true ? "italic" : "normal");
 		}
 		
 		public function set textColor(value:uint):void {
-			if (value == 0) {
-				value = TEXT_COLOR_DEFAULT;
-			} 
 			_label.setStyle("color", value);
 		}
 		
-		public function set background(value:uint):void {
-			if (value == 0) {
-				value = BACKGROUND_COLOR_DEFAULT;
-			}
-			backgroundColor = value;
-		}
-		
-		public function set cloudColor(value:uint):void {
-			_cloudColor = value;
-			invalidateDisplayList();
-		}
-		
-		public function set cloudType(value:String):void {
-			switch (value) {
-				case "No shape": 
-					value = CLOUD_TYPE_NONE;
-					break;
-				case "Rectangle shape": 
-					value = CLOUD_TYPE_RECTANGLE;
-					break;
-				case "Rounded rectangle shape": 
-					value = CLOUD_TYPE_ROUNDED_RECTANGLE;
-					break;
-			}
-			_cloudType = value;
+		public function set backgroundColor(value:uint):void {
+			_backgroundColor = value;
 			invalidateDisplayList();
 		}
 		
 		public function set icons(value:IList):void {		
-			if (_icons != null) {
-				_icons.removeEventListener(CollectionEvent.COLLECTION_CHANGE, handleIconsChanged);
-			}
 			if (value == _icons) {
 				return;
+			}
+			if (_icons != null) {
+				_icons.removeEventListener(CollectionEvent.COLLECTION_CHANGE, handleIconsChanged);
 			}
 			_icons = value;
 			if (_icons != null) {
@@ -163,7 +156,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		 * Other functions.
 		 *************************************************************************/
 		
-		public function AbstractMindMapNodeRenderer() {
+		public function BaseRenderer() {
 			mouseEnabledWhereTransparent = true;
 			
 			if (!FlexUtilGlobals.getInstance().isMobile) {
@@ -186,37 +179,19 @@ package org.flowerplatform.flexdiagram.mindmap {
 					}
 				}
 			}
-			setLayout();
-			
 			interactionStateDetector = new InteractionStateDetector(this);
 			interactionStateDetector.addEventListener(Event.CHANGE, interactionStateDetector_changeHandler);
 		}
 		
-		public function setLayout():void {
-			var hLayout:HorizontalLayout = new HorizontalLayout();
-			hLayout.gap = 2;
-			hLayout.paddingBottom = 2;
-			hLayout.paddingTop = 2;
-			hLayout.paddingLeft = 2;
-			hLayout.paddingRight = 2;
-			hLayout.verticalAlign = "middle";
-			
-			this.layout = hLayout;
-		}
-				
 		public function get diagramShellContext():DiagramShellContext {			
 			return _context;
 		}
 		
 		public function set diagramShellContext(value:DiagramShellContext):void {
 			this._context = value;
-			if (!hasEventListener(ResizeEvent.RESIZE)) {
-				addEventListener(ResizeEvent.RESIZE, resizeHandler);	
+			if (typeDescriptorRegistry == null) {
+				typeDescriptorRegistry = value.diagramShell.registry;
 			}
-		}
-		
-		protected function get mindMapDiagramShell():MindMapDiagramShell {
-			return diagramShellContext != null ? MindMapDiagramShell(diagramShellContext.diagramShell) : null;
 		}
 		
 		override public function set data(value:Object):void {
@@ -230,174 +205,144 @@ package org.flowerplatform.flexdiagram.mindmap {
 		}
 		
 		protected function beginModelListen():void {
-			data.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);	
+			data.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
+			var actualObject:IEventDispatcher = getRequiredValuesProvider().getActualObject(IEventDispatcher(data));
+			if (actualObject != data) {
+				actualObject.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
+			}
 			modelChangedHandler(null);
 		}
 		
 		protected function endModelListen():void {
 			data.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
-		}
-				
-		/**
-		 * We need to inform the system about the real dimensions of the renderer. The system will
-		 * process the nodes again, with the real dimensions.
-		 */
-		protected function resizeHandler(event:ResizeEvent):void {
-			if (height == 0 || width == 0) {
-				// don't change values if first resize, wait until component fully initialized
-				return;
-			}
-			var refresh:Boolean = false;
-			if (mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "width") != width) {
-				mindMapDiagramShell.setPropertyValue(diagramShellContext, data, "width", width);
-				refresh = true;
-			}
-			if (mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "height") != height) {			
-				mindMapDiagramShell.setPropertyValue(diagramShellContext, data, "height", height);
-				refresh = true;
-			}
-			
-			if (refresh) {					
-				mindMapDiagramShell.shouldRefreshModelPositions(diagramShellContext, mindMapDiagramShell.rootModel);
-				mindMapDiagramShell.shouldRefreshVisualChildren(diagramShellContext, mindMapDiagramShell.rootModel);
+			var actualObject:IEventDispatcher = getRequiredValuesProvider().getActualObject(IEventDispatcher(data));
+			if (actualObject != data) {
+				actualObject.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
 			}
 		}
 		
+		protected function getRequiredValuesProvider():ValuesProvider {
+			if (featureForValuesProvider == null) {
+				throw new Error("'featureForValuesProvider' should be specified, so that we can get the corresponding 'ValuesProvider'");
+			}
+			if (typeDescriptorRegistry == null) {
+				throw new Error("'typeDescriptorRegistry' should be not null, so that we can get the corresponding 'ValuesProvider'");
+			}
+			var valuesProvider:ValuesProvider = ValuesProvider(typeDescriptorRegistry.getExpectedTypeDescriptor(typeDescriptorRegistry.typeProvider.getType(data)).getSingleController(featureForValuesProvider, data));
+			if (valuesProvider == null) {
+				throw new Error("'ValuesProvider' was not found for featureForValuesProvider = " + featureForValuesProvider);
+			}
+			return valuesProvider;
+		}
+		
 		/**
-		 * Invoked when <code>data</code> changes or when the mind map system
-		 * recalculates data in the dynamic object.
+		 * Invoked when <code>data</code> is changed. If the 'actual' object (cf. <code>ValuesProvider</code>) is different than <code>data</code>,
+		 * then that object is listened for changes too; i.e. this method is invoked also when it changes.
 		 */
 		protected function modelChangedHandler(event:PropertyChangeEvent):void {
+			var valuesProvider:ValuesProvider = getRequiredValuesProvider();
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "fontFamily", FlexDiagramConstants.BASE_RENDERER_FONT_FAMILY);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "fontSize", FlexDiagramConstants.BASE_RENDERER_FONT_SIZE);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "fontBold", FlexDiagramConstants.BASE_RENDERER_FONT_BOLD);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "fontItalic", FlexDiagramConstants.BASE_RENDERER_FONT_ITALIC);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "text", FlexDiagramConstants.BASE_RENDERER_TEXT);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "textColor", FlexDiagramConstants.BASE_RENDERER_TEXT_COLOR);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "backgroundColor", FlexDiagramConstants.BASE_RENDERER_BACKGROUND_COLOR);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "icons", FlexDiagramConstants.BASE_RENDERER_ICONS);
+		}
+		
+		protected function setFieldIfNeeded(valuesProvider:ValuesProvider, registry:TypeDescriptorRegistry, event:PropertyChangeEvent, field:String, featureForField:String):void {
+			if (event == null || event.property == valuesProvider.getPropertyName(registry, IEventDispatcher(data), featureForField)) {
+				var value:Object = valuesProvider.getValue(registry, IEventDispatcher(data), featureForField);
+				if (value != null) {
+					this[field] = value;
+				}
+			} 			
+		}
+		
+		protected function handleIconsChanged(event:CollectionEvent):void {			
+			if (_icons == null) {
+				return;
+			}
+			var iconDisplay:BitmapImage;
+			// loop over the icons list; and compare with the actual image components; the purpose: try to reuse the components
+			// there are 3 cases: the size theoretical list == the size of the actual list; or < or > 
+			for (var i:int = 0; i < _icons.length; i++) {
+				var candidate:IVisualElement = getElementAt(i);
+				if (candidate is BitmapImage) {
+					// a BitmapImage that will be reused
+					iconDisplay = BitmapImage(candidate);
+				} else {
+					// we encountered something else; probably the Label; so we need to create a new BitmapImage
+					iconDisplay = new BitmapImage();
+					iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
+					iconDisplay.verticalAlign = "middle";
+					iconDisplay.depth = UIComponent(this).depth;
+					iconsAndLabelArea.addElementAt(iconDisplay, i);
+				}
+				iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(i));
+			}
+			// now delete all images that exist visually, but that are not needed; e.g. if we have 4 visual icons, but the list contains only 3 => we would remove(3)
+			while (iconsAndLabelArea.getElementAt(_icons.length) is BitmapImage) {
+				iconsAndLabelArea.removeElementAt(_icons.length);
+			}
 		}
 		
 		override protected function createChildren():void {
 			super.createChildren();
+			
+			if (canHaveChildren) {
+				this.layout = new VerticalLayout();
+				iconsAndLabelArea = new Group();
+				addElement(iconsAndLabelArea);
+			} else {
+				iconsAndLabelArea = this;
+			}
+			
+			var hLayout:HorizontalLayout = new HorizontalLayout();
+			hLayout.gap = 2;
+			hLayout.paddingBottom = 2;
+			hLayout.paddingTop = 2;
+			hLayout.paddingLeft = 2;
+			hLayout.paddingRight = 2;
+			hLayout.verticalAlign = "middle";
+			iconsAndLabelArea.layout = hLayout;				
+			
 			_label = new FocusableRichText();
 			_label.percentHeight = 100;
 			_label.percentWidth = 100;			
 			_label.setStyle("verticalAlign" , "middle");
-			addElement(_label);
-		}
-		
-		protected function drawCloud(unscaledWidth:Number, unscaledHeight:Number):void {			
-			if (_cloudType == CLOUD_TYPE_RECTANGLE || _cloudType == CLOUD_TYPE_ROUNDED_RECTANGLE) {				
-				graphics.lineStyle(2, 0x808080); // gray line with bigger thickness
-				graphics.beginFill(Utils.convertValueToColor(_cloudColor), 1);
-				
-				var diagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShellContext.diagramShell);
-				var cloudPadding:Number = diagramShell.getPropertyValue(diagramShellContext, data, "additionalPadding");
-				var side:int = diagramShell.getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
-				
-				var width:Number = diagramShell.getPropertyValue(diagramShellContext, data, "width");
-				var height:Number = diagramShell.getPropertyValue(diagramShellContext, data, "height");
-				var expandedWidth:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedWidth");
-				var expandedHeight:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedHeight");
-				
-				var shapeX:Number = - cloudPadding/2;
-				var shapeY:Number = - diagramShell.getDeltaBetweenExpandedHeightAndHeight(diagramShellContext, data, true)/2;
-				var shapeWidth:Number = expandedWidth + cloudPadding;
-				var shapeHeight:Number = Math.max(expandedHeight, height + cloudPadding);
-				
-				var expandedWidthLeft:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedWidthLeft");
-				var expandedWidthRight:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedWidthRight");
-				var expandedHeightLeft:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedHeightLeft");
-				var expandedHeightRight:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedHeightRight");
-				var additionalPadding:Number = diagramShell.getPropertyValue(diagramShellContext, data, "additionalPadding");
-				
-				if (side == MindMapDiagramShell.POSITION_LEFT) {
-					shapeX -= (expandedWidth - width);
-				}
-				
-				if (side == MindMapDiagramShell.POSITION_CENTER) {
-					shapeX -= expandedWidthLeft - width;
-					shapeY = - (Math.max(expandedHeightLeft, expandedHeightRight) - height - additionalPadding)/2;
-					shapeWidth = expandedWidthLeft + expandedWidthRight - width; 
-					shapeHeight = Math.max(expandedHeightLeft, expandedHeightRight);
-				}
-				
-				if (_cloudType == CLOUD_TYPE_RECTANGLE) {
-					graphics.drawRect(shapeX - 3, shapeY - 3, shapeWidth + 5, shapeHeight + 5);
-				} else {
-					graphics.drawRoundRect(shapeX - 3, shapeY - 3, shapeWidth + 5, shapeHeight + 5, 25, 25);					
-				}
-				graphics.endFill();
-			}
+			iconsAndLabelArea.addElement(_label);
+			
+			// set defalults
+			fontFamily = FONT_FAMILY_DEFAULT;
+			fontSize = FONT_SIZE_DEFAULT;
+			textColor = TEXT_COLOR_DEFAULT;
+			backgroundColor = BACKGROUND_COLOR_DEFAULT;
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
-			super.updateDisplayList(unscaledWidth, unscaledHeight);
 			graphics.clear();
+			super.updateDisplayList(unscaledWidth, unscaledHeight);
 
-			drawCloud(unscaledWidth, unscaledHeight);
-			
+			drawBackground(unscaledWidth, unscaledHeight);
+
 			graphics.lineStyle(1, 0x808080);
-			graphics.beginFill(backgroundColor, 1);
-			graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);
-			
-			if (shouldDrawCircle()) {
-				drawLittleCircle();
+			graphics.beginFill(_backgroundColor, 1);
+			if (diagramShellContext != null) {
+				graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 10, 10);
+			} else {
+				// if not in diagram, i.e. in a list. Rounded rect is ugly.
+				graphics.drawRect(0, 0, unscaledWidth, unscaledHeight);
 			}
 			graphics.endFill();
-			drawBackground(unscaledWidth, unscaledHeight);
-		}
-		
-		protected function shouldDrawCircle():Boolean {			
-			return false;
-		}
-		
-		protected function drawLittleCircle(circleY:Number=NaN):void {
-			if (isNaN(circleY)) {
-				circleY = height/2;
-			}
-			graphics.beginFill(BACKGROUND_COLOR_DEFAULT, 1);
-			var side:int = MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
-			if (side == MindMapDiagramShell.POSITION_LEFT) {
-				graphics.drawCircle(-circleRadius, circleY, circleRadius);
-			} else if (side == MindMapDiagramShell.POSITION_RIGHT) {						
-				graphics.drawCircle(width + circleRadius, circleY, circleRadius);
-			}
-		}
-		
-		protected function handleIconsChanged(event:CollectionEvent):void {			
-			/* 
-			// delete all the icons displayed and display the whole list again
-			while (getElementAt(0) is BitmapImage) {
-				removeElementAt(0);
-			}
-			if (_icons != null) {
-			for (var i:Number = 0; i < _icons.length; i++) {
-				var iconDisplay:BitmapImage = new BitmapImage();
-				iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
-				iconDisplay.source =FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(i));
-				iconDisplay.verticalAlign = "middle";
-				iconDisplay.depth = UIComponent(this).depth;
-				addElementAt(iconDisplay, i);
-				}
-			}*/ 
-			var iconDisplay:BitmapImage;
-			if (_icons != null) {
-				for (var i:Number = 0; i < _icons.length; i++) {
-					if (getElementAt(i) is BitmapImage) {
-						iconDisplay = BitmapImage (getElementAt(i));
-						iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(i));
-					} else {
-						iconDisplay = new BitmapImage();
-						iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
-						iconDisplay.source =FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(i));
-						iconDisplay.verticalAlign = "middle";
-						iconDisplay.depth = UIComponent(this).depth;
-						addElementAt(iconDisplay, i);
-					}
-				}
-				while (getElementAt(_icons.length) is BitmapImage) {
-					removeElementAt(_icons.length);
-				}
-			}
 		}
 		
 		/**************************************************************************
-		 * Functions used for list selection.
+		 * Functions used for list selection. Shoud be refactored; e.g. this class should extend ItemRenderer.
 		 *************************************************************************/
+		
+		public var showSelected:Boolean = false;
 		
 		private var interactionStateDetector:InteractionStateDetector;
 		
@@ -443,13 +388,13 @@ package org.flowerplatform.flexdiagram.mindmap {
 			if (getStyle("alternatingItemColors") !== undefined)
 				invalidateDisplayList();
 		}
-
+		
 		public function get label():String {
-			return _label as String;
+			return null;
 		}
 		
 		public function set label(value:String):void {
-
+			
 		}
 		
 		private var _selected:Boolean = false;
@@ -574,5 +519,6 @@ package org.flowerplatform.flexdiagram.mindmap {
 				hovered = (interactionStateDetector.state == InteractionState.OVER);
 			}
 		}
+	
 	}
 }

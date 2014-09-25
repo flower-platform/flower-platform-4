@@ -35,6 +35,8 @@ package org.flowerplatform.flexutil.controller {
 		
 		internal var configurable:Boolean = true;
 		
+		public var typeProvider:ITypeProvider;
+		
 		public function isConfigurable():Boolean {
 			return configurable;
 		}

@@ -18,7 +18,7 @@
 <!---
 @author Alexandra Topoloaga
 -->
-<mindmap:AbstractMindMapNodeRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<mindmap:MindMapNodeRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 									 xmlns:s="library://ns.adobe.com/flex/spark" 
 									 xmlns:mx="library://ns.adobe.com/flex/mx" 
 									 xmlns:mindmap="org.flowerplatform.flexdiagram.mindmap.*">
@@ -72,10 +72,10 @@
 					fontSize = dataConverted.fontSize;
 				} 
 				if (event == null || event.property == "fontWeight") {
-					fontWeight = dataConverted.fontWeight;
+					fontBold = dataConverted.fontBold;
 				} 
 				if (event == null || event.property == "fontStyle") {
-					fontStyle = dataConverted.fontStyle;
+					fontItalic = dataConverted.fontItalic;
 				}
 				if (event == null || event.property == "text") {
 					text = dataConverted.text;
@@ -85,7 +85,7 @@
 				}
 				if (event == null || event.property == "background") {
 					invalidateDisplayList();
-					background = dataConverted.background;
+					backgroundColor = dataConverted.backgroundColor;
 				}
 				if (event == null || event.property == "icons") {
 					if (dataConverted.icons != null) {
@@ -113,4 +113,4 @@
 		]]>
 	</fx:Script>
 	
-</mindmap:AbstractMindMapNodeRenderer>
+</mindmap:MindMapNodeRenderer>

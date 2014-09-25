@@ -14,18 +14,28 @@
  * license-end
  */
 package org.flowerplatform.flexutil {
+	import mx.core.IFactory;
 	
-	public class FactoryWithInitialization {
+	/**
+	 * Similar to <code>ClassFactory</code>. But it allows the creation of classes that have a constructor with a parameter.
+	 * 
+	 * @author Cristian Spiescu
+	 */
+	public class ClassFactoryWithConstructor implements IFactory {
 		
 		public var generator:Class;
 		public var properties:Object = null;
 		
-		public function FactoryWithInitialization(generator:Class, properties:Object = null) {
+		public function ClassFactoryWithConstructor(generator:Class, properties:Object = null) {
 			this.generator = generator;
 			this.properties = properties;
 		}
 		
-		public function newInstance(constructorHasParameter:Boolean = false, construtorParameter:Object = null):* {
+		public function newInstance():* {
+			return newInstanceWithConstructorParameter(null, false);
+		}
+		
+		public function newInstanceWithConstructorParameter(construtorParameter:Object = null, constructorHasParameter:Boolean = true):* {
 			var instance:Object;
 			if (constructorHasParameter) {
 				instance = new generator(construtorParameter);

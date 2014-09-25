@@ -22,7 +22,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapNodeRenderer;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapNodeRenderer;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
@@ -30,7 +30,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	/**
 	 * @author Alexandra Topoloaga
 	 */ 
-	public class MindMapNodeRenderer2 extends AbstractMindMapNodeRenderer {
+	public class MindMapNodeRenderer2 extends MindMapNodeRenderer {
 		
 		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 			
@@ -67,10 +67,10 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				fontSize = data.getPropertyValue(MindMapConstants.FONT_SIZE);
 			} 
 			if (event == null || event.property == MindMapConstants.FONT_BOLD) {
-				fontWeight = data.getPropertyValue(MindMapConstants.FONT_BOLD);
+				fontBold = data.getPropertyValue(MindMapConstants.FONT_BOLD);
 			} 
 			if (event == null || event.property == MindMapConstants.FONT_ITALIC) {
-				fontStyle = data.getPropertyValue(MindMapConstants.FONT_ITALIC);
+				fontItalic = data.getPropertyValue(MindMapConstants.FONT_ITALIC);
 			}
 			
 			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(mindMapDiagramShell.registry, node);
@@ -85,7 +85,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			}
 			
 			if (event == null || event.property == MindMapConstants.COLOR_BACKGROUND) {
-				background = Utils.convertValueToColor(data.getPropertyValue(MindMapConstants.COLOR_BACKGROUND));
+				backgroundColor = Utils.convertValueToColor(data.getPropertyValue(MindMapConstants.COLOR_BACKGROUND));
 				invalidateDisplayList();
 			}
 			

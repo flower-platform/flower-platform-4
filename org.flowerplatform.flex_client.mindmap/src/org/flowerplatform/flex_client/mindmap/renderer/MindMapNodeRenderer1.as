@@ -20,7 +20,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapNodeRenderer;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapNodeRenderer;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
@@ -28,7 +28,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	/**
 	 * @author Alexandra Topoloaga
 	 */ 
-	public class MindMapNodeRenderer1 extends AbstractMindMapNodeRenderer {
+	public class MindMapNodeRenderer1 extends MindMapNodeRenderer {
 		
 		public static const DEFAULT_PATH:String = "/images/mindmap/icons/";
 		
@@ -67,10 +67,10 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				fontSize = data.getPropertyValue("font.SIZE"); 
 			} 
 			if (event == null || event.property == "font.BOLD") {
-				fontWeight = data.getPropertyValue("font.BOLD");
+				fontBold = data.getPropertyValue("font.BOLD");
 			} 
 			if (event == null || event.property == "font.ITALIC") {
-				fontStyle = data.getPropertyValue("font.ITALIC");
+				fontItalic = data.getPropertyValue("font.ITALIC");
 			}
 			if (event == null || event.property == "TEXT") {
 				text = data.getPropertyValue("TEXT"); 
@@ -80,7 +80,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 			}
 			if (event == null || event.property == "BACKGROUND_COLOR") {
 				invalidateDisplayList();
-				background = Utils.convertValueToColor(data.getPropertyValue("BACKGROUND_COLOR"));
+				backgroundColor = Utils.convertValueToColor(data.getPropertyValue("BACKGROUND_COLOR"));
 			}
 			if (event == null || event.property == "icons") {
 				var iconList:ArrayCollection = data.getPropertyValue("icons");

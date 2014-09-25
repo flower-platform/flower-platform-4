@@ -14,7 +14,6 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.controller.visual_children {
-	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexutil.controller.AbstractController;
 	

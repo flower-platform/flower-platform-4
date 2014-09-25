@@ -117,10 +117,10 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			model.hasChildren = false;
 			model.fontFamily = "SansSerif";
 			model.fontSize = 9;
-			model.fontStyle = true;
-			model.fontWeight = false;
+			model.fontItalic = true;
+			model.fontBold = false;
 			model.textColor = 0x000000;
-			model.background = 0xFFFFFF;
+			model.backgroundColor = 0xFFFFFF;
 			if (parent is SampleMindMapModel && parent != null && parent.side != 0) {
 				model.side = parent.side;
 			} else if (parent is SampleMindMapModel && parent != null) {

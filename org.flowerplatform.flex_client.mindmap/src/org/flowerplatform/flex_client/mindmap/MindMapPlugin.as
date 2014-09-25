@@ -51,7 +51,7 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
-	import org.flowerplatform.flexutil.FactoryWithInitialization;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
@@ -78,6 +78,7 @@ package org.flowerplatform.flex_client.mindmap {
 			this.correspondingJavaPlugin = "org.flowerplatform.mindmap";
 
 			CorePlugin.getInstance().nodeTypeProvider = new MindMapNodeTypeProvider();
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.typeProvider = CorePlugin.getInstance().nodeTypeProvider;
 			CorePlugin.getInstance().serviceLocator.addService("mindMapService");
 			CorePlugin.getInstance().serviceLocator.addService("freeplaneService");
 			
@@ -112,7 +113,7 @@ package org.flowerplatform.flex_client.mindmap {
 		
 
 			// register PropertiesPlugin Renderer
-			PropertiesPlugin.getInstance().propertyDescriptorTypeToPropertyRendererFactory[MindMapConstants.MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE] = new FactoryWithInitialization
+			PropertiesPlugin.getInstance().propertyDescriptorTypeToPropertyRendererFactory[MindMapConstants.MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE] = new ClassFactoryWithConstructor
 				(IconsWithButtonPropertyRenderer, {
 					clickHandler: function(itemRendererHandler:IDialogResultHandler, propertyName:String, propertyValue:Object,selection:Node):void {
 						var dialog:MindMapIconsView = new MindMapIconsView();
@@ -133,7 +134,7 @@ package org.flowerplatform.flex_client.mindmap {
 					}					
 					
 				});
-			PropertiesPlugin.getInstance().propertyDescriptorTypeToPropertyRendererFactory[MindMapConstants.MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE] = new FactoryWithInitialization
+			PropertiesPlugin.getInstance().propertyDescriptorTypeToPropertyRendererFactory[MindMapConstants.MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE] = new ClassFactoryWithConstructor
 				(DropDownListPropertyRenderer, {	
 					requestDataProviderHandler: function(node:Node, callbackFunction:Function):void {
 						CorePlugin.getInstance().serviceLocator.invoke("freeplaneService.getStyles", [node.nodeUri], callbackFunction);

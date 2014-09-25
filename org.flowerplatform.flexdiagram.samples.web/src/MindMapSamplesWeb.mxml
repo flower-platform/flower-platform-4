@@ -28,26 +28,35 @@
 			   implements="org.flowerplatform.flexdiagram.samples.IModelHolder">
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.collections.IList;
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flexdiagram.ControllerUtils;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer;
+			import org.flowerplatform.flexdiagram.mindmap.MindMapNodeRenderer;
+			import org.flowerplatform.flexdiagram.renderer.BaseRenderer;
 			import org.flowerplatform.flexdiagram.samples.IModelHolder;
 			import org.flowerplatform.flexdiagram.samples.mindmap.MindMapPopulator;
 			import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
-			import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapNodeRenderer;
 			import org.flowerplatform.flexdiagram.tool.DragTool;
 			import org.flowerplatform.flexdiagram.tool.InplaceEditorTool;
 			import org.flowerplatform.flexdiagram.tool.ScrollTool;
 			import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 			import org.flowerplatform.flexdiagram.tool.ZoomTool;
-			import org.flowerplatform.flexutil.FactoryWithInitialization;
-			
+			import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
+			import org.flowerplatform.flexutil.Utils;
 			
 						
+			// the IDE doesn't see these imports during "organize imports"
+			BaseRenderer;
+			MindMapNodeRenderer;
+			
+			public static const ICONS_DIR_PATH:String = "../../org.flowerplatform.flexdiagram.samples/icons/";
+			
 			private var _rootModel:Object;
+
 			[Bindable]
 			protected var selectedItem:SampleMindMapModel;
 			
@@ -64,11 +73,11 @@
 				MindMapPopulator.populateRootModel(this);
 				
 				diagramShell.rootModel = rootModel;
-				diagramShell.registerTool(ScrollTool.ID, new FactoryWithInitialization(ScrollTool));
-				diagramShell.registerTool(SelectOnClickTool.ID, new FactoryWithInitialization(SelectOnClickTool));
-				diagramShell.registerTool(ZoomTool.ID, new FactoryWithInitialization(ZoomTool));
-				diagramShell.registerTool(InplaceEditorTool.ID, new FactoryWithInitialization(InplaceEditorTool));
-				diagramShell.registerTool(DragTool.ID, new FactoryWithInitialization(DragTool));
+				diagramShell.registerTool(ScrollTool.ID, new ClassFactoryWithConstructor(ScrollTool));
+				diagramShell.registerTool(SelectOnClickTool.ID, new ClassFactoryWithConstructor(SelectOnClickTool));
+				diagramShell.registerTool(ZoomTool.ID, new ClassFactoryWithConstructor(ZoomTool));
+				diagramShell.registerTool(InplaceEditorTool.ID, new ClassFactoryWithConstructor(InplaceEditorTool));
+				diagramShell.registerTool(DragTool.ID, new ClassFactoryWithConstructor(DragTool));
 				
 				var context:DiagramShellContext = diagramShell.getNewDiagramShellContext();
 				MindMapDiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {ControllerUtils.getMindMapModelController(context, diagramShell.getRoot(context)).setExpanded(context, diagramShell.getRoot(context), true)});
@@ -97,13 +106,20 @@
 			}
 			
 			public function onIconChange():void {
-				selectedItem.icons = new ArrayCollection(iconsTextInput.text.split(","));
-			}
-			
-			public function selectRenderer(item:Object):ClassFactory {
-				var itemRenderer: ClassFactory = new ClassFactory(SampleMindMapNodeRenderer); 
-				ClassFactory(itemRenderer).properties = {showSelected:true};
-				return ClassFactory(itemRenderer);
+				var list:IList = new ArrayList();
+				var spl:Array = iconsTextInput.text.split(",");
+				for (var i:int = 0; i < spl.length; i++) {
+					var value:String = String(spl[i]);
+					if (value == "") {
+						// if input = "" => spl will have 1 item = ""
+						break;
+					}
+					if (!Utils.beginsWith(value, ICONS_DIR_PATH)) {
+						value = ICONS_DIR_PATH + value;						
+					}
+					list.addItem(value);
+				}
+				selectedItem.icons = list;
 			}
 			
 		]]>
@@ -123,7 +139,11 @@
 					 title="List of children for selected node's parent">
 				<s:List id="childrenProviderList" width="100%" borderVisible="false" 
 						dataProvider="{selectedItem.parent.children}" 
-						itemRendererFunction="selectRenderer"/>
+						itemRenderer="{new ClassFactoryWithConstructor(BaseRenderer, { 
+							showSelected : true,
+							featureForValuesProvider : 'mindMapValuesProvider',
+							typeDescriptorRegistry : diagramShell.registry
+						})}"/>
 			</s:Panel>
 			
 			
@@ -160,11 +180,11 @@
 					</s:FormItem>
 					
 					<s:FormItem label="Font Bold:">
-						<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontWeight}"/> 
+						<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontBold}"/> 
 					</s:FormItem>
 					
 					<s:FormItem label="Font Italic:">
-						<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontStyle}"/>
+						<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontItalic}"/>
 					</s:FormItem>
 					
 					<s:FormItem label="Text Color:">
@@ -174,7 +194,7 @@
 					
 					<s:FormItem label="Background Color:">
 						<mx:ColorPicker id="backgroundColorPicker"
-										selectedColor="@{selectedItem.background}" showTextField="true"/>
+										selectedColor="@{selectedItem.backgroundColor}" showTextField="true"/>
 					</s:FormItem>
 					
 					
@@ -196,11 +216,7 @@
 					
 					<s:FormItem id="textInputCloudTypeForm" label="CloudType:">
 						<s:DropDownList width="100%" selectedItem="@{selectedItem.cloudType}"> 
-							<s:ArrayCollection>
-								<fx:String>No shape</fx:String>
-								<fx:String>Rectangle shape</fx:String>
-								<fx:String>Rounded rectangle shape</fx:String>
-							</s:ArrayCollection>
+							<s:ArrayCollection source="{['', MindMapNodeRenderer.CLOUD_TYPE_RECTANGLE, MindMapNodeRenderer.CLOUD_TYPE_ROUNDED_RECTANGLE]}"/>
 						</s:DropDownList>
 					</s:FormItem>
 					

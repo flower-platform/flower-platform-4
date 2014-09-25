@@ -32,7 +32,7 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 	import org.flowerplatform.flexdiagram.tool.WakeUpTool;
 	import org.flowerplatform.flexdiagram.tool.ZoomTool;
-	import org.flowerplatform.flexutil.FactoryWithInitialization;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -44,12 +44,12 @@ package org.flowerplatform.flex_client.mindmap {
 		public function MindMapEditorDiagramShell() {
 			super();
 									
-			registerTool(ScrollTool.ID, new FactoryWithInitialization(ScrollTool));
-			registerTool(ZoomTool.ID, new FactoryWithInitialization(ZoomTool));
-			registerTool(SelectOnClickTool.ID, new FactoryWithInitialization(SelectOnClickTool));
-			registerTool(MindMapDragTool.ID, new FactoryWithInitialization(MindMapDragTool));
-			registerTool(OpenAction.ID, new FactoryWithInitialization(ActionTool, {"action": new OpenAction(), "eventType": WakeUpTool.DOUBLE_CLICK}));		
-			registerTool(ExpandCollapseAction.ID, new FactoryWithInitialization(ActionTool, {"action": new ExpandCollapseAction(), "eventType": WakeUpTool.CLICK}));
+			registerTool(ScrollTool.ID, new ClassFactoryWithConstructor(ScrollTool));
+			registerTool(ZoomTool.ID, new ClassFactoryWithConstructor(ZoomTool));
+			registerTool(SelectOnClickTool.ID, new ClassFactoryWithConstructor(SelectOnClickTool));
+			registerTool(MindMapDragTool.ID, new ClassFactoryWithConstructor(MindMapDragTool));
+			registerTool(OpenAction.ID, new ClassFactoryWithConstructor(ActionTool, {"action": new OpenAction(), "eventType": WakeUpTool.DOUBLE_CLICK}));		
+			registerTool(ExpandCollapseAction.ID, new ClassFactoryWithConstructor(ActionTool, {"action": new ExpandCollapseAction(), "eventType": WakeUpTool.CLICK}));
 		}
 			
 		public function get nodeRegistry():NodeRegistry {
