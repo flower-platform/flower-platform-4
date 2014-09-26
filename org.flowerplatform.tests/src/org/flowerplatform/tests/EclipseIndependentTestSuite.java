@@ -50,9 +50,9 @@ import org.osgi.framework.BundleContext;
 @SuppressWarnings("restriction")
 @RunWith(Suite.class)
 @SuiteClasses({ 
-	CodeSyncTestSuite.class,
-	FileSystemControllersTest.class,
-	CommandStackTest.class,
+//	CodeSyncTestSuite.class,
+//	FileSystemControllersTest.class,
+//	CommandStackTest.class,
 	CoreTestSuite.class
 })
 public class EclipseIndependentTestSuite {
