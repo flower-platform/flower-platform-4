@@ -2,6 +2,12 @@
 
 logger.debug('load users');
 
+var authInfo = {
+	client_id: '',
+	client_secret: '',
+	access_token: ''
+}
+
 routesConfig.push({
 	path: '/users',
 	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
@@ -74,14 +80,4 @@ routesConfig.push({
 			}
 		}
 	}
-});
-
-routesConfig.push({
-	path: '/login',
-	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
-	route: {
-		templateUrl: '../js_client.users/partials/login.html',
-		controller: 'LoginCtrl',
-		resolve: {}
-	},
 });

@@ -150,15 +150,26 @@ public class UserService {
 	@POST @Path("/login")
 	public Node login(Map<String, String> loginInfo) {
 		String username = loginInfo.get("username");
+		return login(username, null);
+	}
+	
+	/**
+	 * Perform login.
+	 * 
+	 * @return logged in user
+	 */
+	public Node login(String username, String password) {
 		for (Node user : users) {
 			if (user.getNodeUri().endsWith(username)) {
-				userValidator.setCurrentUserPrincipal(
-						CorePlugin.getInstance().getRequestThreadLocal().get().getSession(), 
-						new UserPrincipal(user));
+				if (CorePlugin.getInstance().getRequestThreadLocal().get() != null) {
+					userValidator.setCurrentUserPrincipal(
+							CorePlugin.getInstance().getRequestThreadLocal().get().getSession(), 
+							new UserPrincipal(user));
+				}
 				return user;
 			}
 		}
-		throw new RuntimeException("User not found");
+		return null;
 	}
 	
 	/**

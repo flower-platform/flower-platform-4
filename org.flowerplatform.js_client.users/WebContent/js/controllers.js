@@ -21,36 +21,58 @@ flowerProject.lazy.controller('UserSideMenuCtrl', ['$scope', '$location', '$rout
   	
 }]);
 
-flowerProject.lazy.controller('AuthCtrl',  ['$scope', '$location', 'oauthProviders', 'Auth',
-	function($scope, $location, oauthProviders, Auth) {
+flowerProject.lazy.controller('AuthCtrl',  ['$scope', '$location', '$route', 'oauthProviders', 'Auth',
+	function($scope, $location, $route, oauthProviders, Auth) {
 	
 		var loginSuccessHandler = function(user) {
+			logger.debug('loginSuccessHandler');
+			logger.debug(user);
+			
 			callFlexCallback('loginSuccessHandler');
-			if (window.opener != null) {
-				// close the popup, reload parent
-				window.opener.document.location.reload();
-				self.close();
+			
+			var url = $location.url();
+			var index = url.indexOf('return_to');
+			if (index > 0) {
+				// go to authorization page after basic auth
+				url = url.slice(index + 10);
+				url = decodeURIComponent(url);
+				logger.debug(url);
+				window.location.href = "../" + url;
 			} else {
+				if (window.opener != null) {
+					logger.debug('**************HAS OPENER**************');
+					// close the popup, reload parent
+					if (window.opener !== window.self) {
+						$route.reload();
+					}
+					window.self.close();
+				}
 				$location.path("/");
 			}
 		}
-		
 		
 		logger.debug('get user');
 		// there is a user logged in => redirect to main
 		Auth.currentUser().$promise.then(function(user) {
 			logger.debug('got user');
 			if (user.messageResult != null) {
-				logger.debug(user.messageResult);
-				loginSuccessHandler(user.messageResult.properties.login);
+				loginSuccessHandler(user.messageResult);
 			}
-		}); 
+		});
 	
 		$scope.oauthProviders = oauthProviders.data.messageResult.providers;
 		
+		// bound to basic auth form
+		$scope.loginInfo = {};
+		
+		/**
+		 * Callback from view. Provider is undefined for basic auth, 
+		 * 
+		 */
 		$scope.performLogin = function(provider) {
 			logger.debug(provider);
 			if (provider != undefined) {
+				// oauth
 				var auth = provider.uri;
 				auth += '?client_id=' + provider.clientId;
 				auth += '&scope=' + provider.scope;
@@ -61,34 +83,26 @@ flowerProject.lazy.controller('AuthCtrl',  ['$scope', '$location', 'oauthProvide
 				if (window.focus) {
 					popup.focus();
 				}
+			} else {
+				var auth = 'grant_type=password';
+				auth += '&client_id=' + 'testclientid';
+				auth += '&username=' + $scope.loginInfo.username;
+				auth += '&password=' + $scope.loginInfo.password;
+				auth += '&redirect_uri=oob';
+				logger.debug(auth);
+				$.post('../oauth/token', auth)
+				.done(function(data) {
+					window.location.href = '../js_client.users/authAccess.html#access_token=' + data.access_token;
+				});
+				
+				// basic auth
+//				logger.debug($scope.loginInfo);
+//				$scope.loginInfo['@class'] = 'java.util.HashMap';
+//				Auth.performLogin($scope.loginInfo).$promise.then(loginSuccessHandler);
 			}
 		}
  	
 }]);
-
-flowerProject.lazy.controller('LoginCtrl', ['$scope', '$location', 'Auth', function($scope, $location, Auth) {
-
-	var loginSuccessHandler = function(user) {
-		logger.debug(user);
-		var url = $location.url();
-		var index = url.indexOf('return_to');
-		if (index > 0) {
-			url = url.slice(index + 10);
-			url = decodeURIComponent(url);
-			logger.debug(url);
-			window.location.href = "../" + url;
-		}
-	}
-	
-	// bound to form view
-	$scope.loginInfo = {};
-	
-	$scope.performLogin = function() {
-		Auth.performLogin($scope.loginInfo).$promise.then(loginSuccessHandler);
-	}
-	
-}]);
-
 
 flowerProject.lazy.controller('UserListCtrl', ['$scope', '$location', 'User', 'Template', 
    	function($scope, $location, User, Template) {

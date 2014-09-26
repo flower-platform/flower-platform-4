@@ -1,9 +1,38 @@
-<form class="well col-sm-4" role="form">
+<div class="well row">
 
-	<div class="form-group" ng-repeat="oauthProvider in oauthProviders">
-		<button type="submit" class="btn btn-primary" ng-click="performLogin(oauthProvider)">
-			<i class="icon-ok icon-white"></i> {{oauthProvider.label}}
+	<form class="col-sm-6" role="form">
+	
+		<label>Login with Flower Platform</label>
+	
+		<div class="form-group">
+			<input type="text" class="form-control" placeholder="Username" ng-model="loginInfo.username">
+		</div>
+		
+		<div class="form-group">
+			<input type="password" class="form-control"	placeholder="Password" ng-model="loginInfo.password">
+		</div>
+	
+		<div class="checkbox">
+			<label> <input type="checkbox" ng-model="loginInfo.rememberMe"> Remember me
+			</label>
+		</div>
+	
+		<button type="submit" class="btn btn-primary" ng-click="performLogin()">
+			<i class="icon-ok icon-white"></i> Login
 		</button>
-	</div>
+	
+	</form>
+	
+	<form class="col-sm-6" role="form">
+	
+		<label>Or sign in with another provider</label>
+	
+		<div class="form-group" ng-repeat="oauthProvider in oauthProviders">
+			<button type="submit" class="btn btn-primary" ng-click="performLogin(oauthProvider)">
+				<i class="icon-ok icon-white"></i> {{oauthProvider.label}}
+			</button>
+		</div>
+	
+	</form>
 
-</form>
+</div>
