@@ -35,7 +35,8 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 		}
 		
 		override public function rendererModelChangedHandler(context:DiagramShellContext, renderer:IVisualElement, model:Object, event:PropertyChangeEvent):void {
-			if (event != null && "details" == event.property && !(renderer is Class(getRendererClass(context, model)))) {
+			var actualRendererClass:Class = Class(Object(renderer).constructor);
+			if (event != null && "details" == event.property && !(actualRendererClass == getRendererClass(context, model))) {
 				// the value of this property dictates the renderer; 
 				// it has been changed, and the proposed renderer class != the actual class
 				context.diagramShell.shouldRefreshVisualChildren(context, context.diagramShell.rootModel);

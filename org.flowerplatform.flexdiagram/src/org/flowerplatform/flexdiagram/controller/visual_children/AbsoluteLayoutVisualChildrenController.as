@@ -112,7 +112,9 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 						} else {
 //							AbsolutePositionEditPartUtils.setChildFigureIndex(IVisualElementContainer(getFigure()), IVisualElement(ep.getFigure()), visualIndex - figuresToAdd);
 							var uniqueKeyForRendererToRecycle:Object = childRendererController.geUniqueKeyForRendererToRecycle(context, childModel);
-							if (uniqueKeyForRendererToRecycle is Class && !(childRenderer is Class(uniqueKeyForRendererToRecycle))) {
+							var actualRendererClass:Class = Class(Object(childRenderer).constructor); 
+							// we use class equality and not "is"; because the 2 renderers may be related (i.e. one extends the other one)
+							if (uniqueKeyForRendererToRecycle is Class && !(actualRendererClass == uniqueKeyForRendererToRecycle)) {
 								// renderer change: the model is visible, but its current renderer should be replaced with another type of renderer
 								context.diagramShell.unassociateModelFromRenderer(context, childModel, childRenderer, true);
 								modelsToAdd.push(childModel);
