@@ -2,12 +2,17 @@ package org.flowerplatform.tests.core.repositories;
 
 import static org.flowerplatform.core.CoreConstants.FLOWER_PLATFORM_WORKSPACE;
 import static org.flowerplatform.core.repositories.RepositoriesService.fromStringListToExtensionInfoInFile;
+import static org.flowerplatform.core.repositories.RepositoriesService.getExtensionInfoInFile;
+import static org.flowerplatform.core.repositories.RepositoriesService.getExtensionMetadataForExtensionId;
 import static org.flowerplatform.tests.EclipseIndependentTestSuite.startPlugin;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +29,7 @@ import org.flowerplatform.core.repositories.ExtensionInfoInFile;
 import org.flowerplatform.core.repositories.ExtensionMetadata;
 import org.flowerplatform.core.repositories.RepositoriesService;
 import org.flowerplatform.freeplane.FreeplanePlugin;
+import org.flowerplatform.tests.EclipseIndependentTestSuite;
 import org.flowerplatform.util.StringList;
 import org.flowerplatform.util.Utils;
 import org.junit.AfterClass;
@@ -225,58 +231,67 @@ public class RepositoriesServiceTest {
 		repositoriesService.saveRepository(testRepository);
 	}
 	
-//	/**
-//	 * @author see class
-//	 */
-//	@Test
-//	public void testDeleteRepository() throws IOException {
-//		String testLogin = "user1-random1";
-//		String testRepoName = "delete-repo";
-//		
-//		// create then delete repo
-//		repositoriesService.createRepository(testLogin, testRepoName, "");
-//		repositoriesService.deleteRepository(testLogin, testRepoName);
-//		
-//		// check if directory still exists
-//		assertTrue("Repository dir still exists!", !new File(FLOWER_PLATFORM_WORKSPACE + "/" + testLogin + "/" + testRepoName).exists());
-//		
-//		// check if repository node was deleted from file
-//		//CHECKSTYLE:OFF
-//		try {
-//			resourceService.getNode(CoreUtils.getRepositoryNodeUri(testLogin, testRepoName));
-//			fail("NullPointerException should have been thrown");
-//		} catch (NullPointerException e) {
-//			// ignore this
-//		}
-//		//CHECKSTYLE:ON
-//		
-//		String repositoryName = CoreUtils.getRepositoryName(testLogin, testRepoName);		
-//		Node user = resourceService.getNode(CoreUtils.getUriFromFragment(testLogin));
-//		
-//		// check in OWNED_REPOSITORIES for owner
-//		@SuppressWarnings("unchecked")
-//		List<String> ownedRepositories = (List<String>) user.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
-//		assertTrue("Repo still in owned repositories!", !ownedRepositories.contains(repositoryName));
-//				
-//		// check every member in MEMBERS
-//		@SuppressWarnings("unchecked")
-//		List<String> memberInRepositories = (List<String>) user.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES);
-//		if (memberInRepositories != null) {
-//			assertTrue("Repo still in member_in_repositories!", !memberInRepositories.contains(repositoryName));
-//		}
-//	}
-//	
-//	/**
-//	 * @author see class
-//	 */
-//	@Test(expected = RuntimeException.class)
-//	public void testDeleteNoRepository() throws IOException {
-//		// trying to delete a repository that doesn't exist
-//		String testLogin = "user1-random1";
-//		String testRepoName = "null-repo";
-//		
-//		repositoriesService.deleteRepository(testLogin, testRepoName);		
-//	}
+	/**
+	 * @author see class
+	 */
+	@Test
+	public void testDeleteRepository() throws IOException {
+		String testLogin = "user1-random1";
+		String testRepoName = "delete-repo";
+		Node testDeleteRepository = new Node();
+		
+		testDeleteRepository.getProperties().put(CoreConstants.USER, testLogin);
+		testDeleteRepository.getProperties().put(CoreConstants.NAME, testRepoName);
+		testDeleteRepository.getProperties().put(CoreConstants.DESCRIPTION, "descriere");
+		
+		// create then delete repo
+		repositoriesService.saveRepository(testDeleteRepository);
+		repositoriesService.deleteRepository(testDeleteRepository);
+		
+		// check if directory still exists
+		assertTrue("Repository dir still exists!", !new File(FLOWER_PLATFORM_WORKSPACE + "/" + testLogin + "/" + testRepoName).exists());
+		
+		// check if repository node was deleted from file
+		//CHECKSTYLE:OFF
+		try {
+			resourceService.getNode(CoreUtils.getRepositoryNodeUri(testLogin, testRepoName));
+			fail("NullPointerException should have been thrown");
+		} catch (NullPointerException e) {
+			// ignore this
+		}
+		//CHECKSTYLE:ON
+		
+		String repositoryName = CoreUtils.getRepositoryName(testLogin, testRepoName);		
+		Node user = resourceService.getNode(CoreUtils.getUriFromFragment(testLogin));
+		
+		// check in OWNED_REPOSITORIES for owner
+		@SuppressWarnings("unchecked")
+		List<String> ownedRepositories = (List<String>) user.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
+		assertTrue("Repo still in owned repositories!", !ownedRepositories.contains(repositoryName));
+				
+		// check every member in MEMBERS
+		@SuppressWarnings("unchecked")
+		List<String> memberInRepositories = (List<String>) user.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES);
+		if (memberInRepositories != null) {
+			assertTrue("Repo still in member_in_repositories!", !memberInRepositories.contains(repositoryName));
+		}
+	}
+	
+	/**
+	 * @author see class
+	 */
+	@Test(expected = RuntimeException.class)
+	public void testDeleteNoRepository() throws IOException {
+		// trying to delete a repository that doesn't exist
+		String testLogin = "user1-random1";
+		String testRepoName = "null-repo";
+		Node testDeleteRepository = new Node();
+		testDeleteRepository.getProperties().put(CoreConstants.USER, testLogin);
+		testDeleteRepository.getProperties().put(CoreConstants.NAME, testRepoName);
+		testDeleteRepository.getProperties().put(CoreConstants.DESCRIPTION, "descriere");
+		
+		repositoriesService.deleteRepository(testDeleteRepository);		
+	}
 	
 	/**
 	 * @author see class
@@ -327,106 +342,136 @@ public class RepositoriesServiceTest {
 					((List<String>) memberNode.getPropertyValue(CoreConstants.STARRED_REPOSITORIES)).contains(repositoryNameChanged));
 		}
 	}
-//	
-//	/**
-//	 * @author see class
-//	 */
-//	@Test
-//	@SuppressWarnings("unchecked")
-//	public void testAddMember() throws IOException {
-//		String owner = "user1-random1";
-//		String owner2 = "user2-random2";
-//		String repoName = "add-member";
-//		String newMember = "user3-random3";
-//	
-//		repositoriesService.createRepository(owner, repoName, "");
-//		repositoriesService.addMember(owner, repoName, newMember);
-//		
-//		// check for member in repository 
-//		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(owner, repoName));
-//		assertTrue("Repository doesn't contain new member!", ((List<String>) repository.getPropertyValue(CoreConstants.MEMBERS)).contains(newMember));
-//		
-//		// check in MEMBER_IN_REPOSITORIES for member
-//		Node newMemberNode = resourceService.getNode(CoreUtils.getUriFromFragment(newMember));
-//		assertTrue("Member doesn't have repository in MEMBER_IN_REPOSITORIES!", 
-//				((List<String>) newMemberNode.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES)).contains(CoreUtils.getRepositoryName(owner, repoName)));
-//		
-//		// check member in two repos with same name - diff owners 
-//		repositoriesService.createRepository(owner2, repoName, "");
-//		repositoriesService.addMember(owner2, repoName, newMember);
-//		assertTrue("Member in two repos with same name failed!", 
-//				((List<String>) newMemberNode.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES)).contains(CoreUtils.getRepositoryName(owner2, repoName)));
-//	}
-//	
-//	/**
-//	 * @author see class
-//	 */
-//	@Test
-//	@SuppressWarnings("unchecked")
-//	public void testAddStarredBy() throws IOException {
-//		String owner = "user1-random1";
-//		String owner2 = "user2-random2";
-//		String repoName = "add-starred-by";
-//		String userWhoStarred = "user3-random3";
-//		
-//		repositoriesService.createRepository(owner, repoName, "");
-//		repositoriesService.addStarredBy(owner, repoName, userWhoStarred);
-//		
-//		// check for member in repository 
-//		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(owner, repoName));
-//		assertTrue("Repository doesn't contain user who starred!", ((List<String>) repository.getPropertyValue(CoreConstants.STARRED_BY)).contains(userWhoStarred));
-//		
-//		// check in STARRED_REPOSITORIES for member
-//		Node newMemberNode = resourceService.getNode(CoreUtils.getUriFromFragment(userWhoStarred));
-//		assertTrue("Member doesn't have repository in STARRED_REPOSITORIES!", 
-//				((List<String>) newMemberNode.getPropertyValue(CoreConstants.STARRED_REPOSITORIES)).contains(CoreUtils.getRepositoryName(owner, repoName)));
-//		
-//		// check user who starred in two repos with same name - diff owners 
-//		repositoriesService.createRepository(owner2, repoName, "");
-//		repositoriesService.addStarredBy(owner2, repoName, userWhoStarred);
-//		assertTrue("Starred two repos with same name failed!", 
-//				((List<String>) newMemberNode.getPropertyValue(CoreConstants.STARRED_REPOSITORIES)).contains(CoreUtils.getRepositoryName(owner2, repoName)));
-//	}
-//	
-//	/**
-//	 * @author see class
-//	 */
-//	@Test
-//	@SuppressWarnings("unchecked")
-//	public void testRemoveMember() throws IOException {
-//		String owner = "user1-random1";
-//		String repoName = "remove-member";
-//		String member = "user2-random2";
-//		
-//		repositoriesService.createRepository(owner, repoName, "");
-//		repositoriesService.addMember(owner, repoName, member);
-//		repositoriesService.removeMember(owner, repoName, member);
-//		
-//		// member should be removed
-//		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(owner, repoName));
-//		assertFalse("Repository does contain removed member!", ((List<String>) repository.getPropertyValue(CoreConstants.MEMBERS)).contains(member));
-//	}
-//	
-//	/**
-//	 * @author see class
-//	 */
-//	@Test
-//	@SuppressWarnings("unchecked")
-//	public void testRemoveStarredBy() throws IOException {
-//		String owner = "user1-random1";
-//		String repoName = "remove-starred-by";
-//		String userWhoStarredToBeRemoved = "user2-random2";
-//		
-//		repositoriesService.createRepository(owner, repoName, "");
-//		repositoriesService.addStarredBy(owner, repoName, userWhoStarredToBeRemoved);
-//		repositoriesService.removeStarredBy(owner, repoName, userWhoStarredToBeRemoved);
-//		
-//		// remove starred by
-//		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(owner, repoName));
-//		assertFalse("Repository does contain removed member who starred!", 
-//				((List<String>) repository.getPropertyValue(CoreConstants.STARRED_BY)).contains(userWhoStarredToBeRemoved));
-//	}
-//	
+	
+	/**
+	 * @author see class
+	 */
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testAddMember() throws IOException {
+		String owner = "user1-random1";
+		String owner2 = "user2-random2";
+		String repoName = "add-member";
+		String newMember = "user3-random3";
+		Node testDeleteRepository = new Node();
+		
+		testDeleteRepository.getProperties().put(CoreConstants.USER, owner);
+		testDeleteRepository.getProperties().put(CoreConstants.NAME, repoName);
+		testDeleteRepository.getProperties().put(CoreConstants.DESCRIPTION, "descriere");
+	
+		repositoriesService.saveRepository(testDeleteRepository);
+		repositoriesService.addMember(owner, repoName, newMember);
+		
+		// check for member in repository 
+		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(owner, repoName));
+		assertTrue("Repository doesn't contain new member!", ((List<String>) repository.getPropertyValue(CoreConstants.MEMBERS)).contains(newMember));
+		
+		// check in MEMBER_IN_REPOSITORIES for member
+		Node newMemberNode = resourceService.getNode(CoreUtils.getUriFromFragment(newMember));
+		assertTrue("Member doesn't have repository in MEMBER_IN_REPOSITORIES!", 
+				((List<String>) newMemberNode.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES)).contains(CoreUtils.getRepositoryName(owner, repoName)));
+		
+		// check member in two repos with same name - diff owners 
+		testDeleteRepository = new Node();
+		
+		testDeleteRepository.getProperties().put(CoreConstants.USER, owner2);
+		testDeleteRepository.getProperties().put(CoreConstants.NAME, repoName);
+		testDeleteRepository.getProperties().put(CoreConstants.DESCRIPTION, "descriere");
+		repositoriesService.saveRepository(testDeleteRepository);
+		repositoriesService.addMember(owner2, repoName, newMember);
+		assertTrue("Member in two repos with same name failed!", 
+				((List<String>) newMemberNode.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES)).contains(CoreUtils.getRepositoryName(owner2, repoName)));
+	}
+	
+	/**
+	 * @author see class
+	 */
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testAddStarredBy() throws IOException {
+		String owner = "user1-random1";
+		String owner2 = "user2-random2";
+		String repoName = "add-starred-by";
+		String userWhoStarred = "user3-random3";
+		
+		Node testAddStarredBy = new Node();
+		testAddStarredBy.getProperties().put(CoreConstants.USER, owner);
+		testAddStarredBy.getProperties().put(CoreConstants.NAME, repoName);
+		testAddStarredBy.getProperties().put(CoreConstants.DESCRIPTION, "descriere");
+		
+		repositoriesService.saveRepository(testAddStarredBy);
+		repositoriesService.addStarredBy(owner, repoName, userWhoStarred);
+		
+		// check for member in repository 
+		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(owner, repoName));
+		assertTrue("Repository doesn't contain user who starred!", ((List<String>) repository.getPropertyValue(CoreConstants.STARRED_BY)).contains(userWhoStarred));
+		
+		// check in STARRED_REPOSITORIES for member
+		Node newMemberNode = resourceService.getNode(CoreUtils.getUriFromFragment(userWhoStarred));
+		assertTrue("Member doesn't have repository in STARRED_REPOSITORIES!", 
+				((List<String>) newMemberNode.getPropertyValue(CoreConstants.STARRED_REPOSITORIES)).contains(CoreUtils.getRepositoryName(owner, repoName)));
+		
+		// check user who starred in two repos with same name - diff owners 
+		testAddStarredBy = new Node();
+		testAddStarredBy.getProperties().put(CoreConstants.USER, owner2);
+		testAddStarredBy.getProperties().put(CoreConstants.NAME, repoName);
+		testAddStarredBy.getProperties().put(CoreConstants.DESCRIPTION, "descriere");
+		
+		repositoriesService.saveRepository(testAddStarredBy);
+		repositoriesService.addStarredBy(owner2, repoName, userWhoStarred);
+		assertTrue("Starred two repos with same name failed!", 
+				((List<String>) newMemberNode.getPropertyValue(CoreConstants.STARRED_REPOSITORIES)).contains(CoreUtils.getRepositoryName(owner2, repoName)));
+	}
+	
+	/**
+	 * @author see class
+	 */
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testRemoveMember() throws IOException {
+		String owner = "user1-random1";
+		String repoName = "remove-member";
+		String member = "user2-random2";
+		
+		Node testRemoveMember = new Node();
+		testRemoveMember.getProperties().put(CoreConstants.USER, owner);
+		testRemoveMember.getProperties().put(CoreConstants.NAME, repoName);
+		testRemoveMember.getProperties().put(CoreConstants.DESCRIPTION, "descriere");
+		
+		repositoriesService.saveRepository(testRemoveMember);
+		repositoriesService.addMember(owner, repoName, member);
+		repositoriesService.removeMember(owner, repoName, member);
+		
+		// member should be removed
+		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(owner, repoName));
+		assertFalse("Repository does contain removed member!", ((List<String>) repository.getPropertyValue(CoreConstants.MEMBERS)).contains(member));
+	}
+	
+	/**
+	 * @author see class
+	 */
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testRemoveStarredBy() throws IOException {
+		String owner = "user1-random1";
+		String repoName = "remove-starred-by";
+		String userWhoStarredToBeRemoved = "user2-random2";
+		Node testRemoveStarredBy = new Node();
+		
+		testRemoveStarredBy.getProperties().put(CoreConstants.USER, owner);
+		testRemoveStarredBy.getProperties().put(CoreConstants.NAME, repoName);
+		testRemoveStarredBy.getProperties().put(CoreConstants.DESCRIPTION, "description");
+		
+		repositoriesService.saveRepository(testRemoveStarredBy);
+		repositoriesService.addStarredBy(owner, repoName, userWhoStarredToBeRemoved);
+		repositoriesService.removeStarredBy(owner, repoName, userWhoStarredToBeRemoved);
+		
+		// remove starred by
+		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(owner, repoName));
+		assertFalse("Repository does contain removed member who starred!", 
+				((List<String>) repository.getPropertyValue(CoreConstants.STARRED_BY)).contains(userWhoStarredToBeRemoved));
+	}
+	
 	/**
 	 * @author see class
 	 */
@@ -469,7 +514,7 @@ public class RepositoriesServiceTest {
 	 * @author see class
 	 */
 	private void testApplyDependencies(String extensionId, List<ExtensionInfoInFile> extensions) {
-		ExtensionMetadata extensionMetadata = repositoriesService.getExtensionMetadataForExtensionId(extensionId);
+		ExtensionMetadata extensionMetadata = getExtensionMetadataForExtensionId(extensionId);
 		for (String extensionDependency : extensionMetadata.getDependencies()) {
 			int i;
 			for (i = 0; i < extensions.size(); i++) {
@@ -490,73 +535,76 @@ public class RepositoriesServiceTest {
 	/**
 	 * @author see class
 	 */
-//	@Test
-//	public void testUnapplyExtension() throws IOException {
-//		final String login = "user1-random1";
-//		final String repoName = "apply-extension";
-//		Map<String, String> parameters = new HashMap<String, String>() { {
-//			put("login", login); put("repositoryName", repoName); put("extensionId", "git");
-//			} };
-//		
-//		Node testUnapplyExtension = new Node();
-//		testUnapplyExtension.getProperties().put(CoreConstants.USER, login);
-//		testUnapplyExtension.getProperties().put(CoreConstants.NAME, repoName);
-//		testUnapplyExtension.getProperties().put(CoreConstants.DESCRIPTION, "");
-//		
-//		repositoriesService.createRepository(login, repoName, "");
-//		repositoriesService.applyExtension(login, repoName, "git");
-//		repositoriesService.unapplyExtension(login, repoName, "git");
-//		
-//		// git and all it's dependencies must be gone	
-//		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(login, repoName));
-//		StringList extensionsString = (StringList) repository.getPropertyValue(CoreConstants.EXTENSIONS);
-//		List<ExtensionInfoInFile> extensions = fromStringListToExtensionInfoInFile(extensionsString);
-//		ExtensionInfoInFile extensionInfoInFile = getExtensionInfoInFile(extensions, "git");
-//				
-//		if (extensionInfoInFile != null) {
-//			fail(String.format("Extension 'git' still there though it shouldn't be!"));
-//		}
-//		
-//		testUnapplyDependencies("git", extensions, new ArrayList<String>(Arrays.asList("git")));
-//		
-//		repositoriesService.applyExtension(login, repoName, "codeSync");
-//		repositoriesService.applyExtension(login, repoName, "git");
-//		repositoriesService.unapplyExtension(login, repoName, "git");
-//		
-//		repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(login, repoName));
-//		extensionsString = (StringList) repository.getPropertyValue(CoreConstants.EXTENSIONS);
-//		extensions = fromStringListToExtensionInfoInFile(extensionsString);
-//		extensionInfoInFile = getExtensionInfoInFile(extensions, "codeSync");
-//		
-//		if (extensionInfoInFile == null) {
-//			fail(String.format("Extension 'codeSync' should still be there!"));
-//		}
-//		
-//		testUnapplyDependencies("git", extensions, new ArrayList<String>(Arrays.asList("git")));
-//	}
-//	
-//	private void testUnapplyDependencies(String extensionId, List<ExtensionInfoInFile> extensions, List<String> removedExtensions) {
-//		ExtensionMetadata extensionMetadata = repositoriesService.getExtensionMetadataForExtensionId(extensionId);
-//		ExtensionInfoInFile extensionInfo;
-//		
-//		for (String extensionDependency : extensionMetadata.getDependencies()) {
-//			extensionInfo = getExtensionInfoInFile(extensions, extensionDependency);
-//			if (extensionInfo != null) {
-//				for (String removedExtension : removedExtensions) {
-//					if (extensionInfo.getExtensionsThatDependOnThis() != null && extensionInfo.getExtensionsThatDependOnThis().contains(removedExtension)) {
-//						fail(String.format("'%s' shouldn't be in the list for '%s' anymore. '%s' has just been deleted!", 
-//								removedExtension, extensionInfo.getId(), extensionInfo.getId()));
-//					}
-//				}
-//				
-//				if ((!extensionInfo.isTransitive() || extensionInfo.getExtensionsThatDependOnThis().size() != 0) && !extensions.contains(extensionInfo)) {
-//					fail(String.format("'%s' was deleted although it isn't transitive or there are still extensions that depend on it!", extensionInfo.getId()));
-//				}
-//			}
-//			
-//			testUnapplyDependencies(extensionDependency, extensions, removedExtensions);
-//		}
-//	}
+	@SuppressWarnings("serial")
+	@Test
+	public void testUnapplyExtension() throws IOException {
+		final String login = "user1-random1";
+		final String repoName = "unapply-extension";
+		Map<String, String> parameters = new HashMap<String, String>() { {
+			put("login", login); put("repositoryName", repoName); put("extensionId", "git");
+			} };
+		
+		Node testUnapplyExtension = new Node();
+		testUnapplyExtension.getProperties().put(CoreConstants.USER, login);
+		testUnapplyExtension.getProperties().put(CoreConstants.NAME, repoName);
+		testUnapplyExtension.getProperties().put(CoreConstants.DESCRIPTION, "");
+		
+		repositoriesService.saveRepository(testUnapplyExtension);
+		repositoriesService.applyExtension(parameters);
+		repositoriesService.unapplyExtension(parameters);
+		
+		// git and all it's dependencies must be gone	
+		Node repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(login, repoName));
+		StringList extensionsString = (StringList) repository.getPropertyValue(CoreConstants.EXTENSIONS);
+		List<ExtensionInfoInFile> extensions = fromStringListToExtensionInfoInFile(extensionsString);
+		ExtensionInfoInFile extensionInfoInFile = getExtensionInfoInFile(extensions, "git");
+				
+		if (extensionInfoInFile != null) {
+			fail(String.format("Extension 'git' still there though it shouldn't be!"));
+		}
+		
+		testUnapplyDependencies("git", extensions, new ArrayList<String>(Arrays.asList("git")));
+		
+		parameters.put("extensionId", "codeSync");
+		repositoriesService.applyExtension(parameters);
+		parameters.put("extensionId", "git");
+		repositoriesService.applyExtension(parameters);
+		repositoriesService.unapplyExtension(parameters);
+		
+		repository = resourceService.getNode(CoreUtils.getRepositoryNodeUri(login, repoName));
+		extensionsString = (StringList) repository.getPropertyValue(CoreConstants.EXTENSIONS);
+		extensions = fromStringListToExtensionInfoInFile(extensionsString);
+		extensionInfoInFile = getExtensionInfoInFile(extensions, "codeSync");
+		
+		if (extensionInfoInFile == null) {
+			fail(String.format("Extension 'codeSync' should still be there!"));
+		}
+		
+		testUnapplyDependencies("git", extensions, new ArrayList<String>(Arrays.asList("git")));
+	}
+	
+	private void testUnapplyDependencies(String extensionId, List<ExtensionInfoInFile> extensions, List<String> removedExtensions) {
+		ExtensionMetadata extensionMetadata = getExtensionMetadataForExtensionId(extensionId);
+		ExtensionInfoInFile extensionInfo;
+		
+		for (String extensionDependency : extensionMetadata.getDependencies()) {
+			extensionInfo = getExtensionInfoInFile(extensions, extensionDependency);
+			if (extensionInfo != null) {
+				for (String removedExtension : removedExtensions) {
+					if (extensionInfo.getExtensionsThatDependOnThis() != null && extensionInfo.getExtensionsThatDependOnThis().contains(removedExtension)) {
+						fail(String.format("'%s' shouldn't be in the list for '%s' anymore. '%s' has just been deleted!", 
+								removedExtension, extensionInfo.getId(), extensionInfo.getId()));
+					}
+				}
+				
+				if ((!extensionInfo.isTransitive() || extensionInfo.getExtensionsThatDependOnThis().size() != 0) && !extensions.contains(extensionInfo)) {
+					fail(String.format("'%s' was deleted although it isn't transitive or there are still extensions that depend on it!", extensionInfo.getId()));
+				}
+			}
+			
+			testUnapplyDependencies(extensionDependency, extensions, removedExtensions);
+		}
+	}
 	
 	/**
 	 * @author see class
@@ -583,11 +631,11 @@ public class RepositoriesServiceTest {
 	 */
 	@AfterClass
 	public static void afterClass() throws Exception {
-//		EclipseIndependentTestSuite.deleteFiles(REPOSITORIES);
-//		new File("workspace/.users").delete();
-//		EclipseIndependentTestSuite.deleteFiles("user1-random1");
-//		EclipseIndependentTestSuite.deleteFiles("user2-random2");
-//		EclipseIndependentTestSuite.deleteFiles("user3-random3");
+		EclipseIndependentTestSuite.deleteFiles(REPOSITORIES);
+		new File("workspace/.users").delete();
+		EclipseIndependentTestSuite.deleteFiles("user1-random1");
+		EclipseIndependentTestSuite.deleteFiles("user2-random2");
+		EclipseIndependentTestSuite.deleteFiles("user3-random3");
 	}
-	
+
 }
