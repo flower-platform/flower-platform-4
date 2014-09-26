@@ -5,8 +5,8 @@ import static org.flowerplatform.core.repositories.RepositoriesService.fromStrin
 import static org.flowerplatform.core.repositories.RepositoriesService.getExtensionInfoInFile;
 import static org.flowerplatform.core.repositories.RepositoriesService.getExtensionMetadataForExtensionId;
 import static org.flowerplatform.tests.EclipseIndependentTestSuite.startPlugin;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -245,8 +245,8 @@ public class RepositoriesServiceTest {
 		testDeleteRepository.getProperties().put(CoreConstants.DESCRIPTION, "descriere");
 		
 		// create then delete repo
-		repositoriesService.saveRepository(testDeleteRepository);
-		repositoriesService.deleteRepository(testDeleteRepository);
+		testDeleteRepository = repositoriesService.saveRepository(testDeleteRepository);
+		repositoriesService.deleteRepository(testDeleteRepository.getNodeUri());
 		
 		// check if directory still exists
 		assertTrue("Repository dir still exists!", !new File(FLOWER_PLATFORM_WORKSPACE + "/" + testLogin + "/" + testRepoName).exists());
@@ -290,7 +290,7 @@ public class RepositoriesServiceTest {
 		testDeleteRepository.getProperties().put(CoreConstants.NAME, testRepoName);
 		testDeleteRepository.getProperties().put(CoreConstants.DESCRIPTION, "descriere");
 		
-		repositoriesService.deleteRepository(testDeleteRepository);		
+		repositoriesService.deleteRepository(testDeleteRepository.getNodeUri());		
 	}
 	
 	/**

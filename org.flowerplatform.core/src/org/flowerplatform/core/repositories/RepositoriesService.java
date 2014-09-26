@@ -1,5 +1,10 @@
 package org.flowerplatform.core.repositories;
 
+import static org.flowerplatform.core.CoreUtils.getRepositoryName;
+import static org.flowerplatform.core.CoreUtils.getRepositoryNodeUri;
+import static org.flowerplatform.core.CoreUtils.getUriFromFragment;
+
+import java.awt.PageAttributes.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,12 +13,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
@@ -24,10 +30,6 @@ import org.flowerplatform.util.StringList;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.IController;
 import org.flowerplatform.util.controller.TypeDescriptor;
-
-import static org.flowerplatform.core.CoreUtils.getUriFromFragment;
-import static org.flowerplatform.core.CoreUtils.getRepositoryName;
-import static org.flowerplatform.core.CoreUtils.getRepositoryNodeUri;
 
 /**
  * @author Cristina Brinza
@@ -66,7 +68,7 @@ public class RepositoriesService {
 			// set login so that changeID in PersistencePropertySetter is
 			// called.
 			// we do not set NAME because the oldName is needed later.
-			nodeService.setProperty(repository, CoreConstants.USER, login, new ServiceContext<NodeService>().add(CoreConstants.POPULATE_WITH_PROPERTIES, true));
+			nodeService.setProperty(repository, CoreConstants.USER, login, new ServiceContext<NodeService>());
 		}
 
 		Node repositoryOnServer = resourceService.getNode(repository.getNodeUri(), context);
@@ -204,7 +206,8 @@ public class RepositoriesService {
 	/**
 	 * @author see class
 	 */
-	public void deleteRepository(Node repositoryFromClient) {
+	public List<Node> deleteRepository(String nodeUri) {
+		Node repositoryFromClient = resourceService.getNode(nodeUri, new ServiceContext<ResourceService>().add(CoreConstants.POPULATE_WITH_PROPERTIES, true));
 		String login = (String) repositoryFromClient.getProperties().get(CoreConstants.USER);
 		String repoName = (String) repositoryFromClient.getProperties().get(CoreConstants.NAME);
 		Object repository;
@@ -264,6 +267,8 @@ public class RepositoriesService {
 		
 		// save file
 		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
+		
+		return getRepositoriesForUserAsNode(getUriFromFragment(login));
 	}
 
 	/**
@@ -439,16 +444,20 @@ public class RepositoriesService {
 	/**
 	 * @author see class
 	 */
-	public List<Node> getRepositoriesForUserAsNode(String login) {
-		List<Node> repositories = new ArrayList<Node>();
-		Node user = resourceService.getNode(getUriFromFragment(login));
-		
-		for (String ownedRepository : (List<String>) user.getPropertyValue(CoreConstants.OWNED_REPOSITORIES)) {
-			repositories.add(resourceService.getNode(getRepositoryNodeUri(login, ownedRepository)));
-		}
-		
-		return repositories;
-	}
+	 public List<Node> getRepositoriesForUserAsNode(@PathParam("nodeUri") String nodeUri) {
+	  //new ResourceServiceRemote().subscribeToParentResource(CoreConstants.USERS_PATH);
+	  List<Node> repositories = new ArrayList<Node>();
+	  
+	  ServiceContext<ResourceService> context = new ServiceContext<ResourceService>();
+	  context.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
+	  Node user = resourceService.getNode(nodeUri, context);
+	  
+	  for (String ownedRepository : (List<String>) user.getPropertyValue(CoreConstants.OWNED_REPOSITORIES)) {
+	   repositories.add(resourceService.getNode(getUriFromFragment(ownedRepository), context));
+	  }
+	  
+	  return repositories;
+	 }
 	
 	/**
 	 * @author see class
@@ -743,5 +752,4 @@ public class RepositoriesService {
 		
 		return result;
 	}
-	
 }
