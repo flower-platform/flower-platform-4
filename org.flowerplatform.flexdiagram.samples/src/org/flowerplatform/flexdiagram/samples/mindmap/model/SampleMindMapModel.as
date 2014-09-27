@@ -15,17 +15,19 @@
  */
 package org.flowerplatform.flexdiagram.samples.mindmap.model {
 	import mx.collections.ArrayList;
+	import mx.collections.IList;
 	
 	/**
 	 * @author Cristina Constantinescu
+	 * @author Alexandra Topoloaga
 	 */
 	[Bindable]
 	public class SampleMindMapModel {
-				
+		
 		public var parent:Object;
 		public var children:ArrayList = new ArrayList();
 		public var hasChildren:Boolean;
-
+		
 		public var text:String;
 		public var side:int;
 		
@@ -33,8 +35,18 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 		
 		public var fontFamily:String;
 		public var fontSize:Number;
-		public var fontWeight:Boolean;
-		public var fontStyle:Boolean;
+		public var fontBold:Boolean;
+		public var fontItalic:Boolean;
 		
+		public var textColor:uint;
+		public var backgroundColor:uint;
+		
+		public var cloudColor:uint;
+		public var cloudType:String;
+		
+		public var icons:IList;
+		
+		public var note:String;
+		public var details:String;
 	}	
 }

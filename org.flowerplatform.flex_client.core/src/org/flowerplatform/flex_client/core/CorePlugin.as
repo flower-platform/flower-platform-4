@@ -66,7 +66,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.shortcut.AssignHotKeyAction;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
+	import org.flowerplatform.flexutil.controller.ITypeProvider;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -285,6 +285,19 @@ package org.flowerplatform.flex_client.core {
 					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));				
 			}
 			
+			if (!FlexUtilGlobals.getInstance().isMobile) {
+				FlexUtilGlobals.getInstance().registerAction(DownloadAction);
+				FlexUtilGlobals.getInstance().registerAction(UploadAction);
+				
+				nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_SYSTEM_NODE_TYPE)
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DownloadAction.ID))
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));
+				
+				nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DownloadAction.ID))
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));				
+			}
+			
 			new TypeDescriptorRegistryDebugControllers().registerControllers();
 			new ResourceDebugControllers().registerControllers();
 			
@@ -305,7 +318,7 @@ package org.flowerplatform.flex_client.core {
 									
 			// Navigate Menu
 			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.navigate")).setId(CoreConstants.NAVIGATE_MENU_ID).setOrderIndex(20));
-			
+						
 			// get/follow link action
 			registerActionToGlobalMenu(new ActionBase()
 				.setLabel(Resources.getMessage("link.title"))
@@ -360,8 +373,6 @@ package org.flowerplatform.flex_client.core {
 				}));
 			
 			// Tools menu
-			globalMenuActionProvider.addAction(resourceNodesManager.showCommandStackAction);
-			
 			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.tools")).setId(CoreConstants.TOOLS_MENU_ID).setOrderIndex(30));	
 			
 			// assign hot key action

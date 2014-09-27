@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,17 +13,15 @@
  * 
  * license-end
  */
-package org.flowerplatform.flexdiagram.controller {
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
+package org.flowerplatform.flexutil.controller {
 	
 	/**
-	 * @see DiagramShell
-	 * @see ControllerUtils
 	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
 	 */ 
 	public interface ITypeProvider {
 		
-		function getType(context:DiagramShellContext, model:Object):String;
+		function getType(model:Object):String;
 		
 	}
 }

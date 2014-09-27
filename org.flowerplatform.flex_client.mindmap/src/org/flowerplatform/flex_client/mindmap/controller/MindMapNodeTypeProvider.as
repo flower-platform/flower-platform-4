@@ -24,11 +24,11 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	 */ 
 	public class MindMapNodeTypeProvider extends NodeTypeProvider {
 		
-		override public function getType(context:DiagramShellContext, model:Object):String {
+		override public function getType(model:Object):String {
 			if (model is MindMapRootModelWrapper) {
 				return MindMapRootModelWrapper.ID;				
 			}
-			return super.getType(context, model); 
+			return super.getType(model); 
 		}
 	}
 }

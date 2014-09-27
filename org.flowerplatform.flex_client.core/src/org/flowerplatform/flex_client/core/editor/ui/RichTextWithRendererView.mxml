@@ -38,7 +38,7 @@
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
-			import org.flowerplatform.flexutil.FactoryWithInitialization;
+			import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 			import org.flowerplatform.flexutil.Utils;
 										
 			public var node:Node;
@@ -74,7 +74,7 @@
 				
 				if (showRendererArea) {
 					var rendererClass:Class = getDefinitionByName(getQualifiedClassName(diagramShellContext.diagramShell.getRendererForModel(diagramShellContext, node))) as Class;
-					renderer = new FactoryWithInitialization(rendererClass).newInstance();
+					renderer = new ClassFactoryWithConstructor(rendererClass).newInstance();
 					renderer.diagramShellContext = diagramShellContext;		
 					renderer.drawOnlyBorderGraphics = true;
 					renderer.depth = 1;

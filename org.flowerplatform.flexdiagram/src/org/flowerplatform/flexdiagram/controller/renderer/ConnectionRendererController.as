@@ -20,6 +20,8 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 	
 	import mx.core.IVisualElement;
 	
+	import spark.components.Label;
+	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
@@ -28,8 +30,7 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 	import org.flowerplatform.flexdiagram.renderer.connection.ClipUtils;
 	import org.flowerplatform.flexdiagram.renderer.connection.ConnectionEnd;
 	import org.flowerplatform.flexdiagram.renderer.connection.ConnectionRenderer;
-	
-	import spark.components.Label;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -53,8 +54,8 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 		
 		protected static const ALMOST_HORIZONTAL_LINE:int = 0;
 
-		public function ConnectionRendererController(rendererClass:Class=null, orderIndex:int = 0) {
-			super(rendererClass, orderIndex);
+		public function ConnectionRendererController(rendererClassFactory:ClassFactoryWithConstructor=null, orderIndex:int = 0) {
+			super(rendererClassFactory, orderIndex);
 		}
 		
 		/**

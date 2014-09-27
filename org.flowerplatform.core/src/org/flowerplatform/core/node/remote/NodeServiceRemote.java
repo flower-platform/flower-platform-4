@@ -203,4 +203,5 @@ public class NodeServiceRemote {
 				.getSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, null);
 		return (String) descriptor.getValue();
 	}
+	
 }
