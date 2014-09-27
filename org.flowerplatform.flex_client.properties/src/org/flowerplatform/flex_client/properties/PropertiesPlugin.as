@@ -48,7 +48,7 @@ package org.flowerplatform.flex_client.properties {
 	import org.flowerplatform.flex_client.properties.property_renderer.StringPropertyRenderer;
 	import org.flowerplatform.flex_client.properties.remote.IPropertyDescriptor;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
-	import org.flowerplatform.flexutil.FactoryWithInitialization;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
@@ -114,45 +114,45 @@ package org.flowerplatform.flex_client.properties {
 		}
 				
 		private function registerPropertyProviders():void {
-			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_STRING] = new FactoryWithInitialization(StringPropertyRenderer);
-			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN] = new FactoryWithInitialization(BooleanPropertyRenderer);
-			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_NUMBER] = new FactoryWithInitialization(NumberPropertyRenderer);
-			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_NUMBER_STEPPER] = new FactoryWithInitialization(NumericStepperPropertyRenderer);
-			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST] = new FactoryWithInitialization(DropDownListPropertyRenderer);
-			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER] = new FactoryWithInitialization(ColorPickerPropertyRenderer);
-			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_DATE] = new FactoryWithInitialization(DatePropertyRenderer);
+			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_STRING] = new ClassFactoryWithConstructor(StringPropertyRenderer);
+			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN] = new ClassFactoryWithConstructor(BooleanPropertyRenderer);
+			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_NUMBER] = new ClassFactoryWithConstructor(NumberPropertyRenderer);
+			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_NUMBER_STEPPER] = new ClassFactoryWithConstructor(NumericStepperPropertyRenderer);
+			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST] = new ClassFactoryWithConstructor(DropDownListPropertyRenderer);
+			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER] = new ClassFactoryWithConstructor(ColorPickerPropertyRenderer);
+			propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_DATE] = new ClassFactoryWithConstructor(DatePropertyRenderer);
 			
-			propertyDescriptorTypeToPropertyLineRendererFactory[PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_CATEGORY] = new FactoryWithInitialization(CategoryPropertyLineRenderer);
-			propertyDescriptorTypeToPropertyLineRendererFactory[PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_DEFAULT] = new FactoryWithInitialization(PropertyLineRenderer);
-			propertyDescriptorTypeToPropertyLineRendererFactory[PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_STYLABLE] = new FactoryWithInitialization(StylablePropertyLineRenderer);
-			propertyDescriptorTypeToPropertyLineRendererFactory[PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE_DEFAULT] = new FactoryWithInitialization(PreferenceDefaultPropertyLineRenderer);
-			propertyDescriptorTypeToPropertyLineRendererFactory[PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE_GLOBAL] = new FactoryWithInitialization(PreferenceGlobalPropertyLineRenderer);
-			propertyDescriptorTypeToPropertyLineRendererFactory[PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE_USER] = new FactoryWithInitialization(PreferenceUserPropertyLineRenderer);
+			propertyDescriptorTypeToPropertyLineRendererFactory[PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_CATEGORY] = new ClassFactoryWithConstructor(CategoryPropertyLineRenderer);
+			propertyDescriptorTypeToPropertyLineRendererFactory[PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_DEFAULT] = new ClassFactoryWithConstructor(PropertyLineRenderer);
+			propertyDescriptorTypeToPropertyLineRendererFactory[PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_STYLABLE] = new ClassFactoryWithConstructor(StylablePropertyLineRenderer);
+			propertyDescriptorTypeToPropertyLineRendererFactory[PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE_DEFAULT] = new ClassFactoryWithConstructor(PreferenceDefaultPropertyLineRenderer);
+			propertyDescriptorTypeToPropertyLineRendererFactory[PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE_GLOBAL] = new ClassFactoryWithConstructor(PreferenceGlobalPropertyLineRenderer);
+			propertyDescriptorTypeToPropertyLineRendererFactory[PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE_USER] = new ClassFactoryWithConstructor(PreferenceUserPropertyLineRenderer);
 			
 			propertyValueClassToPropertyDescriptorType[Boolean] = PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN;
 			propertyValueClassToPropertyDescriptorType[Number] = PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_NUMBER;			
 		}
 		
 		public function getNewPropertyLineRendererInstance(propertyLineRendererType:String):IPropertyLineRenderer {
-			var propertyLineRendererFactory:FactoryWithInitialization = propertyDescriptorTypeToPropertyLineRendererFactory[propertyLineRendererType];
+			var propertyLineRendererFactory:ClassFactoryWithConstructor = propertyDescriptorTypeToPropertyLineRendererFactory[propertyLineRendererType];
 			if (propertyLineRendererFactory == null) {
 				propertyLineRendererFactory = propertyDescriptorTypeToPropertyLineRendererFactory[PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_DEFAULT];
 			}
 			if (propertyLineRendererFactory == null) {
 				throw new Error();
 			}
-			return propertyLineRendererFactory.newInstance(false);
+			return propertyLineRendererFactory.newInstance();
 		}
 		
 		public function getNewPropertyRendererInstance(type:String):IPropertyRenderer {
-			var propertyRendererFactory:FactoryWithInitialization = propertyDescriptorTypeToPropertyRendererFactory[type];
+			var propertyRendererFactory:ClassFactoryWithConstructor = propertyDescriptorTypeToPropertyRendererFactory[type];
 			if (propertyRendererFactory == null) {
 				propertyRendererFactory = propertyDescriptorTypeToPropertyRendererFactory[PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_STRING];
 			}
 			if (propertyRendererFactory == null) {
 				throw new Error();
 			}
-			return propertyRendererFactory.newInstance(false);
+			return propertyRendererFactory.newInstance();
 		}
 		
 		/**

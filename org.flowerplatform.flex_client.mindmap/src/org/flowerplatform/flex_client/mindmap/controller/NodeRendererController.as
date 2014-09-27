@@ -20,14 +20,15 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeWithDetailsRenderer2;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class NodeRendererController extends MindMapModelRendererController {
 		
-		public function NodeRendererController(rendererClass:Class, orderIndex:int = 0) {
-			super(rendererClass, MindMapConnector, orderIndex);
+		public function NodeRendererController(rendererClassFactory:ClassFactoryWithConstructor, orderIndex:int = 0) {
+			super(rendererClassFactory, MindMapConnector, orderIndex);
 		}
 		
 		/**

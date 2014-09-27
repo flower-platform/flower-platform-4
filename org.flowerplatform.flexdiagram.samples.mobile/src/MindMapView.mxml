@@ -37,13 +37,12 @@
 			   import org.flowerplatform.flexdiagram.samples.IModelHolder;
 			   import org.flowerplatform.flexdiagram.samples.mindmap.MindMapPopulator;
 			   import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
-			   import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapNodeRenderer;
 			   import org.flowerplatform.flexdiagram.tool.DragTool;
 			   import org.flowerplatform.flexdiagram.tool.InplaceEditorTool;
 			   import org.flowerplatform.flexdiagram.tool.ScrollTool;
 			   import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 			   import org.flowerplatform.flexdiagram.tool.ZoomTool;
-			   import org.flowerplatform.flexutil.FactoryWithInitialization;
+			   import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 			   
 			   private var _rootModel:Object;
 			   [Bindable]
@@ -65,11 +64,11 @@
 			   protected function creationCompleteHandler(event:FlexEvent):void {
 				   MindMapPopulator.populateRootModel(IModelHolder(FlexGlobals.topLevelApplication));
 				   
-				   diagramShell.registerTool(ScrollTool.ID, new FactoryWithInitialization(ScrollTool));
-				   diagramShell.registerTool(SelectOnClickTool.ID, new FactoryWithInitialization(SelectOnClickTool));
-				   diagramShell.registerTool(ZoomTool.ID, new FactoryWithInitialization(ZoomTool));
-				   diagramShell.registerTool(InplaceEditorTool.ID, new FactoryWithInitialization(InplaceEditorTool));
-				   diagramShell.registerTool(DragTool.ID, new FactoryWithInitialization(DragTool));
+				   diagramShell.registerTool(ScrollTool.ID, new ClassFactoryWithConstructor(ScrollTool));
+				   diagramShell.registerTool(SelectOnClickTool.ID, new ClassFactoryWithConstructor(SelectOnClickTool));
+				   diagramShell.registerTool(ZoomTool.ID, new ClassFactoryWithConstructor(ZoomTool));
+				   diagramShell.registerTool(InplaceEditorTool.ID, new ClassFactoryWithConstructor(InplaceEditorTool));
+				   diagramShell.registerTool(DragTool.ID, new ClassFactoryWithConstructor(DragTool));
 
 				   MindMapDiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {FlexGlobals.topLevelApplication.rootModel.expanded = true});
 			   }
@@ -167,11 +166,11 @@
 						</s:FormItem>
 						
 						<s:FormItem label="Font Bold:">
-							<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontWeight}"/> 
+							<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontBold}"/> 
 						</s:FormItem>
 						
 						<s:FormItem label="Font Italic:">
-							<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontStyle}"/>
+							<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontItalic}"/>
 						</s:FormItem>
 						
 						<s:FormItem label="Text Color:">
@@ -183,9 +182,9 @@
 						</s:FormItem>
 						
 						<s:FormItem label="Background Color:">
-							<s:TextInput id="textInputBackgroundColor" width="100%" text="{selectedItem.background}"/>
+							<s:TextInput id="textInputBackgroundColor" width="100%" text="{selectedItem.backgroundColor}"/>
 							<s:HGroup>
-								<s:Button id="changeBackgroundColor" label="Change" click="onColorChange(textInputBackgroundColor.text, selectedItem.background); selectedItem.background = onColorChange(textInputBackgroundColor.text, selectedItem.background)"/>
+								<s:Button id="changeBackgroundColor" label="Change" click="onColorChange(textInputBackgroundColor.text, selectedItem.backgroundColor); selectedItem.backgroundColor = onColorChange(textInputBackgroundColor.text, selectedItem.backgroundColor)"/>
 								<s:Button id="changeBackgroundColorToolTip" label="Tooltip" click="Alert.show('Type the uint value you want (e.g.:0xFF0000 or 65535)');"/>
 							</s:HGroup>
 						</s:FormItem>
