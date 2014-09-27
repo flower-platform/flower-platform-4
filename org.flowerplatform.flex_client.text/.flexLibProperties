@@ -5,6 +5,9 @@
     <classEntry path="org.flowerplatform.flex_client.text.TextEditorDescriptor"/>
     <classEntry path="org.flowerplatform.flex_client.text.TextEditorFrontend"/>
     <classEntry path="org.flowerplatform.flex_client.text.TextPlugin"/>
+    <classEntry path="org.flowerplatform.flex_client.text.codemirror_editor.MobileCodeMirrorEditor"/>
+    <classEntry path="org.flowerplatform.flex_client.text.codemirror_editor.StageWebViewUIComponent"/>
+    <classEntry path="org.flowerplatform.flex_client.text.codemirror_editor.WebCodeMirrorEditor"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

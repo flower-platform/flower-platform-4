@@ -29,30 +29,28 @@ import org.flowerplatform.freeplane.FreeplaneConstants;
 /**
  * @author Valentina Bojan
  */
-public class XmlNodePropertiesCreator {
+public class XmlWritter {
 
+	protected XmlConfiguration configuration;
+	
 	private Node node;
 
 	/**
-	 *@author Valentina Bojan
-	 **/
-	public XmlNodePropertiesCreator(Node node) {
+	 * @author see class
+	 */
+	public XmlWritter(XmlConfiguration configuration, Node node) {
+		super();
+		this.configuration = configuration;
 		this.node = node;
 	}
 
 	/**
-	 *@author Valentina Bojan
-	 **/
+	 * @author see class
+	 */
 	public String getXmlContent() {
 		StringBuffer xmlContent = new StringBuffer();
 		String previousTag = null;
 		Map<String, Object> nodeProperties = new TreeMap<String, Object>(node.getProperties());
-
-		Pattern fullAttributeTagPattern = Pattern.compile("^(.+)\\((.+)\\)\\.(.+)$");
-		Pattern fullContentTagPattern = Pattern.compile("^(.+)\\((.+)\\)" + FreeplaneConstants.CONTENT_MARK + "$");
-		Pattern noContetNoAttributesPattern = Pattern.compile("^(.+)\\((.+)\\)$");
-		Pattern simpleAttributesPattern = Pattern.compile("^(.+)\\.(.+)$");
-		Pattern simpleContentPattern = Pattern.compile("^(.+)" + FreeplaneConstants.CONTENT_MARK + "$");
 
 		// Write the node tag with its attributes
 		xmlContent.append("<" + FreeplaneConstants.NODE);
@@ -79,7 +77,7 @@ public class XmlNodePropertiesCreator {
 			} 
 			
 			// Write the attributes of a tag which can also have a content (tags with propertyKey like hook, richContent)
-			Matcher matcher = fullAttributeTagPattern.matcher(property);
+			Matcher matcher = configuration.fullAttributeTagPattern.matcher(property);
 			if (matcher.find()) {
 				String tag = matcher.group(1);
 				String propertyKey = matcher.group(2);
@@ -90,7 +88,7 @@ public class XmlNodePropertiesCreator {
 			}
 			
 			// Write the content of a tag which can also have attributes (tags with propertyKey like hook, richContent)
-			matcher = fullContentTagPattern.matcher(property);
+			matcher = configuration.fullContentTagPattern.matcher(property);
 			if (matcher.find()) {
 				String tag = matcher.group(1);
 				String propertyKey = matcher.group(2);
@@ -100,7 +98,7 @@ public class XmlNodePropertiesCreator {
 			}
 			
 			// Create a tag without content or attributes, only with property key (also like hook, richContent)
-			matcher = noContetNoAttributesPattern.matcher(property);
+			matcher = configuration.noContetNoAttributesPattern.matcher(property);
 			if (matcher.find()) {
 				String tag = matcher.group(1);
 				String propertyKey = matcher.group(2);
@@ -112,7 +110,7 @@ public class XmlNodePropertiesCreator {
 			}
 			
 			// Create a simple tag which has only attributes (like font, cloud, ...)
-			matcher = simpleAttributesPattern.matcher(property);
+			matcher = configuration.simpleAttributesPattern.matcher(property);
 			if (matcher.find()) {
 				String tag = matcher.group(1);
 				String attribute = matcher.group(2);
@@ -122,7 +120,7 @@ public class XmlNodePropertiesCreator {
 			}
 			
 			// Create a simple tag which has content, but no property key (like unknownTag1, ...)
-			matcher = simpleContentPattern.matcher(property);
+			matcher = configuration.simpleContentPattern.matcher(property);
 			if (matcher.find()) {
 				String tag = matcher.group(1);
 				xmlContent.append(createFullTagContent(tag, "", value, previousTag));

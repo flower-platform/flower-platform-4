@@ -25,7 +25,7 @@ import org.xml.sax.Attributes;
 public class ConvertAllAttributesProcessor extends AbstractTagProcessor {
 
 	@Override
-	public void processStartTag(XmlNodePropertiesParser parser, String tag, Attributes attributes, Node node) {
+	public void processStartTag(XmlParser parser, String tag, Attributes attributes, Node node) {
 		if (!parser.isRoot) {
 			addStartContentAndAttributes(parser, tag, attributes, node, "");
 		} else {
@@ -34,11 +34,11 @@ public class ConvertAllAttributesProcessor extends AbstractTagProcessor {
 			}
 			parser.isRoot = false;
 		}
-		parser.convertAllAttributesProcessedXmlTags.add(tag);
+		parser.convertAllAttributes_ProcessedXmlTags.add(tag);
 	}
 
 	@Override
-	public void processEndTag(XmlNodePropertiesParser parser, String tag, Node node) {
+	public void processEndTag(XmlParser parser, String tag, Node node) {
 		addEndContent(parser, tag, node, "");
 	}
 }

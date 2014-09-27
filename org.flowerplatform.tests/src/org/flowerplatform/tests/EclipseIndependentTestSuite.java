@@ -37,6 +37,7 @@ import org.flowerplatform.tests.codesync.CodeSyncTestSuite;
 import org.flowerplatform.tests.controllers.FileSystemControllersTest;
 import org.flowerplatform.tests.core.CommandStackTest;
 import org.flowerplatform.tests.core.CoreTestSuite;
+import org.flowerplatform.tests.freeplane.XmlParserTest;
 import org.flowerplatform.tests.js_client.java.JsClientJavaTestSuite;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.junit.BeforeClass;
@@ -56,7 +57,8 @@ import org.osgi.framework.BundleContext;
 	FileSystemControllersTest.class,
 	CommandStackTest.class,
 	CoreTestSuite.class,
-	JsClientJavaTestSuite.class
+	JsClientJavaTestSuite.class,
+	XmlParserTest.class
 })
 public class EclipseIndependentTestSuite {
 

@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.freeplane;
 
+import org.flowerplatform.core.CoreConstants;
+
 
 /**
  * @author Catalin Burcea
@@ -28,9 +30,13 @@ public final class FreeplaneConstants {
 	private FreeplaneConstants() {
 	}
 
-	// ///////////////////////////////////////////////////////////
-	// xml node properties parsing constants
-	// ///////////////////////////////////////////////////////////
+	public static final String FREEPLANE_MINDMAP_RESOURCE_SCHEMA = "fpm1";
+	public static final String FREEPLANE_MINDMAP_RESOURCE_DELEGATE_CATEGORY = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_SCHEMA;
+	public static final String FREEPLANE_NODE_TYPE= "freeplaneNode1";
+	
+	/////////////////////////////////////////////////////////////
+	// for XmlParser and XmlWritter
+	/////////////////////////////////////////////////////////////
 
 	public static final String ICON = "icon";
 	public static final String HOOK = "hook";

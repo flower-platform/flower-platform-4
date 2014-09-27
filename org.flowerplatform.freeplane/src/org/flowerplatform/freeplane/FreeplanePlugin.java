@@ -24,21 +24,18 @@ import static org.flowerplatform.core.CoreConstants.PARENT_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
+import static org.flowerplatform.freeplane.FreeplaneConstants.FREEPLANE_MINDMAP_RESOURCE_DELEGATE_CATEGORY;
+import static org.flowerplatform.freeplane.FreeplaneConstants.FREEPLANE_MINDMAP_RESOURCE_SCHEMA;
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_MINDMAP_CATEGORY;
-import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_MINDMAP_CATEGORY_1;
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_MINDMAP_RESOURCE_KEY;
-import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_MINDMAP_RESOURCE_KEY_1;
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_CATEGORY;
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_CONTENT_TYPE;
-import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
 import static org.freeplane.features.url.UrlManager.FREEPLANE_FILE_EXTENSION;
 
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileSubscribableProvider;
 import org.flowerplatform.core.node.controller.DefaultPropertiesProvider;
-import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.freeplane.controller.MindMapAddNodeController;
 import org.flowerplatform.freeplane.controller.MindMapChildrenProvider;
 import org.flowerplatform.freeplane.controller.MindMapFileAddNodeController;
@@ -50,6 +47,7 @@ import org.flowerplatform.freeplane.controller.MindMapRemoveNodeController;
 import org.flowerplatform.freeplane.controller.PersistenceAddNodeProvider;
 import org.flowerplatform.freeplane.controller.PersistencePropertiesProvider;
 import org.flowerplatform.freeplane.controller.PersistencePropertySetter;
+import org.flowerplatform.freeplane.controller.xml_parser.XmlConfiguration;
 import org.flowerplatform.freeplane.remote.FreeplaneServiceRemote;
 import org.flowerplatform.freeplane.resource.FreeplaneMindmapResourceHandler;
 import org.flowerplatform.freeplane.resource.FreeplaneMindmapResourceHandler1;
@@ -75,6 +73,12 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 	
 	public static final String MIND_MAP_STYLE = "mindMapStyle";
 	
+	protected XmlConfiguration xmlConfiguration = new XmlConfiguration();
+	
+	public XmlConfiguration getXmlConfiguration() {
+		return xmlConfiguration;
+	}
+
 	static {
 		// configure Freeplane starter
 		new FreeplaneHeadlessStarter().createController().setMapViewManager(new HeadlessMapViewController());		
@@ -143,21 +147,21 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		FreeplaneMindmapResourceHandler1 fpm1ResourceHandler = new FreeplaneMindmapResourceHandler1();
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(FREEPLANE_FILE_EXTENSION, 
-				FREEPLANE_MINDMAP_RESOURCE_KEY_1, MINDMAP_CONTENT_TYPE, true));
-		CorePlugin.getInstance().getResourceService().addResourceHandler(FREEPLANE_MINDMAP_RESOURCE_KEY_1, fpm1ResourceHandler);
+				FREEPLANE_MINDMAP_RESOURCE_SCHEMA, MINDMAP_CONTENT_TYPE, true));
+		CorePlugin.getInstance().getResourceService().addResourceHandler(FREEPLANE_MINDMAP_RESOURCE_SCHEMA, fpm1ResourceHandler);
 		
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(FREEPLANE_MINDMAP_CATEGORY_1)
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(FREEPLANE_MINDMAP_RESOURCE_DELEGATE_CATEGORY)
 			.addAdditiveController(PROPERTIES_PROVIDER, new MindMapPropertiesProvider1())		
-			.addAdditiveController(PROPERTY_SETTER, new MindMapPropertySetter())
+//			.addAdditiveController(PROPERTY_SETTER, new MindMapPropertySetter())
 			.addSingleController(PARENT_PROVIDER, new MindMapParentProvider())
 			.addAdditiveController(CHILDREN_PROVIDER, new MindMapChildrenProvider())
 			.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapAddNodeController())
-			.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapRemoveNodeController())
-			.addAdditiveController(CHILDREN_PROVIDER, new StyleRootChildrenProvider())
-			.addAdditiveController(PROPERTIES_PROVIDER, new DefaultPropertiesProvider());
+			.addAdditiveController(REMOVE_NODE_CONTROLLER, new MindMapRemoveNodeController());
+//			.addAdditiveController(CHILDREN_PROVIDER, new StyleRootChildrenProvider())
+//			.addAdditiveController(PROPERTIES_PROVIDER, new DefaultPropertiesProvider());
 		
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MindMapConstants.MINDMAP_NODE_TYPE_1)
-			.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(TEXT).setOrderIndexAs(-10000));
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FreeplaneConstants.FREEPLANE_NODE_TYPE);
+//			.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(TEXT).setOrderIndexAs(-10000));
 	}
 
 	/**
