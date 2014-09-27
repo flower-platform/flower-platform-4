@@ -15,10 +15,10 @@
  */
 package org.flowerplatform.tests.freeplane;
 
-import static org.junit.Assert.assertEquals;
+import static org.flowerplatform.tests.TestUtil.assertEqualsMaps;
 import static org.flowerplatform.tests.TestUtil.getResourcesDir;
 import static org.flowerplatform.tests.TestUtil.readFile;
-import static org.flowerplatform.tests.TestUtil.assertEqualsMaps;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,8 +26,9 @@ import java.util.Arrays;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesCreator;
-import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesParser;
+import org.flowerplatform.freeplane.controller.xml_parser.XmlConfiguration;
+import org.flowerplatform.freeplane.controller.xml_parser.XmlParser;
+import org.flowerplatform.freeplane.controller.xml_parser.XmlWritter;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -41,15 +42,23 @@ public class XmlParserTest {
 	public static final String UNKNOWN_TAGS_XML_FILE = "unknownTagsFile.xml";
 	public static final String DIFFERENT_TAGS_XML_FILE = "differentTagsFile.xml";
 	
+	protected XmlConfiguration configuration = new XmlConfiguration();
+	
+	/**
+	 * @author see class
+	 */
 	private void assertAndRemoveProperty(Node node, String property, Object value) {
 		assertEquals("Wrong actual value of '" + property + "'", value, node.getProperties().remove(property));
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Test
-	public void testParseXMLToNode_differentTags() throws SAXException, IOException, ParserConfigurationException {
+	public void testParseXmlToNodeDifferentTags() throws SAXException, IOException, ParserConfigurationException {
 		String xmlContent = readFile(DIR + "/" + DIFFERENT_TAGS_XML_FILE);
 		Node node = new Node(null, null);
-		XmlNodePropertiesParser handler = new XmlNodePropertiesParser(node);
+		XmlParser handler = new XmlParser(configuration, node);
 		handler.parseXML(xmlContent);
 		
 		assertAndRemoveProperty(node, "TEXT", "Node1");
@@ -76,23 +85,26 @@ public class XmlParserTest {
 		assertAndRemoveProperty(node, "richcontent(TYPE=NEW_TYPE)_content", "\n\t\t<node></node>\n\t");
 		assertAndRemoveProperty(node, "hook(NAME=AutomaticEdgeColor).COUNTER", "4");
 		assertAndRemoveProperty(node, "hook(NAME=MapStyle)_content", 
-										"\n\t\t<properties show_note_icons='true' show_icon_for_attributes='true'></properties>" + 
-										"\n\t\t<map_styles>\n\t\t\t<stylenode LOCALIZED_TEXT='styles.root_node'>\n\t\t\t\t" + 
-										"<stylenode LOCALIZED_TEXT='styles.predefined' POSITION='right'>\n\t\t\t\t\t" + 
-										"<stylenode LOCALIZED_TEXT='default' MAX_WIDTH='600' COLOR='#000000' STYLE='as_parent'>\n\t\t\t\t\t\t" +
-										"<font NAME='SansSerif' SIZE='10' BOLD='false' ITALIC='false'></font>\n\t\t\t\t\t\t" + 
-										"<icon BUILTIN='yes'></icon>\n\t\t\t\t\t</stylenode>\n\t\t\t\t\t<stylenode LOCALIZED_TEXT='defaultstyle.note'></stylenode>\n\t\t\t\t\t" + 
-										"<stylenode LOCALIZED_TEXT='defaultstyle.floating'>\n\t\t\t\t\t\t<edge STYLE='hide_edge'></edge>\n\t\t\t\t\t\t" +
-										"<cloud COLOR='#f0f0f0' SHAPE='ROUND_RECT'></cloud>\n\t\t\t\t\t</stylenode>\n\t\t\t\t</stylenode>\n\t\t\t" + 
-										"</stylenode>\n\t\t</map_styles>\n\t");
+										"\n\t\t<properties show_note_icons='true' show_icon_for_attributes='true'></properties>"
+										+ "\n\t\t<map_styles>\n\t\t\t<stylenode LOCALIZED_TEXT='styles.root_node'>\n\t\t\t\t"
+										+ "<stylenode LOCALIZED_TEXT='styles.predefined' POSITION='right'>\n\t\t\t\t\t"
+										+ "<stylenode LOCALIZED_TEXT='default' MAX_WIDTH='600' COLOR='#000000' STYLE='as_parent'>\n\t\t\t\t\t\t"
+										+ "<font NAME='SansSerif' SIZE='10' BOLD='false' ITALIC='false'></font>\n\t\t\t\t\t\t"
+										+ "<icon BUILTIN='yes'></icon>\n\t\t\t\t\t</stylenode>\n\t\t\t\t\t<stylenode LOCALIZED_TEXT='defaultstyle.note'></stylenode>\n\t\t\t\t\t"
+										+ "<stylenode LOCALIZED_TEXT='defaultstyle.floating'>\n\t\t\t\t\t\t<edge STYLE='hide_edge'></edge>\n\t\t\t\t\t\t"
+										+ "<cloud COLOR='#f0f0f0' SHAPE='ROUND_RECT'></cloud>\n\t\t\t\t\t</stylenode>\n\t\t\t\t</stylenode>\n\t\t\t" 
+										+ "</stylenode>\n\t\t</map_styles>\n\t");
 		assertEquals("Node still has properties", 0, node.getProperties().size());
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Test
-	public void testParseXMLToNode_unknownTags() throws SAXException, IOException, ParserConfigurationException {
+	public void testParseXmlToNodeUnknownTags() throws SAXException, IOException, ParserConfigurationException {
 		String xmlContent = readFile(DIR + "/" + UNKNOWN_TAGS_XML_FILE);
 		Node node = new Node(null, null);
-		XmlNodePropertiesParser handler = new XmlNodePropertiesParser(node);
+		XmlParser handler = new XmlParser(configuration, node);
 		handler.parseXML(xmlContent);
 		
 		assertAndRemoveProperty(node, "TEXT", "test");
@@ -101,9 +113,9 @@ public class XmlParserTest {
 		assertAndRemoveProperty(node, "ID", "ID_1229967238");
 		assertAndRemoveProperty(node, "MODIFIED", "1407493284393");
 		assertAndRemoveProperty(node, "richcontent(TYPE=DETAILS).HIDDEN", "true");
-		assertAndRemoveProperty(node, "richcontent(TYPE=DETAILS)_content", "\n\t\t<html>\n\t\t\t" + 
-										"<head></head>\n\t\t\t<body><p>Details .... </p></body>" +
-										"\n\t\t</html>\n\t");
+		assertAndRemoveProperty(node, "richcontent(TYPE=DETAILS)_content", "\n\t\t<html>\n\t\t\t" 
+										+ "<head></head>\n\t\t\t<body><p>Details .... </p></body>" 
+										+ "\n\t\t</html>\n\t");
 		assertAndRemoveProperty(node, "icons", Arrays.asList("yes", "checked", "password"));
 		assertAndRemoveProperty(node, "cloud.COLOR", "#0033ff");
 		assertAndRemoveProperty(node, "cloud.SHAPE", "RECT");
@@ -112,49 +124,57 @@ public class XmlParserTest {
 		assertAndRemoveProperty(node, "font.ITALIC", "true");
 		assertAndRemoveProperty(node, "font.SIZE", "18");
 		assertAndRemoveProperty(node, "hook(NAME=FirstGroupNode)", null);
-		assertAndRemoveProperty(node, "hook(NAME=MapStyle)_content", "\n\t\t<map_styles>\n\t\t\t" + 
-										"<stylenode LOCALIZED_TEXT='styles.root_node'></stylenode>" + 
-										"\n\t\t</map_styles>\n\t");
+		assertAndRemoveProperty(node, "hook(NAME=MapStyle)_content", "\n\t\t<map_styles>\n\t\t\t" 
+										+ "<stylenode LOCALIZED_TEXT='styles.root_node'></stylenode>" 
+										+ "\n\t\t</map_styles>\n\t");
 		assertAndRemoveProperty(node, "hook(NAME=NodeConditionalStyles)_content", 
-										"\n\t\t<conditional_style ACTIVE='true' STYLE_REF='TitlesContent' LAST='false'></conditional_style>" + 
-										"\n\t\t<conditional_style ACTIVE='true' STYLE_REF='BeginnerTopic' LAST='false'></conditional_style>\n\t");
+										"\n\t\t<conditional_style ACTIVE='true' STYLE_REF='TitlesContent' LAST='false'></conditional_style>" 
+										+ "\n\t\t<conditional_style ACTIVE='true' STYLE_REF='BeginnerTopic' LAST='false'></conditional_style>\n\t");
 		assertAndRemoveProperty(node, "attribute(NAME=a1).VALUE", "v1");
 		assertAndRemoveProperty(node, "attribute(NAME=a2).VALUE", "v2");
 		assertAndRemoveProperty(node, "attribute(NAME=a3).VALUE", "v3");
 		assertAndRemoveProperty(node, "unknownTag2.unknownProp1", "value1");
 		assertAndRemoveProperty(node, "unknownTag2.unknownProp2", "value2");
 		assertAndRemoveProperty(node, "unknownTag2_content", "\n\t\t<icon BUILTIN='password'></icon>\n\t");
-		assertAndRemoveProperty(node, "unknown", "<unknownTag1 unknownProp1='value1' unknownProp2='value2'>\n\t\t" + 
-										"<node TEXT='test' ID='ID_1229967238' CREATED='1407493284393' MODIFIED='1407493284393' FOLDED='false'>" + 
-										"\n\t\t\t<richcontent TYPE='DETAILS' HIDDEN='true'>" +
-										"\n\t\t\t\t<html><head></head><body><p>Details .... </p></body></html>" + 
-										"\n\t\t\t</richcontent>\n\t\t</node>\n\t</unknownTag1>\n\t<unknownTag1 unknownProp1='value1' unknownProp2='value2'>" + 
-										"\n\t\t<attribute NAME='a1' VALUE='v1'></attribute>\n\t</unknownTag1>");
+		assertAndRemoveProperty(node, "unknown", "<unknownTag1 unknownProp1='value1' unknownProp2='value2'>\n\t\t" 
+										+ "<node TEXT='test' ID='ID_1229967238' CREATED='1407493284393' MODIFIED='1407493284393' FOLDED='false'>" 
+										+ "\n\t\t\t<richcontent TYPE='DETAILS' HIDDEN='true'>" 
+										+ "\n\t\t\t\t<html><head></head><body><p>Details .... </p></body></html>" 
+										+ "\n\t\t\t</richcontent>\n\t\t</node>\n\t</unknownTag1>\n\t<unknownTag1 unknownProp1='value1' unknownProp2='value2'>" 
+										+ "\n\t\t<attribute NAME='a1' VALUE='v1'></attribute>\n\t</unknownTag1>");
 		assertEquals("Node still has properties", 0, node.getProperties().size());
 	}
 	
+	/**
+	 * @author see class
+	 */
 	private void serializeDeserializeAndCompareXMLContent(String xmlFileName) throws ParserConfigurationException, SAXException, IOException {
 		String oldXmlContent = readFile(DIR + "/" + xmlFileName);
 		Node oldNode = new Node(null, null);
-		XmlNodePropertiesParser handler = new XmlNodePropertiesParser(oldNode);
+		XmlParser handler = new XmlParser(configuration, oldNode);
 		handler.parseXML(oldXmlContent);
 		
-		XmlNodePropertiesCreator xmlCreator = new XmlNodePropertiesCreator(oldNode);
-		String newXmlContent = xmlCreator.createXmlFromNodeProperties().toString();
+		XmlWritter xmlCreator = new XmlWritter(configuration, oldNode);
 		Node newNode = new Node(null, null);
-		handler = new XmlNodePropertiesParser(newNode);
-		handler.parseXML(newXmlContent);
+		handler = new XmlParser(configuration, newNode);
+		handler.parseXML(xmlCreator.getXmlContent());
 		
 		assertEqualsMaps(newNode.getProperties(), oldNode.getProperties());
 	}
-		
+	
+	/**
+	 * @author see class
+	 */
 	@Test
-	public void testParseNodeToXML_differentTags() throws SAXException, IOException, ParserConfigurationException {
+	public void testParseNodeToXmlDifferentTags() throws SAXException, IOException, ParserConfigurationException {
 		serializeDeserializeAndCompareXMLContent(DIFFERENT_TAGS_XML_FILE);
 	}
 	
+	/**
+	 * @author see class
+	 */
 	@Test
-	public void testParseNodeToXML_unknownTags() throws SAXException, IOException, ParserConfigurationException {
+	public void testParseNodeToXmlUnknownTags() throws SAXException, IOException, ParserConfigurationException {
 		serializeDeserializeAndCompareXMLContent(UNKNOWN_TAGS_XML_FILE);
 	}
 }

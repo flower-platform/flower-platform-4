@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,16 +17,17 @@ package org.flowerplatform.ant;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.flowerplatform.ant.utils.FileIterator;
-import org.flowerplatform.ant.utils.FileUtil;
 
 /**
- * 
+ *
  * @author Florin
  */
 public class HeaderUpdaterTask extends Task {
@@ -34,7 +35,7 @@ public class HeaderUpdaterTask extends Task {
 	private File workspaceFolder;
 
 	private String projectFilterRegex;
-	
+
 	private String ignoreFilterRegex;
 	
 	private String fileExtension;
@@ -42,9 +43,9 @@ public class HeaderUpdaterTask extends Task {
 	private File headerFile;
 
 	private String startToken;
-	
+
 	private String endToken;
-	
+
 	@Override
 	public void execute() throws BuildException {
 
@@ -63,18 +64,25 @@ public class HeaderUpdaterTask extends Task {
 		if (endToken == null) {
 			throw new BuildException("endToken is null");
 		}
-		
-		Pattern pattern;		
+
+		Pattern pattern;
 		if (fileExtension.equals("mxml")) {
 			pattern = Pattern.compile("<!--[\\s\\S]*?" + startToken + "[\\s\\S]*?" + endToken + "[\\s\\S]*?-->");
 		} else {
-			pattern = Pattern.compile("/\\*[\\s\\S]*?" + startToken + "[\\s\\S]*?" + endToken + "[\\s\\S]*?\\*/"); 
+			pattern = Pattern.compile("/\\*[\\s\\S]*?" + startToken + "[\\s\\S]*?" + endToken + "[\\s\\S]*?\\*/");
 		}
-		 
+
 		Pattern xmlVersionPattern = Pattern.compile("<\\?xml version.*?encoding.*?\\?>"); // <?xml version="1.0" encoding="utf-8"?>
+
+		String newHeaderText = new String();
 		
-		String newHeaderText = FileUtil.readFile(headerFile); 		
-		
+		try {
+			newHeaderText = FileUtils.readFileToString(headerFile);
+			//CHECKSTYLE:OFF
+		} catch (IOException e1) {
+			//CHECKSTYLE:ON
+		}
+
 		for (FileIterator it = new FileIterator(workspaceFolder, new ProjectFileFilter()); it.hasNext();) {
 			File file = it.next();
 			if (file.getPath().matches(ignoreFilterRegex)) {
@@ -82,34 +90,54 @@ public class HeaderUpdaterTask extends Task {
 			}
 			if (file.isFile() && file.getName().endsWith(fileExtension)) {
 
-				String fileText = FileUtil.readFile(file);
+				String fileText = new String();
+				try {
+					fileText = FileUtils.readFileToString(file);
+					//CHECKSTYLE:OFF
+				} catch (IOException e1) {
+					//CHECKSTYLE:ON
+				}
 	            Matcher matcher = pattern.matcher(fileText);
-	            if (matcher.find()) { 
+	            if (matcher.find()) {
 	            	if (!fileText.contains(newHeaderText)) {
 	            		// remove old header and add new one
 	            		fileText = matcher.replaceFirst(newHeaderText);
-	            		FileUtil.writeFile(file, fileText);
+	            		try {
+							FileUtils.writeStringToFile(file, fileText);
+							//CHECKSTYLE:OFF
+						} catch (IOException e) {
+							//CHECKSTYLE:ON
+						}
 	            	}
-	            } else { 
+	            } else {
 	            	// header must be added
 	            	if (fileExtension.equals("mxml")) {
 	            		int indexToInsert = 0;
-	            			            	
+
 	            		Matcher xmlMatcher = xmlVersionPattern.matcher(fileText);
-	            		if (xmlMatcher.find()) { 
+	            		if (xmlMatcher.find()) {
 	            			indexToInsert = xmlMatcher.end();
 	            		}
 	            		fileText = fileText.substring(0, indexToInsert) + System.getProperty("line.separator") + newHeaderText + fileText.substring(indexToInsert);
-	            		
+
 	            	} else {
-		            	fileText  = newHeaderText + System.getProperty("line.separator") + fileText;		            	
+		            	fileText  = newHeaderText + System.getProperty("line.separator") + fileText;
 	            	}
-	            	FileUtil.writeFile(file, fileText);
+	            	
+	            	try {
+						FileUtils.writeStringToFile(file, fileText);
+						//CHECKSTYLE:OFF
+					} catch (IOException e) {
+						//CHECKSTYLE:ON
+					}
 	            }
 			}
-		}				
+		}
 	}
-
+	
+	/**
+	 * @author Mariana Gheorghe
+	 */
 	class ProjectFileFilter implements FileFilter {
 
 		@Override
@@ -119,9 +147,9 @@ public class HeaderUpdaterTask extends Task {
 			}
 			return false;
 		}
-		
+
 	}
-	
+
 	public String getFileExtension() {
 		return fileExtension;
 	}

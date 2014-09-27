@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,8 @@
 package org.flowerplatform.flex_client.core.node.controller {
 	import mx.collections.ArrayCollection;
 	
-	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.NodeRegistry;
-	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 
 	/**
 	 * @author Mariana Gheorghe
@@ -67,7 +64,6 @@ import mx.collections.IList;
 import mx.core.mx_internal;
 
 import org.flowerplatform.flex_client.core.editor.remote.Node;
-import org.flowerplatform.flex_client.core.node.NodeRegistry;
 import org.flowerplatform.flex_client.core.node.controller.ResourceDebugControllers;
 import org.flowerplatform.flexdiagram.DiagramShellContext;
 import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
@@ -95,7 +91,7 @@ class ResourceNodeController extends MindMapModelController {
 	}
 	
 	override public function setExpanded(context:DiagramShellContext, model:Object, value:Boolean):void {
-		var nodeRegistry:NodeRegistry = Object(context.diagramShell).nodeRegistry;
+		var nodeRegistry:* = Object(context.diagramShell).nodeRegistry;
 		var node:Node = Node(model);
 		if (value) {
 			var children:ArrayCollection;

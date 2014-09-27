@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.util;
@@ -63,7 +60,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class NamedLockPool {
 
-	static private class LockWithCounter extends ReentrantLock {
+	private static class LockWithCounter extends ReentrantLock {
 		private static final long serialVersionUID = 1L;
 		
 		/**
@@ -87,6 +84,10 @@ public class NamedLockPool {
 	 * is AHEAD OF ME) is documented in the other method. 
 	 */
 	
+	/**
+	 * @author Claudiu Matei
+	 */
+
 	public void lock(Object key) {
 		LockWithCounter lockForCurrentKey = null;
 		
@@ -136,6 +137,10 @@ public class NamedLockPool {
 		}
 	}
 	
+	/**
+	 * 
+	 * @author Claudiu Matei
+	 */
 	public void unlock(Object key) {
 		/*
 		 * C) and D) other thread will wait for this whole method to end. Same for A),
@@ -149,12 +154,14 @@ public class NamedLockPool {
 			lockForCurrentKey = currentLocks.get(key);
 			
 			if (lockForCurrentKey == null) {
-				throw new IllegalArgumentException(String.format("Attempt to unlock the lock with key = %s, by thread = %s; but there is no lock for this key!", key, Thread.currentThread()));
+				throw new IllegalArgumentException(String.format("Attempt to unlock the lock with key = %s, by thread = %s; but there is no lock for this key!",
+						key, Thread.currentThread()));
 			}
 			if (!lockForCurrentKey.isHeldByCurrentThread()) {
 				// sanity check; anyway, without this here, the unlock() method would have thrown an exception as well; but at least,
 				// this is gives a bit more information
-				throw new IllegalStateException(String.format("Attempt to unlock the lock with key = %s, by thread = %s; but this thread is not the owner of the lock!", key, Thread.currentThread()));
+				throw new IllegalStateException(String.format("Attempt to unlock the lock with key = %s, by thread = %s; but this"
+						+ " thread is not the owner of the lock!", key, Thread.currentThread()));
 			}
 			
 			 // case A) until here, the other thread will wait, at it's .lock() line

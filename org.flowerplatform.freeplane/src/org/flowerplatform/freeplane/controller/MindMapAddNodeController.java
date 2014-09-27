@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,8 @@ public class MindMapAddNodeController extends AbstractController implements IAdd
 		NodeModel newNodeModel = new NodeModel("", parentRawNodeData.getMap());
 		newNodeModel.setLeft(parentRawNodeData.isLeft());
 		
-		parentRawNodeData.insert(newNodeModel, currentModelAtInsertionPoint != null ? parentRawNodeData.getChildPosition(currentModelAtInsertionPoint) : parentRawNodeData.getChildCount());
+		parentRawNodeData.insert(newNodeModel, currentModelAtInsertionPoint != null ? parentRawNodeData
+				.getChildPosition(currentModelAtInsertionPoint) : parentRawNodeData.getChildCount());
 		parentRawNodeData.getMap().setSaved(false);
 		
 		// set the id on the node instance

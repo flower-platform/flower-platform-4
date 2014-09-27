@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 package org.flowerplatform.codesync.action;
 
 /**
- * 
+ * @author Mariana Gheorghe
  */
 public class ActionResult {
 	
@@ -38,6 +38,9 @@ public class ActionResult {
 	 */
 	public boolean childAdded;
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public ActionResult(boolean conflict, boolean modifiedLeft, boolean modifiedRight) {
 		super();
 		this.conflict = conflict;

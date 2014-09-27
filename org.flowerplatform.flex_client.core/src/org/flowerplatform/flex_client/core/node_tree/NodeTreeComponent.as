@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,8 @@ package org.flowerplatform.flex_client.core.node_tree {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.INodeChangeListener;
-	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flexutil.tree.TreeList;
+	import org.flowerplatform.js_client.common_js_as.node.INodeChangeListener;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -29,7 +28,7 @@ package org.flowerplatform.flex_client.core.node_tree {
 	 */ 
 	public class NodeTreeComponent extends TreeList implements INodeChangeListener {
 			
-		protected var nodeRegistry:NodeRegistry;
+		protected var nodeRegistry:*;
 		
 		protected var _nodeUri:String;
 		
@@ -47,6 +46,8 @@ package org.flowerplatform.flex_client.core.node_tree {
 			
 			addEventListener("itemOpen", treeListItemOpenCloseHandler);
 			addEventListener("itemClose", treeListItemOpenCloseHandler);
+			
+			CorePlugin.getInstance().nodeRegistryManager.addListener(this);
 		}
 		
 		public function initializeTree(nodeUri:String):void {
@@ -56,6 +57,7 @@ package org.flowerplatform.flex_client.core.node_tree {
 		
 		public function finalizeTree():void {
 			CorePlugin.getInstance().nodeRegistryManager.unlinkResourceNodeFromNodeRegistry(nodeUri, nodeRegistry);
+			CorePlugin.getInstance().nodeRegistryManager.removeListener(this);
 		}
 				
 		protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
@@ -87,6 +89,10 @@ package org.flowerplatform.flex_client.core.node_tree {
 			requestRefreshLinearizedDataProvider();
 			invalidateDisplayList();
 		}		
+		
+		public function resourceNodeRemoved(resourceNodeUri:String, nodeRegistry:*):void {
+			// do nothing
+		}
 		
 	}
 }

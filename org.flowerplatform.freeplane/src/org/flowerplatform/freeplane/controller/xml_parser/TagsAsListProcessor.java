@@ -30,13 +30,16 @@ public class TagsAsListProcessor extends AbstractTagProcessor {
 	private String propertyName;
 	private String keyAttribute;
 
+	/**
+	 *@author Catalin Burcea
+	 **/
 	public TagsAsListProcessor(String propertyName, String keyAttribute) {
 		this.propertyName = propertyName;
 		this.keyAttribute = keyAttribute;
 	}
 
 	@Override
-	public void processStartTag(XmlNodePropertiesParser parser, String tag, Attributes attributes, Node node) {
+	public void processStartTag(XmlParser parser, String tag, Attributes attributes, Node node) {
 		@SuppressWarnings("unchecked")
 		List<String> list = (List<String>) node.getProperties().get(propertyName);
 		if (list == null) {

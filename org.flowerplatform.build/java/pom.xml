@@ -49,6 +49,13 @@
 				<module>../../org.flowerplatform.flex_client.web</module>
 				<module>../../org.flowerplatform.flex_client.server</module>
 
+				<!-- js client plugins -->
+				<module>../../org.flowerplatform.js_client.core</module>
+				<module>../../org.flowerplatform.js_client.users</module>
+				<module>../../org.flowerplatform.js_client.host_app.config.web</module>
+				<module>../../org.flowerplatform.js_client.server</module>
+
+				<!-- tests -->
 				<module>../../org.flowerplatform.tests</module>
 			</modules>
 		</profile>

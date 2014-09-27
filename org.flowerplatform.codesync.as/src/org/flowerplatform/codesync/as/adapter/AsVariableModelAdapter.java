@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,9 @@ import org.flowerplatform.codesync.as.CodeSyncAsConstants;
  */
 public class AsVariableModelAdapter extends AsAbstractAstModelAdapter {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public AsVariableModelAdapter() {
 		valueFeatures.add(DOCUMENTATION);
 		valueFeatures.add(TYPED_ELEMENT_TYPE);
@@ -57,6 +60,9 @@ public class AsVariableModelAdapter extends AsAbstractAstModelAdapter {
 		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected Object resolveInitializer(Object element) {
 		IVariableDefinition var = getVariable(element);
 		Object value = var.resolveInitialValue(getCompilationUnit(var).getProject());
@@ -66,6 +72,9 @@ public class AsVariableModelAdapter extends AsAbstractAstModelAdapter {
 		return value;
 	}
 	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected IVariableDefinition getVariable(Object element) {
 		return (IVariableDefinition) element;
 	}

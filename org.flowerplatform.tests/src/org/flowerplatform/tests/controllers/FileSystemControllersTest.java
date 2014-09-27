@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@ import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.file.FileControllerUtils.createFileNodeUri;
 import static org.flowerplatform.tests.EclipseIndependentTestSuite.nodeService;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
-import static org.flowerplatform.tests.TestUtil.assertEqualsLists;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -64,7 +65,9 @@ public class FileSystemControllersTest {
 	private static RemoteMethodInvocationListener remoteMethodInvocationListener;
 	
 	private static IFileAccessController fileAccessController = new PlainFileAccessController();
-	
+	/**
+	 *@author see class
+	 **/
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		if (CorePlugin.getInstance() == null) {
@@ -81,7 +84,9 @@ public class FileSystemControllersTest {
 		doReturn("dummy-session").when(remoteMethodInvocationListener).getSessionId();
 
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	@Before
 	public void setUp() {
 		EclipseIndependentTestSuite.deleteFiles(FILE_SYSTEM_CONTROLLERS_DIR);
@@ -91,29 +96,59 @@ public class FileSystemControllersTest {
 		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceUris();
 		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceSets();
 		doReturn(-1L).when(remoteMethodInvocationInfo).getTimestampOfLastRequest();
-		remoteMethodInvocationInfo.setMethodName("test");
+		remoteMethodInvocationInfo.setServiceMethodOrUrl("test");
 
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	@Test
 	public void testGetChildren() {
-		assertEqualsLists(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, null), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+		assertEqualsLists(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, null), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService)
+				.add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "1"), FILE_NODE_TYPE),
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A"), FILE_NODE_TYPE),
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "B"), FILE_NODE_TYPE)));
 
-		assertEqualsLists(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+		assertEqualsLists(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService)
+				.add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/file1"), FILE_NODE_TYPE),
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1"), FILE_NODE_TYPE),
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), FILE_NODE_TYPE)));
 
-		assertEqualsLists(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+		assertEqualsLists(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1"), FILE_NODE_TYPE), 
+				new ServiceContext<NodeService>(nodeService)
+				.add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1/oneFile"), FILE_NODE_TYPE)));
 
-		assertEqualsLists(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
+		assertEqualsLists(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), FILE_NODE_TYPE), 
+				new ServiceContext<NodeService>(nodeService)
+				.add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2/oneFolder"), FILE_NODE_TYPE)));
 	}
 	
+	/**
+	 * Test if lists contain the same elements. Order does not matter.
+	 * 
+	 * @author Mariana Gheorghe
+	 */
+	private void assertEqualsLists(List<Node> actual, List<Node> expected) {
+		assertEquals(expected.size(), actual.size());
+		for (Node node : expected) {
+			if (!actual.contains(node)) {
+				fail("Expected node not found: " + node);
+			}
+		}
+		for (Node node : actual) {
+			if (!expected.contains(node)) {
+				fail("Node not expected: " + node);
+			}
+		}
+	}
+	
+	/**
+	 *@author Solomon Sebastian
+	 **/
 	@Test
 	public void addChild() {
 		NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
@@ -126,7 +161,7 @@ public class FileSystemControllersTest {
 		String fullNodeId = createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1");
 	        
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.addChild(fullNodeId, context);
+		nodeServiceRemote.addChild(fullNodeId, context.getContext());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 							 
 		Object newFile;
@@ -148,7 +183,7 @@ public class FileSystemControllersTest {
 		fullNodeId = createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1");
 
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.addChild(fullNodeId, context);
+		nodeServiceRemote.addChild(fullNodeId, context.getContext());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 		Object newFolder;
 		try {
@@ -160,7 +195,9 @@ public class FileSystemControllersTest {
 		assertEquals(fileAccessController.exists(newFolder), true);
 		assertEquals(fileAccessController.isDirectory(newFolder), true);
 	}
-	
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	@Test
 	public void removeNode() {
 
@@ -168,7 +205,8 @@ public class FileSystemControllersTest {
 		nodeService.removeChild(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), FILE_NODE_TYPE), 
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "/A/Folder2/oneFolder"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService));
 
-		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), 
+		assertEquals(nodeService.getChildren(new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2"), 
+				FILE_NODE_TYPE), new ServiceContext<NodeService>(nodeService).add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), 
 								Arrays.asList());
 		Object newFolder;
 		try {
@@ -178,13 +216,15 @@ public class FileSystemControllersTest {
 		}
 		assertEquals(fileAccessController.exists(newFolder), false);
 	}
-
+	/**
+	 *@author Solomon Sebastian
+	 **/
 	public void copyDirectory(File srcPath, File dstPath) throws IOException {
 		if (srcPath.isDirectory()) {
 			if (!dstPath.exists()) {
 				dstPath.mkdirs();
 			}
-			String files[] = srcPath.list();
+			String[] files = srcPath.list();
 			for (int i = 0; i < files.length; i++) {
 				File src = new File(srcPath, files[i]);
 				File dest = new File(dstPath, files[i]);

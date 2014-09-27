@@ -27,25 +27,28 @@ public class TagFullContentProcessor extends AbstractTagProcessor {
 
 	private String keyProperty;
 
+	/**
+	 *@author Catalin Burcea
+	 **/
 	public TagFullContentProcessor(String keyProperty) {
 		this.keyProperty = keyProperty;
 	}
 
 	@Override
-	public void processStartTag(XmlNodePropertiesParser parser, String tag, Attributes attributes, Node node) {
+	public void processStartTag(XmlParser parser, String tag, Attributes attributes, Node node) {
 		addStartContentAndAttributes(parser, tag, attributes, node, keyProperty);
 	}
 
 	@Override
-	public void processEndTag(XmlNodePropertiesParser parser, String tag, Node node) {
+	public void processEndTag(XmlParser parser, String tag, Node node) {
 		addEndContent(parser, tag, node, keyProperty);
 
 		// we have reached the end of an unknown tag
-		if (parser.tagFullContent_nesting == 0 && keyProperty == null) {
+		if (parser.tagFullContent_Nesting == 0 && keyProperty == null) {
 			String currentContent = (String) node.getProperties().get(FreeplaneConstants.UNKNOWN);
 			node.getProperties().put(
 					FreeplaneConstants.UNKNOWN,
-					currentContent == null ? parser.tagFullContent_stringBuffer.toString() : currentContent + "\n\t" + parser.tagFullContent_stringBuffer.toString());
+					currentContent == null ? parser.tagFullContent_StringBuffer.toString() : currentContent + "\n\t" + parser.tagFullContent_StringBuffer.toString());
 		}
 	}
 }

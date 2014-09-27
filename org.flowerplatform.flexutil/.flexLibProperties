@@ -28,9 +28,10 @@
     <classEntry path="org.flowerplatform.flexutil.view_content_host.BasicViewContent"/>
     <classEntry path="org.flowerplatform.flexutil.view_content_host.ICachedActionsAndSelectionProvider"/>
     <classEntry path="org.flowerplatform.flexutil.view_content_host.IViewHostAware"/>
-    <classEntry path="org.flowerplatform.flexutil.controller.SingleValueDescriptor"/>
-    <classEntry path="org.flowerplatform.flexutil.controller.ValuesProvider"/>
-    <classEntry path="org.flowerplatform.flexutil.controller.ITypeProvider"/>
+    <classEntry path="org.flowerplatform.flexutil.iframe.IFrameOpenUrl"/>
+    <classEntry path="org.flowerplatform.flexutil.iframe.IFrameOpenUrlView"/>
+    <classEntry path="org.flowerplatform.flexutil.iframe.IFlowerIFrame"/>
+    <classEntry path="org.flowerplatform.flexutil.iframe.FlowerIFrameViewProvider"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

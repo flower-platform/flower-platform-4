@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,10 +15,10 @@
  */
 package org.flowerplatform.flex_client.mindmap {
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
+	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.INodeChangeListener;
-	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.action.ExpandCollapseAction;
@@ -33,13 +33,14 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexdiagram.tool.WakeUpTool;
 	import org.flowerplatform.flexdiagram.tool.ZoomTool;
 	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
+	import org.flowerplatform.js_client.common_js_as.node.INodeChangeListener;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class MindMapEditorDiagramShell extends MindMapDiagramShell implements INodeChangeListener {
 
-		private var _nodeRegistry:NodeRegistry;
+		private var _nodeRegistry:*;
 				
 		public function MindMapEditorDiagramShell() {
 			super();
@@ -52,11 +53,11 @@ package org.flowerplatform.flex_client.mindmap {
 			registerTool(ExpandCollapseAction.ID, new ClassFactoryWithConstructor(ActionTool, {"action": new ExpandCollapseAction(), "eventType": WakeUpTool.CLICK}));
 		}
 			
-		public function get nodeRegistry():NodeRegistry {
+		public function get nodeRegistry():* {
 			return _nodeRegistry;
 		}
 
-		public function set nodeRegistry(value:NodeRegistry):void {
+		public function set nodeRegistry(value:*):void {
 			_nodeRegistry = value;
 			_nodeRegistry.addNodeChangeListener(this);
 		}
@@ -76,7 +77,9 @@ package org.flowerplatform.flex_client.mindmap {
 		}
 		
 		public function nodeUpdated(node:Node, property:String, oldValue:Object, newValue:Object):void {
-			// do nothing
+			if (property == CoreConstants.IS_DIRTY) {
+				CorePlugin.getInstance().resourceNodesManager.updateGlobalDirtyState(newValue);
+			}
 		}
 						
 		override public function getRootNodeX(context:DiagramShellContext, rootNode:Object):Number {

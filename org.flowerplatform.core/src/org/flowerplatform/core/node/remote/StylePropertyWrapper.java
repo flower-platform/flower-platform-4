@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,18 @@ public class StylePropertyWrapper extends PropertyWrapper {
 		this.isDefault = isDefault;
 	}
 	
+	//CHECKSTYLE:OFF
 	public StylePropertyWrapper setIsDefaultAs(boolean isDefault) {
 		setIsDefault(isDefault);
 		return this;
+		//CHECKSTYLE:ON
 	}
+
+	/**
+	 * @author Cristina Constantinescu
+	 */
+	public StylePropertyWrapper() {
+		super();		
+	}	
 	
 }

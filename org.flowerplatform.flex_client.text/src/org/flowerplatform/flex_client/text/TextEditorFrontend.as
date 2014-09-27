@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,11 +22,10 @@ package org.flowerplatform.flex_client.text {
 	
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.NodeRegistry;
-	import org.flowerplatform.flex_client.text.codemirror_editor.ICodeMirrorEditor;
-	import org.flowerplatform.flex_client.text.codemirror_editor.MobileCodeMirrorEditor;
-	import org.flowerplatform.flex_client.text.codemirror_editor.WebCodeMirrorEditor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.iframe.FlowerIFrame;
+	import org.flowerplatform.flexutil.iframe.IFlowerIFrame;
+	import org.flowerplatform.flexutil.iframe.StageWebViewUIComponent;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -49,9 +48,9 @@ package org.flowerplatform.flex_client.text {
 			super.createChildren();
 			
 			if (FlexUtilGlobals.getInstance().isMobile) {					
-				editor = new MobileCodeMirrorEditor();						
+				editor = new StageWebViewUIComponent();					
 			} else {
-				editor = UIComponent(new WebCodeMirrorEditor("editor"));					
+				editor = UIComponent(new FlowerIFrame("editor"));					
 			}	
 			editor.percentHeight = 100;
 			editor.percentWidth = 100;
@@ -59,22 +58,15 @@ package org.flowerplatform.flex_client.text {
 		}
 		
 		protected function creationCompleteHandler(event:FlexEvent):void {			
-			ICodeMirrorEditor(editor).addViewCompleteHandler(orionEditor_frameLoadHandler);			
+			IFlowerIFrame(editor).addViewCompleteHandler(orionEditor_frameLoadHandler);			
 		}
 		
 		override protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
 			this.node = rootNode;
 			
-			ICodeMirrorEditor(editor).load(FlexUtilGlobals.getInstance().createAbsoluteUrl(TextPlugin.getInstance().getResourceUrl(getURL())));
+			IFlowerIFrame(editor).url = FlexUtilGlobals.getInstance().createAbsoluteUrl(TextPlugin.getInstance().getResourceUrl(getURL()));
 		}
-			
-		override public function nodeRegistryRemoved(nodeRegistry:NodeRegistry):void {
-			if (this.nodeRegistry == nodeRegistry) {
-				ICodeMirrorEditor(editor).dispose();
-			}
-			super.nodeRegistryRemoved(nodeRegistry);	
-		}
-		
+
 		protected function getURL():String {
 			var lastDotIndex:int = node.nodeUri.lastIndexOf('.');
 			if (lastDotIndex >= 0) {
@@ -88,18 +80,18 @@ package org.flowerplatform.flex_client.text {
 		protected function orionEditor_frameLoadHandler(event:Event):void {
 			if (node != null) {	
 				// initialize code mirror editor read only
-				ICodeMirrorEditor(editor).callJavaScriptMethod("initialize", null, escape(node.properties[TextConstants.CONTENT]), "id", readOnly);
+				IFlowerIFrame(editor).callJSFunction("initialize", null, escape(node.properties[TextConstants.CONTENT]), "id", readOnly);
 				// listen for text changes
-				ICodeMirrorEditor(editor).addCallbackHandler("codeMirrorEditorChangedHandler", textEditorChangedHandler);
+				IFlowerIFrame(editor).addCallback("codeMirrorEditorChangedHandler", textEditorChangedHandler);
 			}
 		}
 		
 		public function setContent(content:String):void {
-			ICodeMirrorEditor(editor).callJavaScriptMethod("setContent", null, escape(content));
+			IFlowerIFrame(editor).callJSFunction("setContent", null, escape(content));
 		}
 		
 		public function getContent(callback:Function):void {
-			ICodeMirrorEditor(editor).callJavaScriptMethod("getContent", callback, null);
+			IFlowerIFrame(editor).callJSFunction("getContent", callback, null);
 		}
 		
 //		public function disableEditing():void {
@@ -119,11 +111,11 @@ package org.flowerplatform.flex_client.text {
 //		}
 		
 		protected function updateText(offset:int, oldTextLength:int, newText:String):void {
-			ICodeMirrorEditor(editor).callJavaScriptMethod("updateText", null, offset, oldTextLength, escape(newText));
+			IFlowerIFrame(editor).callJSFunction("updateText", null, offset, oldTextLength, escape(newText));
 		}
 		
 		public function colorText(ranges:Array):void {
-			ICodeMirrorEditor(editor).callJavaScriptMethod("colorText", null, ranges);
+			IFlowerIFrame(editor).callJSFunction("colorText", null, ranges);
 		}
 		
 //		public function executeContentUpdateLogic(content:Object, isFullContent:Boolean):void {				
