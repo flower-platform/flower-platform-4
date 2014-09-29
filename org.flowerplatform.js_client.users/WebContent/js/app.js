@@ -83,7 +83,7 @@ routesConfig.push({
 });
 
 routesConfig.push({
-	path: '/search',
+	path: '/repository/:id/search',
 	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
 	route: {
 		templateUrl: 'partials/composed/sideMenuLayout.html',

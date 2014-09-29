@@ -157,17 +157,21 @@ flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$
        function($scope, $routeParams, $location, UserRepositories, Login, Repository) {
 	
 	$scope.nodeUri = Login.nodeUri;
-	/* get all available extensions */
+	$scope.endodedNodeUri = encodeURIComponent($scope.nodeUri);
+	// get all available extensions
 	$scope.availableExtensions = Repository.getAllExtensions({ path: "allExtensions" });
-	/* get all repositories */
+	// get all repositories
 	$scope.repositories = Repository.get({ id: $scope.nodeUri });
 	
-	/* get all extensions of a repository */
+	// get all extensions of a repository
 	$scope.getExtensions = function (repoUri){
 		return Repository.getExtensionsForRepository({ id: encodeURIComponent(repoUri), path: "extensions" });
+//		  .$promise.then(function(result) {
+//			  $scope.currentRepositoryExtensions = result;
+//		});
 	};
 	
-	/* get all dependence properties */
+	// get all properties of a dependence 
 	$scope.getDependence = function (dependenceName) {
 		for (var index in $scope.availableExtensions.messageResult) {
 				if ($scope.availableExtensions.messageResult[index].id == dependenceName) {
@@ -176,24 +180,35 @@ flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$
 		}
 	};
 	
-	//$scope.repositories = UserRepositories.getRepositories();
 	$scope.repositoryDescription = "Here will be a short description of repository.Post no so what deal evil rent by real in. But her ready least set lived spite solid. " +
 								   "September how men saw tolerably two behaviour arranging. She offices for highest and replied one venture pasture." +
 								   "Applauded no discovery in newspaper allowance am northward." +
 								   "Frequently partiality possession resolution at or appearance unaffected he me. ";
 	
-	/* save current repository extensions for popup - it doesn't know about it */
-	$scope.setExtensions = function(repoExtensions) {
-		logger.debug("current repo" + repoExtensions.messageResult);
-        $scope.currentRepoExtensions = repoExtensions;
-	};		
+	/* save current repository + extensions for popup - it doesn't know about it */
+	$scope.setExtensions = function(repositoryExtensions, repository) {
+        $scope.currentRepositoryExtensions = repositoryExtensions;
+        $scope.currentRepository = repository; 
+	};
 	
 	/**
 	 * Create Repository
 	 */
 	$scope.createRepository = function() {
-		logger.debug("repo is: " + $scope.repositories.messageResult);
-		$scope.repositories.messageResult.unshift({ name : '', description : '' });
+		$scope.newRepository = { nodeUri:'', properties: { user: Login.login , name:  '', description: '', extensions: [] }};
+		$scope.repositories.messageResult.unshift($scope.newRepository);
+	};
+	
+	/**
+	 * Save - edit 
+	 */
+	$scope.save = function(editRepository,newRepositoryName, newRepositoryDescription) {
+		// save node
+		$scope.editRepository = editRepository;
+		$scope.editRepository.properties.name = newRepositoryName;
+		$scope.editRepository.properties.description = newRepositoryDescription;
+		//call server method
+		$scope.newRepository = Repository.action({ path: "save" }, $scope.editRepository);
 	};
 	
 	/**
@@ -201,35 +216,25 @@ flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$
 	 */
 	$scope.open = function() {
 	};
-	
+		 
 	/**
 	 * Apply Extension to Repository
 	 */
-	$scope.applyExtension = function(extension) {
-		logger.debug("before " + $scope.currentRepo.extensions);
-		for (var index in $scope.repositories) {
-			if($scope.repositories[index].name == $scope.currentRepo.name) {
-				$scope.repositories[index].extensions.push(extension);
-			}
-		}
-		logger.debug("after " + $scope.currentRepo.extensions);
+	$scope.applyExtension = function(extensionId) {
+		Repository.action({ path: "applyExtension" },{ 'login': Login.login, 'repositoryName': $scope.currentRepository.properties.name, 'extensionId': extensionId })
+				  .$promise.then(function(result) {
+					  $scope.currentRepositoryExtensions = result;
+				});
 	};
 	
 	/**
-	 * Unapply Extension to Repository
+	 * Unapply Extension to Repository 
 	 */
-	$scope.unapplyExtension = function(extension) {
-		logger.debug("before " + $scope.currentRepo.extensions + " extension " + extension);
-		for (var index in $scope.repositories) {
-			if ($scope.repositories[index].name == $scope.currentRepo.name) {
-				for (var indexExt in $scope.repositories[index].extensions) {
-					if ($scope.repositories[index].extensions[indexExt].label == extension) {
-						$scope.repositories[index].extensions.splice(indexExt,1);
-					}
-				}
-			}
-		}
-		logger.debug("after " + $scope.currentRepo.extensions);
+	$scope.unapplyExtension = function(extensionId) {
+		Repository.action({ path: "unapplyExtension" },{ 'login': Login.login, 'repositoryName': $scope.currentRepository.properties.name, 'extensionId': extensionId })
+		  .$promise.then(function(result) {
+			  $scope.currentRepositoryExtensions = result;
+		});
 	};
 	
 	/**
@@ -244,21 +249,15 @@ flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$
 	};
 	
 	/**
-	 * Save - edit 
+	 * Delete repository
 	 */
-	$scope.save = function(initialName, newRepositoryName, newRepositoryDescription) {
-		$scope.newName = newRepositoryName;
-		$scope.newDes = newRepositoryDescription;
-		$scope.initialName = initialName;
-		logger.debug("initialName " + $scope.initialName + " newName " + $scope.newDes + " newDescrip " + $scope.newName);
-
-		for (var index in $scope.repositories) {
-			if($scope.repositories[index].name == $scope.initialName) {
-				$scope.repositories[index].name = $scope.newName;
-				$scope.repositories[index].description = $scope.newDes;
-			}
-		}
-	};
+	$scope.deleteRepository = function(repositoryNodeUri) {
+		logger.debug("uri " + repositoryNodeUri);
+		Repository.action({ path: "deleteRepository" }, repositoryNodeUri)
+		  .$promise.then(function(result) {
+			  $scope.repositories = result;
+		});
+	}
 	
 }]);
 

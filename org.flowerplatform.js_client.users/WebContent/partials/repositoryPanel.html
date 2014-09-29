@@ -7,36 +7,45 @@
 				<div style="display: inline; float: right;">
 					<button type="button" class="btn btn-default" style="margin-top: -6px;" ng-click="edit = !edit">Edit</button>
 					<button type="button" class="btn btn-success" style="margin-top: -6px;">Open</button>
+					<button type="button" class="btn btn-danger" style="margin-top: -6px;" ng-model="repo.nodeUri" ng-click="deleteRepository(repo.nodeUri)">Delete</button>
 				</div>
 			</div>
 			<div ng-show="edit || !repo.properties.name">
 				<form class="form" role="form">
 					<div class="form-group" style="float: right">
-						<button type="submit" class="btn btn-default" ng-click=save(repo.properties.name,repoName,repoDescription); >Save</button>
+						<button type="submit" class="btn btn-default" ng-click=save(repo,repoName,repoDescription); >Save</button>
 						<button type="submit" class="btn btn-default" ng-click="edit=!edit;">Cancel</button>
 					</div>
 					<br>
 					<div class="form-group">
 						<label>Repository Name</label>
-						<input type="text" class="form-control" ng-init="repoName=repo.properties.name"  ng-model="repoName">
-						<label>Description</label>
-						<input type="text" class="form-control" ng-init="repoDescription=repo.properties.description" ng-model="repoDescription">
+						<input type="text" class="form-control" ng-init="repoName=repo.properties.name" ng-model="repoName">
 					</div>
 				</form>
 			</div>
 		</div>
 		
-		<div class="panel-body" ng-model="repo.nodeUri" ng-init="repoExtensions=getExtensions(repo.nodeUri)">
-			<div>{{repo.properties.description}}</div>
-			<br>
-			<label>Extensions:</label>
-			&nbsp;
-			<div style="display: inline;" ng-repeat="extensions in repoExtensions">
-				<div style="display: inline;" ng-repeat="extension in extensions">
-					<span class="label" style="color: black; background-color: {{extension.color}};">{{extension.label}}</span>
+		<div class="panel-body" ng-model="repo.nodeUri" ng-init="repoExtensions=getExtensions(repo.nodeUri); ">
+			<div ng-show="!edit && repo.properties.name">
+				<div>{{repo.properties.description}}</div>
+				<br>
+				<label>Extensions:</label>
+				&nbsp;
+				<div style="display: inline;" ng-repeat="extensions in repoExtensions">
+					<div style="display: inline;" ng-repeat="extension in extensions">
+						<span class="label" style="color: black; background-color: {{extension.color}};">{{extension.label}}</span>
+					</div>
 				</div>
+				<button type="button" class="btn btn-default btn-sm" style="float:right;" data-toggle="modal" data-target="#myModal" ng-click="setExtensions(repoExtensions,repo)">Apply/Unapply Extensions</button>
 			</div>
-			<button type="button" class="btn btn-default btn-sm" style="float:right;" data-toggle="modal" data-target="#myModal" ng-click="setExtensions(repoExtensions)">Apply/Unapply Extensions</button>
+			<div ng-show="edit || !repo.properties.name">
+				<form class="form" role="form">
+					<div class="form-group">
+						<label>Description</label>
+						<textarea type="text" class="form-control" ng-init="repoDescription=repo.properties.description" ng-model="repoDescription"></textarea>
+					</div>
+				</form>
+			</div>
 		</div>
 	</div>
 	

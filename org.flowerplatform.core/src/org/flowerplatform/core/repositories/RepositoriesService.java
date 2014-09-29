@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -18,8 +19,6 @@ import javax.ws.rs.core.MediaType;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
@@ -50,93 +49,154 @@ public class RepositoriesService {
 	/**
 	 * @author see class
 	 */
-	public void createRepository(String login, String repoName, String description) throws IOException {
-		
+	@POST @Path("//save")
+	public Node saveRepository(Node repository) throws IOException {		
+		String login = (String) repository.getProperties().get(CoreConstants.USER);
+		String newName = (String) repository.getProperties().get(CoreConstants.NAME);
+		String newDescription = (String) repository.getProperties().get(CoreConstants.DESCRIPTION);
+		String newNameRepo = getRepositoryName(login, newName);
+		ServiceContext<ResourceService> context = new ServiceContext<ResourceService>();
+		context.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
+		Node memberNode;
+		Map<String, Object> properties = new HashMap<String, Object>();
+
+		if (repository.getNodeUri().equals("")) {
+			// create repository
+			repository.setType(CoreConstants.REPOSITORY);
+			repository.setNodeUri(getRepositoryNodeUri(login, newName));
+
+			Node repositories = resourceService.getNode(CoreConstants.REPOSITORIES_URI, context);
+			nodeService.addChild(repositories, repository, new ServiceContext<NodeService>(nodeService));
+		} else {
+			// rename repo
+			repository.setRawNodeData(resourceService.getNode(repository.getNodeUri(), context).getRawNodeData());
+			repository.setNodeUri(getRepositoryNodeUri(login, newName));
+			// set login so that changeID in PersistencePropertySetter is
+			// called.
+			// we do not set NAME because the oldName is needed later.
+			nodeService.setProperty(repository, CoreConstants.USER, login, new ServiceContext<NodeService>().add(CoreConstants.POPULATE_WITH_PROPERTIES, true));
+		}
+
+		Node repositoryOnServer = resourceService.getNode(repository.getNodeUri(), context);
+		String oldName = (String) repositoryOnServer.getProperties().get(CoreConstants.NAME);
+		String oldNameRepo = getRepositoryName(login, oldName);
+
 		// create user directory
 		File userDir = new File(CoreConstants.FLOWER_PLATFORM_WORKSPACE + "/" + login);
 		if (!userDir.exists()) {
 			userDir.mkdirs();
 		}
-		
+
 		// create repository directory
-		File repoDir = new File(CoreConstants.FLOWER_PLATFORM_WORKSPACE + "/" + login + "/" + repoName, ".git");
-		if (!repoDir.exists()) {
+		File repoDir = new File(CoreConstants.FLOWER_PLATFORM_WORKSPACE + "/" + login + "/" + newName + "/");
+		File oldRepoDir = new File(CoreConstants.FLOWER_PLATFORM_WORKSPACE + "/" + login + "/" + oldName + "/");
+
+		if (!repoDir.exists() && !oldRepoDir.exists()) {
 			repoDir.mkdirs();
-			
-			Repository repository = FileRepositoryBuilder.create(repoDir);
-			repository.create();
+		} else if (oldRepoDir.exists() && !oldName.equals(newName)) {
+			oldRepoDir.renameTo(repoDir);
 		} else {
-			throw new RuntimeException(String.format("Repository %s for user %s already exists", repoName, login));
+			throw new RuntimeException(String.format("Repository %s for user %s already exists", newName, login));
 		}
-		
-		// create repository node & populate with properties
-		Node repositoriesNode = resourceService.getNode(CoreConstants.REPOSITORIES_URI);
-		Node repositoryNode = new Node(getRepositoryNodeUri(login, repoName), CoreConstants.REPOSITORY);
-		nodeService.addChild(
-				repositoriesNode, 
-				repositoryNode, 
-				new ServiceContext<NodeService>(nodeService));
-		Map<String, Object> properties = new HashMap<String, Object>();
-		properties.put(CoreConstants.USER, login);
-		properties.put(CoreConstants.NAME, repoName);
-		properties.put(CoreConstants.DESCRIPTION, description);
-		properties.put(CoreConstants.MEMBERS, new StringList());
-		properties.put(CoreConstants.STARRED_BY, new StringList());
-		properties.put(CoreConstants.EXTENSIONS, new StringList());
-		nodeService.setProperties(repositoryNode, properties, new ServiceContext<NodeService>());
-		
-		// update user data
-		Node userNode = resourceService.getNode(getUriFromFragment(login));
-		
-		// owned repos
-		List<String> ownedRepos = (List<String>) userNode.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
+
+		// update OWNED_REPOSITORIES
+		Node ownerNode = resourceService.getNode(getUriFromFragment((String) repository.getPropertyValue(CoreConstants.USER)));
+		StringList ownedRepos = (StringList) ownerNode.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
 		if (ownedRepos == null) {
 			ownedRepos = new StringList();
 		}
-		ownedRepos.add(getRepositoryName(login, repoName));
-		nodeService.setProperty(userNode, CoreConstants.OWNED_REPOSITORIES, ownedRepos, new ServiceContext<NodeService>());
-		
+		ownedRepos.remove(oldNameRepo);
+		ownedRepos.add(newNameRepo);
+		nodeService.setProperty(ownerNode, CoreConstants.OWNED_REPOSITORIES, ownedRepos, new ServiceContext<NodeService>());
+
+		// update MEMBER_IN_REPOSITORIES
+		List<String> members = (List<String>) repositoryOnServer.getPropertyValue(CoreConstants.MEMBERS);
+		if (members == null) {
+			members = new StringList();
+		}
+		for (String member : members) {
+			memberNode = resourceService.getNode(getUriFromFragment(member));
+			List<String> repositoriesWhereMember = (List<String>) memberNode.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES);
+			repositoriesWhereMember.remove(oldNameRepo);
+			repositoriesWhereMember.add(newNameRepo);
+
+			nodeService.setProperty(memberNode, CoreConstants.MEMBER_IN_REPOSITORIES, repositoriesWhereMember, new ServiceContext<NodeService>());
+		}
+
+		// update STARRED_REPOSITORIES
+		List<String> starredBy = (List<String>) repositoryOnServer.getPropertyValue(CoreConstants.STARRED_BY);
+		if (starredBy == null) {
+			starredBy = new StringList();
+		}
+		for (String memberWhoStarred : starredBy) {
+			memberNode = resourceService.getNode(getUriFromFragment(memberWhoStarred));
+			List<String> starredRepositories = (List<String>) memberNode.getPropertyValue(CoreConstants.STARRED_REPOSITORIES);
+			starredRepositories.remove(oldNameRepo);
+			starredRepositories.add(newNameRepo);
+
+			nodeService.setProperty(memberNode, CoreConstants.STARRED_REPOSITORIES, starredRepositories, new ServiceContext<NodeService>());
+		}
+
+		// update properties
+		properties.put(CoreConstants.USER, login);
+		properties.put(CoreConstants.NAME, newName);
+		properties.put(CoreConstants.DESCRIPTION, newDescription);
+		properties.put(CoreConstants.MEMBERS, members);
+		properties.put(CoreConstants.STARRED_BY, starredBy);
+		List<String> extensions = (List<String>) repositoryOnServer.getProperties().get(CoreConstants.EXTENSIONS);
+		if (extensions == null) {
+			extensions = new StringList();
+		}
+		properties.put(CoreConstants.EXTENSIONS, extensions);
+		nodeService.setProperties(repository, properties, new ServiceContext<NodeService>());
+
 		// save file
 		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
+
+		return repository;
 	}
 	
 	/**
 	 * @author see class
 	 */
-	public void deleteRepository(String login, String repoName) {
+	@POST @Path("//deleteRepository")
+	public List<Node> deleteRepository(String nodeUri) {
+		Node repositoryFromClient = resourceService.getNode(nodeUri, new ServiceContext<ResourceService>().add(CoreConstants.POPULATE_WITH_PROPERTIES, true));
+		String login = (String) repositoryFromClient.getProperties().get(CoreConstants.USER);
+		String repoName = (String) repositoryFromClient.getProperties().get(CoreConstants.NAME);
 		Object repository;
 		String repositoryName = getRepositoryName(login, repoName);
-		
+
 		try {
-			repository = CorePlugin.getInstance().getFileAccessController().getFile(repositoryName);				
+			repository = CorePlugin.getInstance().getFileAccessController().getFile(repositoryName);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		if (!CorePlugin.getInstance().getFileAccessController().exists(repository)) {
 			throw new RuntimeException(String.format("Repository '%s' for user '%s' doesn't exist!", repoName, login));
 		}
-		
+
 		// delete repository
 		try {
 			FileUtils.deleteDirectory(CorePlugin.getInstance().getFileAccessController().getFileAsFile(repository));
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Repository dir '%s' cannot be deleted", repoName), e);
 		}
-		
+
 		// update user data
 		Node userNode = resourceService.getNode(getUriFromFragment(login));
-		
+
 		// update OWNED_REPOSITORIES
 		List<String> ownedRepos = (List<String>) (userNode.getPropertyValue(CoreConstants.OWNED_REPOSITORIES));
 		ownedRepos.remove(repositoryName);
 		nodeService.setProperty(userNode, CoreConstants.OWNED_REPOSITORIES, ownedRepos, new ServiceContext<NodeService>());
-		
+
 		Node repositoryNode = resourceService.getNode(getUriFromFragment(repositoryName));
 		List<String> members = (List<String>) repositoryNode.getPropertyValue(CoreConstants.MEMBERS);
 		List<String> starredBy = (List<String>) repositoryNode.getPropertyValue(CoreConstants.STARRED_BY);
 		Node memberNode;
-		
+
 		// update MEMBER_IN_REPOSITORIES
 		for (String member : members) {
 			memberNode = resourceService.getNode(getUriFromFragment(member));
@@ -144,7 +204,7 @@ public class RepositoriesService {
 			repositoriesWhereMember.remove(repositoryName);
 			nodeService.setProperty(memberNode, CoreConstants.MEMBER_IN_REPOSITORIES, repositoriesWhereMember, new ServiceContext<NodeService>());
 		}
-		
+
 		// update STARRED_REPOSITORIES
 		for (String memberWhoStarred : starredBy) {
 			memberNode = resourceService.getNode(getUriFromFragment(memberWhoStarred));
@@ -152,62 +212,18 @@ public class RepositoriesService {
 			starredRepositories.remove(repositoryName);
 			nodeService.setProperty(memberNode, CoreConstants.STARRED_REPOSITORIES, starredRepositories, new ServiceContext<NodeService>());
 		}
-		
+
 		// delete repository node
-		nodeService.removeChild(
-				resourceService.getNode(CoreConstants.REPOSITORIES_URI), 
-				repositoryNode, 
-				new ServiceContext<NodeService>());
-		
+		nodeService.removeChild(resourceService.getNode(CoreConstants.REPOSITORIES_URI), repositoryNode, new ServiceContext<NodeService>());
+
 		// save file
 		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
+
+		return getRepositoriesForUserAsNode(getUriFromFragment(login));
 	}
 
-	/**
-	 * @author see class
-	 */
-	public void renameRepository(String login, String oldNameWithoutRepo, String newNameWithoutRepo) {
-		String oldName = getRepositoryName(login, oldNameWithoutRepo);
-		String newName = getRepositoryName(login, newNameWithoutRepo);
-		
-		Node repositoryNode = resourceService.getNode(getUriFromFragment(oldName));
-
-		// this changes also the ID. See PersistencePropertySetter for details
-		repositoryNode.setNodeUri(getRepositoryNodeUri(login, newNameWithoutRepo));
-		nodeService.setProperty(repositoryNode, CoreConstants.NAME, newNameWithoutRepo, new ServiceContext<NodeService>());
-		
-		// update OWNED_REPOSITORIES
-		Node ownerNode = resourceService.getNode(getUriFromFragment((String) repositoryNode.getPropertyValue(CoreConstants.USER)));
-		List<String> ownedRepos = (List<String>) ownerNode.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
-		ownedRepos.remove(oldName); ownedRepos.add(newName);
-		nodeService.setProperty(ownerNode, CoreConstants.OWNED_REPOSITORIES, ownedRepos, new ServiceContext<NodeService>());
-		
-		List<String> members = (List<String>) repositoryNode.getPropertyValue(CoreConstants.MEMBERS);
-		List<String> starredBy = (List<String>) repositoryNode.getPropertyValue(CoreConstants.STARRED_BY);
-		Node memberNode;
-		
-		// update MEMBER_IN_REPOSITORIES
-		for (String member : members) {
-			memberNode = resourceService.getNode(getUriFromFragment(member));
-			List<String> repositoriesWhereMember = (List<String>) memberNode.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES);
-			repositoriesWhereMember.remove(oldName); repositoriesWhereMember.add(newName);
-			
-			nodeService.setProperty(memberNode, CoreConstants.MEMBER_IN_REPOSITORIES, repositoriesWhereMember, new ServiceContext<NodeService>());
-		}
-		
-		// update STARRED_REPOSITORIES
-		for (String memberWhoStarred : starredBy) {
-			memberNode = resourceService.getNode(getUriFromFragment(memberWhoStarred));
-			List<String> starredRepositories = (List<String>) memberNode.getPropertyValue(CoreConstants.STARRED_REPOSITORIES);
-			starredRepositories.remove(oldName); starredRepositories.add(newName);
-			
-			nodeService.setProperty(memberNode, CoreConstants.STARRED_REPOSITORIES, starredRepositories, new ServiceContext<NodeService>());
-		}
-		
-		// save file
-		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
-	}
 	
+
 	/**
 	 * @author see class
 	 */
@@ -363,7 +379,11 @@ public class RepositoriesService {
 	/**
 	 * @author see class
 	 */
-	public void applyExtension(String login, String repoName, String extensionId) {
+	@POST @Path("//applyExtension")
+	public List<ExtensionMetadata> applyExtension(Map<String, String> map) {
+		String login = (String) map.get("login");
+		String repoName = (String) map.get("repositoryName");
+		String extensionId = (String) map.get("extensionId");
 		Node repositoryNode = resourceService.getNode(getRepositoryNodeUri(login, repoName));
 		StringList extensionsString = (StringList) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
 		List<ExtensionInfoInFile> extensions = fromStringListToExtensionInfoInFile(extensionsString);
@@ -385,6 +405,21 @@ public class RepositoriesService {
 			
 		// save file
 		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
+		
+		return fromExtensionInfoInFileToExtensionMetadata(extensions);
+	}
+	
+	/**
+	 * @author see class
+	 */
+	public List<ExtensionMetadata> fromExtensionInfoInFileToExtensionMetadata(List<ExtensionInfoInFile> extensions) {
+		  List<ExtensionMetadata> result = new ArrayList<ExtensionMetadata>();
+		  
+		  for (ExtensionInfoInFile extensionInfoInFile : extensions) {
+		   result.add(getExtensionMetadataForExtensionId(extensionInfoInFile.getId()));
+		  }
+		  
+		 return result;
 	}
 	
 	/**
@@ -425,7 +460,39 @@ public class RepositoriesService {
 	/**
 	 * @author see class
 	 */
-	public void unapplyExtension(String login, String repoName, String extensionId) {
+//	public void unapplyExtension(String login, String repoName, String extensionId) {
+//		Node repositoryNode = resourceService.getNode(getRepositoryNodeUri(login, repoName));
+//		StringList extensionsString = (StringList) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
+//		List<ExtensionInfoInFile> extensions = fromStringListToExtensionInfoInFile(extensionsString);
+//		ExtensionInfoInFile extension = getExtensionInfoInFile(extensions, extensionId);
+//
+//		if (extension == null) {
+//			throw new RuntimeException(String.format("The extension with ID '%s' doesn't exist for repository '%s'", extensionId, repoName));
+//		}
+//		
+//		if (extension.getExtensionsThatDependOnThis().size() != 0) {
+//			throw new RuntimeException(String.format("Cannot delete extension with ID '%s'. Another extensions (e.g. '%s') depend on it", 
+//					extensionId, 
+//					extension.getExtensionsThatDependOnThis().get(0)));
+//		}
+//		
+//		List<String> removedExtensions = new ArrayList<String>(Arrays.asList(extension.getId()));
+//		extensions.remove(extension);
+//		
+//		// remove it's dependencies
+//		unapplyDependencies(extensionId, extensions, removedExtensions);
+//		
+//		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, fromExtensionInfoInFileToStringList(extensions), new ServiceContext<NodeService>());
+//		
+//		// save file
+//		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
+//	}
+	
+	@POST @Path("//unapplyExtension")
+	public List<ExtensionMetadata> unapplyExtension(Map<String, String> map) {
+		String login = (String) map.get("login");
+		String repoName = (String) map.get("repositoryName");
+		String extensionId = (String) map.get("extensionId");
 		Node repositoryNode = resourceService.getNode(getRepositoryNodeUri(login, repoName));
 		StringList extensionsString = (StringList) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
 		List<ExtensionInfoInFile> extensions = fromStringListToExtensionInfoInFile(extensionsString);
@@ -434,23 +501,24 @@ public class RepositoriesService {
 		if (extension == null) {
 			throw new RuntimeException(String.format("The extension with ID '%s' doesn't exist for repository '%s'", extensionId, repoName));
 		}
-		
+
 		if (extension.getExtensionsThatDependOnThis().size() != 0) {
-			throw new RuntimeException(String.format("Cannot delete extension with ID '%s'. Another extensions (e.g. '%s') depend on it", 
-					extensionId, 
-					extension.getExtensionsThatDependOnThis().get(0)));
+			throw new RuntimeException(String.format("Cannot delete extension with ID '%s'. Another extensions (e.g. '%s') depend on it", extensionId, extension
+					.getExtensionsThatDependOnThis().get(0)));
 		}
-		
+
 		List<String> removedExtensions = new ArrayList<String>(Arrays.asList(extension.getId()));
 		extensions.remove(extension);
-		
+
 		// remove it's dependencies
 		unapplyDependencies(extensionId, extensions, removedExtensions);
-		
+
 		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, fromExtensionInfoInFileToStringList(extensions), new ServiceContext<NodeService>());
-		
+
 		// save file
 		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
+
+		return fromExtensionInfoInFileToExtensionMetadata(extensions);
 	}
 	
 	/**
@@ -624,7 +692,6 @@ public class RepositoriesService {
 		}
   
 		return extensions;
-
 	 }
-	
+
 }

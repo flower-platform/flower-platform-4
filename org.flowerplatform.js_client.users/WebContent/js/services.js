@@ -59,7 +59,9 @@ flowerProject.lazy.factory('Repository', ['$resource', function($resource) {
 	return $resource('http://localhost:8080/org.flowerplatform.host.web_app/ws-dispatcher/repository/:id/:path', {}, {
 		get:	{ method: 'GET', params: { id: '@id' } },
 	    getExtensionsForRepository: { method: 'GET', params: { id: '@id', path: '@path'} },
-		getAllExtensions: { method: 'GET', params: { id: '', path: '@path' } }
+		getAllExtensions: { method: 'GET', params: { id: '', path: '@path' } },
+		action:	{ method: 'POST', params: { id: '', path: '@path' } }
+		
 	});
 	
 }]);

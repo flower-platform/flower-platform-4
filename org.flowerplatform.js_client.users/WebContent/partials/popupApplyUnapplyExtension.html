@@ -15,7 +15,7 @@
 								<div class="panel-heading" style="background-color: {{availableExtension.color}};">
 									<h4 class="panel-title">
 										<a data-toggle="collapse" data-parent="#accordion-parent" href="{{'#' + $index}}" ng-click="apply = !apply" >{{availableExtension.label}}</a>
-										<button type="button" class="btn btn-default" ng-show="apply" ng-model="availableExtension" ng-click="applyExtension(availableExtension)" style="float:right; margin-top: -9px;">Apply</button>
+										<button type="button" class="btn btn-default" ng-show="apply" ng-model="availableExtension.id" ng-click="applyExtension(availableExtension.id)" style="float:right; margin-top: -9px;">Apply</button>
 									</h4>
 								</div>
 								<div id="{{$index}}" class="panel-collapse collapse">
@@ -34,13 +34,13 @@
 					
 					<br>
 					<h4>Applied Extensions</h4>
-					<div ng-repeat="appliedExtension in currentRepoExtensions.messageResult" id="accordion">
+					<div ng-repeat="appliedExtension in currentRepositoryExtensions.messageResult" id="accordion">
 						<div class="panel-group">
 							<div class="panel panel-default">
 								<div class="panel-heading" style="background-color: {{appliedExtension.color}};">
 									<h4 class="panel-title">
 										<a data-toggle="collapse" data-parent="#accordion" href="{{'#' + appliedExtension.id}}" ng-click="unapply = !unapply">{{appliedExtension.label}}</a>
-										<button type="button" class="btn btn-default" ng-show="unapply" ng-model="appliedExtension.label" ng-click="unapplyExtension(appliedExtension.label)" style="float:right; margin-top: -9px;">Unapply</button>
+										<button type="button" class="btn btn-default" ng-show="unapply" ng-model="appliedExtension.label" ng-click="unapplyExtension(appliedExtension.id)" style="float:right; margin-top: -9px;">Unapply</button>
 									</h4>
 								</div>
 								<div id="{{appliedExtension.id}}" class="panel-collapse collapse">
