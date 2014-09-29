@@ -141,16 +141,11 @@ package org.flowerplatform.flexdiagram.mindmap {
 				if (event == null || event.property == "expandedWidth") {
 					invalidateDisplayList();
 				}
-				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudColor", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_COLOR);
-				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudType", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE);
+				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudColor", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_COLOR, CLOUD_COLOR_DEFAULT);
+				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudType", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE, null);
 			}
 			
 			MindMapModelRendererController(ControllerUtils.getRendererController(diagramShellContext, data)).rendererModelChangedHandler(diagramShellContext, this, data, event);
-		}
-		
-		override protected function createChildren():void {
-			super.createChildren();
-			cloudColor = CLOUD_COLOR_DEFAULT;
 		}
 		
 		override protected function drawBackground(unscaledWidth:Number, unscaledHeight:Number):void {

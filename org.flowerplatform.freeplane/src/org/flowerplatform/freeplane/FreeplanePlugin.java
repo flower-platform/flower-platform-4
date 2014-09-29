@@ -31,6 +31,10 @@ import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_MINDMAP_RESO
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_CATEGORY;
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_CONTENT_TYPE;
+import static org.flowerplatform.mindmap.MindMapConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX;
+import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_VALUE_CONVERTER;
+import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_CSV_TO_LIST;
+import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_STRING_HEX_TO_UINT;
 import static org.freeplane.features.url.UrlManager.FREEPLANE_FILE_EXTENSION;
 
 import org.flowerplatform.core.CorePlugin;
@@ -57,6 +61,9 @@ import org.flowerplatform.freeplane.style.controller.MindMapStyleResourceHandler
 import org.flowerplatform.freeplane.style.controller.StyleRootChildrenProvider;
 import org.flowerplatform.freeplane.style.controller.StyleRootPropertiesProvider;
 import org.flowerplatform.mindmap.MindMapConstants;
+import org.flowerplatform.resources.ResourcesPlugin;
+import org.flowerplatform.util.UtilConstants;
+import org.flowerplatform.util.controller.GenericDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.freeplane.features.url.UrlManager;
 import org.freeplane.main.headlessmode.HeadlessMModeControllerFactory;
@@ -160,8 +167,26 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 //			.addAdditiveController(CHILDREN_PROVIDER, new StyleRootChildrenProvider())
 //			.addAdditiveController(PROPERTIES_PROVIDER, new DefaultPropertiesProvider());
 		
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FreeplaneConstants.FREEPLANE_NODE_TYPE);
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FreeplaneConstants.FREEPLANE_NODE_TYPE)
+			.addCategory(MindMapConstants.GENERAL_PURPOSE_MIND_MAP_CATEGORY)
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.BASE_RENDERER_FONT_FAMILY, new GenericDescriptor("font.NAME"))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.BASE_RENDERER_FONT_SIZE, new GenericDescriptor("font.SIZE"))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.BASE_RENDERER_FONT_BOLD, new GenericDescriptor("font.BOLD"))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.BASE_RENDERER_FONT_ITALIC, new GenericDescriptor("font.ITALIC"))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.BASE_RENDERER_TEXT, new GenericDescriptor("TEXT"))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.BASE_RENDERER_TEXT_COLOR, new GenericDescriptor("COLOR")
+				.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_STRING_HEX_TO_UINT))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.BASE_RENDERER_BACKGROUND_COLOR, new GenericDescriptor("BACKGROUND_COLOR")
+				.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_STRING_HEX_TO_UINT))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.BASE_RENDERER_ICONS, new GenericDescriptor("icons")
+				.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_CSV_TO_LIST)
+				.addExtraInfoProperty(UtilConstants.EXTRA_INFO_CSV_TO_LIST_PREFIX, ResourcesPlugin.getInstance().getResourceUrl("images/mindmap/icons/"))
+				.addExtraInfoProperty(UtilConstants.EXTRA_INFO_CSV_TO_LIST_SUFFIX, ".png"))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_CLOUD_TYPE, new GenericDescriptor("cloud.SHAPE"))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_CLOUD_COLOR, new GenericDescriptor("cloud.COLOR").addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_STRING_HEX_TO_UINT))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_HAS_CHILDREN, new GenericDescriptor("hasChildren"));
 //			.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(TEXT).setOrderIndexAs(-10000));
+		
 	}
 
 	/**

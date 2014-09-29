@@ -49,7 +49,7 @@ package org.flowerplatform.flex_client.mindmap {
 			registerTool(ZoomTool.ID, new ClassFactoryWithConstructor(ZoomTool));
 			registerTool(SelectOnClickTool.ID, new ClassFactoryWithConstructor(SelectOnClickTool));
 			registerTool(MindMapDragTool.ID, new ClassFactoryWithConstructor(MindMapDragTool));
-			registerTool(OpenAction.ID, new ClassFactoryWithConstructor(ActionTool, {"action": new OpenAction(), "eventType": WakeUpTool.DOUBLE_CLICK}));		
+			registerTool(OpenAction.ID, new ClassFactoryWithConstructor(ActionTool, {"action": new OpenAction(null, null), "eventType": WakeUpTool.DOUBLE_CLICK}));		
 			registerTool(ExpandCollapseAction.ID, new ClassFactoryWithConstructor(ActionTool, {"action": new ExpandCollapseAction(), "eventType": WakeUpTool.CLICK}));
 		}
 			

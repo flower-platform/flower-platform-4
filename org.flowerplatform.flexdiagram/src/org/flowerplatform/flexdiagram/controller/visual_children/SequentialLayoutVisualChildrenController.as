@@ -118,7 +118,7 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 			}
 
 			IVisualChildrenRefreshable(parentRenderer).shouldRefreshVisualChildren = false;
-			trace("SeqLayout.refrVC(): sameModelAndRenderer=" + logSameModelAndRenderer + ",renderersReused=" + logRenderersReused + ",renderersRemoved=" + logRenderersRemoved + ",renderersAdded=" + logRenderersAdded);
+//			trace("SeqLayout.refrVC(): sameModelAndRenderer=" + logSameModelAndRenderer + ",renderersReused=" + logRenderersReused + ",renderersRemoved=" + logRenderersRemoved + ",renderersAdded=" + logRenderersAdded);
 		}
 		
 	}

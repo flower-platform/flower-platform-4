@@ -258,9 +258,9 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 			IVisualChildrenRefreshable(parentRenderer).shouldRefreshVisualChildren = false;
 			IAbsoluteLayoutRenderer(parentRenderer).noNeedToRefreshRect = new Rectangle(horizontalNoNeedToRefreshLeft, verticalNoNeedToRefreshTop, horizontalNoNeedToRefreshRight - horizontalNoNeedToRefreshLeft, verticalNoNeedToRefreshBottom - verticalNoNeedToRefreshTop);
 			
-			trace("AbsLayout.refrVC(): " + (logTsModelIterationDone - logTsStart) + "ms/" + (new Date().time - logTsModelIterationDone) + "ms visibleReusableRenderers=" + visibleModelsCounter + 
-				",newModels=" + logNewModels + ",renderersReused=" + logRenderersReused + ",reusableRenderersCreated=" + logReusableRenderersCreated + 
-				",nonReusableRenderersCreated=" + logNonReusableRenderersCreated + ",reusableRenderersRemoved=" + logReusableRenderersRemoved);
+//			trace("AbsLayout.refrVC(): " + (logTsModelIterationDone - logTsStart) + "ms/" + (new Date().time - logTsModelIterationDone) + "ms visibleReusableRenderers=" + visibleModelsCounter + 
+//				",newModels=" + logNewModels + ",renderersReused=" + logRenderersReused + ",reusableRenderersCreated=" + logReusableRenderersCreated + 
+//				",nonReusableRenderersCreated=" + logNonReusableRenderersCreated + ",reusableRenderersRemoved=" + logReusableRenderersRemoved);
 		}
 			
 		public function refreshContentRect(context:DiagramShellContext, parentModel:Object):void {

@@ -87,16 +87,16 @@
 					invalidateDisplayList();
 					backgroundColor = dataConverted.backgroundColor;
 				}
-				if (event == null || event.property == "icons") {
-					if (dataConverted.icons != null) {
-						for (var i:int = 0; i < dataConverted.icons.length; i++) {
-							if (dataConverted.icons.getItemAt(i).indexOf(DEFAULT_PATH) < 0) {
-								dataConverted.icons.setItemAt(DEFAULT_PATH + dataConverted.icons.getItemAt(i), i);
-							}
-						}
-					}
-					icons = dataConverted.icons;
-				}
+//				if (event == null || event.property == "icons") {
+//					if (dataConverted.icons != null) {
+//						for (var i:int = 0; i < dataConverted.icons.length; i++) {
+//							if (dataConverted.icons.getItemAt(i).indexOf(DEFAULT_PATH) < 0) {
+//								dataConverted.icons.setItemAt(DEFAULT_PATH + dataConverted.icons.getItemAt(i), i);
+//							}
+//						}
+//					}
+//					icons = dataConverted.icons;
+//				}
 			} 
 			
 			override protected function shouldDrawCircle():Boolean {

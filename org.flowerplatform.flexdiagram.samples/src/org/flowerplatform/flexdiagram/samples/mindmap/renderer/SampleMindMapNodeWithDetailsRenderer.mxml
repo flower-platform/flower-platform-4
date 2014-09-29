@@ -54,15 +54,15 @@
 					if (event == null || event.property == "expandedWidth") {
 						invalidateDisplayList();
 					}
-					if (event == null || event.property == "note") {
-						note = dataConverted.note;
-						if (SampleMindMapNodeRenderer(embeddedRenderer).dataConverted.icons == null) {
-							SampleMindMapNodeRenderer(embeddedRenderer).dataConverted.icons = new ArrayCollection();
-						}
-						if (dataConverted.note != null) {
-							SampleMindMapNodeRenderer(embeddedRenderer).dataConverted.icons.addItemAt(DEFAULT_NOTE_ICON_PATH, 0);
-						}
-					} 
+//					if (event == null || event.property == "note") {
+//						note = dataConverted.note;
+//						if (SampleMindMapNodeRenderer(embeddedRenderer).dataConverted.icons == null) {
+//							SampleMindMapNodeRenderer(embeddedRenderer).dataConverted.icons = new ArrayCollection();
+//						}
+//						if (dataConverted.note != null) {
+//							SampleMindMapNodeRenderer(embeddedRenderer).dataConverted.icons.addItemAt(DEFAULT_NOTE_ICON_PATH, 0);
+//						}
+//					} 
 					if (event == null || event.property == "details") {
 						details = dataConverted.details;
 					}

@@ -44,7 +44,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.renderer {
 		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 			super.modelChangedHandler(event);
 			var valuesProvider:ValuesProvider = getRequiredValuesProvider();
-			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "detailsText", "mindMapNodeRenderer.detailsText");
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "detailsText", "mindMapNodeRenderer.detailsText", "");
 		}	
 		
 	}
