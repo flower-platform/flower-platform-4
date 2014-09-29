@@ -1,7 +1,12 @@
 package org.flowerplatform.freeplane.client;
 
+import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesCreator;
@@ -61,6 +66,21 @@ public class FlowerPlatformManager implements IExtension {
 	}
 	
 	/**
+	 * Method which gets the XML content from a given @NodeModel.
+	 * @author Valentina Bojan
+	 */
+	public String loadXmlContentFromNode(NodeModel node) {
+		MMapController mapController = (MMapController) Controller.getCurrentModeController().getMapController();
+		StringWriter stringWriter = new StringWriter();
+		try {
+			mapController.getMapWriter().writeNodeAsXml(stringWriter, node, Mode.FILE, false, false, false);
+			return stringWriter.toString();
+		} catch (final IOException e) {
+			throw new RuntimeException();
+		}
+	}	
+	
+	/**
 	 * Method which adds a list of children to their @NodeModel parent. Every child
 	 * is created based on the corresponding XML file content. If the child has the
 	 * flag hasChildren marked as true, then the child receives a dummy child node,
@@ -110,5 +130,24 @@ public class FlowerPlatformManager implements IExtension {
 		while (index > 0) {
 			node.remove(--index);
 		}
+	}
+	
+	/**
+	 * Method which returns the result of the difference operation
+	 * between two Maps of properties.
+	 * @author Valentina Bojan
+	 */
+	public Map<String, Object> compareProperties(Map<String, Object> properties1, Map<String, Object> properties2) {
+		Map<String, Object> diffProperties = new HashMap<String, Object>();
+		
+		for (Entry<String, Object> property : properties2.entrySet()) {
+			String propertyKey = property.getKey();
+			Object propertyValue = property.getValue();
+			if (!properties1.containsKey(propertyKey) || !properties1.get(propertyKey).toString().equals(propertyValue)) {
+				diffProperties.put(property.getKey(), property.getValue());
+			}
+		}
+		
+		return diffProperties;
 	}
 }
