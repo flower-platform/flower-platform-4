@@ -1,5 +1,10 @@
 package org.flowerplatform.core.repositories;
 
+import static org.flowerplatform.core.CoreUtils.getRepositoryName;
+import static org.flowerplatform.core.CoreUtils.getRepositoryNodeUri;
+import static org.flowerplatform.core.CoreUtils.getUriFromFragment;
+
+import java.awt.PageAttributes.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -18,6 +23,12 @@ import javax.ws.rs.core.MediaType;
 
 import java.util.Map;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+
 import org.apache.commons.io.FileUtils;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -30,10 +41,6 @@ import org.flowerplatform.util.StringList;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.IController;
 import org.flowerplatform.util.controller.TypeDescriptor;
-
-import static org.flowerplatform.core.CoreUtils.getUriFromFragment;
-import static org.flowerplatform.core.CoreUtils.getRepositoryName;
-import static org.flowerplatform.core.CoreUtils.getRepositoryNodeUri;
 
 /**
  * @author Cristina Brinza
@@ -49,8 +56,9 @@ public class RepositoriesService {
 	/**
 	 * @author see class
 	 */
+
 	@POST @Path("//save")
-	public Node saveRepository(Node repository) throws IOException {		
+	public Node saveRepository(Node repository) throws IOException {
 		String login = (String) repository.getProperties().get(CoreConstants.USER);
 		String newName = (String) repository.getProperties().get(CoreConstants.NAME);
 		String newDescription = (String) repository.getProperties().get(CoreConstants.DESCRIPTION);
@@ -60,7 +68,7 @@ public class RepositoriesService {
 		Node memberNode;
 		Map<String, Object> properties = new HashMap<String, Object>();
 
-		if (repository.getNodeUri().equals("")) {
+		if (repository.getNodeUri() == null || repository.getNodeUri().equals("")) {
 			// create repository
 			repository.setType(CoreConstants.REPOSITORY);
 			repository.setNodeUri(getRepositoryNodeUri(login, newName));
@@ -74,7 +82,7 @@ public class RepositoriesService {
 			// set login so that changeID in PersistencePropertySetter is
 			// called.
 			// we do not set NAME because the oldName is needed later.
-			nodeService.setProperty(repository, CoreConstants.USER, login, new ServiceContext<NodeService>().add(CoreConstants.POPULATE_WITH_PROPERTIES, true));
+			nodeService.setProperty(repository, CoreConstants.USER, login, new ServiceContext<NodeService>());
 		}
 
 		Node repositoryOnServer = resourceService.getNode(repository.getNodeUri(), context);
@@ -156,9 +164,63 @@ public class RepositoriesService {
 		return repository;
 	}
 	
+//	/**
+//	 * @author see class
+//	 */
+//	public void createRepository(String login, String repoName, String description) throws IOException {
+//		
+//		// create user directory
+//		File userDir = new File(CoreConstants.FLOWER_PLATFORM_WORKSPACE + "/" + login);
+//		if (!userDir.exists()) {
+//			userDir.mkdirs();
+//		}
+//		
+//		// create repository directory
+//		File repoDir = new File(CoreConstants.FLOWER_PLATFORM_WORKSPACE + "/" + login + "/" + repoName, ".git");
+//		if (!repoDir.exists()) {
+//			repoDir.mkdirs();
+//			
+//			Repository repository = FileRepositoryBuilder.create(repoDir);
+//			repository.create();
+//		} else {
+//			throw new RuntimeException(String.format("Repository %s for user %s already exists", repoName, login));
+//		}
+//		
+//		// create repository node & populate with properties
+//		Node repositoriesNode = resourceService.getNode(CoreConstants.REPOSITORIES_URI);
+//		Node repositoryNode = new Node(getRepositoryNodeUri(login, repoName), CoreConstants.REPOSITORY);
+//		nodeService.addChild(
+//				repositoriesNode, 
+//				repositoryNode, 
+//				new ServiceContext<NodeService>(nodeService));
+//		Map<String, Object> properties = new HashMap<String, Object>();
+//		properties.put(CoreConstants.USER, login);
+//		properties.put(CoreConstants.NAME, repoName);
+//		properties.put(CoreConstants.DESCRIPTION, description);
+//		properties.put(CoreConstants.MEMBERS, new StringList());
+//		properties.put(CoreConstants.STARRED_BY, new StringList());
+//		properties.put(CoreConstants.EXTENSIONS, new StringList());
+//		nodeService.setProperties(repositoryNode, properties, new ServiceContext<NodeService>());
+//		
+//		// update user data
+//		Node userNode = resourceService.getNode(getUriFromFragment(login));
+//		
+//		// owned repos
+//		List<String> ownedRepos = (List<String>) userNode.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
+//		if (ownedRepos == null) {
+//			ownedRepos = new StringList();
+//		}
+//		ownedRepos.add(getRepositoryName(login, repoName));
+//		nodeService.setProperty(userNode, CoreConstants.OWNED_REPOSITORIES, ownedRepos, new ServiceContext<NodeService>());
+//		
+//		// save file
+//		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
+//	}
+	
 	/**
 	 * @author see class
 	 */
+
 	@POST @Path("//deleteRepository")
 	public List<Node> deleteRepository(String nodeUri) {
 		Node repositoryFromClient = resourceService.getNode(nodeUri, new ServiceContext<ResourceService>().add(CoreConstants.POPULATE_WITH_PROPERTIES, true));
@@ -221,6 +283,51 @@ public class RepositoriesService {
 
 		return getRepositoriesForUserAsNode(getUriFromFragment(login));
 	}
+
+	/**
+	 * @author see class
+	 */
+//	public void renameRepository(String login, String oldNameWithoutRepo, String newNameWithoutRepo) {
+//		String oldName = getRepositoryName(login, oldNameWithoutRepo);
+//		String newName = getRepositoryName(login, newNameWithoutRepo);
+//		
+//		Node repositoryNode = resourceService.getNode(getUriFromFragment(oldName));
+//
+//		// this also changes the ID. See PersistencePropertySetter for details
+//		repositoryNode.setNodeUri(getRepositoryNodeUri(login, newNameWithoutRepo));
+//		nodeService.setProperty(repositoryNode, CoreConstants.NAME, newNameWithoutRepo, new ServiceContext<NodeService>());
+//		
+//		// update OWNED_REPOSITORIES
+//		Node ownerNode = resourceService.getNode(getUriFromFragment((String) repositoryNode.getPropertyValue(CoreConstants.USER)));
+//		List<String> ownedRepos = (List<String>) ownerNode.getPropertyValue(CoreConstants.OWNED_REPOSITORIES);
+//		ownedRepos.remove(oldName); ownedRepos.add(newName);
+//		nodeService.setProperty(ownerNode, CoreConstants.OWNED_REPOSITORIES, ownedRepos, new ServiceContext<NodeService>());
+//		
+//		List<String> members = (List<String>) repositoryNode.getPropertyValue(CoreConstants.MEMBERS);
+//		List<String> starredBy = (List<String>) repositoryNode.getPropertyValue(CoreConstants.STARRED_BY);
+//		Node memberNode;
+//		
+//		// update MEMBER_IN_REPOSITORIES
+//		for (String member : members) {
+//			memberNode = resourceService.getNode(getUriFromFragment(member));
+//			List<String> repositoriesWhereMember = (List<String>) memberNode.getPropertyValue(CoreConstants.MEMBER_IN_REPOSITORIES);
+//			repositoriesWhereMember.remove(oldName); repositoriesWhereMember.add(newName);
+//			
+//			nodeService.setProperty(memberNode, CoreConstants.MEMBER_IN_REPOSITORIES, repositoriesWhereMember, new ServiceContext<NodeService>());
+//		}
+//		
+//		// update STARRED_REPOSITORIES
+//		for (String memberWhoStarred : starredBy) {
+//			memberNode = resourceService.getNode(getUriFromFragment(memberWhoStarred));
+//			List<String> starredRepositories = (List<String>) memberNode.getPropertyValue(CoreConstants.STARRED_REPOSITORIES);
+//			starredRepositories.remove(oldName); starredRepositories.add(newName);
+//			
+//			nodeService.setProperty(memberNode, CoreConstants.STARRED_REPOSITORIES, starredRepositories, new ServiceContext<NodeService>());
+//		}
+//		
+//		// save file
+//		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
+//	}
 
 	
 
@@ -352,6 +459,7 @@ public class RepositoriesService {
 	/**
 	 * @author see class
 	 */
+
 	@GET @Path("/{nodeUri}")	
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Node> getRepositoriesForUserAsNode(@PathParam("nodeUri") String nodeUri) {
@@ -378,6 +486,8 @@ public class RepositoriesService {
 
 	/**
 	 * @author see class
+	 * 
+	 * @return List<ExtensionMetadata> the applied extensions
 	 */
 	@POST @Path("//applyExtension")
 	public List<ExtensionMetadata> applyExtension(Map<String, String> map) {
@@ -387,7 +497,7 @@ public class RepositoriesService {
 		Node repositoryNode = resourceService.getNode(getRepositoryNodeUri(login, repoName));
 		StringList extensionsString = (StringList) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
 		List<ExtensionInfoInFile> extensions = fromStringListToExtensionInfoInFile(extensionsString);
-				
+
 		if (getExtensionInfoInFile(extensions, extensionId) != null) {
 			throw new RuntimeException(String.format("Extension with ID '%s' already exists for repository '%s'", extensionId, repoName));
 		}
@@ -395,31 +505,18 @@ public class RepositoriesService {
 		ExtensionInfoInFile newExtensionAdded = new ExtensionInfoInFile();
 		newExtensionAdded.setId(extensionId);
 		newExtensionAdded.setTransitive(false);
-		
+
 		extensions.add(newExtensionAdded);
-			
+
 		applyDependencies(extensionId, null, extensions);
-		
+
 		// save List<String> in file instead of List<ExtensionInfoInFile>
 		nodeService.setProperty(repositoryNode, CoreConstants.EXTENSIONS, fromExtensionInfoInFileToStringList(extensions), new ServiceContext<NodeService>());
-			
+
 		// save file
 		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
 		
 		return fromExtensionInfoInFileToExtensionMetadata(extensions);
-	}
-	
-	/**
-	 * @author see class
-	 */
-	public List<ExtensionMetadata> fromExtensionInfoInFileToExtensionMetadata(List<ExtensionInfoInFile> extensions) {
-		  List<ExtensionMetadata> result = new ArrayList<ExtensionMetadata>();
-		  
-		  for (ExtensionInfoInFile extensionInfoInFile : extensions) {
-		   result.add(getExtensionMetadataForExtensionId(extensionInfoInFile.getId()));
-		  }
-		  
-		 return result;
 	}
 	
 	/**
@@ -459,6 +556,8 @@ public class RepositoriesService {
 	
 	/**
 	 * @author see class
+	 * 
+	 * @return List<ExtensionMetadata> the remaining extensions after unapply
 	 */
 //	public void unapplyExtension(String login, String repoName, String extensionId) {
 //		Node repositoryNode = resourceService.getNode(getRepositoryNodeUri(login, repoName));
@@ -517,7 +616,7 @@ public class RepositoriesService {
 
 		// save file
 		resourceService.save(CoreConstants.USERS_PATH, new ServiceContext<ResourceService>(resourceService));
-
+		
 		return fromExtensionInfoInFileToExtensionMetadata(extensions);
 	}
 	
@@ -548,7 +647,7 @@ public class RepositoriesService {
 	/**
 	 * @author see class
 	 */
-	protected List<AbstractController> getExtensionDescriptors() {
+	protected static List<AbstractController> getExtensionDescriptors() {
 		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(CoreConstants.GENERAL_PURPOSE);
 		return descriptor.getAdditiveControllers(CoreConstants.EXTENSION_DESCRIPTOR, null);
 	}
@@ -608,7 +707,7 @@ public class RepositoriesService {
 	/**
 	 * @author see class
 	 */
-	public ExtensionMetadata getExtensionMetadataForExtensionId(String extensionId) {
+	public static ExtensionMetadata getExtensionMetadataForExtensionId(String extensionId) {
 		List<AbstractController> extensionDescriptors = getExtensionDescriptors();
 		for (IController element : extensionDescriptors) {
 			ExtensionMetadata extensionDescriptor = (ExtensionMetadata) element;
@@ -693,5 +792,19 @@ public class RepositoriesService {
   
 		return extensions;
 	 }
+
+	
+	/**
+	 * @author see class
+	 */
+	public static List<ExtensionMetadata> fromExtensionInfoInFileToExtensionMetadata(List<ExtensionInfoInFile> extensions) {
+		List<ExtensionMetadata> result = new ArrayList<ExtensionMetadata>();
+		
+		for (ExtensionInfoInFile extensionInfoInFile : extensions) {
+			result.add(getExtensionMetadataForExtensionId(extensionInfoInFile.getId()));
+		}
+		
+		return result;
+	}
 
 }
