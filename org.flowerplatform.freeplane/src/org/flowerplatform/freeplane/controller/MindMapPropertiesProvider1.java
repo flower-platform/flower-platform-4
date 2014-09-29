@@ -18,9 +18,13 @@ package org.flowerplatform.freeplane.controller;
 import java.util.Collections;
 
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.controller.IPersistenceController;
+import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesParser;
+import org.flowerplatform.freeplane.FreeplanePlugin;
+import org.flowerplatform.freeplane.controller.xml_parser.XmlParser;
+import org.flowerplatform.util.controller.AbstractController;
 import org.freeplane.features.clipboard.ClipboardController;
 import org.freeplane.features.clipboard.MindMapNodesSelection;
 import org.freeplane.features.map.NodeModel;
@@ -31,11 +35,10 @@ import org.freeplane.features.mode.ModeController;
  * @author Catalin Burcea
  * @author Valentina Bojan
  */
-public class MindMapPropertiesProvider1 extends PersistencePropertiesProvider {
+public class MindMapPropertiesProvider1 extends AbstractController implements IPropertiesProvider, IPersistenceController {
 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		super.populateWithProperties(node, context);
 
 		NodeModel rawNodeData = (NodeModel) node.getRawNodeData();
 		final ModeController modeController = Controller.getCurrentModeController();
@@ -44,7 +47,7 @@ public class MindMapPropertiesProvider1 extends PersistencePropertiesProvider {
 
 		try {
 			String xmlString = data.getTransferData(MindMapNodesSelection.mindMapNodesFlavor).toString();
-			XmlNodePropertiesParser handler = new XmlNodePropertiesParser(node);
+			XmlParser handler = new XmlParser(FreeplanePlugin.getInstance().getXmlConfiguration(), node);
 			handler.parseXML(xmlString);
 		} catch (Exception e) {
 			new RuntimeException(e);

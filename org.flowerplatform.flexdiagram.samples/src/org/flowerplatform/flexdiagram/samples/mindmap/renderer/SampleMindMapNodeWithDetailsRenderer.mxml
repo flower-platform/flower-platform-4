@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
+<!---
+@author Alexandra Topoloaga
+-->
+<mindmap:AbstractMindMapNodeWithDetailsRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+									 xmlns:s="library://ns.adobe.com/flex/spark" 
+									 xmlns:mx="library://ns.adobe.com/flex/mx" 
+									 xmlns:mindmap="org.flowerplatform.flexdiagram.mindmap.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.events.PropertyChangeEvent;
+			
+			import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
+			
+			protected static const DEFAULT_NOTE_ICON_PATH:String = "../../org.flowerplatform.flexdiagram.samples/icons/knotes.png";
+			
+			public function get dataConverted():SampleMindMapModel {
+				return SampleMindMapModel(data);
+			}
+			
+			override protected function modelChangedHandler(event:PropertyChangeEvent):void {
+				if (mindMapDiagramShell != null && diagramShellContext != null) {
+					if (event == null || event.property == "x") {
+						x = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "x");
+					}
+					if (event == null || event.property == "y") {
+						y = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "y");
+					}
+					if (event == null || event.property == "depth") {
+						depth = mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "depth");
+					}	
+					if (event == null || event.property == "hasChildren") {
+						invalidateSize();
+					}	
+					if (event == null || event.property == "expandedWidth") {
+						invalidateDisplayList();
+					}
+					if (event == null || event.property == "note") {
+						note = dataConverted.note;
+						if (SampleMindMapNodeRenderer(embeddedRenderer).dataConverted.icons == null) {
+							SampleMindMapNodeRenderer(embeddedRenderer).dataConverted.icons = new ArrayCollection();
+						}
+						if (dataConverted.note != null) {
+							SampleMindMapNodeRenderer(embeddedRenderer).dataConverted.icons.addItemAt(DEFAULT_NOTE_ICON_PATH, 0);
+						}
+					} 
+					if (event == null || event.property == "details") {
+						details = dataConverted.details;
+					}
+				} 
+			}
+			
+			override protected function createEmbeddedRenderer():void {
+				embeddedRenderer = new SampleMindMapNodeRenderer();
+				embeddedRenderer.percentWidth = 100;
+				embeddedRenderer.addEventListener(FlexEvent.INITIALIZE, nodeRendererInitialized);
+			}
+			
+			override protected function hasNote():Boolean {
+				return dataConverted.note && dataConverted.note.length > 0;
+			}
+			
+			override protected function hasNodeDetails():Boolean {
+				return dataConverted.details && dataConverted.details.length > 0;
+			}
+		
+		]]>
+	</fx:Script>
+	
+</mindmap:AbstractMindMapNodeWithDetailsRenderer>

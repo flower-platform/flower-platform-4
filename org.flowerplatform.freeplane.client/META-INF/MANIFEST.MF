@@ -1,10 +1,15 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Freeplane_client
-Bundle-SymbolicName: org.flowerplatform.freeplane.client1;singleton:=true
+Bundle-Name: Client
+Bundle-SymbolicName: org.flowerplatform.freeplane.client;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-ActivationPolicy: lazy
-Require-Bundle: org.flowerplatform.util,
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Activator: org.flowerplatform.freeplane.client.FreeplaneClientPlugin
+Import-Package: org.osgi.framework;version="1.3.0"
+Require-Bundle: org.flowerplatform.core,
+ org.flowerplatform.util,
+ org.flowerplatform.freeplane,
+ org.flowerplatform.js_client.java,
  org.eclipse.osgi,
  org.freeplane.core
-Bundle-Activator: org.flowerplatform.freeplane.client.FreeplanePlugin
+Bundle-ActivationPolicy: lazy

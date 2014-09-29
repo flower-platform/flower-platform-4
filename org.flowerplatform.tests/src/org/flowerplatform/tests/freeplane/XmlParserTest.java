@@ -15,10 +15,10 @@
  */
 package org.flowerplatform.tests.freeplane;
 
-import static org.junit.Assert.assertEquals;
+import static org.flowerplatform.tests.TestUtil.assertEqualsMaps;
 import static org.flowerplatform.tests.TestUtil.getResourcesDir;
 import static org.flowerplatform.tests.TestUtil.readFile;
-import static org.flowerplatform.tests.TestUtil.assertEqualsMaps;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,8 +26,9 @@ import java.util.Arrays;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesCreator;
-import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesParser;
+import org.flowerplatform.freeplane.controller.xml_parser.XmlConfiguration;
+import org.flowerplatform.freeplane.controller.xml_parser.XmlParser;
+import org.flowerplatform.freeplane.controller.xml_parser.XmlWritter;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -41,18 +42,23 @@ public class XmlParserTest {
 	public static final String UNKNOWN_TAGS_XML_FILE = "unknownTagsFile.xml";
 	public static final String DIFFERENT_TAGS_XML_FILE = "differentTagsFile.xml";
 	
+	protected XmlConfiguration configuration = new XmlConfiguration();
+	
+	/**
+	 * @author see class
+	 */
 	private void assertAndRemoveProperty(Node node, String property, Object value) {
 		assertEquals("Wrong actual value of '" + property + "'", value, node.getProperties().remove(property));
 	}
 	
 	/**
-	 *@author Catalin Burcea
-	 **/
+	 * @author see class
+	 */
 	@Test
 	public void testParseXmlToNodeDifferentTags() throws SAXException, IOException, ParserConfigurationException {
 		String xmlContent = readFile(DIR + "/" + DIFFERENT_TAGS_XML_FILE);
 		Node node = new Node(null, null);
-		XmlNodePropertiesParser handler = new XmlNodePropertiesParser(node);
+		XmlParser handler = new XmlParser(configuration, node);
 		handler.parseXML(xmlContent);
 		
 		assertAndRemoveProperty(node, "TEXT", "Node1");
@@ -92,13 +98,13 @@ public class XmlParserTest {
 	}
 	
 	/**
-	 *@author Valentina Bojan
-	 **/
+	 * @author see class
+	 */
 	@Test
 	public void testParseXmlToNodeUnknownTags() throws SAXException, IOException, ParserConfigurationException {
 		String xmlContent = readFile(DIR + "/" + UNKNOWN_TAGS_XML_FILE);
 		Node node = new Node(null, null);
-		XmlNodePropertiesParser handler = new XmlNodePropertiesParser(node);
+		XmlParser handler = new XmlParser(configuration, node);
 		handler.parseXML(xmlContent);
 		
 		assertAndRemoveProperty(node, "TEXT", "test");
@@ -139,32 +145,34 @@ public class XmlParserTest {
 		assertEquals("Node still has properties", 0, node.getProperties().size());
 	}
 	
+	/**
+	 * @author see class
+	 */
 	private void serializeDeserializeAndCompareXMLContent(String xmlFileName) throws ParserConfigurationException, SAXException, IOException {
 		String oldXmlContent = readFile(DIR + "/" + xmlFileName);
 		Node oldNode = new Node(null, null);
-		XmlNodePropertiesParser handler = new XmlNodePropertiesParser(oldNode);
+		XmlParser handler = new XmlParser(configuration, oldNode);
 		handler.parseXML(oldXmlContent);
 		
-		XmlNodePropertiesCreator xmlCreator = new XmlNodePropertiesCreator(oldNode);
-		String newXmlContent = xmlCreator.createXmlFromNodeProperties().toString();
+		XmlWritter xmlCreator = new XmlWritter(configuration, oldNode);
 		Node newNode = new Node(null, null);
-		handler = new XmlNodePropertiesParser(newNode);
-		handler.parseXML(newXmlContent);
+		handler = new XmlParser(configuration, newNode);
+		handler.parseXML(xmlCreator.getXmlContent());
 		
 		assertEqualsMaps(newNode.getProperties(), oldNode.getProperties());
 	}
 	
 	/**
-	 *@author Valentina Bojan
-	 **/
+	 * @author see class
+	 */
 	@Test
 	public void testParseNodeToXmlDifferentTags() throws SAXException, IOException, ParserConfigurationException {
 		serializeDeserializeAndCompareXMLContent(DIFFERENT_TAGS_XML_FILE);
 	}
 	
 	/**
-	 *@author Valentina Bojan
-	 **/
+	 * @author see class
+	 */
 	@Test
 	public void testParseNodeToXmlUnknownTags() throws SAXException, IOException, ParserConfigurationException {
 		serializeDeserializeAndCompareXMLContent(UNKNOWN_TAGS_XML_FILE);

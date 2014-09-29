@@ -14,10 +14,9 @@
  * license-end
  */
 package org.flowerplatform.flexutil.controller {
-	import flash.utils.getQualifiedClassName;
-	
-	import mx.utils.OrderedObject;
 	import mx.utils.StringUtil;
+	
+	import org.flowerplatform.flexutil.Utils;
 	
 	/**
 	 * Ported from the similar mechanism from Java.
@@ -42,8 +41,7 @@ package org.flowerplatform.flexutil.controller {
 		}
 		
 		public function toString():String {
-			var className:String = getQualifiedClassName(this);
-			return StringUtil.substitute("{0} [orderIndex = {1}]", className.substr(className.indexOf("::") + 2), orderIndex);
+			return StringUtil.substitute("{0} [orderIndex = {1}]", Utils.getClassNameForObject(this, false), orderIndex);
 		}
 		
 	}

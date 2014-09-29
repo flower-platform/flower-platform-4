@@ -35,7 +35,7 @@ public class JavaHostServiceInvocator extends AbstractServiceInvocator {
 	
 		// send request
 		Response response = request.post(Entity.entity(requestParams, MediaType.APPLICATION_JSON_TYPE));
-				
+		
 		HashMap<?, ?> node = response.readEntity(HashMap.class);
 		Object result = node.get(CoreConstants.MESSAGE_RESULT);
 		

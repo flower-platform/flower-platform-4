@@ -39,7 +39,7 @@ public class TagsAsListProcessor extends AbstractTagProcessor {
 	}
 
 	@Override
-	public void processStartTag(XmlNodePropertiesParser parser, String tag, Attributes attributes, Node node) {
+	public void processStartTag(XmlParser parser, String tag, Attributes attributes, Node node) {
 		@SuppressWarnings("unchecked")
 		List<String> list = (List<String>) node.getProperties().get(propertyName);
 		if (list == null) {

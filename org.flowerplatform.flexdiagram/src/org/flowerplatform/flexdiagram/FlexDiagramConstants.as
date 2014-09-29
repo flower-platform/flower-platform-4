@@ -43,5 +43,20 @@ package org.flowerplatform.flexdiagram {
 		public static const EDGE_HIDE:String = "hide_edge";
 		public static const EDGE_HORIZONTAL:String = "horizontal";
 		public static const EDGE_LINEAR:String = "linear";
+		
+		// visual properties supported by the BaseRenderer
+		public static const BASE_RENDERER_FONT_FAMILY:String = "baseRenderer.fontFamily";
+		public static const BASE_RENDERER_FONT_SIZE:String = "baseRenderer.fontSize";
+		public static const BASE_RENDERER_FONT_BOLD:String = "baseRenderer.fontBold";
+		public static const BASE_RENDERER_FONT_ITALIC:String = "baseRenderer.fontItalic";
+		public static const BASE_RENDERER_TEXT:String = "baseRenderer.text";
+		public static const BASE_RENDERER_TEXT_COLOR:String = "baseRenderer.textColor";
+		public static const BASE_RENDERER_BACKGROUND_COLOR:String = "baseRenderer.backgroundColor";
+		public static const BASE_RENDERER_ICONS:String = "baseRenderer.icons";
+		
+		// visual properties supported by the MindMapNodeRenderer
+		public static const MIND_MAP_RENDERER_CLOUD_TYPE:String = "mindMapRenderer.cloudType";
+		public static const MIND_MAP_RENDERER_CLOUD_COLOR:String = "mindMapRenderer.cloudColor";
+		public static const MIND_MAP_RENDERER_HAS_CHILDREN:String = "mindMapRenderer.hasChildren";
 	}
 }

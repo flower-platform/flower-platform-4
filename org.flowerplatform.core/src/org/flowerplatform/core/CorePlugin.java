@@ -81,7 +81,6 @@ import ch.qos.logback.core.joran.spi.JoranException;
  * @author Cristina Constantinescu
  * @author Mariana Gheorghe
  */
-@SuppressWarnings("restriction")
 public class CorePlugin extends AbstractFlowerJavaPlugin {
 
 	protected static CorePlugin instance;
@@ -344,7 +343,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		if (Boolean.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP))) {
 			FileUtils.deleteDirectory(UtilConstants.TEMP_FOLDER);
 		}
-		
+	
 		// Controllers for Command Stack
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_STACK_TYPE)
 				.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new CommandStackPropertiesProvider())
@@ -353,8 +352,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_TYPE);
 
 		CorePlugin.getInstance().getResourceService().addResourceHandler(CoreConstants.COMMAND_STACK_SCHEME, commandStackResourceHandler);
-	
-	}
+	}	
 
 	/**
 	 *@author Cristian Spiescu

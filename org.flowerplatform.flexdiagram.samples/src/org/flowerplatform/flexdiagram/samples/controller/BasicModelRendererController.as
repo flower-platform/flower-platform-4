@@ -23,6 +23,7 @@ package org.flowerplatform.flexdiagram.samples.controller {
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.renderer.ClassReferenceRendererController;
 	import org.flowerplatform.flexdiagram.samples.renderer.BasicModelRendererWithChildren;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -30,7 +31,7 @@ package org.flowerplatform.flexdiagram.samples.controller {
 	public class BasicModelRendererController extends ClassReferenceRendererController {
 		
 		public function BasicModelRendererController(orderIndex:int = 0) {
-			super(BasicModelRendererWithChildren, orderIndex);
+			super(new ClassFactoryWithConstructor(BasicModelRendererWithChildren), orderIndex);
 		}
 		
 		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {

@@ -15,6 +15,10 @@ public class ClientNode extends Node {
 	
 	private List<ClientNode> children;
 	
+	/**
+	 * public attribute -> compatible with javascript code
+	 * Otherwise we must create getter/setter for it and this will override the Node's getter/setter for its properties attribute.
+	 */
 	public NativeObject properties;
 					
 	public ClientNode() {
@@ -22,17 +26,17 @@ public class ClientNode extends Node {
 		this.properties = new NativeObject();
 	}
 
-	public NativeObject getProperties() {
-		return properties;
-	}
-
 	public void setProperties(Map<String, Object> properties) {	
 		super.setProperties(properties);
 		NativeObject nobj = new NativeObject();
 		for (Map.Entry<String, Object> entry : properties.entrySet()) {
-			this.properties.defineProperty(entry.getKey(), entry.getValue(), NativeObject.EMPTY);
+			nobj.defineProperty(entry.getKey(), entry.getValue(), NativeObject.EMPTY);
 		}
 		this.properties = nobj;
+	}
+	
+	public Object getPropertyValue(String property) {		
+		return properties.get(property);
 	}
 	
 	public List<ClientNode> getChildren() {

@@ -17,18 +17,14 @@ package org.flowerplatform.freeplane.controller.xml_parser;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.freeplane.FreeplaneConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -38,50 +34,56 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Catalin Burcea
  * @author Valentina Bojan
  */
-public class XmlNodePropertiesParser extends DefaultHandler {
-
-	public Logger logger = LoggerFactory.getLogger(XmlNodePropertiesParser.class);
-	Map<String, AbstractTagProcessor> xmlTagProcessors = new HashMap<String, AbstractTagProcessor>();
-	AbstractTagProcessor defaultTagProcessor = new ConvertAllAttributesProcessor();
-	private Node node;
-	public AbstractTagProcessor forcedTagProcessor;
-	public String tagFullContentTagName;
-	public StringBuffer tagFullContentStringBuffer;
-	public int tagFullContentNesting;
-	public boolean tagFullContentHasAttributes = false;
-	public HashSet<String> convertAllAttributesProcessedXmlTags;
-	public boolean convertAllAttributesTagProcessorDinamicallyAdded;
-	public boolean isRoot;
-
+public class XmlParser extends DefaultHandler {
+	
+	protected XmlConfiguration configuration;
+	
+	protected Node node;
+	protected boolean isRoot;
+	protected AbstractTagProcessor forcedTagProcessor;
+	
+	// CHECKSTYLE:OFF
+	protected String tagFullContent_TagName;
+	protected StringBuffer tagFullContent_StringBuffer;
+	protected int tagFullContent_Nesting;
+	protected boolean tagFullContent_HasAttributes = false;
+	
+	protected Set<String> convertAllAttributes_ProcessedXmlTags;
+	protected boolean convertAllAttributes_TagProcessorDinamicallyAdded;
+	// CHECKSTYLE:ON
+	
 	/**
-	 *@author Catalin Burcea
-	 **/
-	public XmlNodePropertiesParser(Node node) {
+	 * @author see class
+	 */
+	public XmlParser(XmlConfiguration configuration, Node node) {
+		super();
+		this.configuration = configuration;
 		this.node = node;
 	}
 
 	/**
-	 *@author Catalin Burcea
-	 **/
+	 * @author Catalin Burcea
+	 */
 	public AbstractTagProcessor getXMLTagProcessor(String tag) {
 		if (forcedTagProcessor != null) {
 			return forcedTagProcessor;
 		}
-		if (xmlTagProcessors.containsKey(tag)) {
-			return xmlTagProcessors.get(tag);
+		if (configuration.xmlTagProcessors.containsKey(tag)) {
+			return configuration.xmlTagProcessors.get(tag);
 		}
-		return defaultTagProcessor;
+		return configuration.defaultTagProcessor;
 	}
 
 	/**
-	 *@author Valentina Bojan
-	 **/
+	 * @author Valentina Bojan
+	 */
 	public void parseXML(String xmlContent) throws ParserConfigurationException, SAXException, IOException {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser saxParser = factory.newSAXParser();
 		InputSource inputSource = new InputSource(new StringReader(xmlContent));
 		saxParser.parse(inputSource, this);
-		if (this.convertAllAttributesTagProcessorDinamicallyAdded) {
+		if (this.convertAllAttributes_TagProcessorDinamicallyAdded) {
+			node.getProperties().clear();
 			saxParser.reset();
 			inputSource = new InputSource(new StringReader(xmlContent));
 			saxParser.parse(inputSource, this);
@@ -91,16 +93,12 @@ public class XmlNodePropertiesParser extends DefaultHandler {
 	@Override
 	public void startDocument() throws SAXException {
 		super.startDocument();
-		node.getProperties().clear();
-		convertAllAttributesProcessedXmlTags = new HashSet<String>();
+		// perform initializations here, in the event where the xml is parsed twice
+		convertAllAttributes_ProcessedXmlTags = new HashSet<String>();
 		isRoot = true;
-		tagFullContentNesting = 0;
+		tagFullContent_Nesting = 0;
 		forcedTagProcessor = null;
-		tagFullContentStringBuffer = new StringBuffer();
-		xmlTagProcessors.put(FreeplaneConstants.ICON, new TagsAsListProcessor(FreeplaneConstants.ICONS, FreeplaneConstants.ICON_KEY_PROPERTY));
-		xmlTagProcessors.put(FreeplaneConstants.HOOK, new TagFullContentProcessor(FreeplaneConstants.HOOK_KEY_PROPERTY));
-		xmlTagProcessors.put(FreeplaneConstants.RICHCONTENT, new TagFullContentProcessor(FreeplaneConstants.RICHCONTENT_KEY_PROPERTY));
-		xmlTagProcessors.put(FreeplaneConstants.ATTRIBUTE, new TagFullContentProcessor(FreeplaneConstants.ATTRIBUTE_KEY_PROPERTY));
+		tagFullContent_StringBuffer = new StringBuffer();
 	}
 
 	@Override

@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.flex_client.properties.action {
 	
+	import flash.utils.Dictionary;
+	
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
@@ -22,7 +24,6 @@ package org.flowerplatform.flex_client.properties.action {
 	import org.flowerplatform.flex_client.core.editor.action.DiagramShellAwareActionBase;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flex_client.properties.ui.CreateNodeView;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -42,7 +43,7 @@ package org.flowerplatform.flex_client.properties.action {
 		
 		public var asSibling:Boolean;
 		
-		public var siblingNodeUri:String;
+		public var childNodeUri:String;
 		
 		public function AddNodeAction(descriptor:AddChildDescriptor = null, asSibling:Boolean = false, childNodeUri:String = null) {
 			super();
@@ -52,10 +53,13 @@ package org.flowerplatform.flex_client.properties.action {
 			label = descriptor.label;
 			icon = descriptor.icon;
 			orderIndex = descriptor.orderIndex;
-			
-			this.asSibling = asSibling;
-			this.siblingNodeUri = childNodeUri;
-			this.parentId = asSibling ? NewSiblingComposedAction.ID : NewComposedAction.ID; 
+			if (asSibling == true) {
+				this.asSibling = true;
+				this.childNodeUri = childNodeUri;
+				parentId = SiblingComposedAction.ID;
+			} else {
+				parentId = NewComposedAction.ID;				
+			}
 		}
 		
 		override public function get visible():Boolean {			
@@ -67,15 +71,13 @@ package org.flowerplatform.flex_client.properties.action {
 		 * @author Sebastian Solomon
 		 */
 		override public function run():void {
-			var context:ServiceContext = new ServiceContext();
-			context.add("type", childType);
-			
-			var parentNode:Node;
+			var context:Object = new Object();
+			context["type"] = childType;
 			if (asSibling == true) {
-				context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, siblingNodeUri);
-				parentNode = Node(selection.getItemAt(0)).parent;
+				context[CoreConstants.INSERT_BEFORE_FULL_NODE_ID] = childNodeUri;
+				parentNode =  Node(selection.getItemAt(0)).parent;
 			} else {
-				parentNode = Node(selection.getItemAt(0));
+				var parentNode:Node = Node(selection.getItemAt(0));
 			}
 			
 			var propertyDescriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
@@ -94,7 +96,6 @@ package org.flowerplatform.flex_client.properties.action {
 				createNodeView.parentNode = parentNode;
 				createNodeView.nodeType = childType;
 				createNodeView.diagramShellContext = diagramShellContext;
-				createNodeView.siblingNodeUri = siblingNodeUri;
 				
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 					.setTitle(Resources.getMessage("action.new.label", [label]))
