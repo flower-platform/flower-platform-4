@@ -84,6 +84,8 @@ package org.flowerplatform.flexdiagram.renderer {
 		
 		protected var _icons:IList;
 		
+		protected var _maxWidthAdvanced:Number;
+		
 		/**
 		 * Inspired from the Freeplane renderer, that increases the font a little bit.
 		 */
@@ -151,6 +153,25 @@ package org.flowerplatform.flexdiagram.renderer {
 				_icons.addEventListener(CollectionEvent.COLLECTION_CHANGE, handleIconsChanged);				
 			}
 			handleIconsChanged(null);
+		}
+		
+		public function set maxWidthAdvanced(value:Number):void {
+			_maxWidthAdvanced = value;
+			invalidateSize();
+		}
+
+		protected override function measure():void {
+			super.measure();
+			if (isNaN(_maxWidthAdvanced) || iconsAndLabelArea == null || _label == null) {
+				return;
+			}
+			// inspired from the way this seems to work in Freeplane: maxWidth is for icons + label;
+			// but if there are a lot of icons, then they have priority. In this case, the maxWidth condition
+			// won't be met any more. The label is being shrank as much as possible to try to meet the condition
+			// as close as possible. However, we impose a threshold of 20 px, under which the label cannot be shrank
+			// any more
+			var widthWithoutLabel:Number = iconsAndLabelArea.measuredWidth - _label.measuredWidth;
+			_label.maxWidth = Math.max(_maxWidthAdvanced - widthWithoutLabel, 20);
 		}
 		
 		/**************************************************************************
@@ -250,6 +271,8 @@ package org.flowerplatform.flexdiagram.renderer {
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "textColor", FlexDiagramConstants.BASE_RENDERER_TEXT_COLOR, TEXT_COLOR_DEFAULT);
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "backgroundColor", FlexDiagramConstants.BASE_RENDERER_BACKGROUND_COLOR, BACKGROUND_COLOR_DEFAULT);
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "icons", FlexDiagramConstants.BASE_RENDERER_ICONS, null);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "minWidth", FlexDiagramConstants.BASE_RENDERER_MIN_WIDTH, NaN);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "maxWidthAdvanced", FlexDiagramConstants.BASE_RENDERER_MAX_WIDTH, NaN);
 		}
 		
 		protected function setFieldIfNeeded(valuesProvider:ValuesProvider, registry:TypeDescriptorRegistry, event:PropertyChangeEvent, field:String, featureForField:String, defaultValue:Object):void {
@@ -316,17 +339,22 @@ package org.flowerplatform.flexdiagram.renderer {
 			// no need for setting width/height percents. This way, the label "pushes" the container
 			// with w=h=100%, there are issues during figure recycling; and it's not correct any way	
 			_label.setStyle("verticalAlign" , "middle");
-//			_label.setStyle("paddingBottom", 0);
-//			_label.setStyle("paddingTop", 0);
-//			_label.setStyle("paddingLeft", 0);
-//			_label.setStyle("paddingRight", 0);
+			// I think that the text is vertically aligned; but it seems to be offsetted towards the top;
+			// probably because of the "p,g,y". That's why we offset it towards the bottom a little bit
+			_label.setStyle("paddingTop", 3);
+			_label.right = 0;
 			iconsAndLabelArea.addElement(_label);
+		}
+		
+		protected function drawCloud(unscaledWidth:Number, unscaledHeight:Number):void {
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
 			graphics.clear();
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 
+			drawCloud(unscaledWidth, unscaledHeight);
+			
 			graphics.lineStyle(1, 0x808080);
 			graphics.beginFill(_backgroundColor, 1);
 			if (diagramShellContext != null) {

@@ -169,6 +169,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FreeplaneConstants.FREEPLANE_NODE_TYPE)
 			.addCategory(MindMapConstants.GENERAL_PURPOSE_MIND_MAP_CATEGORY)
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_HAS_CHILDREN, new GenericDescriptor("hasChildren"))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.BASE_RENDERER_FONT_FAMILY, new GenericDescriptor("font.NAME"))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.BASE_RENDERER_FONT_SIZE, new GenericDescriptor("font.SIZE"))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.BASE_RENDERER_FONT_BOLD, new GenericDescriptor("font.BOLD"))
@@ -183,9 +184,11 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 				.addExtraInfoProperty(UtilConstants.EXTRA_INFO_CSV_TO_LIST_PREFIX, ResourcesPlugin.getInstance().getResourceUrl("images/mindmap/icons/"))
 				.addExtraInfoProperty(UtilConstants.EXTRA_INFO_CSV_TO_LIST_SUFFIX, ".png"))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_CLOUD_TYPE, new GenericDescriptor("cloud.SHAPE"))
-			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_CLOUD_COLOR, new GenericDescriptor("cloud.COLOR").addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_STRING_HEX_TO_UINT))
-			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_HAS_CHILDREN, new GenericDescriptor("hasChildren"));
-//			.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(TEXT).setOrderIndexAs(-10000));
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_CLOUD_COLOR, new GenericDescriptor("cloud.COLOR")
+				.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_STRING_HEX_TO_UINT))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.BASE_RENDERER_MIN_WIDTH, new GenericDescriptor("MIN_WIDTH"))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.BASE_RENDERER_MAX_WIDTH, new GenericDescriptor("MAX_WIDTH"));;
+			
 		
 	}
 
