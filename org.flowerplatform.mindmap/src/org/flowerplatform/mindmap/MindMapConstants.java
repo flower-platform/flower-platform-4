@@ -63,7 +63,7 @@ public final class MindMapConstants {
 	public static final int DEFAULT_MIN_WIDTH = 1;
 	public static final int DEFAULT_MAX_WIDTH = 600;
 	
-	public static final String TEXT = "text";
+	public static final String TEXT = "TEXT";
 	
 	public static final String MIN_WIDTH = "minWidth";
 	public static final String MAX_WIDTH = "maxWidth";

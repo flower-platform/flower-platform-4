@@ -1,12 +1,18 @@
 package org.flowerplatform.freeplane.client;
 
+import java.util.Map;
+
+import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesParser;
 import org.flowerplatform.js_client.java.JsClientJavaUtils;
 import org.flowerplatform.js_client.java.node.ClientNode;
+import org.freeplane.features.icon.HierarchicalIcons;
+import org.freeplane.features.map.HistoryInformationModel;
 import org.freeplane.features.map.INodeView;
 import org.freeplane.features.map.MapChangeEvent;
 import org.freeplane.features.map.NodeChangeEvent;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.map.NodeModel.NodeChangeType;
+
 
 /**
  * @author Valentina Bojan
@@ -20,6 +26,7 @@ public class FlowerPlatformView implements INodeView {
 	public void nodeChanged(NodeChangeEvent event) {
 		FlowerPlatformManager flowermManager = FlowerPlatformManager.getController();
 		NodeModel node = event.getNode();
+		
 		Object property = event.getProperty();
 		ClientNode clientNode = node.getExtension(ClientNodeModel.class).getNode();
 		
@@ -40,7 +47,40 @@ public class FlowerPlatformView implements INodeView {
 				flowermManager.addChildrenToParent(clientNode.getChildren(), node);
 				flowermManager.addViewerToChildren(node, new FlowerPlatformView());
 			}
+			
+			return;
 		}
+		
+		if (property.equals(HistoryInformationModel.class)
+							|| property.equals(NodeModel.NODE_ICON)
+							|| property.equals(HierarchicalIcons.ICONS)) {			
+			// create the new ClientNode (with the modified properties)
+			// from the NodeModel XML file content
+			String xmlContent = flowermManager.loadXmlContentFromNode(node);
+			ClientNode newClientNode = new ClientNode();
+			XmlNodePropertiesParser xmlParser = new XmlNodePropertiesParser(newClientNode);
+			try {
+				xmlParser.parseXML(xmlContent);
+			} catch (Exception e) {
+				new RuntimeException(e);
+			}
+			
+			// obtain the modified properties, by comparing the new properties with the old ones
+			Map<String, Object> modifiedProperties = flowermManager.compareProperties(clientNode.getProperties(), newClientNode.getProperties());
+
+			// send the modified properties to server
+//			JavaHostServiceInvocator serviceInvocator = new JavaHostServiceInvocator();
+//			Object[] parameters = {clientNode.getNodeUri(), modifiedProperties};
+//			try {
+//				serviceInvocator.invoke("nodeService.setProperties", parameters);
+//			} catch (Exception e) {
+////				throw new RuntimeException();
+//				e.printStackTrace();
+//			}
+//			return;
+		}
+		
+		System.out.println(property);
 	}
 
 	/**

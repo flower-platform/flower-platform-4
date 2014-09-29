@@ -65,6 +65,15 @@ public class NodeServiceRemote {
 		rss.startCommand(rss.getResourceSet(fullNodeId), commandTitle);
 		getNodeService().setProperty(node, property, value, new ServiceContext<NodeService>(getNodeService()));	
 	}
+	
+	/**
+	 * @author Valentina Bojan
+	 */
+	public void setProperties(String fullNodeId, Map<String, Object> properties) {
+		// TODO VB:
+		Node node = CorePlugin.getInstance().getResourceService().getNode(fullNodeId);
+		getNodeService().setProperties(node, properties, new ServiceContext<NodeService>(getNodeService()));
+	}
 		
 	/**
 	 * @author Cristina Constantinescu
