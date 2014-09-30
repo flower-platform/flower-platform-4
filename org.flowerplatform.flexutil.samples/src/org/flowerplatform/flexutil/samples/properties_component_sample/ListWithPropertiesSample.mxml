@@ -19,13 +19,14 @@
 			
 			[Bindable]
 			public var objectsList:ArrayCollection = new ArrayCollection();
+			var propertyDescriptor:PropertyDescriptor = new PropertyDescriptor();
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
 				itemsList.addEventListener(MouseEvent.CLICK, listClickHandler);
 				PropertiesHelper.getInstance().nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
-				var propertyDescriptor:PropertyDescriptor = new PropertyDescriptor();
-				propertyDescriptor.propertyLineRenderer = PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_CATEGORY;
-				propertyDescriptor.type = PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_STRING
+				
+				propertyDescriptor.propertyLineRenderer = PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_DEFAULT;
+				propertyDescriptor.type = PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_STRING;
 				propertyDescriptor.name = "a";
 				
 				//.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_NUMBER_STEPPER)
@@ -50,7 +51,7 @@
 			public function listClickHandler(event:MouseEvent):void {
 				PropertiesHelper.getInstance().propertyModelAdapter = new PairModelAdapter();
 
-				propertiesComponent.refreshForm(itemsList.selectedItem);
+				propertiesComponent.refreshForm(itemsList.selectedItem, true);
 			}
 			
 		]]>
