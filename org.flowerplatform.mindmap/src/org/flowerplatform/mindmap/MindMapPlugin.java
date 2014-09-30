@@ -49,6 +49,8 @@ import static org.flowerplatform.mindmap.MindMapConstants.PROPERTY_FOR_SIDE_DESC
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_NONE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ARC;
+import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_STAR;
 import static org.flowerplatform.mindmap.MindMapConstants.SIDE;
 import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
 import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
@@ -60,7 +62,6 @@ import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.GenericValueDescriptor;
-import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.mindmap.remote.MindMapServiceRemote;
 import org.flowerplatform.resources.ResourcesPlugin;
@@ -126,7 +127,9 @@ public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 				.setPossibleValuesAs(Arrays.asList(
 						new Pair<String, String>(SHAPE_NONE, resourcesPlugin.getMessage("mindmap.shape.none")), 
 						new Pair<String, String>(SHAPE_RECTANGLE, resourcesPlugin.getMessage("mindmap.shape.rectangle")), 
-						new Pair<String, String>(SHAPE_ROUND_RECTANGLE, resourcesPlugin.getMessage("mindmap.shape.roundRectangle"))))
+						new Pair<String, String>(SHAPE_ROUND_RECTANGLE, resourcesPlugin.getMessage("mindmap.shape.roundRectangle")),
+						new Pair<String, String>(SHAPE_ARC, resourcesPlugin.getMessage("mindmap.shape.arc")),
+						new Pair<String, String>(SHAPE_STAR, resourcesPlugin.getMessage("mindmap.shape.star"))))
 				.setCategoryAs(resourcesPlugin.getMessage("mindmap.cloud")).setOrderIndexAs(410))
 		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MINDMAP_NODE_TYPE))
 		// lower order index to override the default title property

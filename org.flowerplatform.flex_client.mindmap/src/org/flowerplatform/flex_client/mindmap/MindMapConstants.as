@@ -1,18 +1,18 @@
 /* license-start
- * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation version 3.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
- * 
- * license-end
- */
+* 
+* Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+* 
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation version 3.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+* 
+* license-end
+*/
 package org.flowerplatform.flex_client.mindmap {
 	import flash.system.Capabilities;
 	
@@ -44,10 +44,12 @@ package org.flowerplatform.flex_client.mindmap {
 		public static const NODE_SIDE_PROVIDER:String = "nodeSideProvider";
 		
 		// CLOUD SHAPES
-		public static const SHAPE_NONE:String = "ARC";		
+		public static const SHAPE_NONE:String = "NONE";		
 		public static const SHAPE_RECTANGLE:String = "RECT";
 		public static const SHAPE_ROUND_RECTANGLE:String = "ROUND_RECT";
-				
+		public static const SHAPE_ARC:String = "ARC";
+		public static const SHAPE_STAR:String = "STAR";
+		
 		public static const TEXT:String = "text";
 		
 		public static const MIN_WIDTH:String = "minWidth";
@@ -83,7 +85,7 @@ package org.flowerplatform.flex_client.mindmap {
 			+ "licq;penguin;freemind_butterfly;bee;"
 			+ "forward;back;up;down;"
 			+ "addition;subtraction;multiplication;division";
-
+		
 		
 		/**
 		 * Font size correction.
