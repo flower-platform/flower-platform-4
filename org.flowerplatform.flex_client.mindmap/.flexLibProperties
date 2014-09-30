@@ -3,6 +3,8 @@
   <includeClasses>
     <classEntry path="org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeRenderer2"/>
     <classEntry path="org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeWithDetailsRenderer2"/>
+    <classEntry path="org.flowerplatform.flex_client.mindmap.renderer2.NodeMindMapRenderer"/>
+    <classEntry path="org.flowerplatform.flex_client.mindmap.NodeValuesProvider"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

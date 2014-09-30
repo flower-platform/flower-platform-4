@@ -9,7 +9,6 @@ package org.flowerplatform.flexdiagram.renderer {
 	import mx.core.DPIClassification;
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElement;
-	import mx.core.IVisualElementContainer;
 	import mx.core.UIComponent;
 	import mx.events.CollectionEvent;
 	import mx.events.PropertyChangeEvent;
@@ -71,6 +70,8 @@ package org.flowerplatform.flexdiagram.renderer {
 		
 		protected static const FONT_SIZE_DEFAULT:Number = 9;
 		
+		protected static const PADDING:int = 2;
+		
 		/**************************************************************************
 		 * Attributes.
 		 *************************************************************************/
@@ -82,6 +83,8 @@ package org.flowerplatform.flexdiagram.renderer {
 		protected var _context:DiagramShellContext;
 		
 		protected var _icons:IList;
+		
+		protected var _maxWidthAdvanced:Number;
 		
 		/**
 		 * Inspired from the Freeplane renderer, that increases the font a little bit.
@@ -150,6 +153,25 @@ package org.flowerplatform.flexdiagram.renderer {
 				_icons.addEventListener(CollectionEvent.COLLECTION_CHANGE, handleIconsChanged);				
 			}
 			handleIconsChanged(null);
+		}
+		
+		public function set maxWidthAdvanced(value:Number):void {
+			_maxWidthAdvanced = value;
+			invalidateSize();
+		}
+
+		protected override function measure():void {
+			super.measure();
+			if (isNaN(_maxWidthAdvanced) || iconsAndLabelArea == null || _label == null) {
+				return;
+			}
+			// inspired from the way this seems to work in Freeplane: maxWidth is for icons + label;
+			// but if there are a lot of icons, then they have priority. In this case, the maxWidth condition
+			// won't be met any more. The label is being shrank as much as possible to try to meet the condition
+			// as close as possible. However, we impose a threshold of 20 px, under which the label cannot be shrank
+			// any more
+			var widthWithoutLabel:Number = iconsAndLabelArea.measuredWidth - _label.measuredWidth;
+			_label.maxWidth = Math.max(_maxWidthAdvanced - widthWithoutLabel, 20);
 		}
 		
 		/**************************************************************************
@@ -241,21 +263,26 @@ package org.flowerplatform.flexdiagram.renderer {
 		 */
 		protected function modelChangedHandler(event:PropertyChangeEvent):void {
 			var valuesProvider:ValuesProvider = getRequiredValuesProvider();
-			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "fontFamily", FlexDiagramConstants.BASE_RENDERER_FONT_FAMILY);
-			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "fontSize", FlexDiagramConstants.BASE_RENDERER_FONT_SIZE);
-			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "fontBold", FlexDiagramConstants.BASE_RENDERER_FONT_BOLD);
-			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "fontItalic", FlexDiagramConstants.BASE_RENDERER_FONT_ITALIC);
-			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "text", FlexDiagramConstants.BASE_RENDERER_TEXT);
-			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "textColor", FlexDiagramConstants.BASE_RENDERER_TEXT_COLOR);
-			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "backgroundColor", FlexDiagramConstants.BASE_RENDERER_BACKGROUND_COLOR);
-			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "icons", FlexDiagramConstants.BASE_RENDERER_ICONS);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "fontFamily", FlexDiagramConstants.BASE_RENDERER_FONT_FAMILY, FONT_FAMILY_DEFAULT);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "fontSize", FlexDiagramConstants.BASE_RENDERER_FONT_SIZE, FONT_SIZE_DEFAULT);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "fontBold", FlexDiagramConstants.BASE_RENDERER_FONT_BOLD, false);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "fontItalic", FlexDiagramConstants.BASE_RENDERER_FONT_ITALIC, false);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "text", FlexDiagramConstants.BASE_RENDERER_TEXT, "");
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "textColor", FlexDiagramConstants.BASE_RENDERER_TEXT_COLOR, TEXT_COLOR_DEFAULT);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "backgroundColor", FlexDiagramConstants.BASE_RENDERER_BACKGROUND_COLOR, BACKGROUND_COLOR_DEFAULT);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "icons", FlexDiagramConstants.BASE_RENDERER_ICONS, null);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "minWidth", FlexDiagramConstants.BASE_RENDERER_MIN_WIDTH, NaN);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "maxWidthAdvanced", FlexDiagramConstants.BASE_RENDERER_MAX_WIDTH, NaN);
 		}
 		
-		protected function setFieldIfNeeded(valuesProvider:ValuesProvider, registry:TypeDescriptorRegistry, event:PropertyChangeEvent, field:String, featureForField:String):void {
+		protected function setFieldIfNeeded(valuesProvider:ValuesProvider, registry:TypeDescriptorRegistry, event:PropertyChangeEvent, field:String, featureForField:String, defaultValue:Object):void {
 			if (event == null || event.property == valuesProvider.getPropertyName(registry, IEventDispatcher(data), featureForField)) {
 				var value:Object = valuesProvider.getValue(registry, IEventDispatcher(data), featureForField);
 				if (value != null) {
 					this[field] = value;
+				} else {
+					// probably happens only if event == null
+					this[field] = defaultValue;
 				}
 			} 			
 		}
@@ -300,33 +327,34 @@ package org.flowerplatform.flexdiagram.renderer {
 			}
 			
 			var hLayout:HorizontalLayout = new HorizontalLayout();
-			hLayout.gap = 2;
-			hLayout.paddingBottom = 2;
-			hLayout.paddingTop = 2;
-			hLayout.paddingLeft = 2;
-			hLayout.paddingRight = 2;
+			hLayout.gap = PADDING;
+			hLayout.paddingBottom = PADDING;
+			hLayout.paddingTop = PADDING;
+			hLayout.paddingLeft = PADDING;
+			hLayout.paddingRight = PADDING;
 			hLayout.verticalAlign = "middle";
 			iconsAndLabelArea.layout = hLayout;				
 			
 			_label = new FocusableRichText();
-			_label.percentHeight = 100;
-			_label.percentWidth = 100;			
+			// no need for setting width/height percents. This way, the label "pushes" the container
+			// with w=h=100%, there are issues during figure recycling; and it's not correct any way	
 			_label.setStyle("verticalAlign" , "middle");
+			// I think that the text is vertically aligned; but it seems to be offsetted towards the top;
+			// probably because of the "p,g,y". That's why we offset it towards the bottom a little bit
+			_label.setStyle("paddingTop", 3);
+			_label.right = 0;
 			iconsAndLabelArea.addElement(_label);
-			
-			// set defalults
-			fontFamily = FONT_FAMILY_DEFAULT;
-			fontSize = FONT_SIZE_DEFAULT;
-			textColor = TEXT_COLOR_DEFAULT;
-			backgroundColor = BACKGROUND_COLOR_DEFAULT;
+		}
+		
+		protected function drawCloud(unscaledWidth:Number, unscaledHeight:Number):void {
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
 			graphics.clear();
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 
-			drawBackground(unscaledWidth, unscaledHeight);
-
+			drawCloud(unscaledWidth, unscaledHeight);
+			
 			graphics.lineStyle(1, 0x808080);
 			graphics.beginFill(_backgroundColor, 1);
 			if (diagramShellContext != null) {
@@ -336,6 +364,8 @@ package org.flowerplatform.flexdiagram.renderer {
 				graphics.drawRect(0, 0, unscaledWidth, unscaledHeight);
 			}
 			graphics.endFill();
+			
+			drawBackground(unscaledWidth, unscaledHeight);
 		}
 		
 		/**************************************************************************

@@ -45,7 +45,7 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 				var logTsStart:Number = new Date().time;
 				refreshModelPositions(context, MindMapDiagramShell(context.diagramShell).getRoot(context));
 				
-				trace("MMAbsLayout.refrMP(): " + (new Date().time - logTsStart) + "ms");				
+//				trace("MMAbsLayout.refrMP(): " + (new Date().time - logTsStart) + "ms");				
 			}
 			
 			super.refreshVisualChildren(context, parentModel);

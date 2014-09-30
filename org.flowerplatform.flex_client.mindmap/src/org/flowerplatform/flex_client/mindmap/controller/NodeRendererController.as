@@ -17,7 +17,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.mindmap.MindMapConnector;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
-	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeWithDetailsRenderer2;
+	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeWithDetailsRenderer;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
@@ -40,7 +40,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			var node:Node = Node(model);
 			if ((node.properties.hasOwnProperty(MindMapConstants.NOTE) && String(node.properties[MindMapConstants.NOTE]).length > 0) ||
 				(node.properties.hasOwnProperty(MindMapConstants.NODE_DETAILS) && String(node.properties[MindMapConstants.NODE_DETAILS]).length > 0)) {
-				return MindMapNodeWithDetailsRenderer2;
+				return MindMapNodeWithDetailsRenderer;
 			}
 			return super.getRendererClass(context, model);
 		}
