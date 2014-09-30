@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.flexdiagram.samples.mindmap.model {
 	import mx.collections.ArrayList;
-	import mx.collections.IList;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -34,17 +33,17 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 		public var expanded:Boolean;
 		
 		public var fontFamily:String;
-		public var fontSize:Number;
+		public var fontSize:Number = 9;
 		public var fontBold:Boolean;
 		public var fontItalic:Boolean;
 		
 		public var textColor:uint;
-		public var backgroundColor:uint;
+		public var backgroundColor:uint = 0xDDDDDD;
 		
 		public var cloudColor:uint;
 		public var cloudType:String;
 		
-		public var icons:IList;
+		public var icons:String;
 		
 		public var note:String;
 		public var details:String;

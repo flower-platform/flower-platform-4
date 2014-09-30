@@ -22,7 +22,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapNodeRenderer;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapRenderer;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
@@ -30,7 +30,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	/**
 	 * @author Alexandra Topoloaga
 	 */ 
-	public class MindMapNodeRenderer2 extends MindMapNodeRenderer {
+	public class MindMapNodeRenderer2 extends MindMapRenderer {
 		
 		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 			

@@ -66,7 +66,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.shortcut.AssignHotKeyAction;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexutil.controller.ITypeProvider;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -77,6 +76,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.action.ComposedAction;
 	import org.flowerplatform.flexutil.action.VectorActionProvider;
 	import org.flowerplatform.flexutil.controller.AbstractController;
+	import org.flowerplatform.flexutil.controller.ITypeProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
@@ -86,6 +86,8 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.spinner.ModalSpinner;
+	import org.flowerplatform.flexutil.value_converter.CsvToListValueConverter;
+	import org.flowerplatform.flexutil.value_converter.StringHexToUintValueConverter;
 	import org.flowerplatform.js_client.common_js_as.node.IHostServiceInvocator;
 
 	/**
@@ -261,6 +263,10 @@ package org.flowerplatform.flex_client.core {
 				}
 			);
 			
+			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(FlexUtilConstants.NOTYPE_VALUE_CONVERTERS)
+				.addSingleController(FlexUtilConstants.VALUE_CONVERTER_STRING_HEX_TO_UINT, new StringHexToUintValueConverter())
+				.addSingleController(FlexUtilConstants.VALUE_CONVERTER_CSV_TO_LIST, new CsvToListValueConverter());
+			
 			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(NodeTreeAction.ID))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(OpenAction.ID))
@@ -432,15 +438,18 @@ package org.flowerplatform.flex_client.core {
 		 * @author Mariana Gheorghe
 		 * @author Claudiu Matei
 		 * @author Cristina Constantinescu
+		 * @author Cristian Spiescu
 		 */
-		public function getSubscribableResource(node:Node, contentType:String = null):Pair {			
+		public function getSubscribableResource(node:Node, contentType:String = null, schema:String = null):Pair {			
 			if (!node.properties[CoreConstants.USE_NODE_URI_ON_NEW_EDITOR]) {
 				var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
 				if (subscribableResources != null && subscribableResources.length > 0) {
 					var index:int = 0;
 					if (contentType != null) {
 						for (index = 0; index < subscribableResources.length; index++) {
-							if (Pair(subscribableResources.getItemAt(index)).b == contentType) {															
+							var currentContentType:String = String(Pair(subscribableResources.getItemAt(index)).b);
+							var currentSubscribableResource:String = String(Pair(subscribableResources.getItemAt(index)).a);
+							if (currentContentType == contentType && (schema == null || CorePlugin.getInstance().getSchema(currentSubscribableResource) == schema)) {															
 								break;
 							}
 						}
@@ -456,8 +465,8 @@ package org.flowerplatform.flex_client.core {
 		 * @author Claudiu Matei
 		 * @author Cristina Constantinescu
 		 */
-		public function openEditor(node:Node, ct:String = null, addEditorInRight:Boolean = false):UIComponent {
-			var sr:Pair = getSubscribableResource(node, ct);
+		public function openEditor(node:Node, ct:String = null, schema:String = null, addEditorInRight:Boolean = false):UIComponent {
+			var sr:Pair = getSubscribableResource(node, ct, schema);
 			var resourceUri:String = sr == null ? node.nodeUri : sr.a as String;
 			var contentType:String = sr == null ? (ct == null ? contentTypeRegistry.defaultContentType : ct) : sr.b as String;
 			if (contentType == null) {
@@ -556,17 +565,6 @@ package org.flowerplatform.flex_client.core {
 		}
 		
 		/**
-		 * @author Valentina-Camelia Bojan
-		 */
-		public function getRepository(nodeUri:String):String {
-			var index:int = nodeUri.indexOf("|");
-			if (index < 0) {
-				index = nodeUri.length;
-			}
-			return nodeUri.substring(nodeUri.indexOf(":") + 1, index);
-		}
-		
-		/**
 		 * @author Sebastian Solomon
 		 */
 		public function selectNode(diagramShellContext:DiagramShellContext, fullNodeId:String):void {
@@ -583,6 +581,24 @@ package org.flowerplatform.flex_client.core {
 		 */
 		public function createNodeUriWithRepo(scheme:String, repoPath:String, schemeSpecificPart:String):String {
 			return scheme + ":"+ repoPath + "|" + schemeSpecificPart;
+		}
+		
+		/**
+		 * @author Valentina-Camelia Bojan
+		 */
+		public function getRepository(nodeUri:String):String {
+			var index:int = nodeUri.indexOf("|");
+			if (index < 0) {
+				index = nodeUri.length;
+			}
+			return nodeUri.substring(nodeUri.indexOf(":") + 1, index);
+		}
+		
+		/**
+		 * @author Cristian Spiescu
+		 */
+		public function getSchema(nodeUri:String):String {
+			return nodeUri.substring(0, nodeUri.indexOf(":"));
 		}
 			
 	}

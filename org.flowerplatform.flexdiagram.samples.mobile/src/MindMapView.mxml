@@ -62,7 +62,7 @@
 			   }
 			   
 			   protected function creationCompleteHandler(event:FlexEvent):void {
-				   MindMapPopulator.populateRootModel(IModelHolder(FlexGlobals.topLevelApplication));
+				   new MindMapPopulator().populate(this, 30, 4);
 				   
 				   diagramShell.registerTool(ScrollTool.ID, new ClassFactoryWithConstructor(ScrollTool));
 				   diagramShell.registerTool(SelectOnClickTool.ID, new ClassFactoryWithConstructor(SelectOnClickTool));
@@ -96,7 +96,7 @@
 			   }
 			   
 			   public function onIconChange():void {
-				   selectedItem.icons = new ArrayCollection(iconsTextInput.text.split(","));
+//				   selectedItem.icons = new ArrayCollection(iconsTextInput.text.split(","));
 			   }
 			   
 			   public function onColorChange(value:String, color:uint):uint {
@@ -192,7 +192,7 @@
 						
 						<s:FormItem label="Icons:">
 							<s:TextInput id="iconsTextInput" width="100%"
-										 text="{selectedItem.icons.toArray().join()}"/>  
+										 text="???"/>  
 							<s:HGroup>
 								<s:Button id="changeIconsButton" label="Change" click="onIconChange()"/>
 								<s:Button id="changeIcon" label="Tooltip" click="Alert.show('Type the names of the icons you want to add (separated ONLY by a comma)\n\n Example of icons:\n ->family.png\n ->bee.png\n ->group.png\n ->wizard.png\n  ->smiley-angry.png\n ->bookmark.png\n\n Example of list: bee.png,penguin.png,family.png,wizard.png');"/>

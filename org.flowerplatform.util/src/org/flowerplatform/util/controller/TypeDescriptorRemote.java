@@ -72,6 +72,11 @@ public class TypeDescriptorRemote {
 			Map<String, List<IDescriptor>> additiveControllers) {
 		this.additiveControllers = additiveControllers;
 	}
+
+	@Override
+	public String toString() {
+		return "TypeDescriptorRemote [type=" + type + "]";
+	}
 	
 	
 }

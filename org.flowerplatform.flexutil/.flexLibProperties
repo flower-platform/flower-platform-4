@@ -32,6 +32,8 @@
     <classEntry path="org.flowerplatform.flexutil.iframe.IFrameOpenUrlView"/>
     <classEntry path="org.flowerplatform.flexutil.iframe.IFlowerIFrame"/>
     <classEntry path="org.flowerplatform.flexutil.iframe.FlowerIFrameViewProvider"/>
+    <classEntry path="org.flowerplatform.flexutil.controller.AbstractValueConverter"/>
+    <classEntry path="org.flowerplatform.flexutil.value_converter.StringHexToUintValueConverter"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

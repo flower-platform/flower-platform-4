@@ -6,14 +6,14 @@ package org.flowerplatform.flexdiagram.samples.mindmap.renderer {
 	
 	import flashx.textLayout.conversion.TextConverter;
 	
-	import org.flowerplatform.flexdiagram.mindmap.MindMapNodeRenderer;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapRenderer;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	
 	/**
 	 * @author Cristian Spiescu
 	 */
-	public class SampleMindMapNodeRendererWithDetailsCS extends MindMapNodeRenderer {
+	public class SampleMindMapNodeRendererWithDetailsCS extends MindMapRenderer {
 		
 		protected var detailsLabel:RichText;
 		
@@ -44,7 +44,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.renderer {
 		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 			super.modelChangedHandler(event);
 			var valuesProvider:ValuesProvider = getRequiredValuesProvider();
-			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "detailsText", "mindMapNodeRenderer.detailsText");
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "detailsText", "mindMapNodeRenderer.detailsText", "");
 		}	
 		
 	}

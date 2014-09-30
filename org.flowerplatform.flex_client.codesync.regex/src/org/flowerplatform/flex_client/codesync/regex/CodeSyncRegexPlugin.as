@@ -129,7 +129,7 @@ package org.flowerplatform.flex_client.codesync.regex {
 				}
 			}
 			if (textEditorFrontend == null && (showIfNecessary || showInRight)) {
-				textEditorFrontend = TextEditorFrontend(FlexUtilGlobals.getInstance().workbench.getEditorFromViewComponent(CorePlugin.getInstance().openEditor(new Node(textEditorResourceNodeUri), TextConstants.TEXT_CONTENT_TYPE, showInRight)));
+				textEditorFrontend = TextEditorFrontend(FlexUtilGlobals.getInstance().workbench.getEditorFromViewComponent(CorePlugin.getInstance().openEditor(new Node(textEditorResourceNodeUri), TextConstants.TEXT_CONTENT_TYPE, null, showInRight)));
 			}
 			return textEditorFrontend;
 		}

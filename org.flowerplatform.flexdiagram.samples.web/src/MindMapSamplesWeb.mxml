@@ -28,14 +28,12 @@
 			   implements="org.flowerplatform.flexdiagram.samples.IModelHolder">
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayList;
-			import mx.collections.IList;
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flexdiagram.ControllerUtils;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer;
-			import org.flowerplatform.flexdiagram.mindmap.MindMapNodeRenderer;
+			import org.flowerplatform.flexdiagram.mindmap.MindMapRenderer;
 			import org.flowerplatform.flexdiagram.renderer.BaseRenderer;
 			import org.flowerplatform.flexdiagram.samples.IModelHolder;
 			import org.flowerplatform.flexdiagram.samples.mindmap.MindMapPopulator;
@@ -46,14 +44,11 @@
 			import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 			import org.flowerplatform.flexdiagram.tool.ZoomTool;
 			import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
-			import org.flowerplatform.flexutil.Utils;
 			
 						
 			// the IDE doesn't see these imports during "organize imports"
 			BaseRenderer;
-			MindMapNodeRenderer;
-			
-			public static const ICONS_DIR_PATH:String = "../../org.flowerplatform.flexdiagram.samples/icons/";
+			MindMapRenderer;
 			
 			private var _rootModel:Object;
 
@@ -70,7 +65,7 @@
 			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
-				MindMapPopulator.populateRootModel(this);
+				new MindMapPopulator().populate(this, 50, 4);
 				
 				diagramShell.rootModel = rootModel;
 				diagramShell.registerTool(ScrollTool.ID, new ClassFactoryWithConstructor(ScrollTool));
@@ -105,23 +100,6 @@
 				}
 			}
 			
-			public function onIconChange():void {
-				var list:IList = new ArrayList();
-				var spl:Array = iconsTextInput.text.split(",");
-				for (var i:int = 0; i < spl.length; i++) {
-					var value:String = String(spl[i]);
-					if (value == "") {
-						// if input = "" => spl will have 1 item = ""
-						break;
-					}
-					if (!Utils.beginsWith(value, ICONS_DIR_PATH)) {
-						value = ICONS_DIR_PATH + value;						
-					}
-					list.addItem(value);
-				}
-				selectedItem.icons = list;
-			}
-			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -135,9 +113,9 @@
 	<s:Scroller width="40%" height="100%" >
 		<s:VGroup width="40%" height="100%" clipAndEnableScrolling="true" horizontalScrollPosition="50" verticalScrollPosition="50">
 			
-			<s:Panel id="listofChildrenPanel" visible="false" width="100%"
+			<s:Panel id="listofChildrenPanel" visible="false" width="100%" height="30%"
 					 title="List of children for selected node's parent">
-				<s:List id="childrenProviderList" width="100%" borderVisible="false" 
+				<s:List id="childrenProviderList" width="100%" height="100%" 
 						dataProvider="{selectedItem.parent.children}" 
 						itemRenderer="{new ClassFactoryWithConstructor(BaseRenderer, { 
 							showSelected : true,
@@ -145,7 +123,6 @@
 							typeDescriptorRegistry : diagramShell.registry
 						})}"/>
 			</s:Panel>
-			
 			
 			<s:Panel id="formPanel" visible="false" width="100%" title="Properties Editor">
 				<s:Form id="propertiesForm" visible="false" width="100%">
@@ -197,15 +174,12 @@
 										selectedColor="@{selectedItem.backgroundColor}" showTextField="true"/>
 					</s:FormItem>
 					
-					
 					<s:FormItem label="Icons:">
-						<s:TextInput id="iconsTextInput" width="100%"
-									 text="{selectedItem.icons.toArray().join()}"/>  
-						<s:HGroup>
-							<s:Graphic toolTip="Type the names of the icons you want to add (separated ONLY by a comma)             &#xd;Example of icons:             &#xd;-&gt; family.png            &#xd;-&gt; bee.png            &#xd;-&gt; group.png            &#xd;-&gt; wizard.png            &#xd;-&gt; smiley-angry.png            &#xd;-&gt; bookmark.png                        &#xd;            &#xd;Example of list: bee.png,penguin.png,family.png,wizard.png">
+						<s:HGroup width="100%">
+							<s:TextInput id="iconsTextInput" width="100%" text="@{selectedItem.icons}"/>  
+							<s:Graphic toolTip="E.g. bee,family,penguin,bookmark,freemind_butterfly,wizard,ksmiletris">
 								<s:BitmapImage source="@Embed('../images/Info.png')"/>
 							</s:Graphic> 
-							<s:Button id="changeIconsButton" label="Change" click="onIconChange()"/>
 						</s:HGroup>
 					</s:FormItem>
 					
@@ -216,7 +190,7 @@
 					
 					<s:FormItem id="textInputCloudTypeForm" label="CloudType:">
 						<s:DropDownList width="100%" selectedItem="@{selectedItem.cloudType}"> 
-							<s:ArrayCollection source="{['', MindMapNodeRenderer.CLOUD_TYPE_RECTANGLE, MindMapNodeRenderer.CLOUD_TYPE_ROUNDED_RECTANGLE]}"/>
+							<s:ArrayCollection source="{['', MindMapRenderer.CLOUD_TYPE_RECTANGLE, MindMapRenderer.CLOUD_TYPE_ROUNDED_RECTANGLE]}"/>
 						</s:DropDownList>
 					</s:FormItem>
 					

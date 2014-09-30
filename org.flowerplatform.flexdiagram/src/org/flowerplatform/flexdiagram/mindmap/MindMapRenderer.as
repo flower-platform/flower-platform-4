@@ -40,7 +40,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 	 * @author Alexandra Topoloaga
 	 * @author Cristian Spiescu
 	 */
-	public class MindMapNodeRenderer extends BaseRenderer {
+	public class MindMapRenderer extends BaseRenderer {
 
 		/**************************************************************************
 		 * Constants.
@@ -141,21 +141,11 @@ package org.flowerplatform.flexdiagram.mindmap {
 				if (event == null || event.property == "expandedWidth") {
 					invalidateDisplayList();
 				}
-				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudColor", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_COLOR);
-				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudType", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE);
+				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudColor", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_COLOR, CLOUD_COLOR_DEFAULT);
+				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudType", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE, null);
 			}
 			
 			MindMapModelRendererController(ControllerUtils.getRendererController(diagramShellContext, data)).rendererModelChangedHandler(diagramShellContext, this, data, event);
-		}
-		
-		override protected function createChildren():void {
-			super.createChildren();
-			cloudColor = CLOUD_COLOR_DEFAULT;
-		}
-		
-		override protected function drawBackground(unscaledWidth:Number, unscaledHeight:Number):void {
-			super.drawBackground(unscaledWidth, unscaledHeight);
-			drawCloud(unscaledWidth, unscaledHeight);
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
@@ -166,7 +156,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			}
 		}
 		
-		protected function drawCloud(unscaledWidth:Number, unscaledHeight:Number):void {			
+		override protected function drawCloud(unscaledWidth:Number, unscaledHeight:Number):void {			
 			if (_cloudType == CLOUD_TYPE_RECTANGLE || _cloudType == CLOUD_TYPE_ROUNDED_RECTANGLE) {				
 				graphics.lineStyle(2, 0x808080); // gray line with bigger thickness
 				graphics.beginFill(Utils.convertValueToColor(_cloudColor), 1);

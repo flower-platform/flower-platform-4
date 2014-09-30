@@ -98,10 +98,10 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 
 			Object propertyValue = value instanceof PropertyWrapper ? ((PropertyWrapper) value).getValue() : value;
 			switch (property) {
-				case MindMapConstants.SIDE:
-					rawNodeData.setLeft(((Integer) propertyValue).intValue() == MindMapConstants.POSITION_LEFT);
-					isPropertySet = true;
-					break;
+//				case MindMapConstants.SIDE:
+//					rawNodeData.setLeft(((Integer) propertyValue).intValue() == MindMapConstants.POSITION_LEFT);
+//					isPropertySet = true;
+//					break;
 				case TEXT:
 					rawNodeData.setText((String) propertyValue);
 					isPropertySet = true;

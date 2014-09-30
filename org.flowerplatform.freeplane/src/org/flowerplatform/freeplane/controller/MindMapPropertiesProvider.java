@@ -31,9 +31,6 @@ import static org.flowerplatform.mindmap.MindMapConstants.MAX_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.NODE_DETAILS;
 import static org.flowerplatform.mindmap.MindMapConstants.NOTE;
-import static org.flowerplatform.mindmap.MindMapConstants.POSITION_LEFT;
-import static org.flowerplatform.mindmap.MindMapConstants.POSITION_RIGHT;
-import static org.flowerplatform.mindmap.MindMapConstants.SIDE;
 import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
 import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
 
@@ -78,7 +75,7 @@ public class MindMapPropertiesProvider extends PersistencePropertiesProvider {
 		NodeModel rawNodeData = ((NodeModel) node.getRawNodeData());
 		
 		node.getProperties().put(TEXT, rawNodeData.getText());
-		node.getProperties().put(SIDE, rawNodeData.isLeft() ? POSITION_LEFT : POSITION_RIGHT);
+//		node.getProperties().put(SIDE, rawNodeData.isLeft() ? POSITION_LEFT : POSITION_RIGHT);
 		
 		// style name
 		IStyle style = LogicalStyleModel.getStyle(rawNodeData);

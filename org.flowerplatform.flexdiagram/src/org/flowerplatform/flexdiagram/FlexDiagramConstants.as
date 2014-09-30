@@ -53,10 +53,15 @@ package org.flowerplatform.flexdiagram {
 		public static const BASE_RENDERER_TEXT_COLOR:String = "baseRenderer.textColor";
 		public static const BASE_RENDERER_BACKGROUND_COLOR:String = "baseRenderer.backgroundColor";
 		public static const BASE_RENDERER_ICONS:String = "baseRenderer.icons";
+		public static const BASE_RENDERER_MIN_WIDTH:String = "baseRenderer.minWidth";
+		public static const BASE_RENDERER_MAX_WIDTH:String = "baseRenderer.maxWidth";
 		
 		// visual properties supported by the MindMapNodeRenderer
 		public static const MIND_MAP_RENDERER_CLOUD_TYPE:String = "mindMapRenderer.cloudType";
 		public static const MIND_MAP_RENDERER_CLOUD_COLOR:String = "mindMapRenderer.cloudColor";
 		public static const MIND_MAP_RENDERER_HAS_CHILDREN:String = "mindMapRenderer.hasChildren";
+		// for the moment, this is not a feature of this renderer; the implementation from FD/samples and FP
+		// do it; but in the future, we should move the logic entirely into FD
+		public static const MIND_MAP_RENDERER_SIDE:String = "mindMapRenderer.side";
 	}
 }
