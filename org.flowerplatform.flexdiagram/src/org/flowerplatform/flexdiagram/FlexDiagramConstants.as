@@ -60,5 +60,8 @@ package org.flowerplatform.flexdiagram {
 		public static const MIND_MAP_RENDERER_CLOUD_TYPE:String = "mindMapRenderer.cloudType";
 		public static const MIND_MAP_RENDERER_CLOUD_COLOR:String = "mindMapRenderer.cloudColor";
 		public static const MIND_MAP_RENDERER_HAS_CHILDREN:String = "mindMapRenderer.hasChildren";
+		// for the moment, this is not a feature of this renderer; the implementation from FD/samples and FP
+		// do it; but in the future, we should move the logic entirely into FD
+		public static const MIND_MAP_RENDERER_SIDE:String = "mindMapRenderer.side";
 	}
 }

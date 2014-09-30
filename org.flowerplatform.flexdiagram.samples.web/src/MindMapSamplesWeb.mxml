@@ -28,14 +28,12 @@
 			   implements="org.flowerplatform.flexdiagram.samples.IModelHolder">
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayList;
-			import mx.collections.IList;
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flexdiagram.ControllerUtils;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer;
-			import org.flowerplatform.flexdiagram.mindmap.MindMapNodeRenderer;
+			import org.flowerplatform.flexdiagram.mindmap.MindMapRenderer;
 			import org.flowerplatform.flexdiagram.renderer.BaseRenderer;
 			import org.flowerplatform.flexdiagram.samples.IModelHolder;
 			import org.flowerplatform.flexdiagram.samples.mindmap.MindMapPopulator;
@@ -46,12 +44,11 @@
 			import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 			import org.flowerplatform.flexdiagram.tool.ZoomTool;
 			import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
-			import org.flowerplatform.flexutil.Utils;
 			
 						
 			// the IDE doesn't see these imports during "organize imports"
 			BaseRenderer;
-			MindMapNodeRenderer;
+			MindMapRenderer;
 			
 			private var _rootModel:Object;
 
@@ -193,7 +190,7 @@
 					
 					<s:FormItem id="textInputCloudTypeForm" label="CloudType:">
 						<s:DropDownList width="100%" selectedItem="@{selectedItem.cloudType}"> 
-							<s:ArrayCollection source="{['', MindMapNodeRenderer.CLOUD_TYPE_RECTANGLE, MindMapNodeRenderer.CLOUD_TYPE_ROUNDED_RECTANGLE]}"/>
+							<s:ArrayCollection source="{['', MindMapRenderer.CLOUD_TYPE_RECTANGLE, MindMapRenderer.CLOUD_TYPE_ROUNDED_RECTANGLE]}"/>
 						</s:DropDownList>
 					</s:FormItem>
 					

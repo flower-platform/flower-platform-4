@@ -40,7 +40,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 	 * @author Alexandra Topoloaga
 	 * @author Cristian Spiescu
 	 */
-	public class MindMapNodeRenderer extends BaseRenderer {
+	public class MindMapRenderer extends BaseRenderer {
 
 		/**************************************************************************
 		 * Constants.

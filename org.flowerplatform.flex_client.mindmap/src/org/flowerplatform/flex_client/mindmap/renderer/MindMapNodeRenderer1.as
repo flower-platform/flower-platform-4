@@ -20,7 +20,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.resources.Resources;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapNodeRenderer;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapRenderer;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
@@ -28,7 +28,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 	/**
 	 * @author Alexandra Topoloaga
 	 */ 
-	public class MindMapNodeRenderer1 extends MindMapNodeRenderer {
+	public class MindMapNodeRenderer1 extends MindMapRenderer {
 		
 		public static const DEFAULT_PATH:String = "/images/mindmap/icons/";
 		

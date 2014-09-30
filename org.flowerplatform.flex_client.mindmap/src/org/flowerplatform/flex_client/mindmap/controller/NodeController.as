@@ -19,13 +19,14 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
-	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
 	import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
+	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -79,19 +80,29 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			CorePlugin.getInstance().nodeRegistryManager.collapse(MindMapEditorDiagramShell(context.diagramShell).nodeRegistry, node, context);
 		}
 		
+		/**
+		 * @author Cristian Spiescu
+		 * @see MindMapEditorDiagramShell.getRootNodeX()
+		 */
 		override public function getSide(context:DiagramShellContext, model:Object):int {			
-			var sideProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getValueProvider(
-				MindMapEditorDiagramShell(context.diagramShell).registry, model, MindMapConstants.NODE_SIDE_PROVIDER);
-			if (sideProvider != null) {
-				var side:int = int(sideProvider.getValue(Node(model)));
-				if (side == 0 && Node(model).parent != null) { // no side -> get side from parent
-					side = getSide(context, Node(model).parent);
-				}
-				if (side != 0) { // side found (left/right)
-					return side;
+			var node:Node = Node(model);
+			var typeDescriptorRegistry:TypeDescriptorRegistry = MindMapEditorDiagramShell(context.diagramShell).registry;
+			var valuesProvider:ValuesProvider = ValuesProvider(typeDescriptorRegistry.getExpectedTypeDescriptor(node.type).getSingleController(MindMapConstants.MIND_MAP_FEATURE_FOR_VALUES_PROVIDER, model));
+			var sideProperty:String = valuesProvider.getPropertyName(typeDescriptorRegistry, node, FlexDiagramConstants.MIND_MAP_RENDERER_SIDE); 
+			
+			if (sideProperty != null) {
+				var side:String = valuesProvider.getValue(typeDescriptorRegistry, node, FlexDiagramConstants.MIND_MAP_RENDERER_SIDE) as String;
+				if ("left" == side) {
+					return MindMapDiagramShell.POSITION_LEFT;
+				} else if ("right" == side) {
+					return MindMapDiagramShell.POSITION_RIGHT;
+				} else if (node.parent != null) {
+					// no side -> get side from parent
+					// there is a limitation/improvement noted about this. The diagram lib should do this; not this controller
+					return getSide(context, node.parent);
 				}
 			}
-
+			
 			// default side
 			return MindMapDiagramShell.POSITION_RIGHT;
 		}

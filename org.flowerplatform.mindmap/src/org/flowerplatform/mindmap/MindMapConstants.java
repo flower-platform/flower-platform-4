@@ -51,9 +51,10 @@ public final class MindMapConstants {
 	public static final String BASE_RENDERER_MIN_WIDTH = "baseRenderer.minWidth";
 	public static final String BASE_RENDERER_MAX_WIDTH = "baseRenderer.maxWidth";
 	
-	public static String MIND_MAP_RENDERER_CLOUD_TYPE= "mindMapRenderer.cloudType";
-	public static String MIND_MAP_RENDERER_CLOUD_COLOR= "mindMapRenderer.cloudColor";
-	public static String MIND_MAP_RENDERER_HAS_CHILDREN= "mindMapRenderer.hasChildren";
+	public static final String MIND_MAP_RENDERER_CLOUD_TYPE= "mindMapRenderer.cloudType";
+	public static final String MIND_MAP_RENDERER_CLOUD_COLOR= "mindMapRenderer.cloudColor";
+	public static final String MIND_MAP_RENDERER_HAS_CHILDREN= "mindMapRenderer.hasChildren";
+	public static final String MIND_MAP_RENDERER_SIDE = "mindMapRenderer.side";
 	
 	// Constants from Flex: MindMapConstants
 	public static final String MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX = "mindMap.";
@@ -81,11 +82,6 @@ public final class MindMapConstants {
 			FONT_SIZES.add(i);
 		}
 	}
-	
-	public static final String PROPERTY_FOR_SIDE_DESCRIPTOR = "propertyForSideDescriptor";
-	public static final String SIDE = "side";
-	public static final int POSITION_LEFT = -1;
-	public static final int POSITION_RIGHT = 1;
 	
 	// CLOUD SHAPES
 	public static final String SHAPE_NONE = "ARC";		

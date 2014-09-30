@@ -32,7 +32,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		protected var _context:DiagramShellContext;
 		
-		protected var embeddedRenderer:MindMapNodeRenderer;
+		protected var embeddedRenderer:MindMapRenderer;
 		
 		protected var detailsGroup:Group;
 		
@@ -94,7 +94,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			embeddedRenderer.diagramShellContext = value;
 		}
 		
-		public function getEmbeddedRenderer():MindMapNodeRenderer {
+		public function getEmbeddedRenderer():MindMapRenderer {
 			return embeddedRenderer;
 		}
 		

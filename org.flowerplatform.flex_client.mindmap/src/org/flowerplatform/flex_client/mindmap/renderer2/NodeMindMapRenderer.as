@@ -1,13 +1,13 @@
 package org.flowerplatform.flex_client.mindmap.renderer2 {
 	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapNodeRenderer;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapRenderer;
 	
 	/**
 	 * @author Cristian Spiescu
 	 */
-	public class NodeMindMapNodeRenderer extends MindMapNodeRenderer {
+	public class NodeMindMapRenderer extends MindMapRenderer {
 		
-		public function NodeMindMapNodeRenderer() {
+		public function NodeMindMapRenderer() {
 			super();
 			featureForValuesProvider = MindMapConstants.MIND_MAP_FEATURE_FOR_VALUES_PROVIDER;
 		}
