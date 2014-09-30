@@ -40,14 +40,12 @@ flowerProject.lazy.controller('AuthCtrl',  ['$scope', '$location', '$route', 'oa
 				window.location.href = "../" + url;
 			} else {
 				if (window.opener != null) {
-					logger.debug('**************HAS OPENER**************');
 					// close the popup, reload parent
-					if (window.opener !== window.self) {
-						$route.reload();
-					}
-					window.self.close();
+					window.opener.document.location.reload();
+					self.close();
+				} else {
+					$location.path("/");
 				}
-				$location.path("/");
 			}
 		}
 		
@@ -70,6 +68,7 @@ flowerProject.lazy.controller('AuthCtrl',  ['$scope', '$location', '$route', 'oa
 		 * 
 		 */
 		$scope.performLogin = function(provider) {
+			alert('test');
 			logger.debug(provider);
 			if (provider != undefined) {
 				// oauth

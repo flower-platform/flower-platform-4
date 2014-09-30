@@ -64,7 +64,7 @@ package org.flowerplatform.flexutil.iframe {
 		}
 		
 		public function set url(value:String):void {
-			value = Utils.getUrlWithParameter(value, FlexUtilConstants.EMBED_IN_FLEX_APP, FlexUtilConstants.EMBED_IN_FLEX_APP_WEB);
+			value = Utils.getUrlWithParameter(value, FlexUtilConstants.EMBED_IN_APP, FlexUtilConstants.EMBED_IN_FLEX_APP_WEB);
 			source = value;
 		}
 		

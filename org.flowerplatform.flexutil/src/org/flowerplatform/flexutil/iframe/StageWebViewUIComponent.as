@@ -72,7 +72,7 @@ package org.flowerplatform.flexutil.iframe {
 		
 		public function set url(url:String):void {
 			_url = FlexUtilGlobals.getInstance().createAbsoluteUrl(url);
-			_url = Utils.getUrlWithParameter(_url, FlexUtilConstants.EMBED_IN_FLEX_APP, FlexUtilConstants.EMBED_IN_FLEX_APP_MOBILE);
+			_url = Utils.getUrlWithParameter(_url, FlexUtilConstants.EMBED_IN_APP, FlexUtilConstants.EMBED_IN_FLEX_APP_MOBILE);
 			
 			if (_stageWebView) {
 				_stageWebView.loadURL(_url);

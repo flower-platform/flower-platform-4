@@ -14,7 +14,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.js_client.java.JsClientJavaPlugin;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
@@ -27,6 +26,12 @@ public class JavaHostServiceInvocator extends AbstractServiceInvocator {
 	
 	public void invoke(String serviceIdAndMethodName, Object[] parameters, Function resultCallback, Function faultCallback) {			
 		Builder request = JsClientJavaPlugin.getInstance().getClient().path(METHOD_INVOCATION_SERVICE).request();
+		
+		String accessToken = JsClientJavaPlugin.getInstance().getAccessToken();
+		if (accessToken != null) {
+			// authenticated request
+			request.header("Authorization", "Bearer " + accessToken);
+		}
 		
 		// create the map sent as parameter
 		Map<String, Object> requestParams = new HashMap<>();	

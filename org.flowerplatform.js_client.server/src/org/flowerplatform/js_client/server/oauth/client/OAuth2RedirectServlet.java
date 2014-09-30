@@ -73,6 +73,7 @@ public class OAuth2RedirectServlet extends HttpServlet {
 					provider.equals("github") ? GitHubTokenResponse.class : OAuthJSONAccessTokenResponse.class); // special case for GH
 			
 			String accessToken = oauthTokenResponse.getAccessToken();
+			// TODO refresh token?
 			
 			// forward to login servlet
 			req.getRequestDispatcher("/oauth/login?provider=" + provider + "&accessToken=" + accessToken).forward(req, resp);

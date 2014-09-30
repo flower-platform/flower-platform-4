@@ -61,6 +61,9 @@ public class OAuth2Provider {
 		this.clientId = clientId;
 	}
 	
+	/**
+	 * Do NOT send the secret to the web client!
+	 */
 	@XmlTransient
 	public String getClientSecret() {
 		return clientSecret;

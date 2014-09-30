@@ -31,6 +31,7 @@ public class FlowerPlatformManager implements IExtension {
 		super();
 		Controller controller = Controller.getCurrentController();
 		controller.addAction(new FlowerPlatformSubscribe());
+		controller.addAction(new FlowerPlatformLogin());
 	}
 	
 	/**

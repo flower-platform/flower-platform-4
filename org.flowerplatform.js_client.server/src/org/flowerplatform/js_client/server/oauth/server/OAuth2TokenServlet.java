@@ -25,9 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Token endpoint. Generates an access token for a valid authorization code (Authorization Code Grant 
+ * Token endpoint. Generates an access token for a valid authorization code (Authorization Code Grant - 
  * {@link #validateAuthorizationCode(OAuthTokenRequest)}) or a valid user credentials 
- * (Resource Owner Password Credentials Grant {@link #validatePassword(OAuthTokenRequest)}).
+ * (Resource Owner Password Credentials Grant - {@link #validatePassword(OAuthTokenRequest)}).
  * 
  * @author Mariana Gheorghe
  */

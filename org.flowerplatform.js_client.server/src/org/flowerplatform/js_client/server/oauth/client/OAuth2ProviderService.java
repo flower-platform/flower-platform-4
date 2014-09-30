@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 
 import org.apache.oltu.oauth2.as.issuer.MD5Generator;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -20,6 +21,8 @@ public class OAuth2ProviderService {
 
 	private Map<String, OAuth2Provider> providers = new HashMap<String, OAuth2Provider>();
 
+	private Map<String, Boolean> states = new HashMap<String, Boolean>();
+	
 	public OAuth2ProviderService() {
 		// read providers from properties
 		String names = CorePlugin.getInstance().getFlowerProperties().getProperty("oauth.providers");
@@ -37,9 +40,11 @@ public class OAuth2ProviderService {
 	 * @return
 	 */
 	@GET
-	public Map<String, Object> getOAuthProviders() {
+	public Map<String, Object> getOAuthProviders(@QueryParam("embed") boolean embed) {
 		Map<String, Object> response = new HashMap<String, Object>();
 		response.put("providers", providers);
+		String state = generateState();
+		states.put(state, embed);
 		response.put("state", generateState());
 		return response;
 	}

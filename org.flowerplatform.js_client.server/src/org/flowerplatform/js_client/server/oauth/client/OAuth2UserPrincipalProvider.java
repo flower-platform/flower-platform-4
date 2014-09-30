@@ -79,8 +79,10 @@ public enum OAuth2UserPrincipalProvider implements IUserPrincipalProvider {
 			}
 		}
 
+		/**
+		 * @return the primary email address
+		 */
 		private String getEmail(Object emails) {
-			// this user has only one email
 			for (Object email : ((Object[]) emails)) {
 				if (((JSONObject) email).getBoolean("primary")) {
 					return ((JSONObject) email).getString("email");

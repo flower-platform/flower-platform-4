@@ -13,3 +13,7 @@ Require-Bundle: org.flowerplatform.core,
  org.eclipse.osgi,
  org.freeplane.core
 Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: lib/DJNativeSwing-SWT.jar,
+ lib/DJNativeSwing.jar,
+ lib/org.eclipse.swt.win32.win32.x86_64_3.102.1.v20130827-2048.jar,
+ .

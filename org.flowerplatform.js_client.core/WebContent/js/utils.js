@@ -6,6 +6,8 @@ var logger = {
 		
 };
 
+var embed = false;
+
 var scriptCache = {};
 
 /**

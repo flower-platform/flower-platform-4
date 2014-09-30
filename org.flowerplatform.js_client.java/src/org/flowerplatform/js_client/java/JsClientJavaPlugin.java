@@ -25,13 +25,23 @@ public class JsClientJavaPlugin extends AbstractFlowerJavaPlugin {
 	private Scriptable nodeRegistryManager;
 	
 	private WebTarget client;
-		
+	
+	private String accessToken;
+	
 	private Long lastUpdateTimestampOfServer = (long) -1;
 	
 	public WebTarget getClient() {		
 		return client;
 	}
 
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+	
+	public String getAccessToken() {
+		return accessToken;
+	}
+	
 	// TODO CC: temp URI (this must be provided by freeplane java client implementation
 	private static URI getBaseURI() {
 	    return UriBuilder.fromUri("http://localhost:8080/org.flowerplatform.host.web_app/").build();
