@@ -17,17 +17,13 @@ package org.flowerplatform.freeplane.controller.xml_parser;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
-import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.freeplane.FreeplaneConstants;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -41,7 +37,7 @@ public class XmlParser extends DefaultHandler {
 	
 	protected XmlConfiguration configuration;
 	
-	protected Node node;
+	protected Map<String, Object> properties;
 	protected boolean isRoot;
 	protected AbstractTagProcessor forcedTagProcessor;
 	
@@ -58,10 +54,10 @@ public class XmlParser extends DefaultHandler {
 	/**
 	 * @author see class
 	 */
-	public XmlParser(XmlConfiguration configuration, Node node) {
+	public XmlParser(XmlConfiguration configuration, Map<String, Object> properties) {
 		super();
 		this.configuration = configuration;
-		this.node = node;
+		this.properties = properties;
 	}
 
 	/**
@@ -81,12 +77,11 @@ public class XmlParser extends DefaultHandler {
 	 * @author Valentina Bojan
 	 */
 	public void parseXML(String xmlContent) throws ParserConfigurationException, SAXException, IOException {
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		SAXParser saxParser = factory.newSAXParser();
+		SAXParser saxParser = configuration.saxFactory.newSAXParser();
 		InputSource inputSource = new InputSource(new StringReader(xmlContent));
 		saxParser.parse(inputSource, this);
 		if (this.convertAllAttributes_TagProcessorDinamicallyAdded) {
-			node.getProperties().clear();
+			properties.clear();
 			saxParser.reset();
 			inputSource = new InputSource(new StringReader(xmlContent));
 			saxParser.parse(inputSource, this);
@@ -106,12 +101,12 @@ public class XmlParser extends DefaultHandler {
 
 	@Override
 	public void startElement(String uri, String localName, String tagName, Attributes attributes) throws SAXException {
-		getXMLTagProcessor(tagName).processStartTag(this, tagName, attributes, node);
+		getXMLTagProcessor(tagName).processStartTag(this, tagName, attributes, properties);
 	}
 
 	@Override
 	public void endElement(String uri, String localName, String tagName) throws SAXException {
-		getXMLTagProcessor(tagName).processEndTag(this, tagName, node);
+		getXMLTagProcessor(tagName).processEndTag(this, tagName, properties);
 	}
 
 	@Override

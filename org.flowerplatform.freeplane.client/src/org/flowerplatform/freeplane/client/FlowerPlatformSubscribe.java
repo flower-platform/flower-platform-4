@@ -6,7 +6,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
 
-import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesCreator;
+import org.flowerplatform.freeplane.FreeplanePlugin;
+import org.flowerplatform.freeplane.controller.xml_parser.XmlWritter;
 import org.flowerplatform.js_client.java.JsClientJavaPlugin;
 import org.flowerplatform.js_client.java.JsClientJavaUtils;
 import org.flowerplatform.js_client.java.node.ClientNode;
@@ -104,7 +105,7 @@ class FlowerPlatformSubscribe extends AFreeplaneAction {
 					public void call(Object instance, Object... params) {
 						// create the XML content for the root node
 						ClientNode root = (ClientNode) params[0];
-						XmlNodePropertiesCreator xmlCreator = new XmlNodePropertiesCreator(root);
+						XmlWritter xmlCreator = new XmlWritter(FreeplanePlugin.getInstance().getXmlConfiguration(), root.getProperties());
 						
 						// create a new map containing the root node from the XML content
 						MMapController mapController = (MMapController) Controller.getCurrentModeController().getMapController();

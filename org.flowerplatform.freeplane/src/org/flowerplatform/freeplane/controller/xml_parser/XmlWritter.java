@@ -23,7 +23,6 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.freeplane.FreeplaneConstants;
 
 /**
@@ -33,15 +32,15 @@ public class XmlWritter {
 
 	protected XmlConfiguration configuration;
 	
-	private Node node;
+	private Map<String, Object> properties;
 
 	/**
 	 * @author see class
 	 */
-	public XmlWritter(XmlConfiguration configuration, Node node) {
+	public XmlWritter(XmlConfiguration configuration, Map<String, Object> properties) {
 		super();
 		this.configuration = configuration;
-		this.node = node;
+		this.properties = properties;
 	}
 
 	/**
@@ -50,7 +49,7 @@ public class XmlWritter {
 	public String getXmlContent() {
 		StringBuffer xmlContent = new StringBuffer();
 		String previousTag = null;
-		Map<String, Object> nodeProperties = new TreeMap<String, Object>(node.getProperties());
+		Map<String, Object> nodeProperties = new TreeMap<String, Object>(properties);
 
 		// Write the node tag with its attributes
 		xmlContent.append("<" + FreeplaneConstants.NODE);

@@ -32,7 +32,7 @@ public final class FreeplaneConstants {
 
 	public static final String FREEPLANE_MINDMAP_RESOURCE_SCHEMA = "fpm1";
 	public static final String FREEPLANE_MINDMAP_RESOURCE_DELEGATE_CATEGORY = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_SCHEMA;
-	public static final String FREEPLANE_NODE_TYPE= "freeplaneNode1";
+	public static final String FREEPLANE_NODE_TYPE = "freeplaneNode1";
 	
 	/////////////////////////////////////////////////////////////
 	// for XmlParser and XmlWritter

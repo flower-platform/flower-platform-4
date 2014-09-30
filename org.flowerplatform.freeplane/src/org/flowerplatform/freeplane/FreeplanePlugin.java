@@ -56,7 +56,6 @@ import org.flowerplatform.freeplane.style.controller.MindMapStyleChildrenProvide
 import org.flowerplatform.freeplane.style.controller.MindMapStyleResourceHandler;
 import org.flowerplatform.freeplane.style.controller.StyleRootChildrenProvider;
 import org.flowerplatform.freeplane.style.controller.StyleRootPropertiesProvider;
-import org.flowerplatform.mindmap.MindMapConstants;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.freeplane.features.url.UrlManager;
 import org.freeplane.main.headlessmode.HeadlessMModeControllerFactory;

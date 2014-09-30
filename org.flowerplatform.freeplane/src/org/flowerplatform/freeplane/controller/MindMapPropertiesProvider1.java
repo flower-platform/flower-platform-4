@@ -43,11 +43,14 @@ public class MindMapPropertiesProvider1 extends AbstractController implements IP
 		NodeModel rawNodeData = (NodeModel) node.getRawNodeData();
 		final ModeController modeController = Controller.getCurrentModeController();
 		final ClipboardController clipboardController = (ClipboardController) modeController.getExtension(ClipboardController.class);
+		
+		// it's invisible data (like is a node on which is applied "cut" operation) =>
+		// => the flag copyInvisible must be true
 		MindMapNodesSelection data = clipboardController.copy(Collections.singleton(rawNodeData), true);
 
 		try {
 			String xmlString = data.getTransferData(MindMapNodesSelection.mindMapNodesFlavor).toString();
-			XmlParser handler = new XmlParser(FreeplanePlugin.getInstance().getXmlConfiguration(), node);
+			XmlParser handler = new XmlParser(FreeplanePlugin.getInstance().getXmlConfiguration(), node.getProperties());
 			handler.parseXML(xmlString);
 		} catch (Exception e) {
 			new RuntimeException(e);
