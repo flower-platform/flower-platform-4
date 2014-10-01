@@ -2,24 +2,16 @@ package org.flowerplatform.js_client.server.jackson;
 
 import java.util.Collection;
 
-import org.flowerplatform.js_client.server.ObjectMapperProvider;
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTypeResolverBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
-import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
-import com.fasterxml.jackson.databind.jsontype.impl.AsArrayTypeDeserializer;
 import com.fasterxml.jackson.databind.jsontype.impl.AsArrayTypeSerializer;
-import com.fasterxml.jackson.databind.jsontype.impl.AsExternalTypeDeserializer;
 import com.fasterxml.jackson.databind.jsontype.impl.AsExternalTypeSerializer;
-import com.fasterxml.jackson.databind.jsontype.impl.AsPropertyTypeDeserializer;
-import com.fasterxml.jackson.databind.jsontype.impl.AsWrapperTypeDeserializer;
 import com.fasterxml.jackson.databind.jsontype.impl.AsWrapperTypeSerializer;
 
 /**

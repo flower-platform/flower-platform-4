@@ -6,7 +6,22 @@ var logger = {
 		
 };
 
-var embed = false;
+/**
+ * ID of the client that embeds the JS app.
+ */
+var embeddingClientId = null;
+
+/**
+ * True to perform OAuth (with password grant); false for basic authentication.
+ * Needed for desktop clients that cannot provide a callback URI for the OAuth flow.
+ */
+var oauth = false;
+
+/**
+ * True to show an OAuth provider's authorization view in a popup; false to show it in the same page.
+ * This is needed for clients that embed the auth JS app in an iframe.
+ */
+var oauthPopup = false;
 
 var scriptCache = {};
 

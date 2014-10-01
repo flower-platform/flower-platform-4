@@ -4,10 +4,16 @@ import java.awt.BorderLayout;
 import java.awt.Frame;
 
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import org.flowerplatform.js_client.java.JsClientJavaPlugin;
+import org.flowerplatform.js_client.java.node.ClientNode;
+import org.flowerplatform.js_client.java.node.JavaHostServiceInvocator;
+import org.mozilla.javascript.BaseFunction;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
 
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
@@ -40,6 +46,13 @@ public class AuthBrowser extends JDialog {
 			}
 		});
 
+		webBrowser.registerFunction(new WebBrowserFunction("getClientId") {
+			@Override
+			public Object invoke(JWebBrowser arg0, Object... arg1) {
+				return "testClientId";
+			}
+		});
+		
 		// wait for access token
 		webBrowser.addWebBrowserListener(new WebBrowserAdapter() {
 			@Override
@@ -49,6 +62,23 @@ public class AuthBrowser extends JDialog {
 					// get the access token
 					String accessToken = location.substring(location.indexOf("access_token=") + 13);
 					JsClientJavaPlugin.getInstance().setAccessToken(accessToken);
+					JavaHostServiceInvocator host = new JavaHostServiceInvocator();
+					try {
+						host.invoke("userService.getCurrentUser", null, new BaseFunction() {
+
+							private static final long serialVersionUID = 1L;
+
+							@Override
+							public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
+								ClientNode user = (ClientNode) args[0];
+								JOptionPane.showMessageDialog(null, user.getNodeUri(), "User has logged in", JOptionPane.INFORMATION_MESSAGE);
+								return null;
+							}
+							
+						});
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
 					setVisible(false);
 					dispose();
 				}
@@ -63,6 +93,7 @@ public class AuthBrowser extends JDialog {
 	 * Create and add a web browser to this dialog.
 	 */
 	private void init() {
+		SWTNativeInterface.close();
 		SWTNativeInterface.open();
 		
 		webBrowserPanel = new JPanel(new BorderLayout());

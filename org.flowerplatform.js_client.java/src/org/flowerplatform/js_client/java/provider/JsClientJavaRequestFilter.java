@@ -40,18 +40,20 @@ public class JsClientJavaRequestFilter implements ClientRequestFilter {
 	@Override
 	public void filter(ClientRequestContext ctx) throws IOException {
 		Scriptable nodeRegistryManager = JsClientJavaPlugin.getInstance().getNodeRegistryManager();
-		// add resourceSets in header
-		NativeArray resourceSets = (NativeArray) JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSets");		
-		String value = prepareHeaderValueForResources(resourceSets);
-		if (value != null) {
-			ctx.getHeaders().add(CoreConstants.RESOURCE_SETS, value);
+		if (nodeRegistryManager != null) {
+			// add resourceSets in header
+			NativeArray resourceSets = (NativeArray) JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceSets");
+			String value = prepareHeaderValueForResources(resourceSets);
+			if (value != null) {
+				ctx.getHeaders().add(CoreConstants.RESOURCE_SETS, value);
 			
-			// add resourceUris in header
-			NativeArray resourceUris = (NativeArray) JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceUris");	
-			ctx.getHeaders().add(CoreConstants.RESOURCE_URIS, prepareHeaderValueForResources(resourceUris));
-		}		
+				// add resourceUris in header
+				NativeArray resourceUris = (NativeArray) JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "getResourceUris");
+				ctx.getHeaders().add(CoreConstants.RESOURCE_URIS, prepareHeaderValueForResources(resourceUris));
+			}
+		}
 		// add last update timestamp in header
-		ctx.getHeaders().add(CoreConstants.LAST_UPDATE_TIMESTAMP, JsClientJavaPlugin.getInstance().getLastUpdateTimestampOfServer());		
+		ctx.getHeaders().add(CoreConstants.LAST_UPDATE_TIMESTAMP, JsClientJavaPlugin.getInstance().getLastUpdateTimestampOfServer());
 	}
 
 }

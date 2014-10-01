@@ -26,7 +26,7 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 	
 	public ObjectMapperProvider() {
 		objectMapper = new ObjectMapper();
-		objectMapper.registerModule(new JaxbAnnotationModule());		
+		objectMapper.registerModule(new JaxbAnnotationModule());
 		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		
@@ -34,9 +34,9 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 		objectMapper.registerModule(testModule);
 		
 		com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder<?> typer = new TypeResolverBuilder(DefaultTyping.NON_FINAL);
-	    typer = typer.init(JsonTypeInfo.Id.CLASS, null);
-	    typer = typer.inclusion(JsonTypeInfo.As.PROPERTY);
-	    objectMapper.setDefaultTyping(typer);
+		typer = typer.init(JsonTypeInfo.Id.CLASS, null);
+		typer = typer.inclusion(JsonTypeInfo.As.PROPERTY);
+		objectMapper.setDefaultTyping(typer);
 	}
 	
 	@Override

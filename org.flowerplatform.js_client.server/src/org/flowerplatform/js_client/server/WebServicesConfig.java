@@ -6,7 +6,6 @@ import org.flowerplatform.js_client.server.remote.JavaClientMethodInvocationServ
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.servlet.ServletContainer;
 
 /**
  * Exposes registered services as REST API. Passed as an initialization

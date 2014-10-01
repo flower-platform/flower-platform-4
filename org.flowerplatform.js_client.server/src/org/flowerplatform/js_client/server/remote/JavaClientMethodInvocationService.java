@@ -2,13 +2,13 @@ package org.flowerplatform.js_client.server.remote;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.flowerplatform.core.CorePlugin;
@@ -31,6 +31,7 @@ import org.flowerplatform.core.CorePlugin;
  * </ul>
  * 
  * @author Cristina Constantinescu
+ * @author Mariana Gheorghe
  */
 @Path("/javaClientMethodInvocationService")
 public class JavaClientMethodInvocationService {
@@ -38,6 +39,8 @@ public class JavaClientMethodInvocationService {
 	private static final String SERVICE_DOT_METHOD_NAME = "serviceDotMethodName";
 	private static final String PARAMETERS = "parameters";
 	
+	/**
+	 */
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	public Object invoke(HashMap<String, Object> requestParams) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {		
@@ -52,12 +55,29 @@ public class JavaClientMethodInvocationService {
 		if (service == null) {
 			throw new RuntimeException(String.format("The service with id='%s' was not found in the service registry.", serviceName));
 		}
+		
+		int requestParameterCount = parameters == null ? 0 : parameters.size();
 		// find the method
 		Method foundMethod = null;
 		for (Method method : service.getClass().getMethods()) {
+			// check name
 			if (method.getName().equals(methodName)) {
-				foundMethod = method;
-				break;
+				// check parameter count and types
+				if (method.getParameterCount() == requestParameterCount) {
+					boolean b = true;
+					for (int i = 0; i < requestParameterCount; i++) {
+						Parameter param = method.getParameters()[i];
+						Object requestParam = requestParams.get(i);
+						if (!param.getType().isAssignableFrom(requestParam.getClass())) {
+							b = false;
+							break;
+						}
+					}
+					if (b) {
+						foundMethod = method;
+						break;
+					}
+				}
 			}
 		}
 		if (foundMethod == null) {

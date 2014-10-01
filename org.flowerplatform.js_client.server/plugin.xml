@@ -11,30 +11,18 @@
                value="org.flowerplatform.js_client.server.WebServicesConfig">
          </init-param>
       </servlet>
-   </extension>
-   <extension
-         point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/oauth/redirect"
             class="org.flowerplatform.js_client.server.oauth.client.OAuth2RedirectServlet">
       </servlet>
-   </extension>
-   <extension
-         point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/oauth/login"
             class="org.flowerplatform.js_client.server.oauth.client.OAuth2LoginServlet">
       </servlet>
-   </extension>
-   <extension
-         point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/oauth/authorize"
             class="org.flowerplatform.js_client.server.oauth.server.OAuth2AuthorizationServlet">
       </servlet>
-   </extension>
-   <extension
-         point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/oauth/token"
             class="org.flowerplatform.js_client.server.oauth.server.OAuth2TokenServlet">

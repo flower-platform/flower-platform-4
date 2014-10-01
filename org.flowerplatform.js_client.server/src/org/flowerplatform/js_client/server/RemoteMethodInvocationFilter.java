@@ -1,7 +1,6 @@
 package org.flowerplatform.js_client.server;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -17,9 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.RemoteMethodInvocationInfo;
-import org.flowerplatform.core.RemoteMethodInvocationListener;
-
-import com.fasterxml.jackson.databind.type.CollectionType;
 
 /**
  * Notifies the registered {@link RemoteMethodInvocationListener} before and 

@@ -2,7 +2,7 @@ package org.flowerplatform.freeplane.client;
 
 import java.util.Map;
 
-import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesParser;
+//import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesParser;
 import org.flowerplatform.js_client.java.JsClientJavaUtils;
 import org.flowerplatform.js_client.java.node.ClientNode;
 import org.freeplane.features.icon.HierarchicalIcons;
@@ -58,12 +58,12 @@ public class FlowerPlatformView implements INodeView {
 			// from the NodeModel XML file content
 			String xmlContent = flowermManager.loadXmlContentFromNode(node);
 			ClientNode newClientNode = new ClientNode();
-			XmlNodePropertiesParser xmlParser = new XmlNodePropertiesParser(newClientNode);
-			try {
-				xmlParser.parseXML(xmlContent);
-			} catch (Exception e) {
-				new RuntimeException(e);
-			}
+//			XmlNodePropertiesParser xmlParser = new XmlNodePropertiesParser(newClientNode);
+//			try {
+//				xmlParser.parseXML(xmlContent);
+//			} catch (Exception e) {
+//				new RuntimeException(e);
+//			}
 			
 			// obtain the modified properties, by comparing the new properties with the old ones
 			Map<String, Object> modifiedProperties = flowermManager.compareProperties(clientNode.getProperties(), newClientNode.getProperties());

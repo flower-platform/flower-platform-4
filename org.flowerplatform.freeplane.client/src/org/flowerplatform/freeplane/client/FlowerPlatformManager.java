@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.flowerplatform.freeplane.FreeplanePlugin;
-import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesCreator;
+//import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesCreator;
 import org.flowerplatform.js_client.java.node.ClientNode;
 import org.freeplane.core.extension.IExtension;
 import org.freeplane.features.map.INodeView;
@@ -89,27 +88,27 @@ public class FlowerPlatformManager implements IExtension {
 	 * @author Valentina Bojan
 	 */
 	public void addChildrenToParent(List<ClientNode> children, NodeModel parent) {
-		for (ClientNode child : children) {
-			if (!child.getType().equalsIgnoreCase(FreeplanePlugin.STYLE_ROOT_NODE)) {
-				// create the child node from the xml content
-				XmlNodePropertiesCreator xmlCreator = new XmlNodePropertiesCreator(child);
-				NodeModel childNode = loadNodeFromXmlContent(parent.getMap(), xmlCreator.getXmlContent());
-
-				// if node has children => add a dummy child node
-				if ((Boolean) child.getPropertyValue("hasChildren")) {
-					childNode.insert(new NodeModel(parent.getMap()));
-					childNode.setFolded(true);
-				}
-
-				// add the extension for memorize the clientNode
-				ClientNodeModel clientNodeModel = new ClientNodeModel();
-				clientNodeModel.setNode(child);
-				childNode.addExtension(clientNodeModel);
-
-				// add the child to its parent node
-				parent.insert(childNode);
-			}
-		}
+//		for (ClientNode child : children) {
+//			if (!child.getType().equalsIgnoreCase(FreeplanePlugin.STYLE_ROOT_NODE)) {
+//				// create the child node from the xml content
+//				XmlNodePropertiesCreator xmlCreator = new XmlNodePropertiesCreator(child);
+//				NodeModel childNode = loadNodeFromXmlContent(parent.getMap(), xmlCreator.getXmlContent());
+//
+//				// if node has children => add a dummy child node
+//				if ((Boolean) child.getPropertyValue("hasChildren")) {
+//					childNode.insert(new NodeModel(parent.getMap()));
+//					childNode.setFolded(true);
+//				}
+//
+//				// add the extension for memorize the clientNode
+//				ClientNodeModel clientNodeModel = new ClientNodeModel();
+//				clientNodeModel.setNode(child);
+//				childNode.addExtension(clientNodeModel);
+//
+//				// add the child to its parent node
+//				parent.insert(childNode);
+//			}
+//		}
 	}
 	
 	/**

@@ -1,5 +1,7 @@
 package org.flowerplatform.js_client.server;
 
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -7,8 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.oltu.oauth2.common.OAuth;
+import org.apache.oltu.oauth2.common.error.OAuthError;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
+import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.apache.oltu.oauth2.rs.request.OAuthAccessResourceRequest;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -16,6 +20,8 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.users.UserPrincipal;
 import org.flowerplatform.js_client.server.oauth.server.OAuth2Service;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Mariana Gheorghe
@@ -23,6 +29,8 @@ import org.glassfish.jersey.servlet.ServletContainer;
 public class WebServicesDispatcherServlet extends ServletContainer {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebServicesDispatcherServlet.class);
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -40,13 +48,14 @@ public class WebServicesDispatcherServlet extends ServletContainer {
 			
 			// check authorization header in case of an OAuth login
 			if (request.getHeader(OAuth.HeaderType.AUTHORIZATION) != null) {
-				OAuthAccessResourceRequest oauthResourceRequest = new OAuthAccessResourceRequest(request);
-				String token = oauthResourceRequest.getAccessToken();
+				String accessToken = getAccessToken(request);
 				OAuth2Service service = (OAuth2Service) CorePlugin.getInstance().getServiceRegistry().getService("oauthService");
-				Node user = service.validateAccessToken(token);
+				Node user = service.validateAccessToken(accessToken);
 				if (user == null) {
-					throw OAuthProblemException.error("Invalid access token");
+					throw OAuthProblemException.error(OAuthError.ResourceResponse.INVALID_TOKEN).responseStatus(SC_UNAUTHORIZED);
 				}
+				
+				// TODO validate scope? or let the service method throw INSUFFICIENT_SCOPE error (in this case wrap the super call)
 				
 				// valid authorization token => set user principal
 				request.getSession().setAttribute(CoreConstants.USER_PRINCIPAL, new UserPrincipal(user));
@@ -54,11 +63,29 @@ public class WebServicesDispatcherServlet extends ServletContainer {
 			
 			CorePlugin.getInstance().getRequestThreadLocal().set(request);
 			super.service(request, response);
-		} catch (OAuthSystemException | OAuthProblemException e) {
-			throw new RuntimeException(e);
+		} catch (OAuthProblemException e) {
+			OAuthResponse oauthResponse = JsClientServerPlugin.getInstance().buildJSONMessage(
+					OAuthResponse
+					.errorResponse(e.getResponseStatus())
+					.error(e));
+			if (LOGGER.isErrorEnabled()) {
+				LOGGER.error(oauthResponse.getBody());
+			}
+			JsClientServerPlugin.getInstance().writeHttpResponse(response, oauthResponse);
 		} finally {
 			CorePlugin.getInstance().getRequestThreadLocal().remove();
 		}
 	}
 	
+	/**
+	 * @throws OAuthProblemException {@link OAuthError.ResourceResponse#INVALID_REQUEST}
+	 */
+	private String getAccessToken(HttpServletRequest request) throws OAuthProblemException {
+		try {
+			OAuthAccessResourceRequest oauthResourceRequest = new OAuthAccessResourceRequest(request);
+			return oauthResourceRequest.getAccessToken();
+		} catch (OAuthSystemException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

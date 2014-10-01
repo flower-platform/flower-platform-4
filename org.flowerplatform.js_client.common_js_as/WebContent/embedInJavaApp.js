@@ -4,4 +4,6 @@ var logger = {
 	}
 }
 
-embed = true;
+// perform oauth (with password grant) for embedded client
+oauth = true;
+embeddingClientId = getClientId();

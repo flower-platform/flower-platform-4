@@ -1,8 +1,12 @@
 package org.flowerplatform.js_client.server.oauth.client;
 
+import static org.flowerplatform.js_client.server.JsClientServerConstants.OAUTH_EMBEDDING_CLIENT_ID;
+import static org.flowerplatform.js_client.server.JsClientServerConstants.OAUTH_STATE;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -21,8 +25,6 @@ public class OAuth2ProviderService {
 
 	private Map<String, OAuth2Provider> providers = new HashMap<String, OAuth2Provider>();
 
-	private Map<String, Boolean> states = new HashMap<String, Boolean>();
-	
 	public OAuth2ProviderService() {
 		// read providers from properties
 		String names = CorePlugin.getInstance().getFlowerProperties().getProperty("oauth.providers");
@@ -31,36 +33,39 @@ public class OAuth2ProviderService {
 		}
 	}
 	
+	/**
+	 * @return the {@link OAuth2Provider} with this name
+	 */
 	public OAuth2Provider getOAuthProvider(String name) {
 		return providers.get(name);
 	}
 	
 	/**
-	 * Returns the providers map and a random state.
-	 * @return
+	 * @return the providers map and a random state
 	 */
 	@GET
-	public Map<String, Object> getOAuthProviders(@QueryParam("embed") boolean embed) {
+	public Map<String, Object> getOAuthProviders(@QueryParam("embed") String embeddingClientId) {
 		Map<String, Object> response = new HashMap<String, Object>();
 		response.put("providers", providers);
-		String state = generateState();
-		states.put(state, embed);
-		response.put("state", generateState());
+		response.put("state", generateState(embeddingClientId));
 		return response;
 	}
 	
 	/**
 	 * Generate a state string and keep it in the session attributes.
 	 */
-	private String generateState() {
+	private String generateState(String embeddingClientId) {
 		try {
 			String state = new MD5Generator().generateValue();
-			CorePlugin.getInstance().getRequestThreadLocal().get().getSession()
-				.setAttribute("oauthState", state);
+			HttpSession session = CorePlugin.getInstance().getRequestThreadLocal()
+					.get().getSession();
+			session.setAttribute(OAUTH_STATE, state);
+			if (embeddingClientId != null) {
+				session.setAttribute(OAUTH_EMBEDDING_CLIENT_ID, embeddingClientId);
+			}
 			return state;
 		} catch (OAuthSystemException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
 }

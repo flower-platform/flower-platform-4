@@ -2,10 +2,7 @@ package org.flowerplatform.js_client.server.jackson;
 
 import java.io.IOException;
 
-import org.flowerplatform.js_client.server.ObjectMapperProvider;
-
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
 
@@ -26,7 +23,7 @@ public class UntypedObjectDeserializer extends com.fasterxml.jackson.databind.de
 	
 
 	@Override
-	public Object deserializeWithType(JsonParser jp, DeserializationContext ctxt, TypeDeserializer typeDeserializer) throws IOException, JsonProcessingException {
+	public Object deserializeWithType(JsonParser jp, DeserializationContext ctxt, TypeDeserializer typeDeserializer) throws IOException {
 		_listDeserializer = null;
 		switch (jp.getCurrentToken()) {
 	        case FIELD_NAME:

@@ -1,7 +1,6 @@
 package org.flowerplatform.js_client.server.oauth.server;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,18 +8,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.oltu.oauth2.as.request.AbstractOAuthTokenRequest;
-import org.apache.oltu.oauth2.as.request.OAuthTokenRequest;
 import org.apache.oltu.oauth2.as.request.OAuthUnauthenticatedTokenRequest;
 import org.apache.oltu.oauth2.as.response.OAuthASResponse;
 import org.apache.oltu.oauth2.common.error.OAuthError;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
-import org.apache.oltu.oauth2.common.message.OAuthResponse.OAuthResponseBuilder;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.users.UserService;
+import org.flowerplatform.js_client.server.JsClientServerPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,23 +55,23 @@ public class OAuth2TokenServlet extends HttpServlet {
 			String accessToken = getService().createAccessToken(user, clientId);
 			
 			// write response
-			OAuthResponse oauthResponse = createOAuthResponse(
+			OAuthResponse oauthResponse = JsClientServerPlugin.getInstance().buildJSONMessage(
 					OAuthASResponse
 					.tokenResponse(HttpServletResponse.SC_OK)
 					.setAccessToken(accessToken));
 			resp.setContentType("application/json;charset=UTF-8");
 			resp.setHeader(" Cache-Control", "no-store");
 			resp.setHeader("Pragma", "no-cache");
-			writeHttpResponse(resp, oauthResponse);
+			JsClientServerPlugin.getInstance().writeHttpResponse(resp, oauthResponse);
 		} catch (OAuthProblemException e) {
-			OAuthResponse oauthResponse = createOAuthResponse(
+			OAuthResponse oauthResponse = JsClientServerPlugin.getInstance().buildJSONMessage(
 					OAuthResponse
-					.errorResponse(HttpServletResponse.SC_BAD_REQUEST)
+					.errorResponse(e.getResponseStatus())
 					.error(e));
 			if (LOGGER.isErrorEnabled()) {
 				LOGGER.error(oauthResponse.getBody());
 			}
-			writeHttpResponse(resp, oauthResponse);
+			JsClientServerPlugin.getInstance().writeHttpResponse(resp, oauthResponse);
 		}
 	}
 	
@@ -90,7 +88,7 @@ public class OAuth2TokenServlet extends HttpServlet {
 		String clientId = oauthRequest.getClientId();
 
 		// validate authorization code
-		return validate(getService().validateAuthorizationCode(authzCode, clientId));
+		return validate(getService().validateAuthorizationCode(authzCode, clientId), "Invalid authorization code");
 	}
 
 	/**
@@ -107,12 +105,12 @@ public class OAuth2TokenServlet extends HttpServlet {
 		
 		// validate user credentials
 		UserService userService = (UserService) CorePlugin.getInstance().getServiceRegistry().getService("userService");
-		return validate(userService.login(username, password));
+		return validate(userService.login(username, password), "Invalid username or password");
 	}
 	
-	private Node validate(Node user) throws OAuthProblemException {
+	private Node validate(Node user, String errorDescription) throws OAuthProblemException {
 		if (user == null) {
-			throw OAuthProblemException.error(OAuthError.TokenResponse.INVALID_GRANT);
+			throw OAuthProblemException.error(OAuthError.TokenResponse.INVALID_GRANT, errorDescription);
 		}
 		return user;
 	}
@@ -123,21 +121,6 @@ public class OAuth2TokenServlet extends HttpServlet {
 		} catch (OAuthSystemException e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	private OAuthResponse createOAuthResponse(OAuthResponseBuilder builder) {
-		try {
-			return builder.buildJSONMessage();
-		} catch (OAuthSystemException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	private void writeHttpResponse(HttpServletResponse resp, OAuthResponse oauthResponse) throws IOException {
-		resp.setStatus(oauthResponse.getResponseStatus());
-		PrintWriter pw = resp.getWriter();
-		pw.print(oauthResponse.getBody());
-		pw.flush();
 	}
 	
 	private OAuth2Service getService() {

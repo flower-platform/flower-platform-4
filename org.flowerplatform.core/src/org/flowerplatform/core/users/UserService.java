@@ -36,6 +36,7 @@ public class UserService {
 	
 	private Node newTestUser(String login) {
 		Node node = new Node("user:test|" + login, "user");
+		node.getProperties().put("password", "a");
 		node.getProperties().put("login", login);
 		node.getProperties().put("name", login + " " + login + "son");
 		node.getProperties().put("email", login + "@domain.com");
@@ -73,7 +74,7 @@ public class UserService {
 				return user;
 			}
 		}
-		return getCurrentUser();
+		return new Node(nodeUri, "user");
 	}
 	
 	/**
@@ -150,7 +151,12 @@ public class UserService {
 	@POST @Path("/login")
 	public Node login(Map<String, String> loginInfo) {
 		String username = loginInfo.get("username");
-		return login(username, null);
+		String password = loginInfo.get("password");
+		Node user = login(username, password);
+		if (user == null) {
+			throw new RuntimeException("Invalid login");
+		}
+		return user;
 	}
 	
 	/**
@@ -161,6 +167,9 @@ public class UserService {
 	public Node login(String username, String password) {
 		for (Node user : users) {
 			if (user.getNodeUri().endsWith(username)) {
+				if (!password.equals(user.getPropertyValue("password"))) {
+					return null;
+				}
 				if (CorePlugin.getInstance().getRequestThreadLocal().get() != null) {
 					userValidator.setCurrentUserPrincipal(
 							CorePlugin.getInstance().getRequestThreadLocal().get().getSession(), 

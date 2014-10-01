@@ -3,8 +3,6 @@ package org.flowerplatform.js_client.server.jackson;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.flowerplatform.js_client.server.ObjectMapperProvider;
-
 /**
  * When an exception is thrown, return this response (contains also the exception message).
  * 

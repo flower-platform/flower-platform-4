@@ -17,3 +17,6 @@ function callFlexCallback() {
 		jsCallback(res);
 	}
 }
+
+// open auth view in popup, as oauth providers do not work in iframe
+oauthPopup = true;

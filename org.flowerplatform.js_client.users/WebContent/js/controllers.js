@@ -59,6 +59,7 @@ flowerProject.lazy.controller('AuthCtrl',  ['$scope', '$location', '$route', 'oa
 		});
 	
 		$scope.oauthProviders = oauthProviders.data.messageResult.providers;
+		delete $scope.oauthProviders['@class'];
 		
 		// bound to basic auth form
 		$scope.loginInfo = {};
@@ -68,36 +69,61 @@ flowerProject.lazy.controller('AuthCtrl',  ['$scope', '$location', '$route', 'oa
 		 * 
 		 */
 		$scope.performLogin = function(provider) {
-			alert('test');
 			logger.debug(provider);
 			if (provider != undefined) {
-				// oauth
+				// oauth with provider (e.g. GitHub, Facebook)
 				var auth = provider.uri;
 				auth += '?client_id=' + provider.clientId;
 				auth += '&scope=' + provider.scope;
 				auth += '&response_type=code';
 				auth += '&state=' + oauthProviders.data.messageResult.state;
 				logger.debug(auth);
-				var popup = window.open(auth, 'name', 'width=1100,height=600');
-				if (window.focus) {
-					popup.focus();
+				if (oauthPopup) {
+					var popup = window.open(auth, 'name', 'width=1100,height=600');
+					if (window.focus) {
+						popup.focus();
+					}
+				} else {
+					window.location.href = auth;
 				}
 			} else {
-				var auth = 'grant_type=password';
-				auth += '&client_id=' + 'testclientid';
-				auth += '&username=' + $scope.loginInfo.username;
-				auth += '&password=' + $scope.loginInfo.password;
-				auth += '&redirect_uri=oob';
-				logger.debug(auth);
-				$.post('../oauth/token', auth)
-				.done(function(data) {
-					window.location.href = '../js_client.users/authAccess.html#access_token=' + data.access_token;
-				});
-				
-				// basic auth
-//				logger.debug($scope.loginInfo);
-//				$scope.loginInfo['@class'] = 'java.util.HashMap';
-//				Auth.performLogin($scope.loginInfo).$promise.then(loginSuccessHandler);
+				// user credentials
+				if (oauth) {
+					// oauth with password grant (i.e. trade credentials for access token)
+					var auth = 'grant_type=password';
+					auth += '&client_id=' + 'testclientid';
+					auth += '&username=' + $scope.loginInfo.username;
+					auth += '&password=' + $scope.loginInfo.password;
+					logger.debug(auth);
+					$.post('../oauth/token', auth)
+					.done(function(data) {
+						window.location.href = '../js_client.users/authAccess.html#access_token=' + data.access_token;
+					})
+					.fail(function(xhr) {
+						// $apply to trigger binding to alert
+						$scope.$apply(function() {
+							var errorDescription = JSON.parse(xhr.responseText).error_description;
+							logger.debug(errorDescription);
+							$scope.alert = {
+								message: errorDescription,
+								visible: true,
+								danger: true
+							};
+						});
+					});
+				} else {
+					// basic auth
+					logger.debug($scope.loginInfo);
+					$scope.loginInfo['@class'] = 'java.util.HashMap';
+					Auth.performLogin($scope.loginInfo).$promise.then(loginSuccessHandler, function(error) {
+						logger.debug(error);
+						$scope.alert = {
+							message: error.statusText + ": " + error.data.messageResult,
+							visible: true,
+							danger: true
+						};
+					});
+				}
 			}
 		}
  	

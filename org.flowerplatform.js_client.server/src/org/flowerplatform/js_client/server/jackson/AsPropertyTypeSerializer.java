@@ -3,7 +3,6 @@ package org.flowerplatform.js_client.server.jackson;
 import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
 
@@ -23,47 +22,47 @@ public class AsPropertyTypeSerializer extends com.fasterxml.jackson.databind.jso
 	}
 
 	@Override
-	public void writeTypePrefixForArray(Object value, JsonGenerator jgen) throws IOException, JsonProcessingException {
+	public void writeTypePrefixForArray(Object value, JsonGenerator jgen) throws IOException {
 		 jgen.writeStartArray();
 	}
 
 	@Override
-	public void writeTypePrefixForArray(Object value, JsonGenerator jgen, Class<?> type) throws IOException, JsonProcessingException {
+	public void writeTypePrefixForArray(Object value, JsonGenerator jgen, Class<?> type) throws IOException {
 		 jgen.writeStartArray();
 	}
 
 	@Override
-	public void writeTypeSuffixForArray(Object value, JsonGenerator jgen) throws IOException, JsonProcessingException {
+	public void writeTypeSuffixForArray(Object value, JsonGenerator jgen) throws IOException {
 		 jgen.writeEndArray();
 	}
 
 	@Override
-	public void writeCustomTypePrefixForArray(Object value, JsonGenerator jgen, String typeId) throws IOException, JsonProcessingException {
+	public void writeCustomTypePrefixForArray(Object value, JsonGenerator jgen, String typeId) throws IOException {
 		jgen.writeStartArray();
 	}
 
 	@Override
-	public void writeCustomTypeSuffixForArray(Object value, JsonGenerator jgen,	String typeId) throws IOException, JsonProcessingException {		
+	public void writeCustomTypeSuffixForArray(Object value, JsonGenerator jgen,	String typeId) throws IOException {		
 	}
 
 	@Override
-	public void writeTypePrefixForScalar(Object value, JsonGenerator jgen) throws IOException, JsonProcessingException {		
+	public void writeTypePrefixForScalar(Object value, JsonGenerator jgen) throws IOException {		
 	}
 
 	@Override
-	public void writeTypePrefixForScalar(Object value, JsonGenerator jgen, Class<?> type) throws IOException, JsonProcessingException {		
+	public void writeTypePrefixForScalar(Object value, JsonGenerator jgen, Class<?> type) throws IOException {		
 	}
 
 	@Override
-	public void writeTypeSuffixForScalar(Object value, JsonGenerator jgen) throws IOException, JsonProcessingException {		
+	public void writeTypeSuffixForScalar(Object value, JsonGenerator jgen) throws IOException {		
 	}
 
 	@Override
-	public void writeCustomTypePrefixForScalar(Object value, JsonGenerator jgen, String typeId) throws IOException, JsonProcessingException {		
+	public void writeCustomTypePrefixForScalar(Object value, JsonGenerator jgen, String typeId) throws IOException {		
 	}
 
 	@Override
-	public void writeCustomTypeSuffixForScalar(Object value, JsonGenerator jgen, String typeId) throws IOException,	JsonProcessingException {		
+	public void writeCustomTypeSuffixForScalar(Object value, JsonGenerator jgen, String typeId) throws IOException {		
 	}
 	
 }
