@@ -41,11 +41,11 @@ public class JavaHostServiceInvocator extends AbstractServiceInvocator {
 		// send request
 		Response response = request.post(Entity.entity(requestParams, MediaType.APPLICATION_JSON_TYPE));
 		
-		HashMap<?, ?> node = response.readEntity(HashMap.class);
-		Object result = node.get(CoreConstants.MESSAGE_RESULT);
+		HashMap<?, ?> entity = response.readEntity(HashMap.class);
+		Object result = entity == null ? null : entity.get(CoreConstants.MESSAGE_RESULT);
 		
-		if (response.getStatus() != Status.OK.getStatusCode()) { 
-			// request failed			
+		if (response.getStatus() >= Status.INTERNAL_SERVER_ERROR.getStatusCode()) { 
+			// server error (code >= 500)
 			if (faultCallback != null) {
 				Context cx = Context.enter();				
 				Scriptable scope = cx.initStandardObjects();						
@@ -54,7 +54,7 @@ public class JavaHostServiceInvocator extends AbstractServiceInvocator {
 				throw new RuntimeException((String) result);
 			}
 		} else if (resultCallback != null) {
-			Long lastUpdateTimestampOfServer = (Long) node.get(CoreConstants.LAST_UPDATE_TIMESTAMP);
+			Long lastUpdateTimestampOfServer = (Long) entity.get(CoreConstants.LAST_UPDATE_TIMESTAMP);
 			if (lastUpdateTimestampOfServer != null) {
 				JsClientJavaPlugin.getInstance().setLastUpdateTimestampOfServer(lastUpdateTimestampOfServer);
 			}

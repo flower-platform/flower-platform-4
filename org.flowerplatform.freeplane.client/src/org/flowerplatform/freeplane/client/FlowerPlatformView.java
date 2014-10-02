@@ -76,7 +76,7 @@ public class FlowerPlatformView implements INodeView {
 			try {
 				serviceInvocator.invoke("nodeService.setProperties", parameters);
 			} catch (Exception e) {
-				throw new RuntimeException();
+				throw new RuntimeException(e);
 			}
 			return;
 		}

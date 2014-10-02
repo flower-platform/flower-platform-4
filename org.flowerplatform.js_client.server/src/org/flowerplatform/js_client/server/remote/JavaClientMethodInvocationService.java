@@ -67,8 +67,8 @@ public class JavaClientMethodInvocationService {
 					boolean b = true;
 					for (int i = 0; i < requestParameterCount; i++) {
 						Parameter param = method.getParameters()[i];
-						Object requestParam = requestParams.get(i);
-						if (!param.getType().isAssignableFrom(requestParam.getClass())) {
+						Object requestParam = parameters.get(i);
+						if (requestParam == null || !param.getType().isAssignableFrom(requestParam.getClass())) {
 							b = false;
 							break;
 						}
