@@ -15,7 +15,8 @@
  */
 package org.flowerplatform.freeplane.controller.xml_parser;
 
-import org.flowerplatform.core.node.remote.Node;
+import java.util.Map;
+
 import org.xml.sax.Attributes;
 
 /**
@@ -25,12 +26,12 @@ import org.xml.sax.Attributes;
 public class ConvertAllAttributesProcessor extends AbstractTagProcessor {
 
 	@Override
-	public void processStartTag(XmlParser parser, String tag, Attributes attributes, Node node) {
+	public void processStartTag(XmlParser parser, String tag, Attributes attributes, Map<String, Object> properties) {
 		if (!parser.isRoot) {
-			addStartContentAndAttributes(parser, tag, attributes, node, "");
+			addStartContentAndAttributes(parser, tag, attributes, properties, "");
 		} else {
 			for (int i = 0; i < attributes.getLength(); i++) {
-				node.getProperties().put(attributes.getQName(i), attributes.getValue(i));
+				properties.put(attributes.getQName(i), attributes.getValue(i));
 			}
 			parser.isRoot = false;
 		}
@@ -38,7 +39,7 @@ public class ConvertAllAttributesProcessor extends AbstractTagProcessor {
 	}
 
 	@Override
-	public void processEndTag(XmlParser parser, String tag, Node node) {
-		addEndContent(parser, tag, node, "");
+	public void processEndTag(XmlParser parser, String tag, Map<String, Object> properties) {
+		addEndContent(parser, tag, properties, "");
 	}
 }

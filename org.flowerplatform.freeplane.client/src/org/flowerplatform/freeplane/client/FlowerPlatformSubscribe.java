@@ -4,8 +4,10 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.List;
 
-//import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesCreator;
+import org.flowerplatform.freeplane.FreeplanePlugin;
+import org.flowerplatform.freeplane.controller.xml_parser.XmlWritter;
 import org.flowerplatform.js_client.java.JsClientJavaPlugin;
 import org.flowerplatform.js_client.java.JsClientJavaUtils;
 import org.flowerplatform.js_client.java.node.ClientNode;
@@ -16,6 +18,11 @@ import org.flowerplatform.js_client.java.node.JavaHostInvocator;
 import org.flowerplatform.js_client.java.node.JavaHostResourceOperationsHandler;
 import org.flowerplatform.js_client.java.node.JavaHostServiceInvocator;
 import org.freeplane.core.ui.AFreeplaneAction;
+import org.freeplane.features.map.MapModel;
+import org.freeplane.features.map.NodeModel;
+import org.freeplane.features.map.mindmapmode.MMapController;
+import org.freeplane.features.map.mindmapmode.MMapModel;
+import org.freeplane.features.mode.Controller;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
@@ -96,29 +103,29 @@ class FlowerPlatformSubscribe extends AFreeplaneAction {
 			JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "subscribe", "fpm1:user1/repo-2|TestMap.mm", nodeRegistry, 
 				new IFunctionInvoker() {
 					public void call(Object instance, Object... params) {
-//						// create the XML content for the root node
-//						ClientNode root = (ClientNode) params[0];
-//						XmlNodePropertiesCreator xmlCreator = new XmlNodePropertiesCreator(root);
-//						
-//						// create a new map containing the root node from the XML content
-//						MMapController mapController = (MMapController) Controller.getCurrentModeController().getMapController();
-//						FlowerPlatformManager flowerManager = FlowerPlatformManager.getController();
-//						MapModel map = new MMapModel();
-//						NodeModel rootNode = flowerManager.loadNodeFromXmlContent(map, xmlCreator.getXmlContent());
-//						ClientNodeModel rootClientNodeModel = new ClientNodeModel();
-//						rootClientNodeModel.setNode(root);
-//						rootNode.addExtension(rootClientNodeModel);
-//
-//						// expand root node
-//						JsClientJavaUtils.invokeJsFunction(nodeRegistry, "expand", root, null);
-//						List<ClientNode> children = root.getChildren();
-//						flowerManager.addChildrenToParent(children, rootNode);
-//						
-//						// display the new map
-//						mapController.setSaved(map, false);
-//						mapController.fireMapCreated(map);
-//						mapController.newMapView(map);
-//						flowerManager.addViewerToChildren(rootNode, new FlowerPlatformView());
+						// create the XML content for the root node
+						ClientNode root = (ClientNode) params[0];
+						XmlWritter xmlCreator = new XmlWritter(FreeplanePlugin.getInstance().getXmlConfiguration(), root.getProperties());
+						
+						// create a new map containing the root node from the XML content
+						MMapController mapController = (MMapController) Controller.getCurrentModeController().getMapController();
+						FlowerPlatformManager flowerManager = FlowerPlatformManager.getController();
+						MapModel map = new MMapModel();
+						NodeModel rootNode = flowerManager.loadNodeFromXmlContent(map, xmlCreator.getXmlContent());
+						ClientNodeModel rootClientNodeModel = new ClientNodeModel();
+						rootClientNodeModel.setNode(root);
+						rootNode.addExtension(rootClientNodeModel);
+
+						// expand root node
+						JsClientJavaUtils.invokeJsFunction(nodeRegistry, "expand", root, null);
+						List<ClientNode> children = root.getChildren();
+						flowerManager.addChildrenToParent(children, rootNode);
+						
+						// display the new map
+						mapController.setSaved(map, false);
+						mapController.fireMapCreated(map);
+						mapController.newMapView(map);
+						flowerManager.addViewerToChildren(rootNode, new FlowerPlatformView());
 					}
 				},
 				new IFunctionInvoker() {

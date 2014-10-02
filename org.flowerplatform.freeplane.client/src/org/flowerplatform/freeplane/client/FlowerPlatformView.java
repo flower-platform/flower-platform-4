@@ -2,9 +2,11 @@ package org.flowerplatform.freeplane.client;
 
 import java.util.Map;
 
-//import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesParser;
+import org.flowerplatform.freeplane.FreeplanePlugin;
+import org.flowerplatform.freeplane.controller.xml_parser.XmlParser;
 import org.flowerplatform.js_client.java.JsClientJavaUtils;
 import org.flowerplatform.js_client.java.node.ClientNode;
+import org.flowerplatform.js_client.java.node.JavaHostServiceInvocator;
 import org.freeplane.features.icon.HierarchicalIcons;
 import org.freeplane.features.map.HistoryInformationModel;
 import org.freeplane.features.map.INodeView;
@@ -58,26 +60,25 @@ public class FlowerPlatformView implements INodeView {
 			// from the NodeModel XML file content
 			String xmlContent = flowermManager.loadXmlContentFromNode(node);
 			ClientNode newClientNode = new ClientNode();
-//			XmlNodePropertiesParser xmlParser = new XmlNodePropertiesParser(newClientNode);
-//			try {
-//				xmlParser.parseXML(xmlContent);
-//			} catch (Exception e) {
-//				new RuntimeException(e);
-//			}
+			XmlParser xmlParser = new XmlParser(FreeplanePlugin.getInstance().getXmlConfiguration(), newClientNode.getProperties());
+			try {
+				xmlParser.parseXML(xmlContent);
+			} catch (Exception e) {
+				new RuntimeException(e);
+			}
 			
 			// obtain the modified properties, by comparing the new properties with the old ones
 			Map<String, Object> modifiedProperties = flowermManager.compareProperties(clientNode.getProperties(), newClientNode.getProperties());
 
 			// send the modified properties to server
-//			JavaHostServiceInvocator serviceInvocator = new JavaHostServiceInvocator();
-//			Object[] parameters = {clientNode.getNodeUri(), modifiedProperties};
-//			try {
-//				serviceInvocator.invoke("nodeService.setProperties", parameters);
-//			} catch (Exception e) {
-////				throw new RuntimeException();
-//				e.printStackTrace();
-//			}
-//			return;
+			JavaHostServiceInvocator serviceInvocator = new JavaHostServiceInvocator();
+			Object[] parameters = {clientNode.getNodeUri(), modifiedProperties};
+			try {
+				serviceInvocator.invoke("nodeService.setProperties", parameters);
+			} catch (Exception e) {
+				throw new RuntimeException();
+			}
+			return;
 		}
 		
 		System.out.println(property);

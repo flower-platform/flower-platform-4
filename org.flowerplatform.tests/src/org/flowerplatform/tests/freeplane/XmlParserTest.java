@@ -58,7 +58,7 @@ public class XmlParserTest {
 	public void testParseXmlToNodeDifferentTags() throws SAXException, IOException, ParserConfigurationException {
 		String xmlContent = readFile(DIR + "/" + DIFFERENT_TAGS_XML_FILE);
 		Node node = new Node(null, null);
-		XmlParser handler = new XmlParser(configuration, node);
+		XmlParser handler = new XmlParser(configuration, node.getProperties());
 		handler.parseXML(xmlContent);
 		
 		assertAndRemoveProperty(node, "TEXT", "Node1");
@@ -104,7 +104,7 @@ public class XmlParserTest {
 	public void testParseXmlToNodeUnknownTags() throws SAXException, IOException, ParserConfigurationException {
 		String xmlContent = readFile(DIR + "/" + UNKNOWN_TAGS_XML_FILE);
 		Node node = new Node(null, null);
-		XmlParser handler = new XmlParser(configuration, node);
+		XmlParser handler = new XmlParser(configuration, node.getProperties());
 		handler.parseXML(xmlContent);
 		
 		assertAndRemoveProperty(node, "TEXT", "test");
@@ -151,12 +151,12 @@ public class XmlParserTest {
 	private void serializeDeserializeAndCompareXMLContent(String xmlFileName) throws ParserConfigurationException, SAXException, IOException {
 		String oldXmlContent = readFile(DIR + "/" + xmlFileName);
 		Node oldNode = new Node(null, null);
-		XmlParser handler = new XmlParser(configuration, oldNode);
+		XmlParser handler = new XmlParser(configuration, oldNode.getProperties());
 		handler.parseXML(oldXmlContent);
 		
-		XmlWritter xmlCreator = new XmlWritter(configuration, oldNode);
+		XmlWritter xmlCreator = new XmlWritter(configuration, oldNode.getProperties());
 		Node newNode = new Node(null, null);
-		handler = new XmlParser(configuration, newNode);
+		handler = new XmlParser(configuration, newNode.getProperties());
 		handler.parseXML(xmlCreator.getXmlContent());
 		
 		assertEqualsMaps(newNode.getProperties(), oldNode.getProperties());

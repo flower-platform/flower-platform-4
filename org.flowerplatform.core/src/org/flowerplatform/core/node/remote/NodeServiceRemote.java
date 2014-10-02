@@ -67,11 +67,18 @@ public class NodeServiceRemote {
 	}
 	
 	/**
+	 * @author Claudiu Matei
 	 * @author Valentina Bojan
 	 */
 	public void setProperties(String fullNodeId, Map<String, Object> properties) {
-		// TODO VB:
+		ResourceSetService rss = CorePlugin.getInstance().getResourceSetService();
 		Node node = CorePlugin.getInstance().getResourceService().getNode(fullNodeId);
+		node.getOrPopulateProperties(new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		String typeLabel = ResourcesPlugin.getInstance().getLabelForNodeType(node.getType());
+		String nodeName = (String) node.getPropertyValue(getNodeTitleProperty(node.getType()));
+		String nodeLabel = typeLabel + (nodeName != null ? "(" + nodeName + ")" : "");
+		String commandTitle = ResourcesPlugin.getInstance().getMessage("commandStack.command.setProperties", nodeLabel);
+		rss.startCommand(rss.getResourceSet(fullNodeId), commandTitle);
 		getNodeService().setProperties(node, properties, new ServiceContext<NodeService>(getNodeService()));
 	}
 		
