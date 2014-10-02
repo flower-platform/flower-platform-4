@@ -1,127 +1,108 @@
+<!-- Content for User - Profile - Account Settings -->
+
 <div ng-controller="UserAccountSettingsCtrl">
 
-	<div class="row">	
+	<p/>
+	<div class="col-sm-12">
 		<div class="alert alert-dismissable" ng-class="{'alert-success':alert.success, 'alert-danger':alert.danger, hidden:!alert.visible}" role="alert">
 			<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 			<span ng-bind="alert.message"></span>
 		</div>
 	</div>
 
-	<div class="col-sm-3">
-		<h3>Account settings</h3>
-		<p>Please update this user's information.</p>
-	</div>
-
-	<div class="col-sm-9">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">Change password</h3>
-			</div>
-			<div class="panel-body">
-				<form role="form" id="form-password-change">
-					<dl class="form password-confirmation-form">
-						<dt>
-							<label class="control-label required">Old password</label>
-						</dt>
-						<dd>
-							<input id="user_old_password" type="password" required ng-model="oldPassword">
-						</dd>
-						</dl>
-						<dl class="form password-confirmation-form">
-							<dt>
-								<label class="control-label required">New password</label>
-							</dt>
-							<dd>
-								<input id="user_new_password" type="password" required ng-model="newPassword">
-							</dd>
-						</dl>
-						<dl class="form password-confirmation-form">
-							<dt>
-								<label class="control-label required">Confirm new password</label>
-							</dt>
-							<dd>
-								<input id="user_confirm_password" type="password" required>
-							</dd>
-						</dl>
-						<p>
-							<button type="submit" class="button" ng-click="changePassword(oldPassword,newPassword)">Change password</button>
-						</p>
-					</form>
-			  	</div>
+	<div>	
+		<div class="col-sm-3">
+			<h3 id="AccountSettings">Account settings</h3>
+			<p>Please update this user's information.</p>
 		</div>
-		
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">Change username</h3>
-			</div>
-			<div class="panel-body">
-				<form role="form" id="form-username-change">
-					<dl class="form change-username-form">
-						<dt>
-							<label class="control-label required">New login</label>
-						</dt>
-						<dd>
-							<input id="user_new_username" type="text" required ng-model="login"> 
-						</dd>
-					</dl>
-					<p>
-						<button type="submit" class="button" ng-click="changeUsername(login)">Change username</button>
-					</p>
-				</form>
-			</div>
-		</div>
-		
-		<div class="panel panel-danger">
-			<div class="panel-heading">
-				<h3 class="panel-title">Delete account</h3>
-			</div>
-			<div class="panel-body">
-				<form role="form" id="form-delete-account">
-					<p>
-						<button type="submit" class="button" data-toggle="modal" data-target="#myModal">Delete account</button>
-					</p>
-				</form>	
-			</div>
-		</div>
-		
-		<div class="modal fade" id="myModal" role="dialog" aria-hidden="false" tabindex="-1">
-			<div class="modal-dialog">
-				<div class="user-settings">	
-					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<h3> Are you sure you want to do this ?</h3>
-					<div class="alert alert-danger" role="alert">
-				   		<span class="glyphicon glyphicon-exclamation-sign"></span>
-				   		 &nbsp;
-				   		 This is extremely important!
-					</div>
-					<hr>
-					<form role="form" >
-						<dl class="form delete-account-form">
-							<dt>
-								<label>Enter your username</label>
-							</dt>
-							<dd>
-								<input ng-model="username" type="text" pattern="user"> 
-							</dd>
-							<br>
-							<dt>
-								<label>Type in the following phrase: <em>delete my account</em></label>
-								
-							</dt>
-							<dd>
-								<input ng-model="user_phrase" type="text" pattern="delete my account"> 
-							</dd>
-						</dl>
-						<p>
-							<button type="submit" class="btn btn-default" ng-click="deleteAccount()" style="color: #B40404;" ng-disabled="!username || !user_phrase">
-								Delete account
-							</button>
-						</p>
+	
+		<div class="col-sm-9">
+			<div class="panel panel-default">
+			
+				<div class="panel-heading">
+					<h3 class="panel-title">Change password</h3>
+				</div>
+				
+				<div class="panel-body">
+					<form role="form">
+						<div class="form-group">
+						    <label>Old password</label>
+						    <input id="user_old_password" type="password" required ng-model="oldPassword" class="form-control">
+					 	</div>
+						<div class="form-group">
+							<label>New password</label>
+							<input id="user_new_password" type="password" required ng-model="newPassword" class="form-control">
+						</div>
 						
+						<div class="form-group">
+							<label class="control-label required">Confirm new password</label>
+							<input id="user_confirm_password" type="password" required pattern="{{newPassword}}" class="form-control">
+						</div>
+						
+						<p><button type="submit" class="btn btn-default" ng-click="changePassword(oldPassword, newPassword)">Change password</button></p>
 					</form>
-	  	  		</div>
-	  	  	</div>
-	  	</div>
-	  	 
+				</div>
+			</div>
+			
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Change username</h3>
+				</div>
+				
+				<div class="panel-body">
+					<form role="form">
+						<div class="form-group">
+							<label class="control-label required">New login</label>
+							<input id="user_new_username" type="text" required ng-model="user.messageResult.properties.login" class="form-control">
+						</div>
+						
+						<p><button type="submit" class="btn btn-default" ng-click="changeLogin()">Change username</button></p>
+					</form>
+				</div>
+			</div>
+			
+			<div class="panel panel-danger">
+				<div class="panel-heading">
+					<h3 class="panel-title">Delete account</h3>
+				</div>
+				
+				<div class="panel-body">
+					<form role="form">
+						<p><button type="submit" class="btn btn-default" data-toggle="modal" data-target="#myModal">Delete account</button></p>
+					</form>	
+				</div>
+			</div>
+			
+			<div class="modal fade" id="myModal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+							<h3 style="text-align: center;"> Are you sure you want to do this ?</h3>
+							<div class="alert alert-danger" role="alert" id="alert-delete-account" style="margin-left: -15px; margin-right: -15px;">
+						   		<span class="glyphicon glyphicon-exclamation-sign"></span>
+						   		 &nbsp;
+						   		 This is extremely important!
+							</div>
+						</div> 
+						
+						<div class="modal-body">
+							<form role="form" >
+								<div class="form-group">
+									<label>Enter your username</label>
+									<input ng-model="username" type="text" pattern="{{user.messageResult.properties.login}}" class="form-control">
+									<br>
+									<label>Type in the following phrase: <em>delete my account</em></label></dt>
+									<input ng-model="user_phrase" type="text" pattern="delete my account" class="form-control">
+								</div>
+								<p/><button type="submit" class="btn btn-default" id="delete-account-button" ng-click="remove()"ng-disabled="!username || !user_phrase">
+										Delete this account </button>	
+							</form>
+						</div>
+						
+					</div>
+				</div>
+		  	  </div>
+		  </div>
 	</div>
 </div>

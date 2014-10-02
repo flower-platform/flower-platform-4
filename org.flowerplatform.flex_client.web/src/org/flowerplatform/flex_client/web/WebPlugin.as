@@ -54,7 +54,6 @@ package org.flowerplatform.flex_client.web {
 		}
 		
 		override public function start():void {
-			// TODO VB: Show login popup if no user authenticated or enter main application.
 			super.start();
 			
 			CorePlugin.getInstance().globalMenuActionProvider.addAction(new ActionBase()

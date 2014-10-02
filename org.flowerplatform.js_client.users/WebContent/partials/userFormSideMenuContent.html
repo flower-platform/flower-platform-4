@@ -1,11 +1,9 @@
-<div id="settings-panel" class="panel panel-default">
-	<div class="panel-heading">
-		<h3 class="panel-title">Profile</h3>
+<div ng-controller="NavigationCtrl">
+
+	<div class="list-group">
+		<a class="list-group-item disabled" >Profile</a>
+		<a class="list-group-item" ng-class="{active: currentRoute == '/users/{{decodeUri}}' }" ng-href="#users/{{uri}}">General</a>
+		<a class="list-group-item" ng-class="{active: currentRoute == '/users/{{decodeUri}}/AccountSettings'}" ng-href="#users/{{uri}}/AccountSettings">Account Settings</a>
 	</div>
-	<div class="panel-body">
-		<ul class="nav nav-pills nav-stacked">
-			<li ng-class="{active: currentPath == '/users/{{currentUser.messageResult.nodeUri}}'}" ><a ng-href="#/users/{{currentUser.messageResult.nodeUri}}">General</a></li>	
-			<li ng-class="{active: currentPath == '/users/{{currentUser.messageResult.nodeUri}}/settings'}"><a ng-href="#/users/{{currentUser.messageResult.nodeUri}}/settings">Account settings</a></li>
-		</ul>
-	</div>
-</div> 
+
+</div>

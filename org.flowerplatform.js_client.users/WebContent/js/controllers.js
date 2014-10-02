@@ -136,117 +136,133 @@ flowerProject.lazy.controller('UserListCtrl', ['$scope', '$location', 'User', 'T
    	
 }]);
 
-flowerProject.lazy.controller('UserFormCtrl', ['$scope', '$routeParams', '$location', '$http', 'User', 
-     function($scope, $routeParams, $location, $http, User) {
-
- 		/**
- 		 * Get the user from the server, or create new user for this $scope.
- 		 */
- 		$scope.user = $routeParams.id == 'new' ? new User() : User.get({ id: $routeParams.id });
- 		
- 		$scope.save = function() {
- 			User.save($scope.user.messageResult).$promise.then(function(result) {
- 				$scope.alert = {
- 					message: 'User information for ' + result.firstName + ' ' + result.lastName + ' has been successfully updated.',
- 					visible: true,
- 					success: true
- 				};
- 			}, function(error) {
- 				$scope.alert = {
- 					message: 'Server error. Please try again.',
- 					visible: true,
- 					danger: true
- 				};
- 			});
- 		};
- 		
- 		/**
- 		 * Go to users list.
- 		 */
- 		$scope.cancel = function() {
- 			$location.path('/users');
- 		}
- 		
- 		$scope.remove = function() {
- 			User.remove({ id: $scope.user.messageResult.nodeUri }).$promise.then(function(result) {
- 				$scope.alert = {
- 					message: 'User was deleted.',
- 					visible: true,
- 					success: true
- 				};
- 			}, function(error) {
- 				$scope.alert = {
- 					message: 'Server error. Please try again.',
- 					visible: true,
- 					danger: true
- 				};
- 			});
- 		};
- 		
- }]);
-
-flowerProject.lazy.controller('UserAccountSettingsCtrl',  ['$scope', '$routeParams', 'User', 'Auth',
-	function($scope, $routeParams, User, Auth) {
+flowerProject.lazy.controller('UserFormCtrl', ['$scope', '$routeParams', '$location', '$http', 'User', 'ChangeSettings', 'Login', 'UserNodeUri', 
+     function($scope, $routeParams, $location, $http, User, ChangeSettings, Login, UserNodeUri) {
 	
 		/**
 		 * Get the user from the server, or create new user for this $scope.
 		 */
-		$scope.login = Auth.login;
-		$scope.changePassword = function(oldPassword, newPassword) {
-			var user = { nodeUri : Auth.nodeUri , 
-			properties: { 
-				'oldPassword': oldPassword, 
-				'newPassword': newPassword
-			}};
-			User.save(user).$promise.then(function(result) {
- 				$scope.alert = {
- 					message: 'User information for ' + result.firstName + ' ' + result.lastName + ' has been successfully updated.',
- 					visible: true,
- 					success: true
- 				};
- 			}, function(error) {
- 				$scope.alert = {
- 					message: 'Server error. Please try again.',
- 					visible: true,
- 					danger: true
- 				};
- 			});
-		};
+		$scope.nodeUri = $routeParams.id;
+		$scope.user = $routeParams.id == 'new' ? new User() : User.get({ id: $scope.nodeUri });
+		UserNodeUri.setProperty($scope.nodeUri);
 		
-		$scope.changeUsername = function(newlogin) {
-			var user = { nodeUri : Login.nodeUri , login : newlogin};
-			User.save(user).$promise.then(function(result) {
- 				$scope.alert = {
- 					message: 'User information for ' + result.firstName + ' ' + result.lastName + ' has been successfully updated.',
- 					visible: true,
- 					success: true
- 				};
- 			}, function(error) {
- 				$scope.alert = {
- 					message: 'Server error. Please try again.',
- 					visible: true,
- 					danger: true
- 				};
- 			});
+		$scope.save = function() {
+			User.save($scope.user.messageResult).$promise.then(function(result) {
+				$scope.alert = {
+					message: 'User information for ' + result.messageResult.properties.firstName + ' ' + result.messageResult.properties.lastName + ' has been successfully updated.',
+					visible: true,
+					success: true
+				};
+			}, function(error) {
+				$scope.alert = {
+					message: 'Server error. Please try again.',
+					visible: true,
+					danger: true
+				};
+			});
 		};
 		
 		/**
- 		 * Delete user
- 		 */
- 		$scope.deleteAccount = function() {
- 			//var user = {nodeUri : Auth.nodeUri};
- 			User.remove({ id: Auth.nodeUri }).$promise.then(function(result) {
- 				$scope.alert = {
- 					message: 'User was deleted',
- 					visible: true,
- 					success: true
- 				};
- 			}, function(error) {
- 				$scope.alert = {
- 					message: 'Server error. Please try again.',
- 					visible: true,
- 					danger: true
- 				};
- 			});
- 		};
+		 * Go to users list.
+		 */
+		$scope.cancel = function() {
+			$location.path('/users');
+		}
+		
+		/**
+		 * Delete user
+		 */
+		$scope.remove = function() {
+			User.remove({ id: $scope.user.messageResult.nodeUri }).$promise.then(function(result) {
+				$scope.alert = {
+					message: 'User was deleted.',
+					visible: true,
+					success: true
+				};
+			}, function(error) {
+				$scope.alert = {
+					message: 'Server error. Please try again.',
+					visible: true,
+					danger: true
+				};
+			});
+		};
+		
+		
+		
 }]);
+
+flowerProject.lazy.controller('UserAccountSettingsCtrl', ['$scope', '$routeParams', '$location', '$http', 'ChangeSettings', 'Login', 'UserNodeUri', 'User',
+      function($scope, $routeParams, $location, $http, ChangeSettings, Login , UserNodeUri, User) {
+	
+	$scope.userNodeUri = UserNodeUri.getProperty();
+	$scope.user = User.get({ id: decodeURIComponent($scope.userNodeUri)});
+	
+	/**
+	 * Change password
+	 */
+	$scope.changePassword = function(oldPassword, newPassword) {
+		ChangeSettings.changeSettings({ id : $scope.user.messageResult.nodeUri, path : "password"},
+				{'oldPassword' : oldPassword, 'newPassword' : newPassword }).$promise.then(function(result) {
+				$scope.alert = {
+					message: result.messageResult,
+					visible: true,
+					success: true
+				};
+			}, function(error) {
+				$scope.alert = {
+					message: 'Server error. Please try again.',
+					visible: true,
+					danger: true
+				};
+			});
+	};
+	
+	/**
+	 * Change login
+	 */
+	$scope.changeLogin = function() {
+		ChangeSettings.changeSettings({ id : $scope.user.messageResult.nodeUri, path : "login" }, $scope.user.messageResult.properties.login).$promise.then(function(result) {
+				$scope.alert = {
+					message: 'User information for ' + result.messageResult.properties.firstName + ' ' + result.messageResult.properties.lastName + ' has been successfully updated.',
+					visible: true,
+					success: true
+				};
+			}, function(error) {
+				$scope.alert = {
+					message: 'Server error. Please try again.',
+					visible: true,
+					danger: true
+				};
+			});
+	};
+	
+	/**
+	 * Delete user
+	 */
+	$scope.remove = function() {
+		User.remove({ id: $scope.user.messageResult.nodeUri }).$promise.then(function(result) {
+			$scope.alert = {
+				message: 'User was deleted.',
+				visible: true,
+				success: true
+			};
+		}, function(error) {
+			$scope.alert = {
+				message: 'Server error. Please try again.',
+				visible: true,
+				danger: true
+			};
+		});
+	};
+	
+}]);
+
+flowerProject.lazy.controller('NavigationCtrl', ['$scope', '$location','UserNodeUri', 
+       function($scope, $location, UserNodeUri) {
+		
+	   $scope.currentRoute = $location.path();
+	   $scope.uri = UserNodeUri.getProperty();
+	   $scope.decodeUri = decodeURIComponent($scope.uri);
+}]);
+

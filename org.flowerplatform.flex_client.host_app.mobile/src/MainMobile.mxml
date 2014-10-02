@@ -133,6 +133,11 @@
 				setDescriptorWithUrl(new TextPlugin(), 'servlet/public-resources/org.flowerplatform.flex_client.text/swc/org.flowerplatform.flex_client.text.swc|library.swf?pluginClass=TextPlugin')
 			];
 			
+			
+			public static function isAndroid():Boolean {
+				return (Capabilities.version.substr(0,3) == "AND");
+			}
+			
 			private function startPlugins():void {
 				setBackButtonEnabled(true);
 				for each (var plugin:AbstractFlexPlugin in plugins) {					

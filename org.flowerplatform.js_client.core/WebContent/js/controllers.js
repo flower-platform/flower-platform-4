@@ -19,3 +19,5 @@ flowerControllers.controller('ComposedCtrl', ['$scope', 'contentTemplate', 'side
 		$scope.template_sideMenuContentTemplate = { url: Template[sideMenuContentTemplate] };
 		
 }]);
+
+

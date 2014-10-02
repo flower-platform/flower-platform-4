@@ -4,18 +4,21 @@ package org.flowerplatform.flexutil.iframe {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
 
-	public class IFrameOpenUrl extends ActionBase {
+	/**
+	 * @author Andreea Tita
+	 */
+	public class OpenUrlInIFrameAction extends ActionBase {
 		
-		public function IFrameOpenUrl() {
+		public function OpenUrlInIFrameAction() {
 			super();
 		}
 		
 		override public function run():void {
-			var view:IFrameOpenUrlView = new IFrameOpenUrlView();
+			var view:OpenUrlInIFrameView = new OpenUrlInIFrameView();
 			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()			
 				.setViewContent(view)
 				.setTitle(Resources.getMessage("iframe.title"))
-				.setIcon(Resources.urlIcon)
+				.setIcon(Resources.openUrlIcon)
 				.setWidth(350)
 				.setHeight(150)
 				.show();

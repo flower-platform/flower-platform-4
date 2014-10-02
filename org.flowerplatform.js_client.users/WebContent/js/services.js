@@ -2,6 +2,15 @@
 
 logger.debug('init user services');
 
+flowerProject.lazy.factory('Auth', ['$resource', function($resource) {
+	
+	return $resource('../ws-dispatcher/users/:op', {}, {
+		currentUser:	{ method: 'GET', params: {op: 'login' } },
+		performLogin: 	{ method: 'POST', params: { op: 'login' } },
+		performLogout: 	{ method: 'POST', params: { op: 'logout' } }
+	});
+}]);
+
 flowerProject.lazy.factory('User', ['$resource', function($resource) {
 	
 	var getMessageResult = function(response) {
@@ -16,18 +25,32 @@ flowerProject.lazy.factory('User', ['$resource', function($resource) {
 		save:	{ method: 'POST' },
 		remove: { method: 'DELETE', params: { id: '@id' } }
 	});
-	
 }]);
 
-flowerProject.lazy.factory('Auth', ['$resource', function($resource) {
+flowerProject.lazy.factory('ChangeSettings' , ['$resource', function($resource) {
+	var getMessageResult = function(response) {
+		var messageResult = response.resource.messageResult;
+		return messageResult;
+	};
 	
-	return $resource('../ws-dispatcher/users/:op', {}, {
-		currentUser:	{ method: 'GET', params: {op: 'login' } },
-		performLogin: 	{ method: 'POST', params: { op: 'login' } },
-		performLogout: 	{ method: 'POST', params: { op: 'logout' } }
+	return $resource('http://localhost:8080/org.flowerplatform.host.web_app/ws-dispatcher/users/:id/:path', {}, {
+		changeSettings: { method: 'POST',  params: { id: '@id' , path: '@path' } }
 	});
-	
 }]);
+
+flowerProject.lazy.service('UserNodeUri', function () {
+	 var userNodeUri = '';
+
+   return {
+       getProperty: function () {
+           return userNodeUri;
+       },
+       setProperty: function(value) {
+      	 userNodeUri = encodeURIComponent(value);
+       }
+   };
+});
+
 
 /**
  * Decorate the Template service from core.

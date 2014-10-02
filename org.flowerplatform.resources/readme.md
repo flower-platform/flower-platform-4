@@ -26,7 +26,8 @@ Holds images and messages.
 | Icon Name | Icon Source URL | Usage |
 | ------------- | ------------- | ------------- |
 | images/core/download.png | https://www.iconfinder.com/icons/14411/arrow_down_download_icon#size=16 | core |
-| images/core/upload.png | https://www.iconfinder.com/icons/14667/upload_icon#size=16 | core |
+| images/core/upload.png | https://www.iconfinder.com/icons/14667/upload_icon#size=16 | core | 
+| images/core/url_icon.png | https://www.iconfinder.com/icons/21747/insert_url_icon#size=16 | core
 
 
 
