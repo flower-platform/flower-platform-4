@@ -10,14 +10,14 @@ flowerProject.lazy.controller('UserSideMenuCtrl', ['$scope', '$location', '$rout
   		
   		$scope.currentUser = Auth.currentUser();
   		
-//  		$scope.logout = function() {
-//  			Auth.performLogout().$promise.then(function() {
-//  				// success on logout => clear current user
-//  				logger.debug('logout ' + $scope.currentUser);
-//  				Auth.currentUser(null);
-//  				$route.reload();
-//  			});
-//  		};
+  		$scope.logout = function() {
+  			Auth.performLogout().$promise.then(function() {
+  				// success on logout => clear current user
+  				logger.debug('logout ' + $scope.currentUser);
+  				Auth.currentUser(null);
+  				$route.reload();
+  			});
+  		};
   	
 }]);
 
@@ -136,8 +136,8 @@ flowerProject.lazy.controller('UserListCtrl', ['$scope', '$location', 'User', 'T
    	
 }]);
 
-flowerProject.lazy.controller('UserFormCtrl', ['$scope', '$routeParams', '$location', '$http', 'User', 'ChangeSettings', 'Login', 'UserNodeUri', 
-     function($scope, $routeParams, $location, $http, User, ChangeSettings, Login, UserNodeUri) {
+flowerProject.lazy.controller('UserFormCtrl', ['$scope', '$routeParams', '$location', '$http', 'User', 'ChangeSettings', 'Auth', 'UserNodeUri', 
+     function($scope, $routeParams, $location, $http, User, ChangeSettings, Auth, UserNodeUri) {
 	
 		/**
 		 * Get the user from the server, or create new user for this $scope.
@@ -147,6 +147,8 @@ flowerProject.lazy.controller('UserFormCtrl', ['$scope', '$routeParams', '$locat
 		UserNodeUri.setProperty($scope.nodeUri);
 		
 		$scope.save = function() {
+			$scope.user.messageResult['@class'] = 'org.flowerplatform.core.node.remote.Node';
+			$scope.user.messageResult.properties['@class'] = 'java.util.HashMap';
 			User.save($scope.user.messageResult).$promise.then(function(result) {
 				$scope.alert = {
 					message: 'User information for ' + result.messageResult.properties.firstName + ' ' + result.messageResult.properties.lastName + ' has been successfully updated.',
@@ -155,7 +157,7 @@ flowerProject.lazy.controller('UserFormCtrl', ['$scope', '$routeParams', '$locat
 				};
 			}, function(error) {
 				$scope.alert = {
-					message: 'Server error. Please try again.',
+					message: error.statusText + ": " + error.data.messageResult,
 					visible: true,
 					danger: true
 				};
@@ -192,8 +194,8 @@ flowerProject.lazy.controller('UserFormCtrl', ['$scope', '$routeParams', '$locat
 		
 }]);
 
-flowerProject.lazy.controller('UserAccountSettingsCtrl', ['$scope', '$routeParams', '$location', '$http', 'ChangeSettings', 'Login', 'UserNodeUri', 'User',
-      function($scope, $routeParams, $location, $http, ChangeSettings, Login , UserNodeUri, User) {
+flowerProject.lazy.controller('UserAccountSettingsCtrl', ['$scope', '$routeParams', '$location', '$http', 'ChangeSettings', 'Auth', 'UserNodeUri', 'User',
+      function($scope, $routeParams, $location, $http, ChangeSettings, Auth , UserNodeUri, User) {
 	
 	$scope.userNodeUri = UserNodeUri.getProperty();
 	$scope.user = User.get({ id: decodeURIComponent($scope.userNodeUri)});

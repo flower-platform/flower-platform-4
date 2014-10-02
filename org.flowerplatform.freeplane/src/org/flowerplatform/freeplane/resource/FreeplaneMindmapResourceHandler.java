@@ -63,6 +63,9 @@ public class FreeplaneMindmapResourceHandler implements IResourceHandler {
 	
 	@Override
 	public Node createNodeFromRawNodeData(String nodeUri, Object rawNodeData) {
+		if (rawNodeData == null) {
+			return null;
+		}
 		NodeModel nodeModel = (NodeModel) rawNodeData;
 		String type = getType(nodeUri, nodeModel);
 		Node node = new Node(nodeUri, type);

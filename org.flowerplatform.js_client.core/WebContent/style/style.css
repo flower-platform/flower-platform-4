@@ -76,3 +76,8 @@ body {
 .list-group {
 	border-right: 10px solid transparent;
 }
+
+.user-avatar {
+	width: 64px;
+	height: 64px;
+}

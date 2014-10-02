@@ -13,9 +13,11 @@ import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.token.BasicOAuthToken;
 import org.apache.oltu.oauth2.common.utils.JSONUtils;
-import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.users.IUserPrincipalProvider;
+import org.flowerplatform.core.users.UserService;
+import org.flowerplatform.util.Utils;
 import org.json.JSONObject;
 
 /**
@@ -140,8 +142,18 @@ public enum OAuth2UserPrincipalProvider implements IUserPrincipalProvider {
 			
 			// create principal
 			String login = (String) properties.get("login");
-			Node user = new Node(CoreUtils.createNodeUriWithRepo("fpp", "", this.name() + "@" + login), "user");
-			user.setProperties(properties);
+			login = this.name() + "@" + login;
+			String nodeUri = Utils.getUri("fpp", "|.users", login);
+			
+			UserService userService = (UserService) CorePlugin.getInstance().getServiceRegistry().getService("userService");
+			Node user = userService.getUser(nodeUri);
+			if (user == null) {
+				user = new Node(null, "user");
+				user.setProperties(properties);
+				user.getProperties().put("login", login);
+				user = userService.saveUser(user);
+			}
+			
 			return new OAuth2UserPrincipal(user, new BasicOAuthToken(accessToken));
 		} catch (OAuthSystemException | OAuthProblemException e) {
 			throw new RuntimeException(e);

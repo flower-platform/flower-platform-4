@@ -5,7 +5,7 @@ logger.debug('init user services');
 flowerProject.lazy.factory('Auth', ['$resource', function($resource) {
 	
 	return $resource('../ws-dispatcher/users/:op', {}, {
-		currentUser:	{ method: 'GET', params: {op: 'login' } },
+		currentUser:	{ method: 'GET', params: { op: 'login' } },
 		performLogin: 	{ method: 'POST', params: { op: 'login' } },
 		performLogout: 	{ method: 'POST', params: { op: 'logout' } }
 	});
@@ -39,7 +39,7 @@ flowerProject.lazy.factory('ChangeSettings' , ['$resource', function($resource) 
 }]);
 
 flowerProject.lazy.service('UserNodeUri', function () {
-	 var userNodeUri = '';
+	var userNodeUri = '';
 
    return {
        getProperty: function () {
