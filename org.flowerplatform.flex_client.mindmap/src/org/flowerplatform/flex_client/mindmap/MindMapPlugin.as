@@ -31,7 +31,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.mindmap.action.NodeRightAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodeUpAction;
 	import org.flowerplatform.flex_client.mindmap.action.RefreshAction;
-	import org.flowerplatform.flex_client.mindmap.controller.MindMapNodeTypeProvider;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeChildrenController;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeController;
@@ -49,10 +48,14 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.properties.property_renderer.IconsWithButtonPropertyRenderer;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
+	import org.flowerplatform.flexdiagram.controller.renderer.ClassReferenceRendererController;
 	import org.flowerplatform.flexdiagram.controller.selection.BasicSelectionController;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
+	import org.flowerplatform.flexdiagram.mindmap.MultiConnectorModel;
+	import org.flowerplatform.flexdiagram.mindmap.MultiConnectorRenderer;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
+	import org.flowerplatform.flexdiagram.mindmap.controller.MultiConnectorAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -80,21 +83,25 @@ package org.flowerplatform.flex_client.mindmap {
 			INSTANCE = this;
 			this.correspondingJavaPlugin = "org.flowerplatform.mindmap";
 
-			CorePlugin.getInstance().nodeTypeProvider = new MindMapNodeTypeProvider();
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.typeProvider = CorePlugin.getInstance().nodeTypeProvider;
 			CorePlugin.getInstance().serviceLocator.addService("mindMapService");
 			CorePlugin.getInstance().serviceLocator.addService("freeplaneService");
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(MindMapConstants.GENERAL_PURPOSE_MIND_MAP_CATEGORY)
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NodeRendererController(new ClassFactoryWithConstructor(NodeMindMapRenderer)));
 			
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.ID)			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.TYPE)			
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new MindMapRootModelChildrenController(-10))
 				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, new MindMapAbsoluteLayoutVisualChildrenController(-10))
 				.addSingleController(FlexDiagramConstants.DRAG_CONTROLLER, new NullController(-10))
 				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER, new NullController(-10))
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NullController(-10))
 				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER, new NullController(-10));	
+			
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MultiConnectorModel.TYPE)
+				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new ClassReferenceRendererController(new ClassFactoryWithConstructor(MultiConnectorRenderer), 0, true))
+				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new MultiConnectorAbsoluteLayoutRectangleController(-100)); // we want it before the one registered for ALL
 						
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
 				.addSingleController(MindMapConstants.MIND_MAP_FEATURE_FOR_VALUES_PROVIDER, new NodeValuesProvider(MindMapConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX))

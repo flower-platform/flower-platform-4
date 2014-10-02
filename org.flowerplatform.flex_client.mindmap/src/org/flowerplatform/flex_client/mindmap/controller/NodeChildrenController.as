@@ -41,12 +41,26 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			return EMPTY_LIST;
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 * @author Cristian Spiescu
+		 */
 		override public function beginListeningForChanges(context:DiagramShellContext, model:Object):void	{	
-			Node(model).addEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, function (event:UpdateConnectionEndsEvent):void {updateConnectionEndsHandler(event, context);});			
+			if (model is Node) {
+				// check type because it can bee MultiConnectorModel
+				Node(model).addEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, function (event:UpdateConnectionEndsEvent):void {updateConnectionEndsHandler(event, context);});			
+			}
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 * @author Cristian Spiescu
+		 */
 		override public function endListeningForChanges(context:DiagramShellContext, model:Object):void {		
-			Node(model).removeEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, function (event:UpdateConnectionEndsEvent):void {updateConnectionEndsHandler(event, context);});			
+			// check type because it can bee MultiConnectorModel
+			if (model is Node) {
+				Node(model).removeEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, function (event:UpdateConnectionEndsEvent):void {updateConnectionEndsHandler(event, context);});
+			}
 		}
 		
 		protected function updateConnectionEndsHandler(event:UpdateConnectionEndsEvent, context:DiagramShellContext):void {

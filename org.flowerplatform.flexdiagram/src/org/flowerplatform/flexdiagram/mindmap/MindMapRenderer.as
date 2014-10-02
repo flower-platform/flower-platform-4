@@ -155,7 +155,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 				drawLittleCircle();
 			}
 		}
-		
+			
 		override protected function drawCloud(unscaledWidth:Number, unscaledHeight:Number):void {			
 			if (_cloudType == CLOUD_TYPE_RECTANGLE || _cloudType == CLOUD_TYPE_ROUNDED_RECTANGLE) {				
 				graphics.lineStyle(2, 0x808080); // gray line with bigger thickness

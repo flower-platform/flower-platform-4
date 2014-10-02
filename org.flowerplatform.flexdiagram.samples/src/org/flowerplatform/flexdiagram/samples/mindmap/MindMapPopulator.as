@@ -43,22 +43,23 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 		}
 		
 		public function populate(modelHolder:IModelHolder, topLevelModels:int, secondLevelModels:int):void { 
+			var instanceNo:int = 0;
 			var l0:SampleMindMapModel = new SampleMindMapModel();
 			l0.text = "Mind Map Root";
 			l0.hasChildren = true;
 			
 			for (var i:int = 0; i < topLevelModels; i++) {
 				var l1:SampleMindMapModel = createNode(l0);
+				l1.text += " " + instanceNo++;
 				l1.hasChildren = true;
 				if (i < topLevelModels / 2) {
 					l1.side = MindMapDiagramShell.POSITION_LEFT;
-					l1.text = labels[1];
 				} else {
 					l1.side = MindMapDiagramShell.POSITION_RIGHT;
-					l1.text = labels[2];
 				}
 				for (var j:int = 0; j < secondLevelModels; j++) {
 					var l2:SampleMindMapModel = createNode(l1);
+					l2.text += " " + instanceNo++;
 				}
 			}
 			modelHolder.rootModel = l0;

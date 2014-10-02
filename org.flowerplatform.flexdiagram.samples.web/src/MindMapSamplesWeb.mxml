@@ -24,16 +24,18 @@
 			   xmlns:infinitegroup="org.flowerplatform.flexdiagram.util.infinitegroup.*"
 			   xmlns:mindmap="org.flowerplatform.flexdiagram.samples.mindmap.*"
 			   xmlns:mindmap1="org.flowerplatform.flexdiagram.mindmap.*"
-			   click="clickHandler(event)" creationComplete="creationCompleteHandler(event)"
+			   creationComplete="creationCompleteHandler(event)"
 			   implements="org.flowerplatform.flexdiagram.samples.IModelHolder">
 	<fx:Script>
 		<![CDATA[
+			import mx.events.CollectionEvent;
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flexdiagram.ControllerUtils;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapRenderer;
+			import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 			import org.flowerplatform.flexdiagram.renderer.BaseRenderer;
 			import org.flowerplatform.flexdiagram.samples.IModelHolder;
 			import org.flowerplatform.flexdiagram.samples.mindmap.MindMapPopulator;
@@ -64,15 +66,21 @@
 				_rootModel = value;				
 			}
 			
+			[Bindable]
+			public var mindMapRootModelWrapper:MindMapRootModelWrapper;
+			
 			protected function creationCompleteHandler(event:FlexEvent):void {
-				new MindMapPopulator().populate(this, 50, 4);
+				new MindMapPopulator().populate(this, 20, 6);
 				
 				diagramShell.rootModel = rootModel;
+				mindMapRootModelWrapper = MindMapRootModelWrapper(diagramShell.rootModel);
 				diagramShell.registerTool(ScrollTool.ID, new ClassFactoryWithConstructor(ScrollTool));
 				diagramShell.registerTool(SelectOnClickTool.ID, new ClassFactoryWithConstructor(SelectOnClickTool));
 				diagramShell.registerTool(ZoomTool.ID, new ClassFactoryWithConstructor(ZoomTool));
 				diagramShell.registerTool(InplaceEditorTool.ID, new ClassFactoryWithConstructor(InplaceEditorTool));
 				diagramShell.registerTool(DragTool.ID, new ClassFactoryWithConstructor(DragTool));
+				
+				diagramShell.selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangedHandler);
 				
 				var context:DiagramShellContext = diagramShell.getNewDiagramShellContext();
 				MindMapDiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {ControllerUtils.getMindMapModelController(context, diagramShell.getRoot(context)).setExpanded(context, diagramShell.getRoot(context), true)});
@@ -81,17 +89,12 @@
 			/**
 			 * @author Alexandra Topoloaga
 			 */
-			protected function clickHandler(event:MouseEvent):void {
-				if (String(diagramShell.mainSelectedItem).indexOf("SampleMindMapModel") > 0) {
+			protected function selectionChangedHandler(event:Event):void {
+				if (diagramShell.mainSelectedItem is SampleMindMapModel) {
 					selectedItem = SampleMindMapModel(diagramShell.mainSelectedItem);
-					listofChildrenPanel.visible = true;
-					formPanel.visible = true;
-					propertiesForm.visible = true;
-					} else {
-						listofChildrenPanel.visible = false;
-						formPanel.visible = false;
-						propertiesForm.visible = false;
-					}
+				} else {
+					selectedItem = null;
+				}
 			}
 			
 			public function onFontSizeChange():void {
@@ -110,10 +113,12 @@
 		<s:HorizontalLayout/>
 	</s:layout>	
 
-	<s:Scroller width="40%" height="100%" >
-		<s:VGroup width="40%" height="100%" clipAndEnableScrolling="true" horizontalScrollPosition="50" verticalScrollPosition="50">
-			
-			<s:Panel id="listofChildrenPanel" visible="false" width="100%" height="30%"
+	<s:Scroller width="40%" height="100%">
+		<s:VGroup width="40%" height="100%" clipAndEnableScrolling="true">
+			<s:Panel title="MindMapRootModelWrapper.children (size = {mindMapRootModelWrapper.children.length})" width="100%" height="30%">
+				<s:List width="100%" height="100%" dataProvider="{mindMapRootModelWrapper.children}"/>
+			</s:Panel>
+			<s:Panel id="listofChildrenPanel" width="100%" height="30%"
 					 title="List of children for selected node's parent">
 				<s:List id="childrenProviderList" width="100%" height="100%" 
 						dataProvider="{selectedItem.parent.children}" 
@@ -124,8 +129,8 @@
 						})}"/>
 			</s:Panel>
 			
-			<s:Panel id="formPanel" visible="false" width="100%" title="Properties Editor">
-				<s:Form id="propertiesForm" visible="false" width="100%">
+			<s:Panel id="formPanel" width="100%" title="Properties Editor">
+				<s:Form id="propertiesForm" width="100%">
 					<s:layout>
 						<s:FormLayout id="fromLayout" gap="-7"/>
 					</s:layout>
@@ -206,11 +211,17 @@
 			</s:Panel>
 		</s:VGroup>
 	</s:Scroller>
+	<s:Group width="100%" height="100%" >
+		<s:Rect  x="{-diagramRenderer.viewPortRectOffsetTowardOutside}" y="{-diagramRenderer.viewPortRectOffsetTowardOutside}"
+				 width="{scroller.width + 2 * diagramRenderer.viewPortRectOffsetTowardOutside}" height="{scroller.height + 2 * diagramRenderer.viewPortRectOffsetTowardOutside}">
+			<s:stroke>
+				<s:SolidColorStroke color="0x0000FF" weight="2" />					
+			</s:stroke>			
+		</s:Rect>
+		<infinitegroup:InfiniteScroller id="scroller" width="100%" height="100%">
+			<mindmap1:MindMapDiagramRenderer id="diagramRenderer" width="100%" height="100%"
+											 viewPortRectOffsetTowardOutside="-10"/>
+		</infinitegroup:InfiniteScroller>	
+	</s:Group>
 
-	<infinitegroup:InfiniteScroller id="scroller" width="100%" height="100%">
-		<mindmap1:MindMapDiagramRenderer id="diagramRenderer" width="100%" height="100%"
-										 viewPortRectOffsetTowardOutside="0"/>
-	</infinitegroup:InfiniteScroller>	
-	
-	
 </s:Application>

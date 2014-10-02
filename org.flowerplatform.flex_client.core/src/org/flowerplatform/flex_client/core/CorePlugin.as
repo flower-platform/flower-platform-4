@@ -26,6 +26,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+	import org.flowerplatform.flex_client.core.editor.NodeTypeProvider;
 	import org.flowerplatform.flex_client.core.editor.UpdateTimer;
 	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
 	import org.flowerplatform.flex_client.core.editor.action.DownloadAction;
@@ -117,7 +118,7 @@ package org.flowerplatform.flex_client.core {
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 
-		public var nodeTypeProvider:ITypeProvider;
+		public var nodeTypeProvider:ITypeProvider = new NodeTypeProvider();
 		
 		public var contentTypeRegistry:ContentTypeRegistry = new ContentTypeRegistry();
 								
@@ -263,6 +264,8 @@ package org.flowerplatform.flex_client.core {
 				}
 			);
 			
+			nodeTypeDescriptorRegistry.typeProvider = nodeTypeProvider;
+
 			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(FlexUtilConstants.NOTYPE_VALUE_CONVERTERS)
 				.addSingleController(FlexUtilConstants.VALUE_CONVERTER_STRING_HEX_TO_UINT, new StringHexToUintValueConverter())
 				.addSingleController(FlexUtilConstants.VALUE_CONVERTER_CSV_TO_LIST, new CsvToListValueConverter());

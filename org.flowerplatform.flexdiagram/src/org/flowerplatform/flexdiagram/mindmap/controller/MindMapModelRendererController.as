@@ -44,9 +44,22 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {			
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 * @author Cristian Spiescu
+		 */
 		override public function unassociatedModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, isModelDisposed:Boolean):void {		
 			if (isModelDisposed) {
 				removeConnector(context, model);
+			} else {
+				// when a renderer is recycled, it's OK to leave the connector; but if this happens
+				// right after an expand, it's possible that the model has a new position, outside the screen.
+				// then it is recycled (i.e. here). We need to tell the connector to redraw, because it's highly
+				// probable that it was drawn using the previous position of the model
+				var dynamicObject:Object = context.diagramShell.getDynamicObject(context, model);
+				if (dynamicObject.connector != null) {
+					GenericMindMapConnector(dynamicObject.connector).invalidateDisplayList();
+				}
 			}
 			super.unassociatedModelFromRenderer(context, model, renderer, isModelDisposed);
 		}
@@ -77,29 +90,32 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 			context.diagramShell.diagramRenderer.addElementAt(connector, 0);		
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 * @author Cristian Spiescu
+		 */
 		public function updateConnectors(context:DiagramShellContext, model:Object):void {			
-			var dynamicObject:Object = context.diagramShell.getDynamicObject(context, model);
-			if (dynamicObject.connector == null) {
-				addConnector(context, model);				
-			}
-						
-			// refresh connector to parent
-			if (ControllerUtils.getModelChildrenController(context, model).getParent(context, model) != null) {	
-				if (dynamicObject.connector != null) {
-					dynamicObject.connector.invalidateDisplayList();
-				}
-			}
-			// refresh connectors to children
-			var children:IList = MindMapDiagramShell(context.diagramShell).getModelController(context, model).getChildren(context, model);
-			if (children != null) {
-				for (var i:int = 0; i < children.length; i++) {
-					var child:Object = children.getItemAt(i);			
-					var childDynamicObject:Object = MindMapDiagramShell(context.diagramShell).getDynamicObject(context, child);
-					if (childDynamicObject.connector != null) {
-						childDynamicObject.connector.invalidateDisplayList();
-					}
-				}
-			}
+//			var dynamicObject:Object = context.diagramShell.getDynamicObject(context, model);
+//			if (dynamicObject.connector == null) {
+//				addConnector(context, model);				
+//			}
+//						
+//			// refresh connector to parent
+//			if (dynamicObject.connector != null) {
+//				dynamicObject.connector.invalidateDisplayList();
+//			}
+//
+//			// refresh connectors to children
+//			var children:IList = MindMapDiagramShell(context.diagramShell).getModelController(context, model).getChildren(context, model);
+//			if (children != null) {
+//				for (var i:int = 0; i < children.length; i++) {
+//					var child:Object = children.getItemAt(i);			
+//					var childDynamicObject:Object = MindMapDiagramShell(context.diagramShell).getDynamicObject(context, child);
+//					if (childDynamicObject.connector != null) {
+//						childDynamicObject.connector.invalidateDisplayList();
+//					}
+//				}
+//			}
 		}
 			
 	}

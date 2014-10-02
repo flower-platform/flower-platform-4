@@ -15,16 +15,12 @@
  */
 package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	
-	import org.flowerplatform.flexutil.controller.ITypeProvider;
-	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
+	import org.flowerplatform.flexutil.controller.ITypeProvider;
 	
 	public class SampleMindMapTypeProvider implements ITypeProvider {
 		
 		public function getType(model:Object):String {
-			if (model is MindMapRootModelWrapper) {
-				return MindMapRootModelWrapper.ID;				
-			}
 			if (model is SampleMindMapModel) {
 				return "mindmap";
 			}

@@ -14,11 +14,14 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.mindmap {
+	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
 	import mx.core.IVisualElement;
 	import mx.core.UIComponent;
+	import mx.events.FlexEvent;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
@@ -39,7 +42,6 @@ package org.flowerplatform.flexdiagram.mindmap {
 		public function GenericMindMapConnector() {
 			depth = int.MAX_VALUE; // model has depth, so put connector above
 			mouseEnabled = false;
-			
 		}
 		
 		public function setSource(value:Object):GenericMindMapConnector {
