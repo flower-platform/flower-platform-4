@@ -58,13 +58,25 @@ flowerProject.lazy.factory('Repository', ['$resource', function($resource) {
 	
 	return $resource('http://localhost:8080/org.flowerplatform.host.web_app/ws-dispatcher/repository/:id/:path', {}, {
 		get:	{ method: 'GET', params: { id: '@id' } },
-	    getExtensionsForRepository: { method: 'GET', params: { id: '@id', path: '@path'} },
+	    getAction: { method: 'GET', params: { id: '@id', path: '@path'} },
 		getAllExtensions: { method: 'GET', params: { id: '', path: '@path' } },
 		action:	{ method: 'POST', params: { id: '', path: '@path' } }
 		
 	});
-	
 }]);
+
+flowerProject.lazy.service('SearchType', function () {
+	 var searchType = '';
+
+  return {
+      getSearchType: function () {
+          return searchType;
+      },
+      setSearchType: function(value) {
+     	 searchType = encodeURIComponent(value);
+      }
+  };
+});
 
 flowerProject.lazy.service('UserRepositories', function() {
 	
@@ -113,4 +125,15 @@ flowerProject.lazy.decorator('Template', function($delegate) {
 	$delegate.userRepositorySideMenuContent = '../js_client.users/partials/userRepositorySideMenuContent.html';
 	
 	return $delegate;
+});
+
+flowerProject.directive('autoFocus', function($timeout) {
+    return {
+        link: function (scope, element, attrs) {
+            attrs.$observe("autoFocus", function(newValue){
+                if (newValue === "true")
+                    $timeout(function(){element.focus()});
+            });
+        }
+    };
 });

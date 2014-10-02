@@ -247,34 +247,53 @@ public class RepositoriesServiceTest {
 	/**
 	 * @author see clas
  	 */
-//	@Test
-//	public void test() throws Exception {
-//		String login = "user2-random2";
-//		Map<String, String> map = new HashMap<String, String>();
-//		map.put("repoName", "firstRepo");
-//		map.put("login", "user2-random2");
-//		map.put("description", "description-firstRepo");
-//		repositoriesService.createRepository(login, "firstRepo", "description-firstRepo");
-//		repositoriesService.applyExtension(map);
-//			
-//		map.put("repoName", "add-member");
-//		map.put("login", "user2-random2");
-//		map.put("description", "description-add-member");
-//		repositoriesService.createRepository(login, "add-member", "description-add-member");
-//		repositoriesService.applyExtension(map);
-//		
-//		map.put("repoName", "add-starred-by");
-//		map.put("login", "user2-random2");
-//		map.put("description", "description-add-starred-by");
-//		repositoriesService.createRepository(login, "add-starred-by", "description-add-starred-by");
-//		repositoriesService.applyExtension(map);
-//		
-//		map.put("repoName", "apply-extension");
-//		map.put("login", "user2-random2");
-//		map.put("description", "description-apply-extension");
-//		repositoriesService.createRepository(login, "apply-extension", "description-apply-extension");
-//		repositoriesService.applyExtension(map);
-//	}
+	@Test
+	public void test() throws Exception {
+		String login = "user2-random2";
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("repositoryName", "firstRepo");
+		map.put("login", login);
+		map.put("extensionId", "mda");
+		
+		Node node = new Node();
+		node.getProperties().put(CoreConstants.USER, login);
+		node.getProperties().put(CoreConstants.NAME, "newfirstRepo");
+		node.getProperties().put(CoreConstants.DESCRIPTION, "description-firstRepo");
+		repositoriesService.saveRepository(node);
+		//repositoriesService.applyExtension(map);
+		
+		node = new Node();
+		node.getProperties().put(CoreConstants.USER, login);
+		node.getProperties().put(CoreConstants.NAME, "newadd-member");
+		node.getProperties().put(CoreConstants.DESCRIPTION, "description-add-member");
+		map.put("repositoryName", "add-member");
+		map.put("login", "user2-random2");
+		map.put("extensionId", "freePlane");
+		repositoriesService.saveRepository(node);
+		//repositoriesService.applyExtension(map);
+		repositoriesService.addMember("user1-random1","firstRepo" , login);
+		repositoriesService.addMember("user1-random1","secondRepo" , login);
+		
+		node = new Node();
+		node.getProperties().put(CoreConstants.USER, login);
+		node.getProperties().put(CoreConstants.NAME, "newadd-starred-by");
+		node.getProperties().put(CoreConstants.DESCRIPTION, "description-add-starred-by");
+		map.put("repositoryName", "add-starred-by");
+		map.put("login", "user2-random2");
+		map.put("extensionId", "git");
+		repositoriesService.saveRepository(node);
+		//repositoriesService.applyExtension(map);
+		
+		node = new Node();
+		node.getProperties().put(CoreConstants.USER, login);
+		node.getProperties().put(CoreConstants.NAME, "newapply-extension");
+		node.getProperties().put(CoreConstants.DESCRIPTION, "description-apply-extension");
+		map.put("repositoryName", "apply-extension");
+		map.put("login", "user2-random2");
+		map.put("extensionId", "git");
+		repositoriesService.saveRepository(node);
+		//repositoriesService.applyExtension(map);
+	}
 	
 	/**
 	 * @author see class
@@ -655,21 +674,21 @@ public class RepositoriesServiceTest {
 	 * @author see class
 	 */
 	//@Test
-	public void test() throws Exception {
-		Node testRepository = new Node();
-		
-		// test create Repository		
-		testRepository.getProperties().put(CoreConstants.USER, "user1-random1");
-		testRepository.getProperties().put(CoreConstants.NAME, "firstRepo");
-		testRepository.getProperties().put(CoreConstants.DESCRIPTION, "descriere");
-
-		repositoriesService.saveRepository(testRepository);
-		
-		// test rename repository
-		Node renameRepository = resourceService.getNode(CoreUtils.getRepositoryNodeUri("user1-random1", "firstRepo"), context);
-		renameRepository.getProperties().put(CoreConstants.NAME, "renamed-repo");
-		repositoriesService.saveRepository(renameRepository);
-	}
+//	public void test() throws Exception {
+//		Node testRepository = new Node();
+//		
+//		// test create Repository		
+//		testRepository.getProperties().put(CoreConstants.USER, "user1-random1");
+//		testRepository.getProperties().put(CoreConstants.NAME, "firstRepo");
+//		testRepository.getProperties().put(CoreConstants.DESCRIPTION, "descriere");
+//
+//		repositoriesService.saveRepository(testRepository);
+//		
+//		// test rename repository
+//		Node renameRepository = resourceService.getNode(CoreUtils.getRepositoryNodeUri("user1-random1", "firstRepo"), context);
+//		renameRepository.getProperties().put(CoreConstants.NAME, "renamed-repo");
+//		repositoriesService.saveRepository(renameRepository);
+//	}
 	
 	/**
 	 * @author see class

@@ -1,7 +1,13 @@
 <!-- UserDashboard - contains informations about all repository of current User -->
 <div ng-controller="UserDashboardCtrl">
+
 	<h2>My Dashboard</h2>
 	<hr><br>
+	
+	<div class="alert alert-dismissable" ng-class="{'alert-success':alert.success, 'alert-danger':alert.danger, hidden:!alert.visible}" role="alert">
+		<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		<span ng-bind="alert.message"></span>
+	</div>
 	
 	<!-- user repositories -->
 	<div>
@@ -15,32 +21,52 @@
 	<hr>
 	
 	<div>
-		<div ng-repeat="repo in repositories.messageResult">
+		<div ng-repeat="repo in repositories.messageResult | limitTo: limit">
 			<div ng-include src="'../js_client.users/partials/repositoryPanel.html'"></div>
 		</div>
 	</div>
+	<div>
+		<button class="btn btn-default  btn-sm" ng-click="loadMore()">Load more</button>
+		<button class="btn btn-default btn-sm" ng-click="loadLess()" ng-show="less">Load less</button>
+	</div>
 	<br>
 	
+
 	<!-- repositories where user is a member -->
 	<div>
 		<h3 style="display: inline;">Repositories Where I am a Member</h3>
 		<div class="btn-group" style="display: inline; float: right;">
-			<a class="btn btn-primary" ng-href="#/repository/{{endodedNodeUri}}/search">
+			<a class="btn btn-primary" ng-href="#/repository/{{endodedNodeUri}}/search" ng-click="setSearchType('member')">
 				<span class="icon-plus icon-white">Search</span>
 			</a>
 		</div>
 	</div>
-	<hr><br>
+	<hr>
+	
+	<div>
+		<div ng-repeat="repo in repositoriesWhereIAmMember.messageResult">
+			<div ng-if="repo" ng-include src="'../js_client.users/partials/repositoryPanel.html'"></div>
+		</div>
+	</div>
+	<br>
+	
 	
 	<!-- starred repositories -->
 	<div>
 		<h3 style="display: inline;">My Starred Repositories</h3>
 		<div class="btn-group" style="display: inline; float: right;">
-			<a class="btn btn-primary" ng-href="#/repository/{{endodedNodeUri}}/search">
+			<a class="btn btn-primary" ng-href="#/repository/{{endodedNodeUri}}/search" ng-click="setSearchType('starred')">
 				<span class="icon-plus icon-white">Search</span>
 			</a>
 		</div>
 	</div>
 	<hr><br>
+	
+	<div>
+		<div ng-repeat="repo in starredRepositories.messageResult">
+			<div ng-if="repo" ng-include src="'../js_client.users/partials/repositoryPanel.html'"></div>
+		</div>
+	</div>
+	<br>
 	
 </div>

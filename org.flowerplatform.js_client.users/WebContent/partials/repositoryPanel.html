@@ -1,25 +1,25 @@
 <!-- Repository Panel - contains information about a repository: view/edit -->
 <div>
-	<div class="panel panel-default">
+	<div class="panel panel-default" id="test">
 		<div class="panel-heading">
 			<div ng-show="!edit && repo.properties.name" >
 				<h3 class="panel-title" style="display: inline;">{{repo.properties.name}}</h3>
 				<div style="display: inline; float: right;">
 					<button type="button" class="btn btn-default" style="margin-top: -6px;" ng-click="edit = !edit">Edit</button>
 					<button type="button" class="btn btn-success" style="margin-top: -6px;">Open</button>
-					<button type="button" class="btn btn-danger" style="margin-top: -6px;" ng-model="repo.nodeUri" ng-click="deleteRepository(repo.nodeUri)">Delete</button>
+					<button type="button" class="btn btn-danger" style="margin-top: -6px;" ng-click="setDeleteNode(repo)" data-toggle="modal" data-target="#deleteModal"">Delete</button>
 				</div>
 			</div>
 			<div ng-show="edit || !repo.properties.name">
 				<form class="form" role="form">
 					<div class="form-group" style="float: right">
-						<button type="submit" class="btn btn-default" ng-click=save(repo,repoName,repoDescription); >Save</button>
+						<button type="submit" class="btn btn-default" ng-click="save(repo,$parent.$index)" >Save</button>
 						<button type="submit" class="btn btn-default" ng-click="edit=!edit;">Cancel</button>
 					</div>
 					<br>
 					<div class="form-group">
 						<label>Repository Name</label>
-						<input type="text" class="form-control" ng-init="repoName=repo.properties.name" ng-model="repoName">
+						<input type="text" class="form-control" placeholder="{{repo.properties.name}}" value="{{repo.properties.name}}" id="{{ repo.properties.name + $parent.$index }}">
 					</div>
 				</form>
 			</div>
@@ -29,12 +29,15 @@
 			<div ng-show="!edit && repo.properties.name">
 				<div>{{repo.properties.description}}</div>
 				<br>
-				<label>Extensions:</label>
-				&nbsp;
-				<div style="display: inline;" ng-repeat="extensions in repoExtensions">
-					<div style="display: inline;" ng-repeat="extension in extensions">
+				<div ng-show="repoExtensions.messageResult">
+					<label>Extensions:</label>
+					&nbsp;
+					<div style="display: inline;" ng-repeat="extension in repoExtensions.messageResult">
 						<span class="label" style="color: black; background-color: {{extension.color}};">{{extension.label}}</span>
 					</div>
+				</div>
+				<div ng-hide="repoExtensions.messageResult">
+					<label>This repository has no extensions!</label>
 				</div>
 				<button type="button" class="btn btn-default btn-sm" style="float:right;" data-toggle="modal" data-target="#myModal" ng-click="setExtensions(repoExtensions,repo)">Apply/Unapply Extensions</button>
 			</div>
@@ -42,7 +45,7 @@
 				<form class="form" role="form">
 					<div class="form-group">
 						<label>Description</label>
-						<textarea type="text" class="form-control" ng-init="repoDescription=repo.properties.description" ng-model="repoDescription"></textarea>
+						<textarea type="text" class="form-control" placeholder="{{repo.properties.description}}" id="{{ repo.properties.description + $parent.$index }}">{{repo.properties.description}}</textarea>
 					</div>
 				</form>
 			</div>
@@ -52,4 +55,20 @@
  		<!-- Popup Apply/Unapply Extension --> 
 	<div ng-include src="'../js_client.users/partials/popupApplyUnapplyExtension.html'"></div>
 	
+	<div class="modal fade" id="deleteModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h3>Are you sure you want to delete this repository?</h3>
+					<br>
+					<div style="text-align: center;">
+						<button type="button" class="btn btn-danger" ng-click="deleteRepository(deleteNodeUri)">Delete</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+  	 </div>
+  	 
 </div>

@@ -2,11 +2,16 @@
 
 logger.debug('init user controllers');
 
-flowerProject.lazy.controller('UserSideMenuCtrl', ['$scope', '$location', '$route', 'Login', 
-  	function($scope, $location, $route, Login) {
+flowerProject.lazy.controller('UserSideMenuCtrl', ['$scope', '$location', '$route', 'Login', 'SearchType',
+  	function($scope, $location, $route, Login, SearchType) {
   	
   		// Side Menu
   		$scope.currentPath = $location.path();
+  		
+  		// set type of search for repositories
+  		$scope.setSearchType = function(type) {
+  			SearchType. setSearchType(type);
+  		}
   		
   		$scope.userID = Login.userID;
   		$scope.nodeUri = Login.userID;
@@ -153,22 +158,27 @@ flowerProject.lazy.controller('NavigationCtrl', ['$scope', '$location','UserNode
 	   $scope.decodeUri = decodeURIComponent($scope.uri);
 }]);
 
-flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$location', 'UserRepositories', 'Login', 'Repository',
-       function($scope, $routeParams, $location, UserRepositories, Login, Repository) {
+flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$location', 'UserRepositories', 'Login', 'Repository','SearchType',
+       function($scope, $routeParams, $location, UserRepositories, Login, Repository, SearchType) {
 	
+	var limitStep = 3;
+	$scope.limit = limitStep; 
 	$scope.nodeUri = Login.nodeUri;
 	$scope.endodedNodeUri = encodeURIComponent($scope.nodeUri);
-	// get all available extensions
 	$scope.availableExtensions = Repository.getAllExtensions({ path: "allExtensions" });
-	// get all repositories
 	$scope.repositories = Repository.get({ id: $scope.nodeUri });
+	$scope.repositoriesWhereIAmMember = Repository.getAction({ id: $scope.nodeUri, path: "memberInRepository" });
+	$scope.starredRepositories =  Repository.getAction({ id: $scope.nodeUri, path: "starredRepository" });
+	
+	// set type of search
+	$scope.setSearchType = function(type) {
+		SearchType. setSearchType(type);
+	}
+	$scope.searchType = SearchType.getSearchType();
 	
 	// get all extensions of a repository
 	$scope.getExtensions = function (repoUri){
-		return Repository.getExtensionsForRepository({ id: encodeURIComponent(repoUri), path: "extensions" });
-//		  .$promise.then(function(result) {
-//			  $scope.currentRepositoryExtensions = result;
-//		});
+		return Repository.getAction({ id: encodeURIComponent(repoUri), path: "extensions" });
 	};
 	
 	// get all properties of a dependence 
@@ -185,7 +195,7 @@ flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$
 								   "Applauded no discovery in newspaper allowance am northward." +
 								   "Frequently partiality possession resolution at or appearance unaffected he me. ";
 	
-	/* save current repository + extensions for popup - it doesn't know about it */
+	// save current repository + extensions for popup - it doesn't know about it 
 	$scope.setExtensions = function(repositoryExtensions, repository) {
         $scope.currentRepositoryExtensions = repositoryExtensions;
         $scope.currentRepository = repository; 
@@ -202,11 +212,13 @@ flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$
 	/**
 	 * Save - edit 
 	 */
-	$scope.save = function(editRepository,newRepositoryName, newRepositoryDescription) {
-		// save node
+	$scope.save = function(editRepository,id) {
+		//logger.debug("test save name: " + document.getElementById(editRepository.properties.name + id).value);
+		//logger.debug("test save description: " + document.getElementById(id).value);
+		//save node
 		$scope.editRepository = editRepository;
-		$scope.editRepository.properties.name = newRepositoryName;
-		$scope.editRepository.properties.description = newRepositoryDescription;
+		$scope.editRepository.properties.name = document.getElementById(editRepository.properties.name + id).value;
+		$scope.editRepository.properties.description = document.getElementById(editRepository.properties.description + id).value;
 		//call server method
 		$scope.newRepository = Repository.action({ path: "save" }, $scope.editRepository);
 	};
@@ -221,9 +233,17 @@ flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$
 	 * Apply Extension to Repository
 	 */
 	$scope.applyExtension = function(extensionId) {
-		Repository.action({ path: "applyExtension" },{ 'login': Login.login, 'repositoryName': $scope.currentRepository.properties.name, 'extensionId': extensionId })
+		Repository.action({ path: "applyExtension" },{ 'nodeUri': $scope.currentRepository.nodeUri, 'extensionId': extensionId })
 				  .$promise.then(function(result) {
 					  $scope.currentRepositoryExtensions = result;
+				  }, function(error) {
+//						$scope.alert = {
+//								message: 'Server error. Please try again.',
+//								visible: true,
+//								danger: true
+//						};
+					  logger.debug("eroare: " + JSON.stringify(error, null, 6));
+					  //logger.debug("eroare" + error.data);
 				});
 	};
 	
@@ -231,32 +251,102 @@ flowerProject.lazy.controller('UserDashboardCtrl', ['$scope', '$routeParams', '$
 	 * Unapply Extension to Repository 
 	 */
 	$scope.unapplyExtension = function(extensionId) {
-		Repository.action({ path: "unapplyExtension" },{ 'login': Login.login, 'repositoryName': $scope.currentRepository.properties.name, 'extensionId': extensionId })
-		  .$promise.then(function(result) {
-			  $scope.currentRepositoryExtensions = result;
-		});
+		Repository.action({ path: "unapplyExtension" },{ 'nodeUri': $scope.currentRepository.nodeUri, 'extensionId': extensionId })
+		  		  .$promise.then(function(result) {
+		  			  $scope.currentRepositoryExtensions = result;
+		  		  }, function(error) {
+						$scope.alert = {
+								message: 'Server error. Please try again.',
+								visible: true,
+								danger: true
+						};
+			 });
 	};
 	
 	/**
-	 * Search repository 
+	 * Search repository where i am member
 	 */
-	$scope.searchRepository = function(repoName) {
-		for(var index in $scope.repositories) {
-			if($scope.repositories[index].name == repoName) {
-				$scope.findRepository = $scope.repositories[index];
+	$scope.searchRepository = function (repositoryName) { 
+		$scope.findRepository = [];
+		if($scope.searchType == 'member') {
+			for(var index in $scope.repositoriesWhereIAmMember.messageResult) {
+				if($scope.repositoriesWhereIAmMember.messageResult[index].properties.name == repositoryName) {
+					$scope.findRepository.push($scope.repositoriesWhereIAmMember.messageResult[index]);
+				}
 			}
-		}		
-	};
+		}
+		
+		if($scope.searchType == 'starred') {
+			for(var index in $scope.starredRepositories.messageResult) {
+				if($scope.starredRepositories.messageResult[index].properties.name == repositoryName) {
+					$scope.findRepository.push($scope.starredRepositories.messageResult[index]);
+				}
+			}
+		}
+		
+		if($scope.searchType == 'all') {
+			for(var index in $scope.repositories.messageResult) {
+				if($scope.repositories.messageResult[index].properties.name == repositoryName) {
+					$scope.findRepository.push($scope.repositories.messageResult[index]);
+				}
+			}
+		}
+		return $scope.findRepository;
+	}
 	
 	/**
 	 * Delete repository
 	 */
 	$scope.deleteRepository = function(repositoryNodeUri) {
-		logger.debug("uri " + repositoryNodeUri);
 		Repository.action({ path: "deleteRepository" }, repositoryNodeUri)
 		  .$promise.then(function(result) {
 			  $scope.repositories = result;
+			  $('#deleteModal').modal('hide');
+			  $('body').removeClass('modal-open');
+			  $('.modal-backdrop').remove();
+		}, function(error) {
+			$scope.alert = {
+					message: 'Server error. Please try again.',
+					visible: true,
+					danger: true
+			}
 		});
+	}
+	
+	/**
+	 * Refresh page
+	 */
+	$scope.refresh = function() {
+		window.location.reload();
+	}
+	
+	/**
+	 * Load more repositories
+	 */
+	$scope.loadMore = function() {
+		$scope.less = true;
+		if($scope.limit <= Object.keys($scope.repositories.messageResult).length) {
+			$scope.limit += limitStep;
+		} else {
+			$scope.limit = Object.keys($scope.repositories.messageResult).length;
+		}
+	}
+	
+	/**
+	 * Load less repositories
+	 */
+	$scope.loadLess = function() {
+		if($scope.limit > limitStep) {
+			$scope.limit -= limitStep;
+			if($scope.limit <= limitStep) {
+				$scope.less = false;
+			}
+		}
+	}
+	
+	$scope.setDeleteNode = function(node) {
+		$scope.deleteNode = node;
+		$scope.deleteNodeUri = node.nodeUri;
 	}
 	
 }]);

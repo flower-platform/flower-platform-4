@@ -1,10 +1,10 @@
 <!-- Popup: Apply or Unapply Extensions to Repository  -->
 <div> 
-	<div class="modal fade" id="myModal">
+	<div class="modal fade" id="myModal" ng-keyup="false">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-body">
-					<button type="button" class="close" data-dismiss="modal">
+					<button type="button" class="close" data-dismiss="modal" ng-click="refresh()">
 						<span aria-hidden="true">&times;</span>
 						<span class="sr-only">Close</span>
 					</button>
@@ -20,11 +20,17 @@
 								</div>
 								<div id="{{$index}}" class="panel-collapse collapse">
 									<div class="panel-body">
-										<label style="font-weight: normal; display: inline;">Depends on: &nbsp;</label>
-										<div style="display: inline;" ng-repeat="dependenceName in availableExtension.dependencies" ng-init="dependence=getDependence(dependenceName)">
-											<span class="label" style="color: black; background-color: {{dependence.color}};">{{dependence.label}}</span>
+										<div ng-show="availableExtension.dependencies">
+											<label style="font-weight: normal; display: inline;">Depends on: &nbsp;</label>
+											<div style="display: inline;" ng-repeat="dependenceName in availableExtension.dependencies" ng-init="dependence=getDependence(dependenceName)">
+												<span class="label" style="color: black; background-color: {{dependence.color}};">{{dependence.label}}</span>
+											</div>
+											<br><br>
 										</div>
-										<br><br>
+										<div ng-hide="availableExtension.dependencies">
+											<label style="font-weight: normal;">This extension has no dependence!</label>
+											<br><br>
+										</div>
 										<label>{{availableExtension.description}}</label>
 									</div>
 								</div>
@@ -45,11 +51,17 @@
 								</div>
 								<div id="{{appliedExtension.id}}" class="panel-collapse collapse">
 									<div class="panel-body">
-										<label style="font-weight: normal; display: inline;">Depends on: &nbsp;</label>
-										<div style="display: inline;" ng-repeat="appliedDependenceName in appliedExtension.dependencies" ng-init="appliedDependence=getDependence(appliedDependenceName)">
-											<span class="label" style="color: black; background-color: {{appliedDependence.color}};">{{appliedDependence.label}}</span>
+										<div ng-show="appliedExtension.dependencies">
+											<label style="font-weight: normal; display: inline;">Depends on: &nbsp;</label>
+											<div style="display: inline;" ng-repeat="appliedDependenceName in appliedExtension.dependencies" ng-init="appliedDependence=getDependence(appliedDependenceName)">
+												<span class="label" style="color: black; background-color: {{appliedDependence.color}};">{{appliedDependence.label}}</span>
+											</div>
+											<br><br>
 										</div>
-										<br><br>
+										<div ng-hide="appliedExtension.dependencies">
+											<label style="font-weight: normal;">This extension has no dependence!</label>
+											<br><br>
+										</div>
 										<label>{{appliedExtension.description}}</label>
 									</div>
 								</div>
