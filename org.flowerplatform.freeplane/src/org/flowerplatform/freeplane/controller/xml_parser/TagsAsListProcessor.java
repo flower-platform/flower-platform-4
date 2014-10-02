@@ -17,8 +17,8 @@ package org.flowerplatform.freeplane.controller.xml_parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import org.flowerplatform.core.node.remote.Node;
 import org.xml.sax.Attributes;
 
 /**
@@ -39,12 +39,12 @@ public class TagsAsListProcessor extends AbstractTagProcessor {
 	}
 
 	@Override
-	public void processStartTag(XmlParser parser, String tag, Attributes attributes, Node node) {
+	public void processStartTag(XmlParser parser, String tag, Attributes attributes, Map<String, Object> properties) {
 		@SuppressWarnings("unchecked")
-		List<String> list = (List<String>) node.getProperties().get(propertyName);
+		List<String> list = (List<String>) properties.get(propertyName);
 		if (list == null) {
 			list = new ArrayList<String>();
-			node.getProperties().put(propertyName, list);
+			properties.put(propertyName, list);
 		}
 		list.add(attributes.getValue(keyAttribute));
 	}

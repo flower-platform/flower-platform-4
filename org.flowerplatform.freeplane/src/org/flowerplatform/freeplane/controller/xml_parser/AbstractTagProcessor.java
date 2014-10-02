@@ -15,7 +15,8 @@
  */
 package org.flowerplatform.freeplane.controller.xml_parser;
 
-import org.flowerplatform.core.node.remote.Node;
+import java.util.Map;
+
 import org.flowerplatform.freeplane.FreeplaneConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,13 +33,13 @@ public abstract class AbstractTagProcessor {
 	/**
 	 *@author Catalin Burcea
 	 */
-	protected void processStartTag(XmlParser parser, String tag, Attributes attributes, Node node) {
+	protected void processStartTag(XmlParser parser, String tag, Attributes attributes, Map<String, Object> properties) {
 	}
 
 	/**
 	 *@author Catalin Burcea
 	 */
-	protected void processEndTag(XmlParser parser, String tag, Node node) {
+	protected void processEndTag(XmlParser parser, String tag, Map<String, Object> properties) {
 	}
 
 	/**
@@ -52,7 +53,7 @@ public abstract class AbstractTagProcessor {
 	 * @author Catalin Burcea
 	 * @author Valentina Bojan
 	 */
-	protected void addStartContentAndAttributes(XmlParser parser, String tag, Attributes attributes, Node node, String keyProperty) {
+	protected void addStartContentAndAttributes(XmlParser parser, String tag, Attributes attributes, Map<String, Object> properties, String keyProperty) {
 		if (parser.tagFullContent_Nesting == 0 && keyProperty != null) {
 			// first invocation of this processor for a well-known tag
 			parser.forcedTagProcessor = this;
@@ -83,7 +84,7 @@ public abstract class AbstractTagProcessor {
 			parser.tagFullContent_StringBuffer = new StringBuffer();
 			for (int i = 0; i < attributes.getLength(); i++) {
 				if (!attributes.getQName(i).equals(keyProperty)) {
-					node.getProperties().put(parser.tagFullContent_TagName + "." + attributes.getQName(i), attributes.getValue(i));
+					properties.put(parser.tagFullContent_TagName + "." + attributes.getQName(i), attributes.getValue(i));
 					parser.tagFullContent_HasAttributes = true;
 				}
 			}
@@ -111,17 +112,17 @@ public abstract class AbstractTagProcessor {
 	 * @author Catalin Burcea
 	 * @author Valentina Bojan
 	 */
-	protected void addEndContent(XmlParser parser, String tag, Node node, String keyProperty) {
+	protected void addEndContent(XmlParser parser, String tag, Map<String, Object> properties, String keyProperty) {
 		parser.tagFullContent_Nesting--;
 		// we have reached the end of a well-known tag
 		if (parser.tagFullContent_Nesting == 0 && keyProperty != null) {
 			// i.e. the tag has content
 			if (parser.tagFullContent_StringBuffer.length() != 0) {
-				node.getProperties().put(parser.tagFullContent_TagName + FreeplaneConstants.CONTENT_MARK, parser.tagFullContent_StringBuffer.toString());
+				properties.put(parser.tagFullContent_TagName + FreeplaneConstants.CONTENT_MARK, parser.tagFullContent_StringBuffer.toString());
 			} else {
 				// i.e. <hook NAME="FreeNode"/> => no content, no attributes
 				if (!parser.tagFullContent_HasAttributes) {
-					node.getProperties().put(parser.tagFullContent_TagName, null);
+					properties.put(parser.tagFullContent_TagName, null);
 				}
 			}
 

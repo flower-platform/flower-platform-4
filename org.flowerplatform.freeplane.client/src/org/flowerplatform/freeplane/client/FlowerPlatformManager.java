@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.flowerplatform.freeplane.FreeplanePlugin;
-import org.flowerplatform.freeplane.controller.xml_parser.XmlNodePropertiesCreator;
+import org.flowerplatform.freeplane.controller.xml_parser.XmlWritter;
 import org.flowerplatform.js_client.java.node.ClientNode;
 import org.freeplane.core.extension.IExtension;
 import org.freeplane.features.map.INodeView;
@@ -91,7 +91,7 @@ public class FlowerPlatformManager implements IExtension {
 		for (ClientNode child : children) {
 			if (!child.getType().equalsIgnoreCase(FreeplanePlugin.STYLE_ROOT_NODE)) {
 				// create the child node from the xml content
-				XmlNodePropertiesCreator xmlCreator = new XmlNodePropertiesCreator(child);
+				XmlWritter xmlCreator = new XmlWritter(FreeplanePlugin.getInstance().getXmlConfiguration(), child.getProperties());
 				NodeModel childNode = loadNodeFromXmlContent(parent.getMap(), xmlCreator.getXmlContent());
 
 				// if node has children => add a dummy child node

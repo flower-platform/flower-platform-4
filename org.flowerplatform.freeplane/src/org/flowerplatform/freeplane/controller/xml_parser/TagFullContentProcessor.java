@@ -15,7 +15,8 @@
  */
 package org.flowerplatform.freeplane.controller.xml_parser;
 
-import org.flowerplatform.core.node.remote.Node;
+import java.util.Map;
+
 import org.flowerplatform.freeplane.FreeplaneConstants;
 import org.xml.sax.Attributes;
 
@@ -35,20 +36,19 @@ public class TagFullContentProcessor extends AbstractTagProcessor {
 	}
 
 	@Override
-	public void processStartTag(XmlParser parser, String tag, Attributes attributes, Node node) {
-		addStartContentAndAttributes(parser, tag, attributes, node, keyProperty);
+	public void processStartTag(XmlParser parser, String tag, Attributes attributes, Map<String, Object> properties) {
+		addStartContentAndAttributes(parser, tag, attributes, properties, keyProperty);
 	}
 
 	@Override
-	public void processEndTag(XmlParser parser, String tag, Node node) {
-		addEndContent(parser, tag, node, keyProperty);
+	public void processEndTag(XmlParser parser, String tag, Map<String, Object> properties) {
+		addEndContent(parser, tag, properties, keyProperty);
 
 		// we have reached the end of an unknown tag
 		if (parser.tagFullContent_Nesting == 0 && keyProperty == null) {
-			String currentContent = (String) node.getProperties().get(FreeplaneConstants.UNKNOWN);
-			node.getProperties().put(
-					FreeplaneConstants.UNKNOWN,
-					currentContent == null ? parser.tagFullContent_StringBuffer.toString() : currentContent + "\n\t" + parser.tagFullContent_StringBuffer.toString());
+			String currentContent = (String) properties.get(FreeplaneConstants.UNKNOWN);
+			properties.put(FreeplaneConstants.UNKNOWN,
+						   currentContent == null ? parser.tagFullContent_StringBuffer.toString() : currentContent + "\n\t" + parser.tagFullContent_StringBuffer.toString());
 		}
 	}
 }
