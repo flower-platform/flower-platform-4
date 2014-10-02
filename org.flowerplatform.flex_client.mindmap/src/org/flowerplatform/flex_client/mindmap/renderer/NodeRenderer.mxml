@@ -28,6 +28,7 @@
 			import mx.utils.ObjectUtil;
 			
 			import spark.core.SpriteVisualElement;
+			import spark.layouts.HorizontalLayout;
 			
 			import flashx.textLayout.conversion.TextConverter;
 			
@@ -83,8 +84,8 @@
 					}
 				}
 				
-				getMainComponent().addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
-				getMainComponent().addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+				addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+				addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
 			}
 			
 			protected function get node():Node {
@@ -102,7 +103,7 @@
 				var classInfoProperties:Array = ObjectUtil.getClassInfo(node.properties).properties as Array;
 				for each (var property:String in classInfoProperties) {
 					modelChangedHandler(PropertyChangeEvent.createUpdateEvent(node, property, NaN, node.properties[property]));
-				}				
+				}
 			}
 			
 			override protected function unassignData():void {
@@ -110,8 +111,8 @@
 				icons = null;
 				
 				// Important: measuredHeight/measuredWidth are reset to their default values; otherwise the renderer will use recycled values for width/height 
-				getMainComponent().measuredWidth = 0;
-				getMainComponent().measuredHeight = 0;
+				measuredWidth = 0;
+				measuredHeight = 0;
 			}
 			
 			
@@ -198,7 +199,7 @@
 				rendererHitArea.mouseEnabled = false;
 				addElementAt(rendererHitArea, 0);				
 			}
-						
+			
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {				
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 				setHitArea(unscaledWidth, unscaledHeight);				
@@ -209,12 +210,15 @@
 			 * @author Solomon Sebastian
 			 */
 			protected function setHitArea(unscaledWidth:Number, unscaledHeight:Number):void {
-				var paddingLeft:Number = 2;
-				var paddingTop:Number = 2;
+				// add left padding, otherwise there is an extra 2px gap where the hit area starts
+				var paddingLeft:Number = 0;
+				if (layout is HorizontalLayout) {
+					paddingLeft = HorizontalLayout(layout).paddingLeft;
+				}
 				
 				rendererHitArea.graphics.clear();				
 				rendererHitArea.graphics.beginFill(0xFF0000, 0);
-				rendererHitArea.graphics.drawRect(-paddingLeft, -paddingTop, unscaledWidth, unscaledHeight);	
+				rendererHitArea.graphics.drawRect(-paddingLeft, -unscaledHeight/2, unscaledWidth, unscaledHeight);	
 				if (circle.parent != null) {	
 					var dynamicObject:Object = mindMapDiagramShell.getDynamicObject(diagramShellContext, node);
 					var side:int = mindMapDiagramShell.getModelController(diagramShellContext, node).getSide(diagramShellContext, node);
@@ -223,11 +227,11 @@
 					if (side == MindMapDiagramShell.POSITION_LEFT) {
 						circle.x = dynamicObject.x - circleRadius * 2;						
 						circle.y = dynamicObject.y + unscaledHeight / 2 - circleRadius;
-						rendererHitArea.graphics.drawRect(-circleRadius * 2 - paddingLeft, -paddingTop, circleRadius * 2, unscaledHeight);
+						rendererHitArea.graphics.drawRect(-circleRadius * 2 - paddingLeft, -unscaledHeight/2, circleRadius * 2, unscaledHeight);
 					} else if (side == MindMapDiagramShell.POSITION_RIGHT) {
 						circle.x = dynamicObject.x + dynamicObject.width;
 						circle.y = dynamicObject.y + unscaledHeight / 2 - circleRadius;
-						rendererHitArea.graphics.drawRect(dynamicObject.width - paddingLeft , -paddingTop, circleRadius * 2, unscaledHeight);
+						rendererHitArea.graphics.drawRect(unscaledWidth - paddingLeft , -unscaledHeight/2, circleRadius * 2, unscaledHeight);
 					}
 				}
 				

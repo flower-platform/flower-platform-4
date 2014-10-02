@@ -16,10 +16,10 @@
 package org.flowerplatform.flexutil.controller {
 	import flash.utils.Dictionary;
 	
+	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.mx_internal;
 	
-	import org.apache.flex.collections.ArrayList;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.Utils;
 	
@@ -34,6 +34,8 @@ package org.flowerplatform.flexutil.controller {
 	public class TypeDescriptorRegistry {
 		
 		internal var configurable:Boolean = true;
+		
+		public var typeProvider:ITypeProvider;
 		
 		public function isConfigurable():Boolean {
 			return configurable;

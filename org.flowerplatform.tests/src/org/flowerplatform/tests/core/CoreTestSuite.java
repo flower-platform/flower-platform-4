@@ -16,7 +16,6 @@
 package org.flowerplatform.tests.core;
 
 import org.flowerplatform.tests.EclipseIndependentTestSuite;
-import org.flowerplatform.tests.core.repositories.RepositoriesServiceTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -26,8 +25,8 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-//	NodeRegistryScriptTest.class,
-	RepositoriesServiceTest.class
+	NodeServiceTest.class
+
 })
 public class CoreTestSuite extends EclipseIndependentTestSuite {
 		

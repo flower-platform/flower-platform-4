@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.flex_client.properties.action {
 	
+	import flash.utils.Dictionary;
+	
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
@@ -22,7 +24,6 @@ package org.flowerplatform.flex_client.properties.action {
 	import org.flowerplatform.flex_client.core.editor.action.DiagramShellAwareActionBase;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flex_client.properties.ui.CreateNodeView;
 	import org.flowerplatform.flex_client.resources.Resources;
@@ -70,10 +71,10 @@ package org.flowerplatform.flex_client.properties.action {
 		 * @author Sebastian Solomon
 		 */
 		override public function run():void {
-			var context:ServiceContext = new ServiceContext();
-			context.add("type", childType);
+			var context:Object = new Object();
+			context["type"] = childType;
 			if (asSibling == true) {
-				context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, childNodeUri);
+				context[CoreConstants.INSERT_BEFORE_FULL_NODE_ID] = childNodeUri;
 				parentNode =  Node(selection.getItemAt(0)).parent;
 			} else {
 				var parentNode:Node = Node(selection.getItemAt(0));

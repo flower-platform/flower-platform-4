@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.flex_client.core.editor.remote.update {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 		
 	/**
 	 * @author Cristina Constantinescu
@@ -29,7 +28,7 @@ package org.flowerplatform.flex_client.core.editor.remote.update {
 		
 		public var timestamp:Number;
 		
-		public function apply(nodeRegistry:NodeRegistry, node:Node):void {
+		public function apply(nodeRegistry:*, node:Node):void {
 			// do nothing
 		}
 		

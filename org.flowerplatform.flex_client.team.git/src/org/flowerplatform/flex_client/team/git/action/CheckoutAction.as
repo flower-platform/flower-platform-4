@@ -20,6 +20,7 @@
  */
 package org.flowerplatform.flex_client.team.git.action
 {
+	import mx.rpc.Fault;
 	import mx.rpc.events.FaultEvent;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;

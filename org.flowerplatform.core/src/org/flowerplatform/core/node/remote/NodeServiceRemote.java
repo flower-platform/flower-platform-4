@@ -20,6 +20,7 @@ import static org.flowerplatform.core.CoreConstants.TYPE_KEY;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.MissingResourceException;
 
 import org.flowerplatform.core.CoreConstants;
@@ -40,13 +41,12 @@ public class NodeServiceRemote {
 	/**
 	 *@author see class
 	 **/
-	public List<Node> getChildren(String nodeUri, ServiceContext<NodeService> context) {
-		if (context == null) {
-			context = new ServiceContext<NodeService>(getNodeService());
-		} else {
-			context.setService(getNodeService());
+	public List<Node> getChildren(String nodeUri, Map<String, Object> context) {
+		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>(getNodeService());
+		if (context != null) {			
+			serviceContext.setContext(context);	
 		}
-		return getNodeService().getChildren(CorePlugin.getInstance().getResourceService().getNode(nodeUri), context);		
+		return getNodeService().getChildren(CorePlugin.getInstance().getResourceService().getNode(nodeUri), serviceContext);		
 	}
 
 	/**
@@ -64,6 +64,22 @@ public class NodeServiceRemote {
 		String commandTitle = ResourcesPlugin.getInstance().getMessage("commandStack.command.setProperty", propertyLabel, value.toString());
 		rss.startCommand(rss.getResourceSet(fullNodeId), commandTitle);
 		getNodeService().setProperty(node, property, value, new ServiceContext<NodeService>(getNodeService()));	
+	}
+	
+	/**
+	 * @author Claudiu Matei
+	 * @author Valentina Bojan
+	 */
+	public void setProperties(String fullNodeId, Map<String, Object> properties) {
+		ResourceSetService rss = CorePlugin.getInstance().getResourceSetService();
+		Node node = CorePlugin.getInstance().getResourceService().getNode(fullNodeId);
+		node.getOrPopulateProperties(new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		String typeLabel = ResourcesPlugin.getInstance().getLabelForNodeType(node.getType());
+		String nodeName = (String) node.getPropertyValue(getNodeTitleProperty(node.getType()));
+		String nodeLabel = typeLabel + (nodeName != null ? "(" + nodeName + ")" : "");
+		String commandTitle = ResourcesPlugin.getInstance().getMessage("commandStack.command.setProperties", nodeLabel);
+		rss.startCommand(rss.getResourceSet(fullNodeId), commandTitle);
+		getNodeService().setProperties(node, properties, new ServiceContext<NodeService>(getNodeService()));
 	}
 		
 	/**
@@ -88,11 +104,10 @@ public class NodeServiceRemote {
 	 * @author Sebastian Solomon
 	 * @author Claudiu Matei
 	 */
-	public String addChild(String parentNodeUri, ServiceContext<NodeService> context) {
-		if (context == null) {
-			context = new ServiceContext<NodeService>(getNodeService());
-		} else {
-			context.setService(getNodeService());
+	public String addChild(String parentNodeUri, Map<String, Object> context) {
+		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>(getNodeService());
+		if (context != null) {			
+			serviceContext.setContext(context);	
 		}
 				
 		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentNodeUri);
@@ -109,7 +124,7 @@ public class NodeServiceRemote {
 		String commandTitle = ResourcesPlugin.getInstance().getMessage("commandStack.command.addChild", nodeLabel);
 		rss.startCommand(rss.getResourceSet(parentNodeUri), commandTitle);
 		
-		getNodeService().addChild(parent, child, context);
+		getNodeService().addChild(parent, child, serviceContext);
 		
 		child.getOrPopulateProperties(new ServiceContext<NodeService>(getNodeService()));
 		
@@ -204,4 +219,5 @@ public class NodeServiceRemote {
 				.getSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, null);
 		return (String) descriptor.getValue();
 	}
+	
 }

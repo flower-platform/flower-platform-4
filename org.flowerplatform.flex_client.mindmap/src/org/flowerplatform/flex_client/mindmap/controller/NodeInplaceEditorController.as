@@ -18,14 +18,14 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import flash.events.FocusEvent;
 	import flash.geom.Rectangle;
 	
+	import mx.core.UIComponent;
+	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
-	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
-	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
+	import org.flowerplatform.flexdiagram.mindmap.IAbstractMindMapModelRenderer;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.tool.controller.InplaceEditorController;
 	import org.flowerplatform.flexutil.text.AutoGrowTextArea;
@@ -44,7 +44,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		}
 				
 		override public function activate(context:DiagramShellContext, model:Object):void {
-			var renderer:AbstractMindMapModelRenderer = AbstractMindMapModelRenderer(context.diagramShell.getRendererForModel(context, model));
+			var renderer:IAbstractMindMapModelRenderer = IAbstractMindMapModelRenderer(context.diagramShell.getRendererForModel(context, model));
 			var rendererLabelDisplay:RichText = renderer.getLabelDisplay();
 			var bounds:Rectangle = rendererLabelDisplay.getBounds(DisplayObject(context.diagramShell.diagramRenderer));
 			
@@ -54,7 +54,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			textArea.x = bounds.x;
 			textArea.y = bounds.y;			
 			textArea.minWidth = bounds.width;
-			textArea.maxWidth = renderer.maxWidth; // needed for width auto grow
+			textArea.maxWidth = UIComponent(renderer).maxWidth; // needed for width auto grow
 			textArea.minHeight = bounds.height;			
 						
 			// get styles from node's labelDisplay renderer

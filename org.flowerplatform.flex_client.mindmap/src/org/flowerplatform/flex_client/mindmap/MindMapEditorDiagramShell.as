@@ -15,16 +15,15 @@
  */
 package org.flowerplatform.flex_client.mindmap {
 	
-	import flash.events.MouseEvent;
-	
+	import org.flowerplatform.flex_client.core.CoreConstants;
+	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.action.OpenAction;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.INodeChangeListener;
-	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.mindmap.action.ExpandCollapseAction;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDragTool;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
@@ -34,31 +33,34 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 	import org.flowerplatform.flexdiagram.tool.WakeUpTool;
 	import org.flowerplatform.flexdiagram.tool.ZoomTool;
-	import org.flowerplatform.flexutil.FactoryWithInitialization;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
+	import org.flowerplatform.flexutil.controller.ValuesProvider;
+	import org.flowerplatform.js_client.common_js_as.node.INodeChangeListener;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class MindMapEditorDiagramShell extends MindMapDiagramShell implements INodeChangeListener {
 
-		private var _nodeRegistry:NodeRegistry;
+		private var _nodeRegistry:*;
 				
 		public function MindMapEditorDiagramShell() {
 			super();
 									
-			registerTool(ScrollTool.ID, new FactoryWithInitialization(ScrollTool));
-			registerTool(ZoomTool.ID, new FactoryWithInitialization(ZoomTool));
-			registerTool(SelectOnClickTool.ID, new FactoryWithInitialization(SelectOnClickTool));
-			registerTool(MindMapDragTool.ID, new FactoryWithInitialization(MindMapDragTool));
-			registerTool(OpenAction.ID, new FactoryWithInitialization(ActionTool, {"action": new OpenAction(), "eventType": WakeUpTool.DOUBLE_CLICK}));		
-			registerTool(ExpandCollapseAction.ID, new FactoryWithInitialization(ActionTool, {"action": new ExpandCollapseAction(), "eventType": WakeUpTool.CLICK}));
+			registerTool(ScrollTool.ID, new ClassFactoryWithConstructor(ScrollTool));
+			registerTool(ZoomTool.ID, new ClassFactoryWithConstructor(ZoomTool));
+			registerTool(SelectOnClickTool.ID, new ClassFactoryWithConstructor(SelectOnClickTool));
+			registerTool(MindMapDragTool.ID, new ClassFactoryWithConstructor(MindMapDragTool));
+			registerTool(OpenAction.ID, new ClassFactoryWithConstructor(ActionTool, {"action": new OpenAction(null, null), "eventType": WakeUpTool.DOUBLE_CLICK}));		
+			registerTool(ExpandCollapseAction.ID, new ClassFactoryWithConstructor(ActionTool, {"action": new ExpandCollapseAction(), "eventType": WakeUpTool.CLICK}));
 		}
 			
-		public function get nodeRegistry():NodeRegistry {
+		public function get nodeRegistry():* {
 			return _nodeRegistry;
 		}
 
-		public function set nodeRegistry(value:NodeRegistry):void {
+		public function set nodeRegistry(value:*):void {
 			_nodeRegistry = value;
 			_nodeRegistry.addNodeChangeListener(this);
 		}
@@ -78,17 +80,24 @@ package org.flowerplatform.flex_client.mindmap {
 		}
 		
 		public function nodeUpdated(node:Node, property:String, oldValue:Object, newValue:Object):void {
-			// do nothing
+			if (property == CoreConstants.IS_DIRTY) {
+				CorePlugin.getInstance().resourceNodesManager.updateGlobalDirtyState(newValue);
+			}
 		}
-						
+				
+		/**
+		 * @author Cristian Spiescu
+		 * @see NodeController.getSide()
+		 */
 		override public function getRootNodeX(context:DiagramShellContext, rootNode:Object):Number {
 			var rootModel:Node = Node(MindMapRootModelWrapper(rootModel).model);
-			var sideProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getValueProvider(
-				MindMapEditorDiagramShell(context.diagramShell).registry, rootModel, MindMapConstants.NODE_SIDE_PROVIDER);
-			if (sideProvider != null) {
-				return (DiagramRenderer(diagramRenderer).width - getPropertyValue(context, rootNode, "width"))/2; // horizontal align = center
+			var valuesProvider:ValuesProvider = ValuesProvider(registry.getExpectedTypeDescriptor(rootModel.type).getSingleController(MindMapConstants.MIND_MAP_FEATURE_FOR_VALUES_PROVIDER, rootModel));
+			var sideProperty:String = valuesProvider.getPropertyName(registry, rootModel, FlexDiagramConstants.MIND_MAP_RENDERER_SIDE); 
+
+			if (sideProperty != null) {
+				return (DiagramRenderer(diagramRenderer).width - getPropertyValue(context, rootNode, "width")) / 2; // horizontal align = center
 			}
-			return (DiagramRenderer(diagramRenderer).width - getPropertyValue(context, rootNode, "width"))/8; // horizontal align = left, but not 0
+			return (DiagramRenderer(diagramRenderer).width - getPropertyValue(context, rootNode, "width")) / 8; // horizontal align = left, but not 0
 		}
 		
 		override public function getRootNodeY(context:DiagramShellContext, rootNode:Object):Number {

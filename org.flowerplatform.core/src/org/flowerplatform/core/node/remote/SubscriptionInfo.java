@@ -25,7 +25,13 @@ public class SubscriptionInfo {
 	private Node resourceNode;
 	
 	private String resourceSet;
-	
+
+	/**
+	 * @author Mariana Gheorghe
+	 */
+	public SubscriptionInfo() {	
+	}
+
 	/**
 	 *@author see class
 	 **/

@@ -22,7 +22,6 @@ package org.flowerplatform.flex_client.text {
 	
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.iframe.FlowerIFrame;
 	import org.flowerplatform.flexutil.iframe.IFlowerIFrame;
@@ -67,7 +66,7 @@ package org.flowerplatform.flex_client.text {
 			
 			IFlowerIFrame(editor).url = FlexUtilGlobals.getInstance().createAbsoluteUrl(TextPlugin.getInstance().getResourceUrl(getURL()));
 		}
-			
+
 		protected function getURL():String {
 			var lastDotIndex:int = node.nodeUri.lastIndexOf('.');
 			if (lastDotIndex >= 0) {

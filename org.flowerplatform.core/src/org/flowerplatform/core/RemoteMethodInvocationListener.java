@@ -104,17 +104,15 @@ public class RemoteMethodInvocationListener {
 		ContextThreadLocal context = CorePlugin.getInstance().getContextThreadLocal().get();
 		try {
 			if (LOGGER.isDebugEnabled()) {
-				long endTime = new Date().getTime();
-				long difference = endTime - remoteMethodInvocationInfo.getStartTimestamp();
-				String serviceId = remoteMethodInvocationInfo.getServiceId();
-				String methodName = remoteMethodInvocationInfo.getMethodName();
 				boolean log = true;
-				if (methodName != null && methodName.equals("ping")) {
+				if (remoteMethodInvocationInfo.getServiceMethodOrUrl().equals("resourceService.ping()")) {
 					String logPing = LOGGER_CONTEXT.getProperty("logNodeServicePingInvocation");
 					log = logPing == null ? false : Boolean.parseBoolean(logPing);
 				}
 				if (log) {
-					LOGGER.debug("[{}ms] {}.{}() invoked", new Object[] { difference, serviceId, methodName });
+					long endTime = new Date().getTime();
+					long difference = endTime - remoteMethodInvocationInfo.getStartTimestamp();
+					LOGGER.debug("[{}ms] {}.{}() invoked", new Object[] { difference, remoteMethodInvocationInfo.getServiceMethodOrUrl() });
 				}
 			}
 	
@@ -124,8 +122,10 @@ public class RemoteMethodInvocationListener {
 			}	
 			
 			// prepare result
-			remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
-			
+			if (remoteMethodInvocationInfo.getReturnValue() != null) {
+				remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
+			}
+				
 			Long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
 			long timestamp = new Date().getTime();		
 			

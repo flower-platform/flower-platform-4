@@ -28,7 +28,7 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 	 * @author Cristina Constantinescu
 	 */
 	public class MindMapAbsoluteLayoutVisualChildrenController extends AbsoluteLayoutVisualChildrenController {
-				
+		
 		public function MindMapAbsoluteLayoutVisualChildrenController(orderIndex:int=0) {
 			super(orderIndex);
 		}
@@ -45,7 +45,7 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 				var logTsStart:Number = new Date().time;
 				refreshModelPositions(context, MindMapDiagramShell(context.diagramShell).getRoot(context));
 				
-				trace("MMAbsLayout.refrMP(): " + (new Date().time - logTsStart) + "ms");				
+//				trace("MMAbsLayout.refrMP(): " + (new Date().time - logTsStart) + "ms");				
 			}
 			
 			super.refreshVisualChildren(context, parentModel);
@@ -100,10 +100,12 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 			if (isRoot || side == MindMapDiagramShell.POSITION_LEFT) {
 				calculateExpandedWidthAndHeight(context, model, MindMapDiagramShell.POSITION_LEFT);
 				ds.setPropertyValue(context, model, "expandedHeightLeft", ds.getPropertyValue(context, model, "expandedHeight", dynamicObject), dynamicObject);				
+				ds.setPropertyValue(context, model, "expandedWidthLeft", ds.getPropertyValue(context, model, "expandedWidth", dynamicObject), dynamicObject);
 			}
 			if (isRoot || side == MindMapDiagramShell.POSITION_RIGHT) {
 				calculateExpandedWidthAndHeight(context, model, MindMapDiagramShell.POSITION_RIGHT);
-				ds.setPropertyValue(context, model, "expandedHeightRight", ds.getPropertyValue(context, model, "expandedHeight", dynamicObject), dynamicObject);				
+				ds.setPropertyValue(context, model, "expandedHeightRight", ds.getPropertyValue(context, model, "expandedHeight", dynamicObject), dynamicObject);
+				ds.setPropertyValue(context, model, "expandedWidthRight", ds.getPropertyValue(context, model, "expandedWidth", dynamicObject), dynamicObject);
 			}
 		}
 		

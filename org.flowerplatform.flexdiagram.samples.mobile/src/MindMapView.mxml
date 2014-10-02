@@ -18,36 +18,99 @@
 <!---
 @author Cristian Spiescu
 -->
-<s:View title="MinMapView"
+<s:View title="MindMapView"
 		   xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" xmlns:flexdiagram="org.flowerplatform.flexdiagram.*" xmlns:samples="org.flowerplatform.flexdiagram.samples.*"
 		   xmlns:renderer="org.flowerplatform.flexdiagram.renderer.*" xmlns:infinitegroup="org.flowerplatform.flexdiagram.util.infinitegroup.*" 
 		   xmlns:mindmap="org.flowerplatform.flexdiagram.samples.mindmap.*"
-		   creationComplete="creationCompleteHandler(event)">
+		   xmlns:m="org.flowerplatform.flexdiagram.mindmap.*"
+		   click="clickHandler(event)"
+		   creationComplete="creationCompleteHandler(event)"
+		   implements="org.flowerplatform.flexdiagram.samples.IModelHolder">
 	   <fx:Script>
 		   <![CDATA[
 			   import mx.core.FlexGlobals;
 			   import mx.events.FlexEvent;
 			   
+			   import spark.components.Alert;
+			   
 			   import org.flowerplatform.flexdiagram.samples.IModelHolder;
 			   import org.flowerplatform.flexdiagram.samples.mindmap.MindMapPopulator;
+			   import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 			   import org.flowerplatform.flexdiagram.tool.DragTool;
 			   import org.flowerplatform.flexdiagram.tool.InplaceEditorTool;
 			   import org.flowerplatform.flexdiagram.tool.ScrollTool;
 			   import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 			   import org.flowerplatform.flexdiagram.tool.ZoomTool;
-			   import org.flowerplatform.flexutil.FactoryWithInitialization;
+			   import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
+			   
+			   private var _rootModel:Object;
+			   [Bindable]
+			   protected var selectedItem:SampleMindMapModel;
+			   
+			   protected static const DEFAULT_COLOR_WHITE:uint = 0xFFFFFFFF;
+			   
+			   protected static const DEFAULT_COLOR_BLACK:uint = 0x000000;
+			   
+			   [Bindable]
+			   public function get rootModel():Object {
+				   return _rootModel;
+			   }
+			   
+			   public function set rootModel(value:Object):void {
+				   _rootModel = value;				
+			   }
 			   
 			   protected function creationCompleteHandler(event:FlexEvent):void {
-				   MindMapPopulator.populateRootModel(IModelHolder(FlexGlobals.topLevelApplication));
+				   new MindMapPopulator().populate(this, 30, 4);
 				   
-				   diagramShell.registerTool(ScrollTool.ID, new FactoryWithInitialization(ScrollTool));
-				   diagramShell.registerTool(SelectOnClickTool.ID, new FactoryWithInitialization(SelectOnClickTool));
-				   diagramShell.registerTool(ZoomTool.ID, new FactoryWithInitialization(ZoomTool));
-				   diagramShell.registerTool(InplaceEditorTool.ID, new FactoryWithInitialization(InplaceEditorTool));
-				   diagramShell.registerTool(DragTool.ID, new FactoryWithInitialization(DragTool));
+				   diagramShell.registerTool(ScrollTool.ID, new ClassFactoryWithConstructor(ScrollTool));
+				   diagramShell.registerTool(SelectOnClickTool.ID, new ClassFactoryWithConstructor(SelectOnClickTool));
+				   diagramShell.registerTool(ZoomTool.ID, new ClassFactoryWithConstructor(ZoomTool));
+				   diagramShell.registerTool(InplaceEditorTool.ID, new ClassFactoryWithConstructor(InplaceEditorTool));
+				   diagramShell.registerTool(DragTool.ID, new ClassFactoryWithConstructor(DragTool));
 
-				   DiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {FlexGlobals.topLevelApplication.rootModel.getItemAt(0).expanded = true});
+				   MindMapDiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {FlexGlobals.topLevelApplication.rootModel.expanded = true});
+			   }
+			   
+			   /**
+				* @author Alexandra Topoloaga
+				*/
+			   protected function clickHandler(event:MouseEvent):void {
+				   if (String(diagramShell.mainSelectedItem).indexOf("SampleMindMapModel") > 0) {
+					   selectedItem = SampleMindMapModel(diagramShell.mainSelectedItem);
+					   listofChildrenPanel.visible = true;
+					   formPanel.visible = true;
+					   propertiesForm.visible = true;
+				   } else {
+					   listofChildrenPanel.visible = false;
+					   formPanel.visible = false;
+					   propertiesForm.visible = false;
+				   }
+			   }
+			   
+			   public function onFontSizeChange():void {
+				   if (textInputFontSize.text != '' && int(textInputFontSize.text) >= 0 && int(textInputFontSize.text) < 720 ) {
+					   selectedItem.fontSize = int(textInputFontSize.text);	
+				   }
+			   }
+			   
+			   public function onIconChange():void {
+//				   selectedItem.icons = new ArrayCollection(iconsTextInput.text.split(","));
+			   }
+			   
+			   public function onColorChange(value:String, color:uint):uint {
+				   if (value != '' && uint(value) != 0) {
+					   color = uint (value);
+				   } 
+				   else {
+					  if (color == selectedItem.textColor) {
+						  return DEFAULT_COLOR_BLACK;
+					  } else {
+						  return DEFAULT_COLOR_WHITE;
+					  }
+					}
+				   return uint(value);
 			   }
 			   
 		   ]]>
@@ -55,7 +118,120 @@
 	   <fx:Declarations>
 		   <mindmap:SampleMindMapDiagramShell id="diagramShell" diagramRenderer="{diagramRenderer}" rootModel="{FlexGlobals.topLevelApplication.rootModel}"/>
 	   </fx:Declarations>
+	
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>	
+		<s:Scroller width="100%" height="100%">
+			<s:VGroup width="100%" clipAndEnableScrolling="true">
+				
+				<s:Panel id="listofChildrenPanel" visible="false" width="100%"
+						 title="List of children for selected node's parent">
+					<s:List id="childrenProviderList" width="100%" borderVisible="false" 
+							dataProvider="{selectedItem.parent.children}" 
+							itemRenderer="org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapNodeRenderer"/>
+				</s:Panel>
+				
+				
+				<s:Panel id="formPanel" visible="false" width="100%" title="Properties Editor">
+					<s:Form id="propertiesForm" visible="false" width="100%">
+						<s:layout>
+							<s:FormLayout id="fromLayout" gap="-7"/>
+						</s:layout>
+						
+						<s:FormItem label="Text:">
+							<s:TextInput width="100%" text="@{selectedItem.text}"/>
+						</s:FormItem>
+						
+						<s:FormItem label="Font Family:">
+							<s:DropDownList width="100%" selectedItem="@{selectedItem.fontFamily}"> 
+								<s:ArrayCollection>
+									<fx:String>Arial</fx:String>
+									<fx:String>Courier New</fx:String>
+									<fx:String>Dialog</fx:String>
+									<fx:String>DialogInput</fx:String>
+									<fx:String>Lucida Sans</fx:String>
+									<fx:String>Lucida Sans Typewriter</fx:String>
+									<fx:String>Monospaced</fx:String>
+									<fx:String>SansSerif</fx:String>
+									<fx:String>Serif</fx:String>
+									<fx:String>Times New Roman</fx:String>
+								</s:ArrayCollection>
+							</s:DropDownList>
+						</s:FormItem>
+						
+						<s:FormItem label="Font Size:">
+							<s:TextInput id="textInputFontSize" width="100%" change="onFontSizeChange()"
+										 text="{selectedItem.fontSize}"/>
+						</s:FormItem>
+						
+						<s:FormItem label="Font Bold:">
+							<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontBold}"/> 
+						</s:FormItem>
+						
+						<s:FormItem label="Font Italic:">
+							<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontItalic}"/>
+						</s:FormItem>
+						
+						<s:FormItem label="Text Color:">
+							<s:TextInput id="textInputTextColor" width="100%" text="{selectedItem.textColor}"/>
+							<s:HGroup>
+								<s:Button id="changeTextColor" label="Change" click="onColorChange(textInputTextColor.text, selectedItem.textColor); selectedItem.textColor = onColorChange(textInputTextColor.text, selectedItem.textColor)"/>
+								<s:Button id="changeTextColorToolTip" label="Tooltip" click="Alert.show('Type the uint value you want (e.g.:0xFF0000 or 65535)');"/>
+							</s:HGroup>
+						</s:FormItem>
+						
+						<s:FormItem label="Background Color:">
+							<s:TextInput id="textInputBackgroundColor" width="100%" text="{selectedItem.backgroundColor}"/>
+							<s:HGroup>
+								<s:Button id="changeBackgroundColor" label="Change" click="onColorChange(textInputBackgroundColor.text, selectedItem.backgroundColor); selectedItem.backgroundColor = onColorChange(textInputBackgroundColor.text, selectedItem.backgroundColor)"/>
+								<s:Button id="changeBackgroundColorToolTip" label="Tooltip" click="Alert.show('Type the uint value you want (e.g.:0xFF0000 or 65535)');"/>
+							</s:HGroup>
+						</s:FormItem>
+						
+						
+						<s:FormItem label="Icons:">
+							<s:TextInput id="iconsTextInput" width="100%"
+										 text="???"/>  
+							<s:HGroup>
+								<s:Button id="changeIconsButton" label="Change" click="onIconChange()"/>
+								<s:Button id="changeIcon" label="Tooltip" click="Alert.show('Type the names of the icons you want to add (separated ONLY by a comma)\n\n Example of icons:\n ->family.png\n ->bee.png\n ->group.png\n ->wizard.png\n  ->smiley-angry.png\n ->bookmark.png\n\n Example of list: bee.png,penguin.png,family.png,wizard.png');"/>
+							</s:HGroup>
+						</s:FormItem>
+						
+						<s:FormItem label="Cloud Color:">
+							<s:TextInput id="textInputCloudColor" width="100%" text="{selectedItem.cloudColor}"/>
+							<s:HGroup>
+								<s:Button id="changeCloudColor" label="Change" click="onColorChange(textInputCloudColor.text, selectedItem.cloudColor); selectedItem.cloudColor = onColorChange(textInputCloudColor.text, selectedItem.cloudColor)" toolTip="Type the uint value you want (e.g.:0xFF0000 or 65535)"/>
+								<s:Button id="changeCloudColorToolTip" label="Tooltip" click="Alert.show('Type the uint value you want (e.g.:0xFF0000 or 65535)');"/>
+							</s:HGroup>
+						</s:FormItem>
+						
+						<s:FormItem id="textInputCloudTypeForm" label="CloudType:">
+							<s:DropDownList width="100%" selectedItem="@{selectedItem.cloudType}"> 
+								<s:ArrayCollection>
+									<fx:String>No shape</fx:String>
+									<fx:String>Rectangle shape</fx:String>
+									<fx:String>Rounded rectangle shape</fx:String>
+								</s:ArrayCollection>
+							</s:DropDownList>
+						</s:FormItem>
+						
+						<s:FormItem id="noteInputForm" label="Note:">
+							<s:TextInput width="100%" text="@{selectedItem.note}"/>
+						</s:FormItem>
+						
+						<s:FormItem id="detailsInputForm" label="Details:">
+							<s:TextInput width="100%" text="@{selectedItem.details}"/>
+						</s:FormItem>
+						
+					</s:Form>	
+				</s:Panel>
+				
+			</s:VGroup>
+		</s:Scroller>
+		
 	   <infinitegroup:InfiniteScroller id="scroller" width="100%" height="100%" >
-		   <renderer:DiagramRenderer id="diagramRenderer" width="100%" height="100%" />			   
+		   <m:MindMapDiagramRenderer id="diagramRenderer" width="100%" height="100%" />			   
 	   </infinitegroup:InfiniteScroller>
    </s:View>

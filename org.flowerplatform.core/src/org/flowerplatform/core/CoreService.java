@@ -23,14 +23,17 @@ import javax.ws.rs.Path;
  */
 @Path("/coreService")
 public class CoreService {
-
+	
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public String getSessionId() {
 		return CorePlugin.getInstance().getRequestThreadLocal()
 				.get().getSession().getId();
 	}
 	
 	/**
-	 * @author Cristina Constantinescu
+	 * @author Mariana Gheorghe
 	 */
 	@PUT @Path("/login")
 	public void login() {
@@ -39,5 +42,6 @@ public class CoreService {
 	
 	public String[] getVersions() {
 		return new String[] {CoreConstants.APP_VERSION, CoreConstants.API_VERSION};
-	}	
+	}
+	
 }

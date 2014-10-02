@@ -33,7 +33,7 @@ package org.flowerplatform.flex_client.codesync.regex {
 	import org.flowerplatform.flex_client.properties.property_renderer.DropDownListPropertyRenderer;
 	import org.flowerplatform.flex_client.text.TextConstants;
 	import org.flowerplatform.flex_client.text.TextEditorFrontend;
-	import org.flowerplatform.flexutil.FactoryWithInitialization;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Pair;
 	import org.flowerplatform.flexutil.Utils;
@@ -58,7 +58,7 @@ package org.flowerplatform.flex_client.codesync.regex {
 			
 			CorePlugin.getInstance().serviceLocator.addService("codeSyncRegexService");
 			
-			PropertiesPlugin.getInstance().propertyDescriptorTypeToPropertyRendererFactory[CodeSyncRegexConstants.REGEX_ACTIONS_DESCRIPTOR_TYPE] = new FactoryWithInitialization
+			PropertiesPlugin.getInstance().propertyDescriptorTypeToPropertyRendererFactory[CodeSyncRegexConstants.REGEX_ACTIONS_DESCRIPTOR_TYPE] = new ClassFactoryWithConstructor
 				(DropDownListPropertyRenderer, {	
 					requestDataProviderHandler: function(node:Node, callbackFunction:Function):void {
 						CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.getRegexActions", null, callbackFunction);
@@ -129,7 +129,7 @@ package org.flowerplatform.flex_client.codesync.regex {
 				}
 			}
 			if (textEditorFrontend == null && (showIfNecessary || showInRight)) {
-				textEditorFrontend = TextEditorFrontend(FlexUtilGlobals.getInstance().workbench.getEditorFromViewComponent(CorePlugin.getInstance().openEditor(new Node(textEditorResourceNodeUri), TextConstants.TEXT_CONTENT_TYPE, showInRight)));
+				textEditorFrontend = TextEditorFrontend(FlexUtilGlobals.getInstance().workbench.getEditorFromViewComponent(CorePlugin.getInstance().openEditor(new Node(textEditorResourceNodeUri), TextConstants.TEXT_CONTENT_TYPE, null, showInRight)));
 			}
 			return textEditorFrontend;
 		}

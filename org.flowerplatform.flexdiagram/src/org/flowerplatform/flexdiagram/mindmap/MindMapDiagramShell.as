@@ -26,7 +26,6 @@ package org.flowerplatform.flexdiagram.mindmap {
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
-	import org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	
 	/**
@@ -36,6 +35,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		public static const POSITION_LEFT:int = -1;
 		public static const POSITION_RIGHT:int = 1;
+		public static const POSITION_CENTER:int = 0;
 		
 		public static const HORIZONTAL_PADDING_DEFAULT:int = 20;
 		public static const VERTICAL_PADDING_DEFAULT:int = 5;
@@ -85,7 +85,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 				}
 			}
 		}
-			
+		
 		/**
 		 * Structure:
 		 * - rootModel -> a MindMapRootModelWrapper that keeps the model and the list of model children added directly on diagram renderer
@@ -96,7 +96,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			
 			refreshRootModelChildren(getNewDiagramShellContext());			
 		}
-				
+		
 		public function getRoot(context:DiagramShellContext):Object {
 			if (showRootModelAsRootNode) {
 				return MindMapRootModelWrapper(rootModel).model;
@@ -147,7 +147,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		protected function addModelInRootModelChildrenList(context:DiagramShellContext, model:Object, asRoot:Boolean = false, depth:int = 1):void {
 			// set depth in model's dynamic object -> it will be set further, in renderer
 			setPropertyValue(context, model, "depth", depth);
-						
+			
 			var wrapper:MindMapRootModelWrapper = MindMapRootModelWrapper(rootModel);
 			if (wrapper.children == null) {
 				wrapper.children = new ArrayList();
@@ -172,7 +172,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		public function getModelController(context:DiagramShellContext, model:Object):MindMapModelController {
 			return ControllerUtils.getMindMapModelController(context, model);
 		}
-			
+		
 		private function getInitialPropertyValue(context:DiagramShellContext, model:Object, property:String):Object {
 			switch (property) {								
 				case "width":
@@ -220,7 +220,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			var oldValue:Number = dynamicObject[property];
 			
 			dynamicObject[property] = value;
-							
+			
 			model.dispatchEvent(PropertyChangeEvent.createUpdateEvent(model, property, oldValue, value));						
 		}
 		
@@ -241,7 +241,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			}
 			return list;
 		}
-			
+		
 		public function getDeltaBetweenExpandedHeightAndHeight(context:DiagramShellContext, model:Object, preventNegativeValues:Boolean = false, addAdditionalPaddingIfNecessary:Boolean = true):Number {
 			var dynamicObject:Object = getDynamicObject(context, model);
 			
@@ -258,6 +258,5 @@ package org.flowerplatform.flexdiagram.mindmap {
 			// (used when we want to calculate the first child position)
 			return expandedHeight - height - (!addAdditionalPaddingIfNecessary ? additionalPadding : 0);			
 		}
-				
 	}
 }

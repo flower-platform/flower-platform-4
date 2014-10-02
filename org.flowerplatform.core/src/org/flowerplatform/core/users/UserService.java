@@ -83,7 +83,7 @@ public class UserService {
 	}
 	
 	/**
-	 * @author PowerUser
+	 * @author Andreea Tita
 	 */
 	public String getUserNodeUri(String login) {
 		return CoreConstants.USERS_PATH + "#" + login; 

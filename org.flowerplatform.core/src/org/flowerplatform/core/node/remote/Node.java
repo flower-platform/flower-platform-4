@@ -48,16 +48,16 @@ public class Node implements Externalizable {
 	private boolean propertiesPopulated;
 
 	private Object rawNodeData;
-	
+
 	/**
-	 * TODO
-	 */
+	 *@author Mariana Gheorghe
+	 **/
 	public Node() {
 		super();
 	}
 
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public Node(String nodeUri, String type) {
 		setNodeUri(nodeUri);

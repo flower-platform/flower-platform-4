@@ -26,6 +26,5 @@ package org.flowerplatform.flexutil.focusable_component {
 	 * @author Cristina Constantinescu
 	 */ 
 	public class FocusableRichText extends RichText implements IFocusManagerComponent {
-		
 	}
 }

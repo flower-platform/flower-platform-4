@@ -269,5 +269,4 @@ public abstract class ResourceService implements IResourceHolder {
 		IResourceHandler resourceHandler = getResourceHandler(Utils.getScheme(nodeUri));
 		return getNode(resourceHandler.getResourceUri(nodeUri), resourceHandler, new ServiceContext<ResourceService>());
 	}
-
 }

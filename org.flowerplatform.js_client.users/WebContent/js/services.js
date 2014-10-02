@@ -11,7 +11,7 @@ flowerProject.lazy.factory('User', ['$resource', function($resource) {
 	};
 	
 	// get model from service
-	return $resource('http://localhost:8080/org.flowerplatform.host.web_app/ws-dispatcher/users/:id', {}, {
+	return $resource('../ws-dispatcher/users/:id', {}, {
 		query: 	{ method: 'GET'/*, interceptor: { 'response': getMessageResult }*/ },
 		get:	{ method: 'GET', params: { id: '@id' } },
 		save:	{ method: 'POST' },
