@@ -4,7 +4,7 @@
 
 var flowerServices = angular.module('flowerServices', ['ngResource']);
 
-logger.debug('init services');
+logger.debug('Initialize services: core');
 
 /**
  * Template service. May be decorated by other plugins to add their own templates.

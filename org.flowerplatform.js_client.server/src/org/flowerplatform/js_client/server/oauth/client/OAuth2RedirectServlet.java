@@ -1,5 +1,6 @@
 package org.flowerplatform.js_client.server.oauth.client;
 
+import static org.flowerplatform.core.CoreConstants.SOCIAL_ACCOUNTS;
 import static org.flowerplatform.js_client.server.JsClientServerConstants.OAUTH_EMBEDDING_CLIENT_ID;
 import static org.flowerplatform.js_client.server.JsClientServerConstants.OAUTH_PROVIDER;
 import static org.flowerplatform.js_client.server.JsClientServerConstants.OAUTH_STATE;
@@ -24,9 +25,10 @@ import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
+import org.apache.oltu.oauth2.common.token.OAuthToken;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.users.UserService;
+import org.flowerplatform.core.users.UserPrincipal;
 import org.flowerplatform.core.users.UserValidator;
 import org.flowerplatform.js_client.server.JsClientServerPlugin;
 import org.flowerplatform.js_client.server.oauth.server.OAuth2Service;
@@ -59,32 +61,6 @@ public class OAuth2RedirectServlet extends HttpServlet {
 			String code = authAuthzResponse.getCode();
 			String provider = authAuthzResponse.getParam(OAUTH_PROVIDER);
 			
-			// get token location and client credentials based on provider
-			String tokenLocation = null;
-			if ("flower_platform".equals(provider)) {
-				tokenLocation = "http://csp41:9090/org.flowerplatform.host.web_app/oauth/token";
-			} else {
-				tokenLocation = OAuthProviderType.valueOf(provider.toUpperCase()).getTokenEndpoint();
-			}
-			OAuth2ProviderService providerService = (OAuth2ProviderService) CorePlugin.getInstance().getServiceRegistry()
-					.getService("oauthProviderService");
-			OAuth2Provider credentials = providerService.getOAuthProvider(provider);
-			
-			// create token request
-			OAuthClientRequest oauthRequest = JsClientServerPlugin.getInstance().buildQueryMessage(
-					OAuthClientRequest
-					.tokenLocation(tokenLocation)
-					.setClientId(credentials.getClientId())
-					.setClientSecret(credentials.getClientSecret())
-					.setGrantType(GrantType.AUTHORIZATION_CODE)
-					.setCode(code)
-					.setRedirectURI(req.getRequestURL().toString()));
-
-			// sync call to get token
-			OAuthAccessTokenResponse oauthTokenResponse = getAccessTokenResponse(oauthRequest, provider);
-			String accessToken = oauthTokenResponse.getAccessToken();
-			// TODO refresh token?
-			
 			// login
 			Principal userPrincipal = userValidator.getCurrentUserPrincipal(req.getSession());
 
@@ -92,7 +68,9 @@ public class OAuth2RedirectServlet extends HttpServlet {
 //				// TODO do we reject the login request?
 //			}
 			
-			userPrincipal = OAuth2UserPrincipalProvider.valueOf(provider.toUpperCase()).createUserPrincipal(accessToken);
+			// get token from provider
+			OAuthToken token = getOAuthToken(provider, code);
+			userPrincipal = OAuth2UserPrincipalProvider.valueOf(provider.toUpperCase()).createUserPrincipal(token);
 			
 			if (userPrincipal == null) {
 				resp.sendRedirect("/org.flowerplatform.host.web_app/authenticate/loginError.html");
@@ -101,11 +79,17 @@ public class OAuth2RedirectServlet extends HttpServlet {
 			
 			userValidator.setCurrentUserPrincipal(req.getSession(), userPrincipal);
 			
+			Node user = ((UserPrincipal) userPrincipal).getUser();
+			if (user.getProperties().get(SOCIAL_ACCOUNTS) == null) {
+				resp.sendRedirect("/org.flowerplatform.host.web_app/js_client.core/index.html#/link");
+				user.getProperties().put("socialAccounts", user.getProperties().get("login") + "@" + provider);
+				return;
+			}
+			
 			// embedding client: generate an access token for our server
 			String embeddingClientId = (String) req.getSession().getAttribute(OAUTH_EMBEDDING_CLIENT_ID);
 			if (embeddingClientId != null) {
 				OAuth2Service oauthService = (OAuth2Service) CorePlugin.getInstance().getServiceRegistry().getService("oauthService");
-				Node user = ((UserService) CorePlugin.getInstance().getServiceRegistry().getService("userService")).getCurrentUser(req);
 				String fpAccessToken = oauthService.createAccessToken(user, embeddingClientId);
 				resp.sendRedirect("/org.flowerplatform.host.web_app/js_client.users/authAccess.html#access_token=" + fpAccessToken);
 			} else {
@@ -133,13 +117,37 @@ public class OAuth2RedirectServlet extends HttpServlet {
 		}
 	}
 	
-	private OAuthAccessTokenResponse getAccessTokenResponse(OAuthClientRequest oauthRequest, String provider) throws OAuthProblemException {
-		OAuthClient oauthClient = new OAuthClient(new URLConnectionClient());
+	private OAuthToken getOAuthToken(String provider, String code) throws OAuthProblemException {
+		// get token location and client credentials based on provider
+		String tokenLocation = null;
+		if ("flower_platform".equals(provider)) {
+			tokenLocation = "http://csp41:9090/org.flowerplatform.host.web_app/oauth/token"; // TODO remove
+		} else {
+			tokenLocation = OAuthProviderType.valueOf(provider.toUpperCase()).getTokenEndpoint();
+		}
+		OAuth2ProviderService providerService = (OAuth2ProviderService) CorePlugin.getInstance().getServiceRegistry()
+				.getService("oauthProviderService");
+		OAuth2Provider credentials = providerService.getOAuthProvider(provider);
+		
+		// create token request
+		OAuthClientRequest oauthRequest = JsClientServerPlugin.getInstance().buildQueryMessage(
+				OAuthClientRequest
+				.tokenLocation(tokenLocation)
+				.setClientId(credentials.getClientId())
+				.setClientSecret(credentials.getClientSecret())
+				.setGrantType(GrantType.AUTHORIZATION_CODE)
+				.setCode(code));
+
+		// sync call to get token
+		OAuthAccessTokenResponse oauthTokenResponse = null;
 		try {
-			return oauthClient.accessToken(oauthRequest, 
+			OAuthClient oauthClient = new OAuthClient(new URLConnectionClient());
+			oauthTokenResponse = oauthClient.accessToken(oauthRequest, 
 					provider.equals("github") ? GitHubTokenResponse.class : OAuthJSONAccessTokenResponse.class); // special case for GH
 		} catch (OAuthSystemException e) {
 			throw new RuntimeException(e);
 		}
+		
+		return oauthTokenResponse.getOAuthToken();
 	}
 }

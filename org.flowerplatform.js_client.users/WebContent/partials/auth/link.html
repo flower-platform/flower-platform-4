@@ -9,9 +9,13 @@
 
 <div class="well row">
 
+	<label>Link your social account</label> 
+
+	<hr/>
+	
 	<form class="col-sm-6" role="form">
 	
-		<label>Login with Flower Platform</label>
+		<label>Use an existing account</label>
 		
 		<div ng-include="'../js_client.users/partials/auth/login.html'"></div>
 		
@@ -19,13 +23,9 @@
 	
 	<form class="col-sm-6" role="form">
 	
-		<label>Or sign in with another provider</label>
+		<label>Or create a new account</label>
 	
-		<div class="form-group" ng-repeat="oauthProvider in oauthProviders">
-			<button type="submit" class="btn btn-primary" ng-click="performLogin(oauthProvider)">
-				<i class="icon-ok icon-white"></i> {{oauthProvider.label}}
-			</button>
-		</div>
+		<div ng-include="'../js_client.users/partials/auth/register.html'"></div>
 	
 	</form>
 

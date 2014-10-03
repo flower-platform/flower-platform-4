@@ -235,6 +235,9 @@ public final class CoreConstants {
 	public static final String HASH_ALGORITHM = "SHA-256";
 	public static final String PASS_CHANGED = "Password changed !";
 	public static final String PASS_NOT_CHANGED = "Password doesn't match !";
+	
+	public static final String SOCIAL_ACCOUNTS = "socialAccounts";
+	
 	public static final String PNG_EXTENSION = ".png";
 	
 	public static final String LOAD_FILE_SERVLET = UtilConstants.SERVLET + "/load";
@@ -248,5 +251,4 @@ public final class CoreConstants {
 	 */
 	public static final String USER_PRINCIPAL = "userPrincipal";
 	
-	public static final String LOGIN_METHOD = "loginMethod";
 }

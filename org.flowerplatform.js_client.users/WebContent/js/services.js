@@ -1,14 +1,43 @@
 'use strict';
 
-logger.debug('init user services');
+logger.debug('Initialize services: users');
 
-flowerProject.lazy.factory('Auth', ['$resource', function($resource) {
+flowerProject.lazy.factory('Auth', ['$resource', '$location', 
+function($resource, $location) {
 	
-	return $resource('../ws-dispatcher/users/:op', {}, {
-		currentUser:	{ method: 'GET', params: { op: 'login' } },
-		performLogin: 	{ method: 'POST', params: { op: 'login' } },
-		performLogout: 	{ method: 'POST', params: { op: 'logout' } }
+	var service = $resource('../ws-dispatcher/users/:op', {}, {
+		currentUser: { method: 'GET',  params: { op: 'login' } },
+		login:		 { method: 'POST', params: { op: 'login' } },
+		logout:		 { method: 'POST', params: { op: 'logout' } },
+		register:	 { method: 'POST', params: { op: 'register' } }
 	});
+	
+	service.loginSuccessHandler = function(user) {
+		logger.debug('Login successful for user:');
+		logger.debug(user);
+		
+		callFlexCallback('loginSuccessHandler');
+		
+		var url = $location.url();
+		var index = url.indexOf('return_to');
+		if (index > 0) {
+			// go to authorization page after basic auth
+			url = url.slice(index + 10);
+			url = decodeURIComponent(url);
+			logger.debug('Return to: ' + url);
+			window.location.href = "../" + url;
+		} else {
+			if (window.opener != null) {
+				// close the popup, reload parent
+				window.opener.document.location.reload();
+				self.close();
+			} else {
+				$location.path("/");
+			}
+		}
+	}
+	
+	return service;
 }]);
 
 flowerProject.lazy.factory('User', ['$resource', function($resource) {
@@ -38,17 +67,17 @@ flowerProject.lazy.factory('ChangeSettings' , ['$resource', function($resource) 
 	});
 }]);
 
-flowerProject.lazy.service('UserNodeUri', function () {
+flowerProject.lazy.service('UserNodeUri', function() {
 	var userNodeUri = '';
 
-   return {
-       getProperty: function () {
-           return userNodeUri;
-       },
-       setProperty: function(value) {
-      	 userNodeUri = encodeURIComponent(value);
-       }
-   };
+	return {
+		getProperty: function() {
+			return userNodeUri;
+		},
+		setProperty: function(value) {
+			userNodeUri = encodeURIComponent(value);
+		}
+	};
 });
 
 
@@ -56,7 +85,6 @@ flowerProject.lazy.service('UserNodeUri', function () {
  * Decorate the Template service from core.
  */
 flowerProject.lazy.decorator('Template', function($delegate) {
-	logger.debug('decorate');
 	$delegate.userSideMenu 		  = '../js_client.users/partials/composed/userSideMenu.html';
 	
 	$delegate.userList 			  = '../js_client.users/partials/userList.html';

@@ -27,13 +27,13 @@ var flowerProject = angular.module('flowerProject', [ 'ngRoute', 'flowerControll
 
 // Load plugins. Manually bootstrap the app after plugins are loaded.
 loadScripts(plugins, function() {
-	logger.debug('bootstrap');
+	logger.debug('Bootstrap application');
 	angular.bootstrap(document, ['flowerProject']);
 });
 
 flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', '$httpProvider', function($routeProvider, $provide, $controllerProvider, $httpProvider) {
 
-	logger.debug('do config');
+	logger.debug('Configure application');
 	
 	// Expose lazy loading for plugins.
 	flowerProject.lazy = {
@@ -82,11 +82,11 @@ flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', '$htt
 	}
 	
 	var loadRouteDependencies = function($q, $rootScope, routeConfig) {
-		logger.debug('resolve route' + routeConfig.path);
+		logger.debug('Resolving route: ' + routeConfig.path);
 		var deferred = $q.defer();
 		loadScripts(routeConfig.deps, function($rootScope) {
 			deferred.resolve(0);
-			logger.debug('resolved');
+			logger.debug('Route resolved: ' + routeConfig.path);
 		});
 		return deferred.promise;
 	};
@@ -103,11 +103,11 @@ flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', '$htt
 //		};
 		// add route
 		$routeProvider.when(routeConfig.path, routeConfig.route);
-		logger.debug('route added ' + routeConfig.path);
+		logger.debug('Route added: ' + routeConfig.path);
 	});
 	
 	if (defaultRoute != null) {
-		logger.debug('set default route: ' + defaultRoute);
+		logger.debug('Set default route: ' + defaultRoute);
 		$routeProvider.otherwise({ redirectTo: defaultRoute });
 	}
 }]);

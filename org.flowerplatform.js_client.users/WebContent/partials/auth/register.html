@@ -1,23 +1,23 @@
-<div class="form-group">
-	<input type="text" class="form-control" placeholder="Username" ng-model="registerInfo.username">
+<div ng-controller="RegisterCtrl">
+	
+	<div class="form-group">
+		<input type="text" class="form-control" placeholder="Username" ng-model="registerInfo.username">
+	</div>
+	
+	<div class="form-group">
+		<input type="password" class="form-control" placeholder="Password" ng-model="registerInfo.password">
+	</div>
+	
+	<div class="form-group">
+		<input type="text" class="form-control" placeholder="Name" ng-model="registerInfo.name">
+	</div>
+	
+	<div class="form-group">
+		<input type="text" class="form-control" placeholder="Email" ng-model="registerInfo.email">
+	</div>
+	
+	<button type="submit" class="btn btn-primary" ng-click="register(registerInfo)">
+		<i class="icon-ok icon-white"></i> Register
+	</button>
+	
 </div>
-
-<div class="form-group">
-	<input type="password" class="form-control" placeholder="Password" ng-model="registerInfo.password">
-</div>
-
-<div class="form-group">
-	<input type="password" class="form-control" placeholder="Confirm Password" ng-model="registerInfo.passwordConfirm">
-</div>
-
-<div class="form-group">
-	<input type="text" class="form-control" placeholder="Email" ng-model="registerInfo.email">
-</div>
-
-<div class="form-group">
-	<input type="text" class="form-control" placeholder="Name" ng-model="registerInfo.name">
-</div>
-
-<button type="submit" class="btn btn-primary" ng-click="register()">
-	<i class="icon-ok icon-white"></i> Register
-</button>

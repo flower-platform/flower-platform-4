@@ -1,6 +1,6 @@
 'use strict';
 
-logger.debug('load users');
+logger.debug('Load module: users');
 
 var authInfo = {
 	client_id: '',
@@ -10,9 +10,13 @@ var authInfo = {
 
 defaultRoute = '/users';
 
+///////////////////////////////////////////////////////
+// User list
+///////////////////////////////////////////////////////
+
 routesConfig.push({
 	path: '/users',
-	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers/users.js'],
 	route: {
 		templateUrl: 'partials/composed/sideMenuLayout.html',
 		controller: 'ComposedCtrl',
@@ -30,9 +34,13 @@ routesConfig.push({
 	}
 });
 
+///////////////////////////////////////////////////////
+// User form
+///////////////////////////////////////////////////////
+
 routesConfig.push({
 	path: '/users/:id',
-	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers/users.js'],
 	route: {
 		templateUrl: 'partials/composed/sideMenuLayout.html',
 		controller: 'ComposedCtrl',
@@ -50,9 +58,13 @@ routesConfig.push({
 	}
 });
 
+///////////////////////////////////////////////////////
+// User account settings
+///////////////////////////////////////////////////////
+
 routesConfig.push({
 	path: '/users/:id/settings',
-	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers/users.js'],
 	route: {
 		templateUrl: 'partials/composed/sideMenuLayout.html',
 		controller: 'ComposedCtrl',
@@ -70,16 +82,34 @@ routesConfig.push({
 	}
 });
 
+///////////////////////////////////////////////////////
+// Login + sign in with oauth provider
+///////////////////////////////////////////////////////
+
 routesConfig.push({
 	path: '/auth',
-	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers/auth.js'],
 	route: {
-		templateUrl: '../js_client.users/partials/auth.html',
+		templateUrl: '../js_client.users/partials/auth/auth.html',
 		controller: 'AuthCtrl',
 		resolve: {
 			oauthProviders: function($http) {
 				return $http.get('../ws-dispatcher/oauthProviders', { params: { embed: embeddingClientId } });
 			}
 		}
+	}
+});
+
+///////////////////////////////////////////////////////
+// Link social account
+///////////////////////////////////////////////////////
+
+routesConfig.push({
+	path: '/link',
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers/auth.js'],
+	route: {
+		templateUrl: '../js_client.users/partials/auth/link.html',
+		controller: 'LinkCtrl',
+		resolve: {}
 	}
 });

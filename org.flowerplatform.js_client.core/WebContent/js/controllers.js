@@ -2,7 +2,7 @@
 
 'use strict';
 
-logger.debug('init controllers');
+logger.debug('Initialize controllers: core');
 
 var flowerControllers = angular.module('flowerControllers', []);
 
@@ -12,7 +12,6 @@ var flowerControllers = angular.module('flowerControllers', []);
 flowerControllers.controller('ComposedCtrl', ['$scope', 'contentTemplate', 'sideMenuTemplate', 'sideMenuContentTemplate', 'Template', 
 	function($scope, contentTemplate, sideMenuTemplate, sideMenuContentTemplate, Template) {
 	
-		logger.debug('composed ctrl');
 		$scope.template_content = { url: Template[contentTemplate] };
 	
 		$scope.template_sideMenu = { url: Template[sideMenuTemplate] };

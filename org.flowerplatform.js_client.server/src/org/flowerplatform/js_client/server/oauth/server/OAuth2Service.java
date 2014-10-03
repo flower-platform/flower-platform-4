@@ -76,4 +76,5 @@ public class OAuth2Service {
 		}
 		return service.getUser(nodeUri);
 	}
+	
 }

@@ -1,11 +1,14 @@
 package org.flowerplatform.core.users;
 
+import static org.flowerplatform.core.CoreConstants.USER;
+
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -38,8 +41,14 @@ public class UserService {
 	
 	private UserValidator userValidator = new UserValidator();
 	
+	private Map<String, String> socialAccounts = new HashMap<String, String>();
+	
 	public UserService() {
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// CRUD operations for user
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * @return users list
@@ -82,7 +91,6 @@ public class UserService {
 	
 	/**
 	 * @return newly created or updated user
-	 * @throws UnsupportedEncodingException
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -129,6 +137,10 @@ public class UserService {
 		String resourceUri = CorePlugin.getInstance().getResourceService().getResourceNode(nodeUri).getNodeUri();
 		CorePlugin.getInstance().getResourceService().save(resourceUri, new ServiceContext<ResourceService>());
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Login + Logout + Register
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * @return the current user (saved in the session)
@@ -205,6 +217,66 @@ public class UserService {
 	public void logout() {
 		userValidator.clearCurrentUserPrincipal(CorePlugin.getInstance().getRequestThreadLocal().get().getSession());
 	}
+	
+	/**
+	 * Perform register.
+	 * 
+	 * return registered user
+	 */
+	@POST @Path("/register")
+	public Node register(Map<String, String> registerInfo) {
+		// TODO validate unique login
+		String username = registerInfo.get("username");
+		String password = registerInfo.get("password");
+		
+		if (password == null) {
+			throw new RuntimeException("Invalid password.");
+		}
+		
+		Node user = new Node(null, USER);
+		user.getProperties().put("login", username);
+		user.getProperties().put("email", registerInfo.get("email"));
+		// TODO copy all props
+		
+		// create
+		saveUser(user);
+		
+		// login
+		login(username, password);
+		
+		// link social account
+		String socialAccount = registerInfo.get("socialAccounts");
+		linkSocialAccount(socialAccount, user);
+		
+		return stripPassword(user);
+	}
+	
+	/**
+	 * @return the user who has linked this social account
+	 */
+	public String getUserForSocialAccount(String socialAccount) {
+		return socialAccounts.get(socialAccount);
+	}
+	
+	/**
+	 * 
+	 * @param socialAccount
+	 * @param username
+	 */
+	public void linkSocialAccount(String socialAccount, Node user) {
+		socialAccounts.put(socialAccount, user.getNodeUri());
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
+		String existing = (String) user.getPropertyValue("socialAccounts");
+		String added = socialAccount;
+		if (existing != null) {
+			added = existing + ',' + socialAccount;
+		}
+		CorePlugin.getInstance().getNodeService().setProperty(user, "socialAccounts", added, context);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Set/validate passwords
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * @param nodeUri

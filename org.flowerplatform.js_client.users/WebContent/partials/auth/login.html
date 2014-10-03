@@ -1,17 +1,21 @@
-<div class="form-group">
-	<input type="text" class="form-control" placeholder="Username" ng-model="loginInfo.username">
-</div>
+<div ng-controller="LoginCtrl">
 
-<div class="form-group">
-	<input type="password" class="form-control" placeholder="Password" ng-model="loginInfo.password">
-</div>
+	<div class="form-group">
+		<input type="text" class="form-control" placeholder="Username" ng-model="loginInfo.username">
+	</div>
+	
+	<div class="form-group">
+		<input type="password" class="form-control" placeholder="Password" ng-model="loginInfo.password">
+	</div>
+	
+	<div class="checkbox">
+		<label>
+			<input type="checkbox" ng-model="loginInfo.rememberMe"> Remember me
+		</label>
+	</div>
+	
+	<button type="submit" class="btn btn-primary" ng-click="login(loginInfo)">
+		<i class="icon-ok icon-white"></i> Login
+	</button>
 
-<div class="checkbox">
-	<label>
-		<input type="checkbox" ng-model="loginInfo.rememberMe"> Remember me
-	</label>
 </div>
-
-<button type="submit" class="btn btn-primary" ng-click="performLogin()">
-	<i class="icon-ok icon-white"></i> Login
-</button>

@@ -11,11 +11,10 @@ import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
-import org.apache.oltu.oauth2.common.token.BasicOAuthToken;
+import org.apache.oltu.oauth2.common.token.OAuthToken;
 import org.apache.oltu.oauth2.common.utils.JSONUtils;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.users.IUserPrincipalProvider;
 import org.flowerplatform.core.users.UserService;
 import org.flowerplatform.util.Utils;
 import org.json.JSONObject;
@@ -29,7 +28,7 @@ import org.json.JSONObject;
  * 
  * @author Mariana Gheorghe
  */
-public enum OAuth2UserPrincipalProvider implements IUserPrincipalProvider {
+public enum OAuth2UserPrincipalProvider {
 
 	FLOWER_PLATFORM {
 
@@ -103,7 +102,7 @@ public enum OAuth2UserPrincipalProvider implements IUserPrincipalProvider {
 		}
 
 		@Override
-		protected Map<String, Object> getUserInfo(OAuthClient oauthClient, String accessToken,
+		protected Map<String, Object> getUserInfo(OAuthClient oauthClient, String accessToken, 
 				Map<String, Object> properties) {
 			// TODO Auto-generated method stub
 			return null;
@@ -126,36 +125,45 @@ public enum OAuth2UserPrincipalProvider implements IUserPrincipalProvider {
 		}
 	};
 
-	@Override
-	public Principal createUserPrincipal(String accessToken) {
+	/**
+	 * 
+	 * @param accessToken
+	 * @return
+	 */
+	public Principal createUserPrincipal(OAuthToken token) throws OAuthProblemException {
 		try {
 			// request authenticated user
 			OAuthClient oauthClient = new OAuthClient(new URLConnectionClient());
 			OAuthClientRequest oauthBearerRequest = new OAuthBearerClientRequest(userEndpoint())
-					.setAccessToken(accessToken)
+					.setAccessToken(token.getAccessToken())
 					.buildHeaderMessage();
 			OAuthResourceResponse oauthResourceResponse = oauthClient.resource(oauthBearerRequest, null, OAuthResourceResponse.class);
 			Map<String, Object> properties = JSONUtils.parseJSON(oauthResourceResponse.getBody());
 			
 			// filter result
-			properties = getUserInfo(oauthClient, accessToken, properties);
+			properties = getUserInfo(oauthClient, token.getAccessToken(), properties);
 			
-			// create principal
-			String login = (String) properties.get("login");
-			login = this.name() + "@" + login;
-			String nodeUri = Utils.getUri("fpp", "|.users", login);
+			// check if social account is linked to a user account
+			String socialAccount = (String) properties.get("login");
 			
-			UserService userService = (UserService) CorePlugin.getInstance().getServiceRegistry().getService("userService");
-			Node user = userService.getUser(nodeUri);
-			if (user == null) {
+			UserService service = (UserService) CorePlugin.getInstance().getServiceRegistry().getService("userService");
+			String userUri = service.getUserForSocialAccount(socialAccount + "@github"); // TODO get provider
+			Node user = null;
+			if (userUri == null) {
+				// no user linked to this social account => create a temp user
+				userUri = Utils.getUri("fpp", "|.users", socialAccount);
 				user = new Node(null, "user");
 				user.setProperties(properties);
-				user.getProperties().put("login", login);
-				user = userService.saveUser(user);
+			} else {
+				// there is a linked user
+				UserService userService = (UserService) CorePlugin.getInstance().getServiceRegistry().getService("userService");
+				user = userService.getUser(userUri);
 			}
 			
-			return new OAuth2UserPrincipal(user, new BasicOAuthToken(accessToken));
-		} catch (OAuthSystemException | OAuthProblemException e) {
+			// create principal
+			return new OAuth2UserPrincipal(user, token);
+			
+		} catch (OAuthSystemException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -167,7 +175,7 @@ public enum OAuth2UserPrincipalProvider implements IUserPrincipalProvider {
 
 	/**
 	 * Filter the properties map obtained from the user endpoint. The {@link OAuthClient} and access token
-	 * are also provided in case extra info is needed from the resource server.
+	 * are also provided in case extra info needs to be requested from the provider (e.g. user email).
 	 */
 	protected abstract Map<String, Object> getUserInfo(OAuthClient oauthClient, String accessToken, Map<String, Object> properties);
 
