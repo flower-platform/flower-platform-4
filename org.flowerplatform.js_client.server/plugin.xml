@@ -16,10 +16,6 @@
             class="org.flowerplatform.js_client.server.oauth.client.OAuth2RedirectServlet">
       </servlet>
       <servlet
-            alias="/oauth/login"
-            class="org.flowerplatform.js_client.server.oauth.client.OAuth2LoginServlet">
-      </servlet>
-      <servlet
             alias="/oauth/authorize"
             class="org.flowerplatform.js_client.server.oauth.server.OAuth2AuthorizationServlet">
       </servlet>

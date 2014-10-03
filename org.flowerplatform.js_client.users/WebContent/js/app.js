@@ -8,6 +8,8 @@ var authInfo = {
 	access_token: ''
 }
 
+defaultRoute = '/users';
+
 routesConfig.push({
 	path: '/users',
 	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],

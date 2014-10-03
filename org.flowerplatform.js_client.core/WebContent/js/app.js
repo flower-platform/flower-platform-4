@@ -17,6 +17,11 @@
  */
 var routesConfig = [];
 
+/**
+ * Default route. The last plugin to set it wins.
+ */
+var defaultRoute = null;
+
 // Initialize the app.
 var flowerProject = angular.module('flowerProject', [ 'ngRoute', 'flowerControllers', 'flowerServices' ]);
 
@@ -101,4 +106,8 @@ flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', '$htt
 		logger.debug('route added ' + routeConfig.path);
 	});
 	
+	if (defaultRoute != null) {
+		logger.debug('set default route: ' + defaultRoute);
+		$routeProvider.otherwise({ redirectTo: defaultRoute });
+	}
 }]);

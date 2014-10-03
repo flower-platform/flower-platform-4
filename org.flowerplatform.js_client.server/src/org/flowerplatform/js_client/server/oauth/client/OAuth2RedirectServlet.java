@@ -5,13 +5,12 @@ import static org.flowerplatform.js_client.server.JsClientServerConstants.OAUTH_
 import static org.flowerplatform.js_client.server.JsClientServerConstants.OAUTH_STATE;
 
 import java.io.IOException;
-import java.net.URI;
+import java.security.Principal;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.UriBuilder;
 
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
@@ -20,14 +19,17 @@ import org.apache.oltu.oauth2.client.response.GitHubTokenResponse;
 import org.apache.oltu.oauth2.client.response.OAuthAccessTokenResponse;
 import org.apache.oltu.oauth2.client.response.OAuthAuthzResponse;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
-import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.core.users.UserService;
+import org.flowerplatform.core.users.UserValidator;
 import org.flowerplatform.js_client.server.JsClientServerPlugin;
+import org.flowerplatform.js_client.server.oauth.server.OAuth2Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +42,8 @@ import org.slf4j.LoggerFactory;
 public class OAuth2RedirectServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	
+	private UserValidator userValidator = new UserValidator();
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(OAuth2RedirectServlet.class);
 
@@ -81,16 +85,33 @@ public class OAuth2RedirectServlet extends HttpServlet {
 			String accessToken = oauthTokenResponse.getAccessToken();
 			// TODO refresh token?
 			
-			// forward to login servlet
-			UriBuilder builder = UriBuilder.fromPath("/oauth/login")
-					.queryParam(OAUTH_PROVIDER, provider)
-					.queryParam(OAuth.OAUTH_ACCESS_TOKEN, accessToken);
+			// login
+			Principal userPrincipal = userValidator.getCurrentUserPrincipal(req.getSession());
+
+//			if (userPrincipal != null) {
+//				// TODO do we reject the login request?
+//			}
+			
+			userPrincipal = OAuth2UserPrincipalProvider.valueOf(provider.toUpperCase()).createUserPrincipal(accessToken);
+			
+			if (userPrincipal == null) {
+				resp.sendRedirect("/org.flowerplatform.host.web_app/authenticate/loginError.html");
+				return;
+			}
+			
+			userValidator.setCurrentUserPrincipal(req.getSession(), userPrincipal);
+			
+			// embedding client: generate an access token for our server
 			String embeddingClientId = (String) req.getSession().getAttribute(OAUTH_EMBEDDING_CLIENT_ID);
 			if (embeddingClientId != null) {
-				builder.queryParam(OAUTH_EMBEDDING_CLIENT_ID, embeddingClientId);
+				OAuth2Service oauthService = (OAuth2Service) CorePlugin.getInstance().getServiceRegistry().getService("oauthService");
+				Node user = ((UserService) CorePlugin.getInstance().getServiceRegistry().getService("userService")).getCurrentUser(req);
+				String fpAccessToken = oauthService.createAccessToken(user, embeddingClientId);
+				resp.sendRedirect("/org.flowerplatform.host.web_app/js_client.users/authAccess.html#access_token=" + fpAccessToken);
+			} else {
+				// go to login page, let the browser handle it
+				resp.sendRedirect("/org.flowerplatform.host.web_app/js_client.core/index.html#/auth");
 			}
-			URI login = builder.build();
-			req.getRequestDispatcher(login.toString()).forward(req, resp);
 		} catch (OAuthProblemException e) {
 			OAuthResponse oauthResponse = JsClientServerPlugin.getInstance().buildJSONMessage(
 					OAuthResponse
