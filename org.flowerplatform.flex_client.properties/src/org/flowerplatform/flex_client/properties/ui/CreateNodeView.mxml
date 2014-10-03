@@ -25,6 +25,8 @@
 		
 	<fx:Script>
 		<![CDATA[
+			import flashx.textLayout.conversion.TextConverter;
+			
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
@@ -54,6 +56,8 @@
 			public var option:String = SHOW_ONLY_CONTRIBUTES_TO_CREATION;
 			
 			public var diagramShellContext:DiagramShellContext;
+			
+			public var siblingNodeUri:String;
 						
 			override protected function creationCompleteHandler(event:FlexEvent):void {
 				super.creationCompleteHandler(event);
@@ -98,6 +102,8 @@
 				var propertiesToSetAfterAddingNode:ArrayList = new ArrayList();
 				var context:Object = new Object();
 				context["type"] = nodeType;
+				context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, siblingNodeUri);
+				
 				for (var i:int = 0; i < propertyForm.numElements; i++) {
 					if (propertyForm.getElementAt(i) is PropertyLineRenderer) {
 						var propertyItemRenderer:PropertyLineRenderer = PropertyLineRenderer(propertyForm.getElementAt(i));

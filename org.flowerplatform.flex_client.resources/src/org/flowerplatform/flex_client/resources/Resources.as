@@ -72,6 +72,9 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/core/add.png")]
 		public static const addIcon:Class;
 		
+		[Embed(source="/core/add_sibling.png")]
+		public static const addSiblingIcon:Class;
+		
 		[Embed(source="/core/cancel_delete.png")]
 		public static const deleteIcon:Class;
 		
@@ -647,7 +650,9 @@ package org.flowerplatform.flex_client.resources {
 		
 		[Embed(source="/team.git/copy.gif")]
 		public static const copy:Class;
-
+		
+		[Embed(source="/team.git/new_tag_obj.gif")]
+		public static const createTag:Class;
 	}
 }
 		

@@ -25,7 +25,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayList;
 			import mx.events.FlexEvent;
 			import mx.utils.ObjectUtil;
 			

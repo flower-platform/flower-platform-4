@@ -61,6 +61,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 					obj = selection.getItemAt(i);
 					if (obj is MindMapRootModelWrapper) {
 						obj = MindMapRootModelWrapper(obj).model;
+						selection.setItemAt(obj, i);
 					}
 					var nextNode:Node = Node(obj);
 					
@@ -70,7 +71,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 				}
 				
 				var descriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(nodeType)
-					.getAdditiveControllers(CoreConstants.ACTION_DESCRIPTOR,selection.getItemAt(0));
+					.getAdditiveControllers(CoreConstants.ACTION_DESCRIPTOR, obj);
 				
 				for each (var a:ActionDescriptor in descriptors) {
 					actions.push(FlexUtilGlobals.getInstance().getActionInstanceFromRegistry(a.actionId));

@@ -30,10 +30,14 @@ package org.flowerplatform.flex_client.mindmap.action {
 		}
 		
 		override public function get visible():Boolean{
-			if (selection == null || selection.length == 0 || !(selection.getItemAt(0) is Node)){
+			if (selection == null || selection.length == 0){
 				return false;
 			}
-			return Node(selection.getItemAt(0)).getPropertyValue(CoreConstants.HAS_CHILDREN);
+			var obj:Object = selection.getItemAt(0);
+			if (!(obj is Node) || Node(obj).parent == null) {
+				return false;
+			}
+			return Node(obj).getPropertyValue(CoreConstants.HAS_CHILDREN);
 		}
 		
 		override public function run():void {
