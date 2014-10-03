@@ -48,6 +48,8 @@ import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_NONE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ARC;
+import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_STAR;
 import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
 import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
 
@@ -138,7 +140,9 @@ public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 				.setPossibleValuesAs(Arrays.asList(
 						new Pair<String, String>(SHAPE_NONE, resourcesPlugin.getMessage("mindmap.shape.none")), 
 						new Pair<String, String>(SHAPE_RECTANGLE, resourcesPlugin.getMessage("mindmap.shape.rectangle")), 
-						new Pair<String, String>(SHAPE_ROUND_RECTANGLE, resourcesPlugin.getMessage("mindmap.shape.roundRectangle"))))
+						new Pair<String, String>(SHAPE_ROUND_RECTANGLE, resourcesPlugin.getMessage("mindmap.shape.roundRectangle")),
+						new Pair<String, String>(SHAPE_ARC, resourcesPlugin.getMessage("mindmap.shape.arc")),
+						new Pair<String, String>(SHAPE_STAR, resourcesPlugin.getMessage("mindmap.shape.star"))))
 				.setCategoryAs(resourcesPlugin.getMessage("mindmap.cloud")).setOrderIndexAs(410))
 		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MINDMAP_NODE_TYPE))
 		// lower order index to override the default title property

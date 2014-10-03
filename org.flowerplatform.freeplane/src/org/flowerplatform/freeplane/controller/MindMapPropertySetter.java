@@ -38,6 +38,8 @@ import static org.flowerplatform.mindmap.MindMapConstants.NODE_DETAILS;
 import static org.flowerplatform.mindmap.MindMapConstants.NOTE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
+import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ARC;
+import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_STAR;
 import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
 import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
 
@@ -257,8 +259,14 @@ public class MindMapPropertySetter extends PersistencePropertySetter {
 						case SHAPE_ROUND_RECTANGLE:
 							shape = Shape.ROUND_RECT;
 							break;
+						case SHAPE_ARC:
+							shape = Shape.ARC;
+							break;
+						case SHAPE_STAR:
+							shape = Shape.STAR;
+							break;
 					default:
-						break;				
+						break;	
 					}
 					if (shape != null) {
 						CloudModel.createModel(rawNodeData).setShape(shape);

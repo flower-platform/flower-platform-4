@@ -110,7 +110,7 @@ package org.flowerplatform.flexdiagram.renderer {
 		 *************************************************************************/
 		public function set text(value:String):void {
 			if (value != null) {
-				_label.textFlow = TextConverter.importToFlow(value , Utils.isHTMLText(value) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);	
+				_label.textFlow = Utils.importTextFlowFromHtmlOrPlainText(value);
 			} else {
 				_label.textFlow = null;
 			}
@@ -157,6 +157,10 @@ package org.flowerplatform.flexdiagram.renderer {
 		
 		public function set maxWidthAdvanced(value:Number):void {
 			_maxWidthAdvanced = value;
+			if (isNaN(_maxWidthAdvanced)) {
+				// e.g. recycling a renderer that had maxW towards a model that doesn't have maxW
+				_label.maxWidth = NaN;
+			}
 			invalidateSize();
 		}
 

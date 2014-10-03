@@ -54,10 +54,12 @@ package org.flowerplatform.flex_client.mindmap {
 		//////////////////////////////////
 		
 		// CLOUD SHAPES
-		public static const SHAPE_NONE:String = "ARC";		
+		public static const SHAPE_NONE:String = "NONE";		
 		public static const SHAPE_RECTANGLE:String = "RECT";
 		public static const SHAPE_ROUND_RECTANGLE:String = "ROUND_RECT";
-				
+		public static const SHAPE_ARC:String = "ARC";
+		public static const SHAPE_STAR:String = "STAR";
+		
 		public static const TEXT:String = "text";
 		
 		public static const MIN_WIDTH:String = "minWidth";
@@ -93,7 +95,7 @@ package org.flowerplatform.flex_client.mindmap {
 			+ "licq;penguin;freemind_butterfly;bee;"
 			+ "forward;back;up;down;"
 			+ "addition;subtraction;multiplication;division";
-
+		
 		
 		/**
 		 * Font size correction.
