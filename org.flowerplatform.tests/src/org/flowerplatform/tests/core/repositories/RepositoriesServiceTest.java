@@ -222,6 +222,21 @@ public class RepositoriesServiceTest {
 		
 		// check if Repository node is created
 		assertTrue("Repository Node not created", resourceService.getNode(CoreUtils.getRepositoryNodeUri(testLogin2, testRepoName)) != null);
+		
+		// create repo with same name as firstRepo for another user
+		String testLogin3 = "user3-random3";
+		testRepository = new Node();
+		testRepository.getProperties().put(CoreConstants.USER, testLogin3);
+		testRepository.getProperties().put(CoreConstants.NAME, testRepoName);
+		testRepository.getProperties().put(CoreConstants.DESCRIPTION, "descriere2");
+		
+		repositoriesService.saveRepository(testRepository);
+		
+		// check if repository dir is created
+		assertTrue("Repository directory not created", new File(FLOWER_PLATFORM_WORKSPACE + "/" + testLogin3 + "/" + testRepoName).exists());
+		
+		// check if Repository node is created
+		assertTrue("Repository Node not created", resourceService.getNode(CoreUtils.getRepositoryNodeUri(testLogin3, testRepoName)) != null);
 	}
 
 	/**
@@ -260,7 +275,6 @@ public class RepositoriesServiceTest {
 		node.getProperties().put(CoreConstants.NAME, "newfirstRepo");
 		node.getProperties().put(CoreConstants.DESCRIPTION, "description-firstRepo");
 		repositoriesService.saveRepository(node);
-		//repositoriesService.applyExtension(map);
 		
 		node = new Node();
 		node.getProperties().put(CoreConstants.USER, login);
@@ -270,9 +284,12 @@ public class RepositoriesServiceTest {
 		map.put("login", "user2-random2");
 		map.put("extensionId", "freePlane");
 		repositoriesService.saveRepository(node);
-		//repositoriesService.applyExtension(map);
+
 		repositoriesService.addMember("user1-random1","firstRepo" , login);
 		repositoriesService.addMember("user1-random1","secondRepo" , login);
+		repositoriesService.addMember("user1-random1","remove-member" , login);
+		repositoriesService.addMember("user3-random3","repo" , login);
+		repositoriesService.addMember("user3-random3","firstRepo" , login);
 		
 		node = new Node();
 		node.getProperties().put(CoreConstants.USER, login);
@@ -282,7 +299,6 @@ public class RepositoriesServiceTest {
 		map.put("login", "user2-random2");
 		map.put("extensionId", "git");
 		repositoriesService.saveRepository(node);
-		//repositoriesService.applyExtension(map);
 		
 		node = new Node();
 		node.getProperties().put(CoreConstants.USER, login);
@@ -292,7 +308,12 @@ public class RepositoriesServiceTest {
 		map.put("login", "user2-random2");
 		map.put("extensionId", "git");
 		repositoriesService.saveRepository(node);
-		//repositoriesService.applyExtension(map);
+
+		repositoriesService.addStarredBy("user3-random3","repo" , login);
+		repositoriesService.addStarredBy("user1-random1","firstRepo", login);
+		repositoriesService.addStarredBy("user1-random1","secondRepo" , login);
+		repositoriesService.addStarredBy("user3-random3","firstRepo", login);
+		
 	}
 	
 	/**
@@ -544,8 +565,13 @@ public class RepositoriesServiceTest {
 	public void testApplyExtension() throws IOException {
 		final String login = "user1-random1";
 		final String repoName = "apply-extension";
+//		Map<String, String> parameters = new HashMap<String, String>() { {
+//			put("login", login); put("repositoryName", repoName); put("extensionId", "git");
+//			} };
+		
+		final String nodeUri = CoreUtils.getRepositoryNodeUri(login, repoName);
 		Map<String, String> parameters = new HashMap<String, String>() { {
-			put("login", login); put("repositoryName", repoName); put("extensionId", "git");
+			put("nodeUri", nodeUri); put("extensionId", "git");
 			} };
 		
 		Node testApplyExtension = new Node();
@@ -604,9 +630,15 @@ public class RepositoriesServiceTest {
 	public void testUnapplyExtension() throws IOException {
 		final String login = "user1-random1";
 		final String repoName = "unapply-extension";
+//		Map<String, String> parameters = new HashMap<String, String>() { {
+//			put("login", login); put("repositoryName", repoName); put("extensionId", "git");
+//			} };
+		
+		final String nodeUri = CoreUtils.getRepositoryNodeUri(login, repoName);
 		Map<String, String> parameters = new HashMap<String, String>() { {
-			put("login", login); put("repositoryName", repoName); put("extensionId", "git");
+			put("nodeUri", nodeUri); put("extensionId", "git");
 			} };
+		
 		
 		Node testUnapplyExtension = new Node();
 		testUnapplyExtension.getProperties().put(CoreConstants.USER, login);

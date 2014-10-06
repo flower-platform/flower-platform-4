@@ -27,7 +27,7 @@ body {
     overflow: hidden;
 }
 
-#user-panel {
+.flowerUser {
 	padding-top: 0%;
 	margin-top: -3%;
 	padding-left: 3%;
@@ -39,11 +39,6 @@ body {
     min-height:100%;
     min-width: 100%;
     overflow: auto;
-}
-
-/* style for user image and name */
-#user-panel-header {
-	text-align: center;
 }
 
 /* style for navbar */
@@ -75,16 +70,11 @@ body {
   box-shadow: 1px 1px 4px transparent;
 }
 
-/* style for delete-account button */
-#delete-account-button {
-	color: #8A0808;
+.flowerButtonWidth {
 	width: 100%;
 }
 
 /* style for profile group */
-.list-group > a.disabled {
-  color: #999999;
-}
 .list-group {
 	border-right: 10px solid transparent;
 }
@@ -95,3 +85,29 @@ body {
     overflow-y: auto;
 }
 
+.flowerInline {
+	display: inline;
+}
+
+.flowerInlineFloat {
+	display: inline;
+	float: right;
+}
+
+.flowerMarginTop {
+	margin-top: -1.1%;
+}
+
+.flowerMarginLeftRight {
+	margin-left: -2.7%;
+	margin-right: -2.7%;
+}
+
+.flowerTextAlign {
+	text-align: center;	
+}
+
+.flowerLabelWithoutBold {
+	font-weight: normal;
+	display: inline;
+}

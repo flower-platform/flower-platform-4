@@ -46,7 +46,8 @@ public class RepositoriesService {
 	private NodeService nodeService = CorePlugin.getInstance().getNodeService();
 	
 	/**
-	 * @author see class
+	 * @author Cristina Brinza
+	 * @author Andreea Tita
 	 */
 
 	@POST @Path("//save")
@@ -66,7 +67,27 @@ public class RepositoriesService {
 			repository.setNodeUri(getRepositoryNodeUri(login, newName));
 
 			Node repositories = resourceService.getNode(CoreConstants.REPOSITORIES_URI, context);
-			nodeService.addChild(repositories, repository, new ServiceContext<NodeService>(nodeService));
+			
+			ServiceContext<NodeService> newcontext = new ServiceContext<NodeService>();
+			newcontext.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
+			
+			// check if other repository with the same nodeUri exists
+		    List<Node> children = nodeService.getChildren(repositories, newcontext);
+		    
+		    Boolean exist = false;
+		    for (Node child : children) {
+		    	if (child.getNodeUri().equals(repository.getNodeUri())) {
+		    		exist = true;
+		    		break;
+		    	} 
+		    }
+		    
+		    if (!exist) {
+		    	nodeService.addChild(repositories, repository, new ServiceContext<NodeService>(nodeService));
+		    } else {
+		    	throw new RuntimeException(String.format("Repository %s for user %s already exists", newName, login));
+		    }
+			
 		} else {
 			// rename repo
 			repository.setRawNodeData(resourceService.getNode(repository.getNodeUri(), context).getRawNodeData());
@@ -91,13 +112,6 @@ public class RepositoriesService {
 		File repoDir = new File(CoreConstants.FLOWER_PLATFORM_WORKSPACE + "/" + login + "/" + newName + "/");
 		File oldRepoDir = new File(CoreConstants.FLOWER_PLATFORM_WORKSPACE + "/" + login + "/" + oldName + "/");
 
-//		if (!repoDir.exists() && oldName == null && !oldRepoDir.exists()) {
-//			repoDir.mkdirs();
-//		} else if (oldRepoDir.exists() && !oldName.equals(newName)) {
-//			oldRepoDir.renameTo(repoDir);
-//		} else {
-//			throw new RuntimeException(String.format("Repository %s for user %s already exists", newName, login));
-//		}
 		if (!repoDir.exists()) {
 			if (oldName == null) {
 				repoDir.mkdirs();
@@ -167,7 +181,8 @@ public class RepositoriesService {
 	}
 	
 	/**
-	 * @author see class
+	 * @author Cristina Brinza
+	 * @author Andreea Tita
 	 */
 
 	@POST @Path("//deleteRepository")
@@ -359,7 +374,8 @@ public class RepositoriesService {
 	}
 	
 	/**
-	 * @author see class
+	 * @author Cristina Brinza
+	 * @author Andreea Tita
 	 */
 
 	@GET @Path("/{nodeUri}")	
@@ -387,7 +403,8 @@ public class RepositoriesService {
 	}
 
 	/**
-	 * @author see class
+	 * @author Cristina Brinza
+	 * @author Andreea Tita
 	 * 
 	 * @return List<ExtensionMetadata> the applied extensions
 	 */
@@ -396,11 +413,12 @@ public class RepositoriesService {
 		String nodeUri = (String) map.get("nodeUri");
 		String extensionId = (String) map.get("extensionId");
 		Node repositoryNode = resourceService.getNode(nodeUri);
+		String repoName = (String) repositoryNode.getPropertyValue("name");
 		StringList extensionsString = (StringList) repositoryNode.getPropertyValue(CoreConstants.EXTENSIONS);
 		List<ExtensionInfoInFile> extensions = fromStringListToExtensionInfoInFile(extensionsString);
 
 		if (getExtensionInfoInFile(extensions, extensionId) != null) {
-			throw new RuntimeException(String.format("Extension with ID '%s' already exists for repository", extensionId));
+			throw new RuntimeException(String.format("Extension with ID '%s' already exists for repository '%s'", extensionId, repoName));
 		}
 
 		ExtensionInfoInFile newExtensionAdded = new ExtensionInfoInFile();
@@ -456,7 +474,8 @@ public class RepositoriesService {
 	}
 	
 	/**
-	 * @author see class
+	 * @author Cristina Brinza
+	 * @author Andreea Tita
 	 * 
 	 * @return List<ExtensionMetadata> the remaining extensions after unapply
 	 */
@@ -525,7 +544,8 @@ public class RepositoriesService {
 	}
 	
 	/**
-	 * @author see class
+	 * @author Cristina Brinza
+	 * @author Andreea Tita
 	 */
 	@GET @Path("//allExtensions")	
 	@Produces(MediaType.APPLICATION_JSON)
@@ -642,7 +662,8 @@ public class RepositoriesService {
 	}
 	
 	/**
-	 * @author see class
+	 * @author Cristina Brinza
+	 * @author Andreea Tita
 	 */
 	@GET @Path("/{nodeUri}/extensions")	
 	@Produces(MediaType.APPLICATION_JSON)
@@ -680,12 +701,12 @@ public class RepositoriesService {
 	}
 	
 	/**
-	 * @author see class
+	 * @author Cristina Brinza
+	 * @author Andreea Tita
 	 */
 	@GET @Path("/{nodeUri}/memberInRepository")	
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Node> getRepositoriesWhereIAmMemberForUserAsNode(@PathParam("nodeUri") String nodeUri) {
-		//new ResourceServiceRemote().subscribeToParentResource(CoreConstants.USERS_PATH);
 		List<Node> repositories = new ArrayList<Node>();
 		
 		ServiceContext<ResourceService> context = new ServiceContext<ResourceService>();
@@ -700,7 +721,8 @@ public class RepositoriesService {
 	}
 	
 	/**
-	 * @author see class
+	 * @author Cristina Brinza
+	 * @author Andreea Tita
 	 */
 	@GET @Path("/{nodeUri}/starredRepository")
 	@Produces(MediaType.APPLICATION_JSON)

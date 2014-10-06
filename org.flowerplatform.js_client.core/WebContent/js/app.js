@@ -26,7 +26,7 @@ loadScripts(plugins, function() {
 	angular.bootstrap(document, ['flowerProject']);
 });
 
-flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', function($routeProvider, $provide, $controllerProvider) {
+flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', '$compileProvider', function($routeProvider, $provide, $controllerProvider, $compileProvider) {
 
 	logger.debug('do config');
 	
@@ -35,7 +35,8 @@ flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', funct
 		controller: $controllerProvider.register,
         factory: 	$provide.factory,
         service: 	$provide.service,
-        decorator: 	$provide.decorator
+        decorator: 	$provide.decorator,
+        directive:  $compileProvider.directive
 	};
 	
 	var loadRouteDependencies = function($q, $rootScope, routeConfig) {

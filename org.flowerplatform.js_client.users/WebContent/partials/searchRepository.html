@@ -3,7 +3,8 @@
 	<h2>Search</h2>
 	<br>
 	<div class="input-group">
-		<input type="text" class="form-control" ng-model="repository" ng-keyup="$event.keyCode == 13 ? searchRepository(repository) : null" ng-class="searchResultList=findRepository">
+		<input type="text" class="form-control" ng-model="repository" ng-keyup="$event.keyCode == 13 ? searchRepository(repository) : null" 
+			   ng-class="searchResultList=findRepository" focus-me="true">
 		<span class="input-group-btn">
 		  <button class="btn btn-default" type="button" ng-click="searchResultList=searchRepository(repository);">Search</button>
 		</span>
@@ -11,11 +12,12 @@
 
 	<hr>
 	
-	<div ng-show="!searchResultList">
+	<div ng-show="!searchResultList" ng-init="view=true">
 		<em>Type the name of repository that you want to search</em>
 	</div>
 	<div ng-show="searchResultList" ng-repeat="repo in searchResultList">
 		<div ng-model="repo" ng-if="repo" ng-include src="'../js_client.users/partials/repositoryPanel.html'"></div>
 	</div>
+	<div ng-hide="searchResultList || view"><strong>'{{repository}}'</strong> doesn't exist !</div>
 	
 </div>

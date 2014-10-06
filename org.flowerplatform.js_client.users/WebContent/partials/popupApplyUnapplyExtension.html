@@ -1,9 +1,11 @@
 <!-- Popup: Apply or Unapply Extensions to Repository  -->
+
 <div> 
 	<div class="modal fade" id="myModal" ng-keyup="false">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-body">
+					<alert info="popupApplyUnapplyExtensionAlert"></alert>
 					<button type="button" class="close" data-dismiss="modal" ng-click="refresh()">
 						<span aria-hidden="true">&times;</span>
 						<span class="sr-only">Close</span>
@@ -15,20 +17,22 @@
 								<div class="panel-heading" style="background-color: {{availableExtension.color}};">
 									<h4 class="panel-title">
 										<a data-toggle="collapse" data-parent="#accordion-parent" href="{{'#' + $index}}" ng-click="apply = !apply" >{{availableExtension.label}}</a>
-										<button type="button" class="btn btn-default" ng-show="apply" ng-model="availableExtension.id" ng-click="applyExtension(availableExtension.id)" style="float:right; margin-top: -9px;">Apply</button>
+										<button type="button" class="btn btn-default flowerInlineFloat flowerMarginTop" ng-show="apply" ng-model="availableExtension.id" ng-click="applyExtension(availableExtension.id)">
+											Apply
+										</button>
 									</h4>
 								</div>
 								<div id="{{$index}}" class="panel-collapse collapse">
 									<div class="panel-body">
 										<div ng-show="availableExtension.dependencies">
-											<label style="font-weight: normal; display: inline;">Depends on: &nbsp;</label>
-											<div style="display: inline;" ng-repeat="dependenceName in availableExtension.dependencies" ng-init="dependence=getDependence(dependenceName)">
+											<label class="flowerLabelWithoutBold">Depends on: &nbsp;</label>
+											<div class="flowerInline" ng-repeat="dependenceName in availableExtension.dependencies" ng-init="dependence=getDependence(dependenceName)">
 												<span class="label" style="color: black; background-color: {{dependence.color}};">{{dependence.label}}</span>
 											</div>
 											<br><br>
 										</div>
 										<div ng-hide="availableExtension.dependencies">
-											<label style="font-weight: normal;">This extension has no dependence!</label>
+											<label class="flowerLabelWithoutBold">This extension has no dependency!</label>
 											<br><br>
 										</div>
 										<label>{{availableExtension.description}}</label>
@@ -46,20 +50,22 @@
 								<div class="panel-heading" style="background-color: {{appliedExtension.color}};">
 									<h4 class="panel-title">
 										<a data-toggle="collapse" data-parent="#accordion" href="{{'#' + appliedExtension.id}}" ng-click="unapply = !unapply">{{appliedExtension.label}}</a>
-										<button type="button" class="btn btn-default" ng-show="unapply" ng-model="appliedExtension.label" ng-click="unapplyExtension(appliedExtension.id)" style="float:right; margin-top: -9px;">Unapply</button>
+										<button type="button" class="btn btn-default flowerInlineFloat flowerMarginTop" ng-show="unapply" ng-model="appliedExtension.label" ng-click="unapplyExtension(appliedExtension.id)">
+											Unapply
+										</button>
 									</h4>
 								</div>
 								<div id="{{appliedExtension.id}}" class="panel-collapse collapse">
 									<div class="panel-body">
 										<div ng-show="appliedExtension.dependencies">
-											<label style="font-weight: normal; display: inline;">Depends on: &nbsp;</label>
-											<div style="display: inline;" ng-repeat="appliedDependenceName in appliedExtension.dependencies" ng-init="appliedDependence=getDependence(appliedDependenceName)">
+											<label class="flowerLabelWithoutBold">Depends on: &nbsp;</label>
+											<div class="flowerInline" ng-repeat="appliedDependenceName in appliedExtension.dependencies" ng-init="appliedDependence=getDependence(appliedDependenceName)">
 												<span class="label" style="color: black; background-color: {{appliedDependence.color}};">{{appliedDependence.label}}</span>
 											</div>
 											<br><br>
 										</div>
 										<div ng-hide="appliedExtension.dependencies">
-											<label style="font-weight: normal;">This extension has no dependence!</label>
+											<label class="flowerLabelWithoutBold">This extension has no dependency!</label>
 											<br><br>
 										</div>
 										<label>{{appliedExtension.description}}</label>

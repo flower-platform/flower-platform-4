@@ -4,7 +4,7 @@ logger.debug('load users');
 
 routesConfig.push({
 	path: '/users',
-	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers/users.js', 'js_client.users/js/controllers/repository.js'],
 	route: {
 		templateUrl: 'partials/composed/sideMenuLayout.html',
 		controller: 'ComposedCtrl',
@@ -24,7 +24,7 @@ routesConfig.push({
 
 routesConfig.push({
 	path: '/users/:id',
-	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers/users.js', 'js_client.users/js/controllers/repository.js'],
 	route: {
 		templateUrl: 'partials/composed/sideMenuLayout.html',
 		controller: 'ComposedCtrl',
@@ -44,7 +44,7 @@ routesConfig.push({
 
 routesConfig.push({
 	path: '/users/:id/AccountSettings',
-	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers/users.js', 'js_client.users/js/controllers/repository.js'],
 	route: {
 		templateUrl: 'partials/composed/sideMenuLayout.html',
 		controller: 'ComposedCtrl',
@@ -64,7 +64,7 @@ routesConfig.push({
 
 routesConfig.push({
 	path: '/repository/:id',
-	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers/repository.js', 'js_client.users/js/controllers/users.js'],
 	route: {
 		templateUrl: 'partials/composed/sideMenuLayout.html',
 		controller: 'ComposedCtrl',
@@ -84,7 +84,7 @@ routesConfig.push({
 
 routesConfig.push({
 	path: '/repository/:id/search',
-	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers.js'],
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers/repository.js', 'js_client.users/js/controllers/users.js'],
 	route: {
 		templateUrl: 'partials/composed/sideMenuLayout.html',
 		controller: 'ComposedCtrl',
