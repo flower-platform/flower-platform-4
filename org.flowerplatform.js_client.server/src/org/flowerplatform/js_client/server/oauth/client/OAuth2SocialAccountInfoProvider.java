@@ -1,6 +1,11 @@
 package org.flowerplatform.js_client.server.oauth.client;
 
-import java.security.Principal;
+import static org.flowerplatform.core.CoreConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.USER_AVATAR;
+import static org.flowerplatform.core.CoreConstants.USER_EMAIL;
+import static org.flowerplatform.core.CoreConstants.USER_LOGIN;
+import static org.flowerplatform.core.CoreConstants.USER_WEBSITE;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,22 +18,12 @@ import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.token.OAuthToken;
 import org.apache.oltu.oauth2.common.utils.JSONUtils;
-import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.users.UserService;
-import org.flowerplatform.util.Utils;
 import org.json.JSONObject;
 
 /**
- * Create a user principal that will contain the user information stored on the
- * resource server (e.g. login, email), and the access token used to obtain
- * protected resources.
- * 
- * @see OAuth2UserPrincipal
- * 
  * @author Mariana Gheorghe
  */
-public enum OAuth2UserPrincipalProvider {
+public enum OAuth2SocialAccountInfoProvider {
 
 	FLOWER_PLATFORM {
 
@@ -58,13 +53,13 @@ public enum OAuth2UserPrincipalProvider {
 		}
 
 		@Override
-		protected Map<String, Object> getUserInfo(OAuthClient oauthClient, String accessToken, Map<String, Object> properties) {
+		protected Map<String, Object> getUserInfo(OAuthClient oauthClient, String accessToken, Map<String, Object> properties) throws OAuthProblemException {
 			try {
 				Map<String, Object> result = new HashMap<String, Object>();
-				result.put("login", properties.get("login"));
-				result.put("name", properties.get("name"));
-				result.put("avatar", properties.get("avatar_url"));
-				result.put("website", properties.get("html_url"));
+				result.put(USER_LOGIN, properties.get("login"));
+				result.put(NAME, properties.get("name"));
+				result.put(USER_AVATAR, properties.get("avatar_url"));
+				result.put(USER_WEBSITE, properties.get("html_url"));
 				
 				// get user email
 				OAuthClientRequest oauthBearerRequest = new OAuthBearerClientRequest("https://api.github.com/user/emails")
@@ -72,10 +67,10 @@ public enum OAuth2UserPrincipalProvider {
 				OAuthResourceResponse oauthResourceResponse = oauthClient.resource(oauthBearerRequest, null, OAuthResourceResponse.class);
 				// the response is an array; wrap it in a JSON so the parser can recognize it as valid
 				Map<String, Object> emails = JSONUtils.parseJSON("{ emails: " + oauthResourceResponse.getBody() + "}");
-				result.put("email", getEmail(emails.get("emails")));
+				result.put(USER_EMAIL, getEmail(emails.get("emails")));
 				
 				return result;
-			} catch (OAuthSystemException | OAuthProblemException e) {
+			} catch (OAuthSystemException e) {
 				throw new RuntimeException(e);
 			}
 		}
@@ -102,11 +97,12 @@ public enum OAuth2UserPrincipalProvider {
 		}
 
 		@Override
-		protected Map<String, Object> getUserInfo(OAuthClient oauthClient, String accessToken, 
-				Map<String, Object> properties) {
+		protected Map<String, Object> getUserInfo(OAuthClient oauthClient, String accessToken,
+				Map<String, Object> properties) throws OAuthProblemException {
 			// TODO Auto-generated method stub
 			return null;
 		}
+
 	},
 
 	GOOGLE {
@@ -119,20 +115,21 @@ public enum OAuth2UserPrincipalProvider {
 
 		@Override
 		protected Map<String, Object> getUserInfo(OAuthClient oauthClient, String accessToken,
-				Map<String, Object> properties) {
+				Map<String, Object> properties) throws OAuthProblemException {
 			// TODO Auto-generated method stub
 			return null;
 		}
+
 	};
 
 	/**
-	 * 
-	 * @param accessToken
-	 * @return
+	 * @param token access token
+	 * @return user information from the provider
+	 * @throws OAuthProblemException
 	 */
-	public Principal createUserPrincipal(OAuthToken token) throws OAuthProblemException {
+	public Map<String, Object> getUserInfo(OAuthToken token) throws OAuthProblemException {
 		try {
-			// request authenticated user
+			// request authenticated user from provider
 			OAuthClient oauthClient = new OAuthClient(new URLConnectionClient());
 			OAuthClientRequest oauthBearerRequest = new OAuthBearerClientRequest(userEndpoint())
 					.setAccessToken(token.getAccessToken())
@@ -142,27 +139,7 @@ public enum OAuth2UserPrincipalProvider {
 			
 			// filter result
 			properties = getUserInfo(oauthClient, token.getAccessToken(), properties);
-			
-			// check if social account is linked to a user account
-			String socialAccount = (String) properties.get("login");
-			
-			UserService service = (UserService) CorePlugin.getInstance().getServiceRegistry().getService("userService");
-			String userUri = service.getUserForSocialAccount(socialAccount + "@github"); // TODO get provider
-			Node user = null;
-			if (userUri == null) {
-				// no user linked to this social account => create a temp user
-				userUri = Utils.getUri("fpp", "|.users", socialAccount);
-				user = new Node(null, "user");
-				user.setProperties(properties);
-			} else {
-				// there is a linked user
-				UserService userService = (UserService) CorePlugin.getInstance().getServiceRegistry().getService("userService");
-				user = userService.getUser(userUri);
-			}
-			
-			// create principal
-			return new OAuth2UserPrincipal(user, token);
-			
+			return properties;
 		} catch (OAuthSystemException e) {
 			throw new RuntimeException(e);
 		}
@@ -177,6 +154,6 @@ public enum OAuth2UserPrincipalProvider {
 	 * Filter the properties map obtained from the user endpoint. The {@link OAuthClient} and access token
 	 * are also provided in case extra info needs to be requested from the provider (e.g. user email).
 	 */
-	protected abstract Map<String, Object> getUserInfo(OAuthClient oauthClient, String accessToken, Map<String, Object> properties);
+	protected abstract Map<String, Object> getUserInfo(OAuthClient oauthClient, String accessToken, Map<String, Object> properties) throws OAuthProblemException;
 
 }

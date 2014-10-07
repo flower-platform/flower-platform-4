@@ -94,7 +94,7 @@ routesConfig.push({
 		controller: 'AuthCtrl',
 		resolve: {
 			oauthProviders: function($http) {
-				return $http.get('../ws-dispatcher/oauthProviders', { params: { embed: embeddingClientId } });
+				return $http.get('../ws-dispatcher/oauthProviders');
 			}
 		}
 	}

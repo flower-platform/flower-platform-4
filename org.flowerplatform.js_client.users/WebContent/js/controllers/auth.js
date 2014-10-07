@@ -12,39 +12,15 @@ flowerProject.lazy.controller('LoginCtrl',  ['$scope', 'Auth', function($scope, 
 	 * Callback from view.
 	 */
 	$scope.login = function(loginInfo) {
-		if (oauth) {
-			// oauth with password grant (i.e. trade credentials for access token)
-			var auth = 'grant_type=password';
-			auth += '&client_id=' + 'testclientid';
-			auth += '&username=' + loginInfo.username;
-			auth += '&password=' + loginInfo.password;
-			logger.debug('Auth login with password grant:' + auth);
-			
-			// post to token endpoint; use jquery because angular does not easily support form-urlencoded format
-			$.post('../oauth/token', auth).done(function(data) {
-				window.location.href = '../js_client.users/authAccess.html#access_token=' + data.access_token;
-			}).fail(function(xhr) {
-				// $apply to trigger angular binding to alert
-				$scope.$apply(function() {
-					var errorDescription = JSON.parse(xhr.responseText).error_description;
-					logger.debug('Auth error: ' + errorDescription);
-					$scope.alert.message = errorDescription;
-					$scope.alert.visible = true;
-					$scope.alert.danger = true;
-				});
-			});
-		} else {
-			// basic auth
-			logger.debug('Auth login with password: ');
-			logger.debug(loginInfo);
-			loginInfo['@class'] = 'java.util.HashMap';
-			Auth.login(loginInfo).$promise.then(Auth.loginSuccessHandler, function(error) {
-				logger.debug('Auth error: ' + error.data.messageResult);
-				$scope.alert.message = error.statusText + ': ' + error.data.messageResult;
-				$scope.alert.visible = true;
-				$scope.alert.danger = true;
-			});
-		}
+		logger.debug('Auth login with password: ');
+		logger.debug(loginInfo);
+		loginInfo['@class'] = 'java.util.HashMap';
+		Auth.login(loginInfo).$promise.then(Auth.loginSuccessHandler, function(error) {
+			logger.debug('Auth error: ' + error.data.messageResult);
+			$scope.alert.message = error.statusText + ': ' + error.data.messageResult;
+			$scope.alert.visible = true;
+			$scope.alert.danger = true;
+		});
 	};
 	
 }]);
@@ -129,21 +105,33 @@ flowerProject.lazy.controller('LinkCtrl',  ['$scope', 'Auth', function($scope, A
 	$scope.registerInfo = {};
 	
 	/**
-	 * 
+	 * Get social account info to link.
 	 */
-	Auth.currentUser().$promise.then(function(user) {
+	Auth.socialAccountInfo().$promise.then(function(socialAccountInfo) {
 		logger.debug('Auth link status:');
-		logger.debug(user.messageResult);
-		if (user.messageResult != null) {
-			$scope.registerInfo.username = user.messageResult.properties.login;
-			$scope.registerInfo.name = user.messageResult.properties.name;
-			$scope.registerInfo.email = user.messageResult.properties.email;
-			$scope.registerInfo.socialAccounts = user.messageResult.properties.socialAccounts;
+		logger.debug(socialAccountInfo.messageResult);
+		if (socialAccountInfo.messageResult != null) {
+			$scope.loginInfo.socialAccount = socialAccountInfo.messageResult.socialAccount;
+			
+			$scope.registerInfo.login = socialAccountInfo.messageResult.login;
+			$scope.registerInfo.name = socialAccountInfo.messageResult.name;
+			$scope.registerInfo.email = socialAccountInfo.messageResult.email;
+			$scope.registerInfo.socialAccount = socialAccountInfo.messageResult.socialAccount;
 		} else {
 			$scope.alert.message = 'Could not obtain social account information.';
 			$scope.alert.visible = true;
 			$scope.alert.danger = true;
 		}
 	});
+	
+}]);
+
+///////////////////////////////////////////////////////
+// Access token controller
+///////////////////////////////////////////////////////
+
+flowerProject.lazy.controller('AccessCtrl', ['$scope', 'OAuth', function($scope, OAuth) {
+	
+	$scope.token = OAuth.token(getClientId());
 	
 }]);

@@ -1,12 +1,15 @@
 package org.flowerplatform.js_client.server.oauth.client;
 
-import static org.flowerplatform.core.CoreConstants.SOCIAL_ACCOUNTS;
-import static org.flowerplatform.js_client.server.JsClientServerConstants.OAUTH_EMBEDDING_CLIENT_ID;
+import static org.flowerplatform.core.CoreConstants.OAUTH_TOKEN;
+import static org.flowerplatform.core.CoreConstants.SOCIAL_ACCOUNT;
+import static org.flowerplatform.core.CoreConstants.SOCIAL_ACCOUNT_INFO;
+import static org.flowerplatform.core.CoreConstants.USER_LOGIN;
 import static org.flowerplatform.js_client.server.JsClientServerConstants.OAUTH_PROVIDER;
 import static org.flowerplatform.js_client.server.JsClientServerConstants.OAUTH_STATE;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,10 +31,9 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.apache.oltu.oauth2.common.token.OAuthToken;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.users.UserPrincipal;
+import org.flowerplatform.core.users.UserService;
 import org.flowerplatform.core.users.UserValidator;
 import org.flowerplatform.js_client.server.JsClientServerPlugin;
-import org.flowerplatform.js_client.server.oauth.server.OAuth2Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,41 +63,37 @@ public class OAuth2RedirectServlet extends HttpServlet {
 			String code = authAuthzResponse.getCode();
 			String provider = authAuthzResponse.getParam(OAUTH_PROVIDER);
 			
-			// login
+			LOGGER.debug("Redirect from OAuth2 provider: {}", provider);
+			
 			Principal userPrincipal = userValidator.getCurrentUserPrincipal(req.getSession());
 
 //			if (userPrincipal != null) {
 //				// TODO do we reject the login request?
 //			}
 			
-			// get token from provider
 			OAuthToken token = getOAuthToken(provider, code);
-			userPrincipal = OAuth2UserPrincipalProvider.valueOf(provider.toUpperCase()).createUserPrincipal(token);
 			
-			if (userPrincipal == null) {
-				resp.sendRedirect("/org.flowerplatform.host.web_app/authenticate/loginError.html");
+			// get social account info from provider
+			Map<String, Object> socialAccountInfo = OAuth2SocialAccountInfoProvider.valueOf(provider.toUpperCase()).getUserInfo(token);
+			String socialAccount = socialAccountInfo.get(USER_LOGIN) + "@" + provider;
+			UserService userService = (UserService) CorePlugin.getInstance().getServiceRegistry().getService("userService");
+			Node user = userService.getUserForSocialAccount(socialAccount);
+			if (user == null) {
+				// no user linked to this social account
+				socialAccountInfo.put(OAUTH_TOKEN, token);
+				socialAccountInfo.put(SOCIAL_ACCOUNT, socialAccount);
+				req.getSession().setAttribute(SOCIAL_ACCOUNT_INFO, socialAccountInfo);
+				resp.sendRedirect("/org.flowerplatform.host.web_app/js_client.core/index.html#/link");
 				return;
 			}
 			
+			// login
+			userPrincipal = new OAuth2UserPrincipal(user, token);
 			userValidator.setCurrentUserPrincipal(req.getSession(), userPrincipal);
 			
-			Node user = ((UserPrincipal) userPrincipal).getUser();
-			if (user.getProperties().get(SOCIAL_ACCOUNTS) == null) {
-				resp.sendRedirect("/org.flowerplatform.host.web_app/js_client.core/index.html#/link");
-				user.getProperties().put("socialAccounts", user.getProperties().get("login") + "@" + provider);
-				return;
-			}
+			// go to auth page, let the browser handle it
+			resp.sendRedirect("/org.flowerplatform.host.web_app/js_client.core/index.html#/auth");
 			
-			// embedding client: generate an access token for our server
-			String embeddingClientId = (String) req.getSession().getAttribute(OAUTH_EMBEDDING_CLIENT_ID);
-			if (embeddingClientId != null) {
-				OAuth2Service oauthService = (OAuth2Service) CorePlugin.getInstance().getServiceRegistry().getService("oauthService");
-				String fpAccessToken = oauthService.createAccessToken(user, embeddingClientId);
-				resp.sendRedirect("/org.flowerplatform.host.web_app/js_client.users/authAccess.html#access_token=" + fpAccessToken);
-			} else {
-				// go to login page, let the browser handle it
-				resp.sendRedirect("/org.flowerplatform.host.web_app/js_client.core/index.html#/auth");
-			}
 		} catch (OAuthProblemException e) {
 			OAuthResponse oauthResponse = JsClientServerPlugin.getInstance().buildJSONMessage(
 					OAuthResponse

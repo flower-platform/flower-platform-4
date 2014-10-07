@@ -21,11 +21,12 @@ import java.util.Map;
  * @author Cristian Spiescu
  */
 public final class Utils {
-	
-	private Utils() { }
-	
+
+	private Utils() {
+	}
+
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
 	public static <T> T getValueSafe(Map<?, T> map, Object key) {
 		if (map == null) {
@@ -34,9 +35,9 @@ public final class Utils {
 			return map.get(key);
 		}
 	}
-	
+
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public static boolean safeEquals(Object a, Object b) {
 		if (a == null && b == null) {
@@ -47,23 +48,36 @@ public final class Utils {
 			return a.equals(b);
 		}
 	}
-	
+
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public static String defaultIfNull(String str) {
 		return defaultIfNull(str, "");
 	}
-	
+
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public static String defaultIfNull(String str, String defaultStr) {
 		return str == null ? defaultStr : str;
 	}
-	
+
 	/**
-	 *@author Mariana Gheorghe
+	 * Copy <code>keys</code> from <code>src</code> to <code>dst</code>.
+	 */
+	public static void copyProperties(Map<String, Object> src, Map<String, Object> dst, String... keys) {
+		if (keys.length == 0) {
+			dst.putAll(src);
+			return;
+		}
+		for (String key : keys) {
+			dst.put(key, src.get(key));
+		}
+	}
+
+	/**
+	 * @author Mariana Gheorghe
 	 **/
 	public static String getScheme(String uri) {
 		int index = uri.indexOf(":");
@@ -72,9 +86,9 @@ public final class Utils {
 		}
 		return uri.substring(0, index);
 	}
-	
+
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public static String getRepo(String uri) {
 		int indexStart = uri.indexOf(":");
@@ -84,15 +98,15 @@ public final class Utils {
 		} else {
 			indexEnd = uri.length();
 		}
-//		int indexEnd = uri.indexOf("|");
-//		if (indexStart < 0 || indexEnd < 0) {
-//			throw new RuntimeException("Invalid URI: " + uri);
-//		}
+		// int indexEnd = uri.indexOf("|");
+		// if (indexStart < 0 || indexEnd < 0) {
+		// throw new RuntimeException("Invalid URI: " + uri);
+		// }
 		return uri.substring(indexStart + 1, indexEnd);
 	}
-	
+
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public static String getSchemeSpecificPart(String uri) {
 		int index = uri.indexOf(":");
@@ -106,9 +120,9 @@ public final class Utils {
 		}
 		return ssp.substring(0, index);
 	}
-	
+
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public static String getFragment(String uri) {
 		int index = uri.lastIndexOf("#");
@@ -117,16 +131,16 @@ public final class Utils {
 		}
 		return uri.substring(index + 1);
 	}
-	
+
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public static String getUri(String scheme, String ssp) {
 		return getUri(scheme, ssp, null);
 	}
-	
+
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public static String getUri(String scheme, String ssp, String fragment) {
 		String uri = scheme + ":" + ssp;

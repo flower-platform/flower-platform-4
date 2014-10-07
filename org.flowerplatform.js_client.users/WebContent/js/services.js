@@ -9,7 +9,13 @@ function($resource, $location) {
 		currentUser: { method: 'GET',  params: { op: 'login' } },
 		login:		 { method: 'POST', params: { op: 'login' } },
 		logout:		 { method: 'POST', params: { op: 'logout' } },
-		register:	 { method: 'POST', params: { op: 'register' } }
+		register:	 { method: 'POST', params: { op: 'register' } },
+		
+		socialAccountInfo: { method: 'GET', params: { op: 'socialAccountInfo' } }
+	});
+	
+	var oauthService = $resource('../ws-dispatcher/oauth/token', {} , {
+		token: { method: 'POST' }
 	});
 	
 	service.loginSuccessHandler = function(user) {
@@ -18,26 +24,42 @@ function($resource, $location) {
 		
 		callFlexCallback('loginSuccessHandler');
 		
-		var url = $location.url();
-		var index = url.indexOf('return_to');
-		if (index > 0) {
-			// go to authorization page after basic auth
-			url = url.slice(index + 10);
-			url = decodeURIComponent(url);
-			logger.debug('Return to: ' + url);
-			window.location.href = "../" + url;
+		if (oauth) {
+			oauthService.token(getClientId()).$promise.then(function(token) {
+				logger.debug('Got token: ' + token.messageResult);
+				setAccessToken(token.messageResult);
+			});
 		} else {
-			if (window.opener != null) {
-				// close the popup, reload parent
-				window.opener.document.location.reload();
-				self.close();
+			var url = window.location.href;
+			var index = url.indexOf('return_to');
+			logger.debug(url);
+			if (index > 0) {
+				// return to page after auth
+				url = url.slice(index + 10);
+				url = decodeURIComponent(url);
+				logger.debug('Return to: ' + url);
+				window.location.href = "../" + url;
 			} else {
-				$location.path("/");
+				if (window.opener != null) {
+					// close the popup, reload parent
+					window.opener.document.location.reload();
+					self.close();
+				} else {
+					$location.path("/");
+				}
 			}
 		}
 	}
 	
 	return service;
+}]);
+
+flowerProject.lazy.factory('OAuth', ['$resource', function($resource) {
+	
+	return $resource('../ws-dispatcher/oauth/token', {}, {
+		token: { method: 'POST' }
+	});
+	
 }]);
 
 flowerProject.lazy.factory('User', ['$resource', function($resource) {

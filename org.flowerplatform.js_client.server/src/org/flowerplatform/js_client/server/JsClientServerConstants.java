@@ -16,7 +16,6 @@ public final class JsClientServerConstants {
 	//////////////////////////////////
 	
 	public static final String OAUTH_STATE = "oauthState";
-	public static final String OAUTH_EMBEDDING_CLIENT_ID = "oauthEmbeddingClientId";
 	
 	private JsClientServerConstants() {
 		// utility class needs private constructor

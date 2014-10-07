@@ -1,6 +1,17 @@
 package org.flowerplatform.core.users;
 
+import static org.flowerplatform.core.CoreConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.SOCIAL_ACCOUNT;
+import static org.flowerplatform.core.CoreConstants.SOCIAL_ACCOUNT_INFO;
 import static org.flowerplatform.core.CoreConstants.USER;
+import static org.flowerplatform.core.CoreConstants.USER_AVATAR;
+import static org.flowerplatform.core.CoreConstants.USER_EMAIL;
+import static org.flowerplatform.core.CoreConstants.USER_HASH_PASSWORD;
+import static org.flowerplatform.core.CoreConstants.USER_LOGIN;
+import static org.flowerplatform.core.CoreConstants.USER_PASSWORD;
+import static org.flowerplatform.core.CoreConstants.USER_SALT_PASSWORD;
+import static org.flowerplatform.core.CoreConstants.USER_SOCIAL_ACCOUNTS;
+import static org.flowerplatform.core.CoreConstants.USER_WEBSITE;
 
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -32,6 +43,8 @@ import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Mariana Gheorghe
@@ -39,8 +52,11 @@ import org.flowerplatform.util.Utils;
 @Path("/users")
 public class UserService {
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+	
 	private UserValidator userValidator = new UserValidator();
 	
+	// TODO persist
 	private Map<String, String> socialAccounts = new HashMap<String, String>();
 	
 	public UserService() {
@@ -57,6 +73,7 @@ public class UserService {
 	@GET
 	public List<Node> getUsers() {
 		new ResourceServiceRemote().subscribeToParentResource(CoreConstants.USERS_PATH);
+		new ResourceServiceRemote().reload(CoreConstants.USERS_PATH);
 		Node node =  CorePlugin.getInstance().getResourceService().getNode(CoreConstants.USERS_PATH);
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
 		context.add(CoreConstants.POPULATE_WITH_PROPERTIES, true);
@@ -100,24 +117,31 @@ public class UserService {
 		Map<String, Object> properties = user.getProperties();
 		user.setProperties(null);
 		if (user.getNodeUri() == null) {
-			user.setNodeUri(Utils.getUri("fpp", "|.users", (String) properties.get("login")));
+			String username = (String) properties.get(USER_LOGIN);
+			user.setNodeUri(Utils.getUri("fpp", "|.users", username));
 			user.setType(CoreConstants.USER);
 			CorePlugin.getInstance().getNodeService().addChild(parent, user, new ServiceContext<NodeService>());
 			
-			String password = "a"; // TODO remove; password should come from the UI
+			String password = (String) properties.remove(USER_PASSWORD);
+			if (password == null) {
+				password = "a";
+			}
 			// set saltPassword + hashPassword for active user
 			String saltPassword = DatatypeConverter.printBase64Binary(getSalt());
 			String hashPassword = DatatypeConverter.printBase64Binary(createPasswordHash(password, saltPassword));
-			CorePlugin.getInstance().getNodeService().setProperty(user, "saltPassword", saltPassword, new ServiceContext<NodeService>());
-			CorePlugin.getInstance().getNodeService().setProperty(user, "hashPassword", hashPassword, new ServiceContext<NodeService>());
+			CorePlugin.getInstance().getNodeService().setProperty(user, USER_SALT_PASSWORD, saltPassword, new ServiceContext<NodeService>());
+			CorePlugin.getInstance().getNodeService().setProperty(user, USER_HASH_PASSWORD, hashPassword, new ServiceContext<NodeService>());
+			
+			LOGGER.debug("User created: {}", user.getNodeUri());
 		} else {
 			user = CorePlugin.getInstance().getResourceService().getNode(user.getNodeUri());
+			
+			LOGGER.debug("User updated: {}", user.getNodeUri());
 		}
 		
-		// TODO the password set from the client should not be saved in DB
 		properties.remove("nodeType");
-		properties.remove("isDirty");
-		properties.remove("hasChildren");
+		properties.remove(CoreConstants.IS_DIRTY);
+		properties.remove(CoreConstants.HAS_CHILDREN);
 		CorePlugin.getInstance().getNodeService().setProperties(user, properties, new ServiceContext<NodeService>());
 		
 		CorePlugin.getInstance().getResourceService().save(parent.getNodeUri(), new ServiceContext<ResourceService>());
@@ -130,12 +154,13 @@ public class UserService {
 	 */
 	@DELETE @Path("/{nodeUri}")
 	public void deleteUser(@PathParam("nodeUri") String nodeUri) {
-		CorePlugin.getInstance().getNodeService().removeChild(
-				CorePlugin.getInstance().getResourceService().getNode(CoreConstants.USERS_PATH), 
-				CorePlugin.getInstance().getResourceService().getNode(nodeUri), 
+		Node user = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		unlinkAllSocialAccounts(user);
+		
+		Node users = CorePlugin.getInstance().getResourceService().getNode(CoreConstants.USERS_PATH);
+		CorePlugin.getInstance().getNodeService().removeChild(users, user, 
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
-		String resourceUri = CorePlugin.getInstance().getResourceService().getResourceNode(nodeUri).getNodeUri();
-		CorePlugin.getInstance().getResourceService().save(resourceUri, new ServiceContext<ResourceService>());
+		CorePlugin.getInstance().getResourceService().save(users.getNodeUri(), new ServiceContext<ResourceService>());
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -174,12 +199,21 @@ public class UserService {
 	 */
 	@POST @Path("/login")
 	public Node login(Map<String, String> loginInfo) {
-		String username = loginInfo.get("username");
-		String password = loginInfo.get("password");
+		String username = loginInfo.get(USER_LOGIN);
+		String password = loginInfo.get(USER_PASSWORD);
 		Node user = login(username, password);
 		if (user == null) {
 			throw new RuntimeException("Invalid username or password");
 		}
+		
+		// link social account
+		String socialAccount = (String) loginInfo.get(SOCIAL_ACCOUNT);
+		if (socialAccount != null) {
+			linkSocialAccount(socialAccount, user);
+			// TODO copy all props from session? (e.g. avatar, website)
+			// what about token?
+		}
+		
 		return stripPassword(user);
 	}
 	
@@ -199,15 +233,26 @@ public class UserService {
 		// validate password
 		boolean validPass = checkPassword(user, password);
 		if (validPass) {
-			if (CorePlugin.getInstance().getRequestThreadLocal().get() != null) {
-				userValidator.setCurrentUserPrincipal(
-						CorePlugin.getInstance().getRequestThreadLocal().get().getSession(), 
-						new UserPrincipal(user));
-			}
-			return user;
+			return login(user);
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Perform login.
+	 * 
+	 * @return logged in user
+	 */
+	public Node login(Node user) {
+		if (CorePlugin.getInstance().getRequestThreadLocal().get() != null) {
+			userValidator.setCurrentUserPrincipal(
+					CorePlugin.getInstance().getRequestThreadLocal().get().getSession(), 
+					new UserPrincipal(user));
+		}
+		LOGGER.debug("Login user: {}", user.getNodeUri());
+		
+		return user;
 	}
 	
 	/**
@@ -224,38 +269,68 @@ public class UserService {
 	 * return registered user
 	 */
 	@POST @Path("/register")
-	public Node register(Map<String, String> registerInfo) {
+	public Node register(Map<String, Object> registerInfo) {
 		// TODO validate unique login
-		String username = registerInfo.get("username");
-		String password = registerInfo.get("password");
+		String username = (String) registerInfo.get(USER_LOGIN);
+		String password = (String) registerInfo.get(USER_PASSWORD);
 		
 		if (password == null) {
 			throw new RuntimeException("Invalid password.");
 		}
 		
+		LOGGER.debug("Register user: {}", username);
+		
 		Node user = new Node(null, USER);
-		user.getProperties().put("login", username);
-		user.getProperties().put("email", registerInfo.get("email"));
-		// TODO copy all props
+		Utils.copyProperties(registerInfo, user.getProperties(), USER_LOGIN, USER_PASSWORD, NAME, USER_EMAIL);
 		
 		// create
 		saveUser(user);
 		
+		// link social account
+		String socialAccount = (String) registerInfo.get(SOCIAL_ACCOUNT);
+		if (socialAccount != null) {
+			linkSocialAccount(socialAccount, user);
+			// TODO copy all props from session? (e.g. avatar, website)
+			// what about token?
+			@SuppressWarnings("unchecked")
+			Map<String, Object> socialAccountInfo = (Map<String, Object>) CorePlugin.getInstance().getRequestThreadLocal()
+					.get().getSession().getAttribute(SOCIAL_ACCOUNT_INFO);
+			Map<String, Object> properties = new HashMap<String, Object>();
+			Utils.copyProperties(socialAccountInfo, properties, USER_AVATAR, USER_WEBSITE);
+			CorePlugin.getInstance().getNodeService().setProperties(user, properties, new ServiceContext<NodeService>());
+			new ResourceServiceRemote().save(CoreConstants.USERS_PATH);
+		}
+		
 		// login
 		login(username, password);
-		
-		// link social account
-		String socialAccount = registerInfo.get("socialAccounts");
-		linkSocialAccount(socialAccount, user);
 		
 		return stripPassword(user);
 	}
 	
 	/**
+	 * @return social account info from session attributes
+	 */
+	@GET @Path("/socialAccountInfo")
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getSocialAccountInfo() {
+		Map<String, Object> socialAccountInfo = (Map<String, Object>) CorePlugin.getInstance().getRequestThreadLocal()
+				.get().getSession().getAttribute(SOCIAL_ACCOUNT_INFO);
+		Map<String, Object> result = new HashMap<String, Object>();
+		Utils.copyProperties(socialAccountInfo, result, USER_LOGIN, NAME, USER_EMAIL, SOCIAL_ACCOUNT);
+		return result;
+	}
+	
+	/**
+	 * <b>Note:</b> social account format: <tt>username@github</tt> (e.g. <tt>john-doe@github</tt>)
+	 * 
 	 * @return the user who has linked this social account
 	 */
-	public String getUserForSocialAccount(String socialAccount) {
-		return socialAccounts.get(socialAccount);
+	public Node getUserForSocialAccount(String socialAccount) {
+		String uri = socialAccounts.get(socialAccount);
+		if (uri == null) {
+			return null;
+		}
+		return getUser(uri);
 	}
 	
 	/**
@@ -264,14 +339,70 @@ public class UserService {
 	 * @param username
 	 */
 	public void linkSocialAccount(String socialAccount, Node user) {
+		LOGGER.debug("Link social account: {} for user account: {}", socialAccount, user.getNodeUri());
+		
 		socialAccounts.put(socialAccount, user.getNodeUri());
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
-		String existing = (String) user.getPropertyValue("socialAccounts");
+		String existing = (String) user.getPropertyValue(USER_SOCIAL_ACCOUNTS);
 		String added = socialAccount;
 		if (existing != null) {
 			added = existing + ',' + socialAccount;
 		}
-		CorePlugin.getInstance().getNodeService().setProperty(user, "socialAccounts", added, context);
+		CorePlugin.getInstance().getNodeService().setProperty(user, USER_SOCIAL_ACCOUNTS, added, context);
+		new ResourceServiceRemote().save(CoreConstants.USERS_PATH);
+	}
+	
+	/**
+	 * 
+	 * @param socialAccount
+	 * @param user
+	 */
+	public void unlinkSocialAccount(String socialAccount, Node user) {
+		LOGGER.debug("Unlink social account: {} for user account: {}", socialAccount, user.getNodeUri());
+		
+		socialAccounts.remove(socialAccount);
+		NodeService service = CorePlugin.getInstance().getNodeService();
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(service);
+		String existing = (String) user.getPropertyValue(USER_SOCIAL_ACCOUNTS);
+		existing.replace(socialAccount, "");
+		if (existing.length() == 0) {
+			// this was the only linked social account
+			service.unsetProperty(user, USER_SOCIAL_ACCOUNTS, context);
+			return;
+		}
+		
+		if (existing.startsWith(",")) {
+			// this was the first linked social account
+			existing.substring(1);
+		} else if (existing.endsWith(",")) {
+			// this was the last linked social account
+			existing.substring(0, existing.length() - 1);
+		} else {
+			existing.replace(",,", ",");
+		}
+		
+		service.setProperty(user, USER_SOCIAL_ACCOUNTS, existing, context);
+	}
+	
+	/**
+	 * 
+	 * @param user
+	 */
+	public void unlinkAllSocialAccounts(Node user) {
+		String existing = (String) user.getPropertyValue(USER_SOCIAL_ACCOUNTS);
+		if (existing == null) {
+			// no linked social accounts
+			return;
+		}
+		
+		for (String socialAccount : existing.split(",")) {
+			LOGGER.debug("Unlink social account: {} for user account: {}", socialAccount, user.getNodeUri());
+			socialAccounts.remove(socialAccount);
+		}
+		
+		NodeService service = CorePlugin.getInstance().getNodeService();
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(service);
+		service.unsetProperty(user, USER_SOCIAL_ACCOUNTS, context);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -296,8 +427,8 @@ public class UserService {
 		/* if (checkPassword(currentUser, map.get("oldPassword"))) {
 			String saltPassword = DatatypeConverter.printBase64Binary(getSalt());
 			String hashPassword = DatatypeConverter.printBase64Binary(createPasswordHash(map.get("newPassword"), saltPassword));
-			CorePlugin.getInstance().getNodeService().setProperty(currentUser, "saltPassword", saltPassword, new ServiceContext<NodeService>());
-			CorePlugin.getInstance().getNodeService().setProperty(currentUser, "hashPassword", hashPassword, new ServiceContext<NodeService>());
+			CorePlugin.getInstance().getNodeService().setProperty(currentUser, USER_SALT_PASSWORD, saltPassword, new ServiceContext<NodeService>());
+			CorePlugin.getInstance().getNodeService().setProperty(currentUser, USER_HASH_PASSWORD, hashPassword, new ServiceContext<NodeService>());
 		}*/
 		
 		return CoreConstants.PASS_NOT_CHANGED;
@@ -311,7 +442,7 @@ public class UserService {
 	@POST @Path("/{nodeUri}/login") 
 	public Node changeLogin(@PathParam("nodeUri") String nodeUri, String login) {
 		Node user = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
-		CorePlugin.getInstance().getNodeService().setProperty(user, "login", login, new ServiceContext<NodeService>());
+		CorePlugin.getInstance().getNodeService().setProperty(user, USER_LOGIN, login, new ServiceContext<NodeService>());
 		return stripPassword(user);
 	}
 	
@@ -346,8 +477,8 @@ public class UserService {
 	 * Check if the entered password is the same with the hashed password.
 	 */
 	private boolean checkPassword(Node user, String password) {
-        String storedPasswordHash = (String) user.getPropertyValue("hashPassword");
-        String salt = (String) user.getPropertyValue("saltPassword");
+        String storedPasswordHash = (String) user.getPropertyValue(USER_HASH_PASSWORD);
+        String salt = (String) user.getPropertyValue(USER_SALT_PASSWORD);
         byte[] checkPasswordHashBytes = createPasswordHash(password, salt);
         String checkPasswordHash = DatatypeConverter.printBase64Binary(checkPasswordHashBytes);
  
@@ -362,8 +493,8 @@ public class UserService {
 		if (user == null) {
 			return null;
 		}
-		user.getProperties().remove("saltPassword");
-		user.getProperties().remove("hashPassword");
+		user.getProperties().remove(USER_SALT_PASSWORD);
+		user.getProperties().remove(USER_HASH_PASSWORD);
 		return user;
 	}
 	

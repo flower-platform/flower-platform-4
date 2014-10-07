@@ -7,6 +7,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+import javax.ws.rs.core.UriBuilder;
 
 import org.flowerplatform.js_client.java.JsClientJavaPlugin;
 import org.flowerplatform.js_client.java.node.ClientNode;
@@ -45,7 +46,39 @@ public class AuthBrowser extends JDialog {
 				return null;
 			}
 		});
+		
+		webBrowser.registerFunction(new WebBrowserFunction("setAccessToken") {
+			
+			@Override
+			public Object invoke(JWebBrowser browser, Object... args) {
+				SWTNativeInterface.close();
+				setVisible(false);
+				dispose();
+				
+				final String token = (String) args[0];
+				JsClientJavaPlugin.getInstance().setAccessToken(token);
+				JavaHostServiceInvocator host = new JavaHostServiceInvocator();
+				try {
+					host.invoke("userService.getCurrentUser", null, new BaseFunction() {
 
+						private static final long serialVersionUID = 1L;
+
+						@Override
+						public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
+							ClientNode user = (ClientNode) args[0];
+							JOptionPane.showMessageDialog(null, user.getNodeUri() + " " + token, "User has logged in", JOptionPane.INFORMATION_MESSAGE);
+							return null;
+						}
+						
+					});
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+				
+				return null;
+			}
+		});
+		
 		webBrowser.registerFunction(new WebBrowserFunction("getClientId") {
 			@Override
 			public Object invoke(JWebBrowser arg0, Object... arg1) {
@@ -55,32 +88,13 @@ public class AuthBrowser extends JDialog {
 		
 		// wait for access token
 		webBrowser.addWebBrowserListener(new WebBrowserAdapter() {
+			
 			@Override
 			public void locationChanged(WebBrowserNavigationEvent event) {
 				String location = event.getNewResourceLocation();
-				if (location.contains("authAccess.html")) {
-					// get the access token
-					String accessToken = location.substring(location.indexOf("access_token=") + 13);
-					JsClientJavaPlugin.getInstance().setAccessToken(accessToken);
-					JavaHostServiceInvocator host = new JavaHostServiceInvocator();
-					try {
-						host.invoke("userService.getCurrentUser", null, new BaseFunction() {
-
-							private static final long serialVersionUID = 1L;
-
-							@Override
-							public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-								ClientNode user = (ClientNode) args[0];
-								JOptionPane.showMessageDialog(null, user.getNodeUri(), "User has logged in", JOptionPane.INFORMATION_MESSAGE);
-								return null;
-							}
-							
-						});
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-					setVisible(false);
-					dispose();
+				if (!location.contains("embedInApp")) {
+					location = UriBuilder.fromUri(location).queryParam("embedInApp", "java").build().toString();
+					event.getWebBrowser().navigate(location);
 				}
 				super.locationChanged(event);
 			}
@@ -93,7 +107,6 @@ public class AuthBrowser extends JDialog {
 	 * Create and add a web browser to this dialog.
 	 */
 	private void init() {
-		SWTNativeInterface.close();
 		SWTNativeInterface.open();
 		
 		webBrowserPanel = new JPanel(new BorderLayout());
@@ -107,7 +120,7 @@ public class AuthBrowser extends JDialog {
 	}
 	
 	private String getAuthUrl() {
-		return "http://localhost:8080/org.flowerplatform.host.web_app/js_client.core/index.html?embedInApp=java";
+		return "http://localhost:8080/org.flowerplatform.host.web_app/js_client.core/index.html#auth";
 	}
 	
 }

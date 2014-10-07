@@ -191,4 +191,3 @@ flowerProject.lazy.controller('NavigationCtrl', ['$scope', '$location','UserNode
 	$scope.decodeUri = decodeURIComponent($scope.uri);
 	
 }]);
-

@@ -1,6 +1,5 @@
 package org.flowerplatform.js_client.server.oauth.client;
 
-import static org.flowerplatform.js_client.server.JsClientServerConstants.OAUTH_EMBEDDING_CLIENT_ID;
 import static org.flowerplatform.js_client.server.JsClientServerConstants.OAUTH_STATE;
 
 import java.util.HashMap;
@@ -9,7 +8,6 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
 
 import org.apache.oltu.oauth2.as.issuer.MD5Generator;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -44,25 +42,22 @@ public class OAuth2ProviderService {
 	 * @return the providers map and a random state
 	 */
 	@GET
-	public Map<String, Object> getOAuthProviders(@QueryParam("embed") String embeddingClientId) {
+	public Map<String, Object> getOAuthProviders() {
 		Map<String, Object> response = new HashMap<String, Object>();
 		response.put("providers", providers);
-		response.put("state", generateState(embeddingClientId));
+		response.put("state", generateState());
 		return response;
 	}
 	
 	/**
 	 * Generate a state string and keep it in the session attributes.
 	 */
-	private String generateState(String embeddingClientId) {
+	private String generateState() {
 		try {
 			String state = new MD5Generator().generateValue();
 			HttpSession session = CorePlugin.getInstance().getRequestThreadLocal()
 					.get().getSession();
 			session.setAttribute(OAUTH_STATE, state);
-			if (embeddingClientId != null) {
-				session.setAttribute(OAUTH_EMBEDDING_CLIENT_ID, embeddingClientId);
-			}
 			return state;
 		} catch (OAuthSystemException e) {
 			throw new RuntimeException(e);

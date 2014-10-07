@@ -225,6 +225,11 @@ public final class CoreConstants {
 	public static final String REPO_ROOT = "D:/data/git/flower-platform-4/flower-platform-4/runtime-workspace";
 	
 	
+	public static final String PNG_EXTENSION = ".png";
+	
+	public static final String LOAD_FILE_SERVLET = UtilConstants.SERVLET + "/load";
+	
+	
 	//////////////////////////////////
 	// Users
 	//////////////////////////////////
@@ -232,23 +237,36 @@ public final class CoreConstants {
 	public static final String USERS = "users";
 	public static final String USER = "user";
 	public static final String USERS_PATH = "fpp:|.users";
+
+	public static final String USER_LOGIN = "login";
+	public static final String USER_EMAIL = "email";
+	public static final String USER_AVATAR = "avatar";
+	public static final String USER_WEBSITE = "website";
+	public static final String USER_SOCIAL_ACCOUNTS = "socialAccounts";
+	
+	public static final String USER_PASSWORD = "password";
+	public static final String USER_SALT_PASSWORD = "saltPassword";
+	public static final String USER_HASH_PASSWORD = "hashPassword";
+	
 	public static final String HASH_ALGORITHM = "SHA-256";
 	public static final String PASS_CHANGED = "Password changed !";
 	public static final String PASS_NOT_CHANGED = "Password doesn't match !";
-	
-	public static final String SOCIAL_ACCOUNTS = "socialAccounts";
-	
-	public static final String PNG_EXTENSION = ".png";
-	
-	public static final String LOAD_FILE_SERVLET = UtilConstants.SERVLET + "/load";
 	
 	//////////////////////////////////
 	// Login and users
 	//////////////////////////////////
 	
 	/**
-	 * This attribute will be set in the sessions to store the user principal.
+	 * Session attribute; store the {@link UserPrincipal}.
 	 */
 	public static final String USER_PRINCIPAL = "userPrincipal";
+	
+	/**
+	 * Session attribute; store social account info to link with the logged in user.
+	 */
+	public static final String SOCIAL_ACCOUNT_INFO = "socialAccountInfo";
+	
+	public static final String SOCIAL_ACCOUNT = "socialAccount";
+	public static final String OAUTH_TOKEN = "oauthToken";
 	
 }

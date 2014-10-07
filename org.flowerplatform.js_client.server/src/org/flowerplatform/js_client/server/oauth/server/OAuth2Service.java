@@ -3,6 +3,9 @@ package org.flowerplatform.js_client.server.oauth.server;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+
 import org.apache.oltu.oauth2.as.issuer.MD5Generator;
 import org.apache.oltu.oauth2.as.issuer.OAuthIssuer;
 import org.apache.oltu.oauth2.as.issuer.OAuthIssuerImpl;
@@ -15,11 +18,27 @@ import org.flowerplatform.util.Pair;
 /**
  * @author Mariana Gheorghe
  */
+@Path("oauth")
 public class OAuth2Service {
 
 	private OAuthIssuer issuer = new OAuthIssuerImpl(new MD5Generator());
 
 	private Map<String, Pair<String, String>> accessToken = new HashMap<String, Pair<String, String>>();
+	
+	/**
+	 * 
+	 * @param clientId
+	 * @return
+	 */
+	@POST @Path("token")
+	public String getAccessToken(String clientId) {
+		UserService service = (UserService) CorePlugin.getInstance().getServiceRegistry().getService("userService");
+		Node user = service.getCurrentUser();
+		if (user == null) {
+			return null;
+		}
+		return createAccessToken(user, clientId);
+	}
 	
 	/**
 	 * Create an access token for this user and client.
