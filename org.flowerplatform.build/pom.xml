@@ -11,7 +11,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 	<profiles>
 		<profile>
 			<id>flex</id>
@@ -19,14 +19,14 @@
 				<module>flex</module>
 			</modules>
 		</profile>
-		
+
 		<profile>
 			<id>java</id>
 			<modules>
 				<module>java</module>
 			</modules>
 		</profile>
-		
+
 		<profile>
 			<id>war</id>
 			<modules>
@@ -34,10 +34,11 @@
 			</modules>
 		</profile>
 	</profiles>
-	
+
 	<modules>
-		    <module>checkstyle</module>
+		<module>checkstyle</module>
 	</modules>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.ant</groupId>
@@ -52,35 +53,37 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
-	<sourceDirectory>src</sourceDirectory>
-	
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.12.1</version>
-        <configuration>
-        	<!-- <configLocation>checkstyle/checkstyle-config.xml</configLocation>  --> 
-        	<propertyExpansion>config_loc=${basedir}/checkstyle</propertyExpansion>
-     		<configLocation>${basedir}/checkstyle/checkstyle-config.xml</configLocation>
-      		<suppressionsLocation>${basedir}/checkstyle/suppressions.xml</suppressionsLocation>
-     		<includeTestSourceDirectory>true</includeTestSourceDirectory>   	
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-   <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.12.1</version>
-        <configuration>
-        	<configLocation>checkstyle/checkstyle-config.xml</configLocation>       	
-        </configuration> 
-      </plugin>
-    </plugins>
-  </reporting>
+		<sourceDirectory>src</sourceDirectory>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.12.1</version>
+				<configuration>
+					<!-- <configLocation>checkstyle/checkstyle-config.xml</configLocation> -->
+					<propertyExpansion>config_loc=${basedir}/checkstyle</propertyExpansion>
+					<configLocation>${basedir}/checkstyle/checkstyle-config.xml</configLocation>
+					<suppressionsLocation>${basedir}/checkstyle/suppressions.xml</suppressionsLocation>
+					<includeTestSourceDirectory>true</includeTestSourceDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.12.1</version>
+				<configuration>
+					<configLocation>checkstyle/checkstyle-config.xml</configLocation>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
