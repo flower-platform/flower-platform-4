@@ -6,3 +6,4 @@ war
 /bin
 /DO_NOT_COMMIT
 /target/
+/build.log

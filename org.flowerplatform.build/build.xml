@@ -30,8 +30,8 @@
 		</artifact:mvn>
 		
 		<echo>Set the version in .inc files for the flex app</echo>
-		<replaceregexp file="../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/appVersion.inc" match="_appVersion = .*" replace="_appVersion = &quot;${version.appVersion}${version.qualifierSuffix}&quot;" />
-		<replaceregexp file="../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/apiVersion.inc" match="_apiVersion = .*" replace="_apiVersion = &quot;${version.apiVersion}&quot;" />
+		<replaceregexp file="../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/version.inc" match="_appVersion = .*" replace="_appVersion = &quot;${version.appVersion}${version.qualifierSuffix}&quot;" />
+		<replaceregexp file="../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/version.inc" match="_apiVersion = .*" replace="_apiVersion = &quot;${version.apiVersion}&quot;" />
 	
 		<echo>Set the version in mobile app</echo>
 		<replaceregexp file="../org.flowerplatform.flex_client.host_app.mobile/src/MainMobile-app.xml" match="&lt;versionNumber&gt;.*&lt;/versionNumber&gt;" replace="&lt;versionNumber&gt;${version.appVersion}&lt;/versionNumber&gt;" />
@@ -130,7 +130,9 @@
 	</target>
 	
 	<target name="build" description="Perform and validate build">
-		
+		<delete file="build.log" />
+		<record name="build.log" action="start" loglevel="verbose" />
+
 		<!-- the qualifier suffix needs to be wrapped in quotes ONLY if it is not the empty string -->
 		<condition property="version.qualifierSuffixForFormat" value="" else="'${version.qualifierSuffix}'">
 			<equals arg1="${version.qualifierSuffix}" arg2="" />
@@ -157,15 +159,16 @@
 
 			<arg value="-Doutput.flex=${output.flex}" />
 			<arg value="-Doutput.java=${output.java}" />
+			<arg value="-DappVersion=${version.appVersion}" />
+			<arg value="-DapiVersion=${version.apiVersion}" />
+			<arg value="-DqualifierSuffix=${version.qualifierSuffix}" />
 			
 			<!-- Java build -->
-			<arg value="-DappVersion=${version.appVersion}" />
 			<arg value="-Dos=${os}" />
 			<arg value="-Dws=${ws}" />
 			<arg value="-Darch=${arch}" />
 			<arg value="-Dproduct-environment=${productEnvironment}" />
 			<arg value="-Dversion.qualifierSuffixForFormat=${version.qualifierSuffixForFormat}" />
-
 
 			<!-- Flex build -->
 			<arg value="-DflexVersion=${flexVersion}" />
@@ -174,6 +177,8 @@
 			<arg value="-Dkeystore.file=${keystore.file}" />
 			<arg value="-Dkeystore.password=${keystore.password}" />
 		</artifact:mvn>
+		
+		<record name="build.log" action="stop" loglevel="verbose" />
 	</target>
 
 </project>

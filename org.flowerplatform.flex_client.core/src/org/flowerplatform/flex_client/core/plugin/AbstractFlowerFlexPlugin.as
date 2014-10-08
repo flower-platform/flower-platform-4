@@ -70,9 +70,8 @@ package org.flowerplatform.flex_client.core.plugin {
 			super.preStart();
 			
 			// _appVersion = "my_app_version";
-			include "appVersion.inc";
 			// _apiVersion = "my_api_version";
-			include "apiVersion.inc";
+			include "version.inc";
 			
 			// check if same version as CorePlugin
 			checkAPIVersion();

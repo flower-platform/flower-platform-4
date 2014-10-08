@@ -64,6 +64,38 @@
 		<directory>${output.flex.prefix}/${output.flex}/distr/${project.artifactId}</directory>
 
 		<plugins>
+		
+			<!-- replace version numbers in version.inc -->
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<version>1.5.3</version>
+				<inherited>false</inherited>
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+					</execution>
+         		</executions>
+				<configuration>
+					<file>../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/version.inc</file>
+					<regex>true</regex>
+					<replacements>
+						<replacement>
+							<token>_appVersion = .*</token>
+							<value>_appVersion = "${appVersion}.v${maven.build.timestamp}${qualifierSuffix}"</value>
+						</replacement>
+						<replacement>
+							<token>_apiVersion = .*</token>
+							<value>_apiVersion = "${apiVersion}.v${maven.build.timestamp}${qualifierSuffix}"</value>
+						</replacement>
+					</replacements>
+				</configuration>
+			</plugin>
+			
+			<!-- flexmojos build -->
 			<plugin>
 				<groupId>net.flexmojos.oss</groupId>
 				<artifactId>flexmojos-maven-plugin</artifactId>

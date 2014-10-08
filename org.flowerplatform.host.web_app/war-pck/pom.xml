@@ -22,7 +22,7 @@
 				<version>2.4</version>
 				<configuration>
 					<webXml>../WebContent/WEB-INF/web.xml</webXml>
-					<warName>flower-platform</warName>
+					<warName>flower-platform_${appVersion}.v${maven.build.timestamp}${version.qualifierSuffixForFormat}</warName>
 
 					<outputDirectory>war</outputDirectory>
 
