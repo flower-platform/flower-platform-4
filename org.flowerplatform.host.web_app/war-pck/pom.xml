@@ -22,7 +22,7 @@
 				<version>2.4</version>
 				<configuration>
 					<webXml>../WebContent/WEB-INF/web.xml</webXml>
-					<warName>flower-platform_${appVersion}.v${maven.build.timestamp}${version.qualifierSuffixForFormat}</warName>
+					<warName>flower-platform_${appVersion}.v${maven.build.timestamp}${version.qualifierSuffix}</warName>
 
 					<outputDirectory>war</outputDirectory>
 
@@ -67,7 +67,7 @@
 		<dependency>
 			<groupId>org.flowerplatform.host</groupId>
 			<artifactId>org.flowerplatform.host.servletbridge.base</artifactId>
-			<version>${appVersion}</version>
+			<version>${appVersion}${version.qualifierSuffix}</version>
 		</dependency>
 	</dependencies>
 </project>

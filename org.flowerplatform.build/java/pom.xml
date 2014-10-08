@@ -142,7 +142,7 @@
 						<extraClasspathElement>
 							<groupId>org.flowerplatform.host</groupId>
 							<artifactId>org.flowerplatform.host.web_app</artifactId>
-							<version>${appVersion}</version>
+							<version>${appVersion}${version.qualifierSuffix}</version>
 						</extraClasspathElement>
 					</extraClasspathElements>
 				</configuration>
@@ -165,9 +165,7 @@
 						<addMavenDescriptor>false</addMavenDescriptor>
 					</archive>
 					
-					<!-- version.qualifierSuffixForFormat property must already contain single quotes -->
-					<!-- or be the empty string for no suffix -->
-					<format>'v${maven.build.timestamp}'${version.qualifierSuffixForFormat}</format>
+					<format>'v${maven.build.timestamp}${version.qualifierSuffix}'</format>
 
 					<!-- resources to be packaged -->
 					<additionalFileSets>
