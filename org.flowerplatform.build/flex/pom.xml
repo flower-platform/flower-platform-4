@@ -24,16 +24,16 @@
 
 				<!-- flex client libraries -->
 				<!-- explicitly use flex/pom.xml, as these are also packaged as eclipse-plugin -->
-				<module>../../org.flowerplatform.flex_client.core/flex</module>
-				<module>../../org.flowerplatform.flex_client.properties/flex</module>
-				<module>../../org.flowerplatform.flex_client.mindmap/flex</module>
-				<module>../../org.flowerplatform.flex_client.text/flex</module>
-				<module>../../org.flowerplatform.flex_client.codesync/flex</module>
-				<module>../../org.flowerplatform.flex_client.codesync.sdiff/flex</module>
-				<module>../../org.flowerplatform.flex_client.codesync.regex/flex</module>
-				<module>../../org.flowerplatform.flex_client.team.git/flex</module>
-				<module>../../org.flowerplatform.flex_client.host_app/flex</module>
-				<module>../../org.flowerplatform.flex_client.web/flex</module>
+				<module>../../org.flowerplatform.flex_client.core/flex-pom</module>
+				<module>../../org.flowerplatform.flex_client.properties/flex-pom</module>
+				<module>../../org.flowerplatform.flex_client.mindmap/flex-pom</module>
+				<module>../../org.flowerplatform.flex_client.text/flex-pom</module>
+				<module>../../org.flowerplatform.flex_client.codesync/flex-pom</module>
+				<module>../../org.flowerplatform.flex_client.codesync.sdiff/flex-pom</module>
+				<module>../../org.flowerplatform.flex_client.codesync.regex/flex-pom</module>
+				<module>../../org.flowerplatform.flex_client.team.git/flex-pom</module>
+				<module>../../org.flowerplatform.flex_client.host_app/flex-pom</module>
+				<module>../../org.flowerplatform.flex_client.web/flex-pom</module>
 			</modules>
 		</profile>
 
@@ -73,26 +73,23 @@
 				<inherited>false</inherited>
 				<executions>
 					<execution>
+						<id>set-version-before</id>
 						<phase>prepare-package</phase>
 						<goals>
 							<goal>replace</goal>
 						</goals>
+						<configuration>
+							<file>../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/AbstractFlowerFlexPlugin.as</file>
+							<regex>true</regex>
+							<replacements>
+								<replacement>
+									<token>_appVersion:String = .*;</token>
+									<value>_appVersion:String = "${appVersion}.v${maven.build.timestamp}${qualifierSuffix}";</value>
+								</replacement>
+							</replacements>
+						</configuration>
 					</execution>
          		</executions>
-				<configuration>
-					<file>../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/version.inc</file>
-					<regex>true</regex>
-					<replacements>
-						<replacement>
-							<token>_appVersion = .*</token>
-							<value>_appVersion = "${appVersion}.v${maven.build.timestamp}${qualifierSuffix}"</value>
-						</replacement>
-						<replacement>
-							<token>_apiVersion = .*</token>
-							<value>_apiVersion = "${apiVersion}.v${maven.build.timestamp}${qualifierSuffix}"</value>
-						</replacement>
-					</replacements>
-				</configuration>
 			</plugin>
 			
 			<!-- flexmojos build -->

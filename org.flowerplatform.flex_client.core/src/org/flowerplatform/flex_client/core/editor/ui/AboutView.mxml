@@ -27,7 +27,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.IList;
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			
@@ -35,7 +34,6 @@
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.view_content_host.IViewContent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
@@ -57,7 +55,8 @@
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
 				UIComponent(appVersionLabel.labelDisplay).setStyle('fontWeight','normal');
-				UIComponent(apiVersionLabel.labelDisplay).setStyle('fontWeight','normal');	
+				UIComponent(apiVersionLabel.labelDisplay).setStyle('fontWeight','normal');
+				UIComponent(serverAppVersionLabel.labelDisplay).setStyle('fontWeight','normal');
 			}
 			
 			public function additionalCloseHandler():void {	
@@ -77,6 +76,9 @@
 	<s:Form>
 		<s:FormItem id="appVersionLabel" label="{Resources.getMessage('about.app.version.label')}">
 			<s:Label id="appVersion" text="{CorePlugin.getInstance().appVersion}"/>
+		</s:FormItem>
+		<s:FormItem id="serverAppVersionLabel" label="{Resources.getMessage('about.server.app.version.label')}">
+			<s:Label id="serverAppVersion" text="{CorePlugin.getInstance().serverAppVersion}"/>
 		</s:FormItem>
 		<s:FormItem id="apiVersionLabel" label="{Resources.getMessage('about.api.version.label')}">
 			<s:Label id="apiVersion" text="{CorePlugin.getInstance().apiVersion}"/>

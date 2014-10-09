@@ -100,26 +100,23 @@
 				<inherited>false</inherited>
 				<executions>
 					<execution>
+						<id>set-version-before</id>
 						<phase>prepare-package</phase>
 						<goals>
 							<goal>replace</goal>
 						</goals>
+						<configuration>
+							<file>../org.flowerplatform.core/src/org/flowerplatform/core/CoreConstants.java</file>
+							<regex>true</regex>
+							<replacements>
+								<replacement>
+									<token>APP_VERSION = .*;</token>
+									<value>APP_VERSION = "${appVersion}.v${maven.build.timestamp}${qualifierSuffix}";</value>
+								</replacement>
+							</replacements>
+						</configuration>
 					</execution>
          		</executions>
-				<configuration>
-					<file>../org.flowerplatform.core/src/org/flowerplatform/core/CoreConstants.java</file>
-					<regex>true</regex>
-					<replacements>
-						<replacement>
-							<token>APP_VERSION = .*;</token>
-							<value>APP_VERSION = "${appVersion}.v${maven.build.timestamp}${qualifierSuffix}";</value>
-						</replacement>
-						<replacement>
-							<token>API_VERSION = .*;</token>
-							<value>API_VERSION = "${apiVersion}.v${maven.build.timestamp}${qualifierSuffix}";</value>
-						</replacement>
-					</replacements>
-				</configuration>
 			</plugin>
 		
 			<!-- Tycho build -->

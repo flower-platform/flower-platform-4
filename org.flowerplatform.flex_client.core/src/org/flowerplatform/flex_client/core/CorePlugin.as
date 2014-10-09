@@ -101,6 +101,8 @@ package org.flowerplatform.flex_client.core {
 		
 		protected static var INSTANCE:CorePlugin;
 		
+		protected var _serverAppVersion:String;
+		
 		public var serviceLocator:ServiceLocator;
 		
 		public var perspectives:Vector.<Perspective> = new Vector.<Perspective>();
@@ -192,16 +194,11 @@ package org.flowerplatform.flex_client.core {
 						
 			// check version compatibility with server side
 			serviceLocator.invoke("coreService.getVersions", null, 
-				function (result:Object):void {		
-					// disable app version check
-//					if (_appVersion != result[0]) { // application version is old 
-//						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-//						.setTitle(Resources.getMessage('version.error'))
-//						.setText(Resources.getMessage('version.error.message', [_appVersion, result[0], Resources.getMessage('version.error.details')]))
-//						.setWidth(400)
-//						.setHeight(300)
-//						.showMessageBox();						
-//					} else
+				function (result:Object /* = [serverAppVersion, apiVersion] */):void {
+					// keep server app version
+					_serverAppVersion = result[0];
+					
+					// check API version
 					if (_apiVersion != result[1]) { // API version is old
 						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 						.setTitle(Resources.getMessage('version.error'))
@@ -209,13 +206,10 @@ package org.flowerplatform.flex_client.core {
 						.setWidth(400)
 						.setHeight(300)
 						.showMessageBox();
-					} else { // versions ok 
-						_appVersion = result[0];
-						_apiVersion = result[1];						
+					} else { // API version ok 
+						// INITIALIZATION SPINNER END
+						ModalSpinner.removeGlobalModalSpinner();
 					}
-					
-					// INITIALIZATION SPINNER END
-					ModalSpinner.removeGlobalModalSpinner();
 				}
 			);
 
@@ -363,10 +357,14 @@ package org.flowerplatform.flex_client.core {
 				.setFunctionDelegate(function ():void {
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 					.setViewContent(new AboutView())
-					.setWidth(300)
-					.setHeight(250)
+					.setWidth(320)
+					.setHeight(280)
 					.show();
 				}));			
+		}
+		
+		public function get serverAppVersion():String {
+			return _serverAppVersion;
 		}
 				
 		override protected function registerClassAliases():void {		

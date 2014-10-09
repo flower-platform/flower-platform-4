@@ -37,8 +37,8 @@ package org.flowerplatform.flex_client.core.plugin {
 		
 		protected var _composedImagesUrl:String;
 		
-		protected var _appVersion:String;
-		protected var _apiVersion:String;
+		protected const _appVersion:String = "0.1.1";
+		protected const _apiVersion:String = "0.1.0";
 		
 		/**
 		 * Name of the java plugin project.
@@ -69,11 +69,8 @@ package org.flowerplatform.flex_client.core.plugin {
 		override public function preStart():void {
 			super.preStart();
 			
-			// _appVersion = "my_app_version";
-			// _apiVersion = "my_api_version";
-			include "version.inc";
-			
-			// check if same version as CorePlugin
+			// check if same version numbers as CorePlugin
+			// to ensure that this plugin was not cached by the browser
 			checkAPIVersion();
 			checkAppVersion();
 		}
