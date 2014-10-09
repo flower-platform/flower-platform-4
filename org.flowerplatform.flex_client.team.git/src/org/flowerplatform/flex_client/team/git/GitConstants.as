@@ -29,7 +29,7 @@ package org.flowerplatform.flex_client.team.git {
 		//Node type in Git folder hierarchy
 		/////////////////////////////////////////////////////////////
 
-		public static const GIT_REPO_TYPE:String = "gitRepo";
+		public static const GIT_REPO_TYPE:String = "gitRepo";		
 
 		public static const GIT_LOCAL_BRANCHES_TYPE:String = "gitLocalBranches";
 		public static const GIT_REMOTE_BRANCHES_TYPE:String = "gitRemoteBranches";
@@ -153,3 +153,4 @@ package org.flowerplatform.flex_client.team.git {
 			"#E8A815", "#00ACBF", "#FB3A04", "#3F40FF", "#1BC282", "#0068B7"));
 	}
 }
+

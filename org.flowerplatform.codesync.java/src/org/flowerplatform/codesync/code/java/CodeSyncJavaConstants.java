@@ -124,15 +124,8 @@ public final class CodeSyncJavaConstants {
 	/**
 	 *@author Mariana Gheorghe
 	 **/
-	public static String getImagePath(String image) {
-		return "org.flowerplatform.resources/images/codesync.java/" + image;
-	}
-	
-	/**
-	 *@author Mariana Gheorghe
-	 **/
 	public static String getImagePathFromPublicResources(String image) {
-		return ResourcesPlugin.getInstance().getResourceUrl("/images/codesync.java/" + image);
+		return ResourcesPlugin.getInstance().getResourceUrl("images/codesync.java/" + image);
 	}
 
 }

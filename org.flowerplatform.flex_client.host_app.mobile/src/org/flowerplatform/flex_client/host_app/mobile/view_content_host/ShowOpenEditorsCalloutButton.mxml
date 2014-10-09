@@ -33,19 +33,25 @@
 						import mx.core.IVisualElement;
 						import mx.core.UIComponent;
 						
-						import org.flowerplatform.flex_client.core.CorePlugin;
-						import org.flowerplatform.flex_client.core.editor.EditorFrontend;
-						import org.flowerplatform.flex_client.resources.Resources;
-						import org.flowerplatform.flexutil.FlexUtilGlobals;
-						
 						import spark.components.Group;
 						
+						import org.flowerplatform.flex_client.host_app.mobile.view_content_host.WorkbenchMobileSplitViewHost;
+						import org.flowerplatform.flex_client.resources.Resources;
+						import org.flowerplatform.flexutil.FlexUtilGlobals;
+						import org.flowerplatform.flexutil.layout.ViewLayoutData;
+						
+						public var editorFrontend:UIComponent;
+						
 						[Bindable]
-						public var editorFrontend:EditorFrontend;
+						public var viewLayoutData:ViewLayoutData;
 						
 						public var container:Group;
 						
 						public var splitView:WorkbenchMobileSplitViewHost;
+						
+						public function getLabel(viewLayoutData:ViewLayoutData):String {
+							return FlexUtilGlobals.getInstance().composedViewProvider.getTitle(viewLayoutData);
+						}
 						
 						protected function switchToEditorFrontend(event:MouseEvent):void {
 							splitView.rightActiveComponent = editorFrontend;
@@ -70,7 +76,7 @@
 					]]>
 				</fx:Script>
 				
-				<s:Button id="switchButton" label="{editorFrontend.editorInput}" 
+				<s:Button id="switchButton" label="{getLabel(viewLayoutData)}"
 						  click="switchToEditorFrontend(event)"
 						  width="100%"
 						  skinClass="com.flextras.mobile.shared.skins.ButtonSkinSquare"/>
@@ -84,21 +90,18 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.flowerplatform.flex_client.resources.Resources;
-			import org.flowerplatform.flex_client.mindmap.MindMapEditorFrontend;
-			import org.flowerplatform.flex_client.core.CorePlugin;			
-			import org.flowerplatform.flexutil.mobile.view_content_host.split.MobileSplitViewHost;
-			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			import mx.collections.ArrayList;
-			import mx.collections.IList;
 			import mx.core.UIComponent;
+			
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.layout.ViewLayoutData;
 			
 			[Bindable]
 			public var splitView:WorkbenchMobileSplitViewHost;
 			
-			public function addEditorFrontend(editorFrontend:UIComponent):void {
+			public function addEditorFrontend(editorFrontend:UIComponent, viewLayoutData:ViewLayoutData):void {
 				var entry:EditorFrontendEntry = new EditorFrontendEntry();
-				entry.editorFrontend = MindMapEditorFrontend(editorFrontend);
+				entry.editorFrontend = editorFrontend;
+				entry.viewLayoutData = viewLayoutData;
 				entry.splitView = splitView;
 				entry.container = contents;
 				contents.addElement(entry);
@@ -110,10 +113,8 @@
 			public function refreshLabels():void {
 				for (var i:int = 0; i < contents.numElements; i++) {
 					var entry:EditorFrontendEntry = EditorFrontendEntry(contents.getElementAt(i));
-					var label:String = entry.editorFrontend.editorInput;					
-					label = entry.editorFrontend.decorateTitle(label); 
-					
-					entry.switchButton.label = label;
+					var title:String = entry.getLabel(entry.viewLayoutData);
+					entry.switchButton.label = title;
 				}
 			}
 			

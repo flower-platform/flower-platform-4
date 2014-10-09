@@ -23,7 +23,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.editor.action.InplaceEditorAction;
 	import org.flowerplatform.flex_client.core.editor.action.OpenWithEditorActionProvider;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flex_client.mindmap.action.NodeDownAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodeLeftAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodePageDownAction;
@@ -106,7 +105,7 @@ package org.flowerplatform.flex_client.mindmap {
 			}
 		}
 		
-		override public function resourceNodeRemoved(resourceNodeUri:String, nodeRegistry:NodeRegistry):void {
+		override public function resourceNodeRemoved(resourceNodeUri:String, nodeRegistry:*):void {
 			super.resourceNodeRemoved(resourceNodeUri, nodeRegistry);
 			if (this.nodeRegistry == nodeRegistry) {
 				var rootModel:MindMapRootModelWrapper = MindMapRootModelWrapper(diagramShell.rootModel);

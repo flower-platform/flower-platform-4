@@ -107,7 +107,7 @@ public class CommandStackTest extends EclipseIndependentTestBase {
 		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceUris();
 		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceSets();
 		doReturn(-1L).when(remoteMethodInvocationInfo).getTimestampOfLastRequest();
-		remoteMethodInvocationInfo.setMethodName("test");
+		remoteMethodInvocationInfo.setServiceMethodOrUrl("test");
 	}
 
 	/**
@@ -149,7 +149,7 @@ public class CommandStackTest extends EclipseIndependentTestBase {
 
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
 		context.add("type", MindMapConstants.MINDMAP_NODE_TYPE);
-		nodeServiceRemote.addChild(rootNode.getNodeUri(), context);
+		nodeServiceRemote.addChild(rootNode.getNodeUri(), context.getContext());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
@@ -199,7 +199,7 @@ public class CommandStackTest extends EclipseIndependentTestBase {
 
 		context.add("type", MindMapConstants.MINDMAP_NODE_TYPE);
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		String childUri = nodeServiceRemote.addChild(node.getNodeUri(), context);
+		String childUri = nodeServiceRemote.addChild(node.getNodeUri(), context.getContext());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		List<Node> children = nodeService.getChildren(node, context);
@@ -302,7 +302,7 @@ public class CommandStackTest extends EclipseIndependentTestBase {
 
 		context.add("type", MindMapConstants.MINDMAP_NODE_TYPE);
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		String childUri = nodeServiceRemote.addChild(node.getNodeUri(), context);
+		String childUri = nodeServiceRemote.addChild(node.getNodeUri(), context.getContext());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
@@ -347,7 +347,7 @@ public class CommandStackTest extends EclipseIndependentTestBase {
 
 		context.add("type", MindMapConstants.MINDMAP_NODE_TYPE);
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		String childUri = nodeServiceRemote.addChild(node.getNodeUri(), context);
+		String childUri = nodeServiceRemote.addChild(node.getNodeUri(), context.getContext());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
@@ -373,7 +373,7 @@ public class CommandStackTest extends EclipseIndependentTestBase {
 
 		context.add("type", MindMapConstants.MINDMAP_NODE_TYPE);
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		String childUri = nodeServiceRemote.addChild(node.getNodeUri(), context);
+		String childUri = nodeServiceRemote.addChild(node.getNodeUri(), context.getContext());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
@@ -403,7 +403,7 @@ public class CommandStackTest extends EclipseIndependentTestBase {
 		{
 			context.add("type", MindMapConstants.MINDMAP_NODE_TYPE);
 			remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-			newNodeId = nodeServiceRemote.addChild(node.getNodeUri(), context);
+			newNodeId = nodeServiceRemote.addChild(node.getNodeUri(), context.getContext());
 			remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 			List<Command> commands = resourceSetService.getCommands(RESOURCE_NODE_URI);
 

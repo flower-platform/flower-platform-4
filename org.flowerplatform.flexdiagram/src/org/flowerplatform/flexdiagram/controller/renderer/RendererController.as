@@ -30,8 +30,9 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 		}
 		
 		/**
-		 * This usually returns the Class of the renderer. For Sequential Layout mechanism the method
-		 * MUST return the Class of the renderer as key.
+		 * This usually returns the Class of the renderer. MUST return the Class of the renderer as key:
+		 * for Sequential Layout mechanism, or for Absolute Layout, when a model can have multiple types of
+		 * renderers.
 		 */
 		public function geUniqueKeyForRendererToRecycle(context:DiagramShellContext, model:Object):Object {
 			throw new Error("This method needs to be implemented.");

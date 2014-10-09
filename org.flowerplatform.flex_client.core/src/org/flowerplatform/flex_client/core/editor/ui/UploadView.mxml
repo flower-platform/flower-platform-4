@@ -25,21 +25,17 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.IList;
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.EditorFrontend;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
-			import org.flowerplatform.flex_client.core.node.NodeRegistry;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.Utils;
-			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.layout.IWorkbench;
-			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			private static const ZIP_EXTENSION:String = ".zip";
 			
@@ -120,7 +116,7 @@
 				var activeComponent:UIComponent = workbench.getEditorFromViewComponent(workbench.getActiveView());
 				
 				if (activeComponent is EditorFrontend) {
-					var nodeRegistry:NodeRegistry = EditorFrontend(activeComponent).nodeRegistry;
+					var nodeRegistry:* = EditorFrontend(activeComponent).nodeRegistry;
 					nodeRegistry.refresh(uploadLocationNode);					
 				}
 				

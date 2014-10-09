@@ -61,6 +61,7 @@ public final class GitConstants {
 
 	public static final String FULL_NAME = "fullName";
 	public static final String CONFIG_REMOTE = "configRemote";
+
 	public static final String CONFIG_UPSTREAM_BRANCH = "configUpstreamBranch";
 	public static final String CONFIG_REBASE = "configRebase";
 

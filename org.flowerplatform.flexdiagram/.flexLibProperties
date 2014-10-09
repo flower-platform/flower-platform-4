@@ -34,7 +34,9 @@
     <classEntry path="org.flowerplatform.flexdiagram.util.MultilineLabelItemRenderer"/>
     <classEntry path="org.flowerplatform.flexdiagram.mindmap.MindMapDragTool"/>
     <classEntry path="org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer"/>
-    <classEntry path="org.flowerplatform.flexdiagram.mindmap.AbstractMindMapNodeRenderer"/>
+    <classEntry path="org.flowerplatform.flexdiagram.mindmap.MultiConnectorModel"/>
+    <classEntry path="org.flowerplatform.flexdiagram.mindmap.MultiConnectorRenderer"/>
+    <classEntry path="org.flowerplatform.flexdiagram.mindmap.controller.MultiConnectorAbsoluteLayoutRectangleController"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

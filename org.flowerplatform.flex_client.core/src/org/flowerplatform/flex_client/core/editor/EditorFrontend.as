@@ -23,10 +23,7 @@ package org.flowerplatform.flex_client.core.editor {
 	import spark.components.VGroup;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.editor.action.NodeTypeActionProvider;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.INodeRegistryManagerListener;
-	import org.flowerplatform.flex_client.core.node.NodeRegistry;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ComposedActionProvider;
 	import org.flowerplatform.flexutil.action.IAction;
@@ -37,6 +34,7 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	import org.flowerplatform.flexutil.view_content_host.IViewHostAware;
+	import org.flowerplatform.js_client.common_js_as.node.INodeRegistryManagerListener;
 	
 	/**
 	 * @author Mariana Gheorghe
@@ -49,7 +47,7 @@ package org.flowerplatform.flex_client.core.editor {
 		
 		protected var _viewHost:IViewHost;
 		
-		public var nodeRegistry:NodeRegistry;
+		public var nodeRegistry:*;
 		
 		public function EditorFrontend() {
 			super();
@@ -120,14 +118,14 @@ package org.flowerplatform.flex_client.core.editor {
 			// nothing to do
 		}
 		
-		public function nodeRegistryRemoved(nodeRegistry:NodeRegistry):void {
+		public function nodeRegistryRemoved(nodeRegistry:*):void {
 			if (this.nodeRegistry == nodeRegistry) {
 				var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
 				workbench.closeView(workbench.getViewComponentForEditor(this), true, false);
 			}
 		}
 		
-		public function resourceNodeRemoved(resourceNodeUri:String, nodeRegistry:NodeRegistry):void {
+		public function resourceNodeRemoved(resourceNodeUri:String, nodeRegistry:*):void {
 			// do nothing			
 		}		
 		

@@ -18,19 +18,19 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import flash.events.FocusEvent;
 	import flash.geom.Rectangle;
 	
-	import org.flowerplatform.flex_client.core.CorePlugin;
-	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
-	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
-	import org.flowerplatform.flexdiagram.ControllerUtils;
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
-	import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
-	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
-	import org.flowerplatform.flexdiagram.tool.controller.InplaceEditorController;
-	import org.flowerplatform.flexutil.text.AutoGrowTextArea;
+	import mx.core.UIComponent;
 	
 	import spark.components.RichText;
+	
+	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flexdiagram.DiagramShellContext;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
+	import org.flowerplatform.flexdiagram.mindmap.IAbstractMindMapModelRenderer;
+	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
+	import org.flowerplatform.flexdiagram.tool.controller.InplaceEditorController;
+	import org.flowerplatform.flexutil.controller.ValuesProvider;
+	import org.flowerplatform.flexutil.text.AutoGrowTextArea;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -44,7 +44,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		}
 				
 		override public function activate(context:DiagramShellContext, model:Object):void {
-			var renderer:AbstractMindMapModelRenderer = AbstractMindMapModelRenderer(context.diagramShell.getRendererForModel(context, model));
+			var renderer:IAbstractMindMapModelRenderer = IAbstractMindMapModelRenderer(context.diagramShell.getRendererForModel(context, model));
 			var rendererLabelDisplay:RichText = renderer.getLabelDisplay();
 			var bounds:Rectangle = rendererLabelDisplay.getBounds(DisplayObject(context.diagramShell.diagramRenderer));
 			
@@ -54,7 +54,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			textArea.x = bounds.x;
 			textArea.y = bounds.y;			
 			textArea.minWidth = bounds.width;
-			textArea.maxWidth = renderer.maxWidth; // needed for width auto grow
+			textArea.maxWidth = UIComponent(renderer).maxWidth; // needed for width auto grow
 			textArea.minHeight = bounds.height;			
 						
 			// get styles from node's labelDisplay renderer
@@ -63,9 +63,9 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			textArea.setStyle("fontWeight", rendererLabelDisplay.getStyle("fontWeight"));
 			textArea.setStyle("fontStyle", rendererLabelDisplay.getStyle("fontStyle"));
 			textArea.setStyle("color", rendererLabelDisplay.getStyle("color"));
-					
-			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(context.diagramShell.registry, model);
-			textArea.text = titleProvider.getValue(Node(model)) as String;			
+			
+			textArea.text = CorePlugin.getInstance().getNodeValuesProviderForMindMap(context.diagramShell.registry, Node(model))
+					.getValue(context.diagramShell.registry, Node(model), FlexDiagramConstants.BASE_RENDERER_TEXT) as String;		
 			// set focus on text
 			textArea.callLater(textArea.setFocus);
 			// select all text
@@ -78,11 +78,11 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		
 		override public function commit(context:DiagramShellContext, model:Object):void {		
 			var textArea:AutoGrowTextArea = context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;
-			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(context.diagramShell.registry, model);
-			
-			if (titleProvider.getValue(Node(model)) != textArea.text) {
+			var valuesProvider:ValuesProvider = CorePlugin.getInstance().getNodeValuesProviderForMindMap(context.diagramShell.registry, Node(model));
+
+			if (valuesProvider.getValue(context.diagramShell.registry, Node(model), FlexDiagramConstants.BASE_RENDERER_TEXT) != textArea.text) {
 				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model).nodeUri, 
-					titleProvider.getPropertyNameFromGenericDescriptor(Node(model)), textArea.text], function(data:Object):void {
+					valuesProvider.getPropertyName(context.diagramShell.registry, Node(model), FlexDiagramConstants.BASE_RENDERER_TEXT), textArea.text], function(data:Object):void {
 						context.diagramShell.mainToolFinishedItsJob();
 					});
 			} else {

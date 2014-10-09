@@ -41,11 +41,9 @@ package org.flowerplatform.flexdiagram.controller.model_children {
 		}
 		
 		public function beginListeningForChanges(context:DiagramShellContext, model:Object):void {
-			throw new Error("This method needs to be implemented.");
 		}
 		
 		public function endListeningForChanges(context:DiagramShellContext, model:Object):void {
-			throw new Error("This method needs to be implemented.");
 		}
 	}
 }

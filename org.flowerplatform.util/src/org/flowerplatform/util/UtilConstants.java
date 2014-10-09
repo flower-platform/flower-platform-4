@@ -26,6 +26,28 @@ public final class UtilConstants {
 
 	public static final String FLOWER_PLATFORM = "flower-platform";
 	
+	////////////////////////////////////////////////////////////////////
+	// Constants Java and Flex
+	////////////////////////////////////////////////////////////////////
+
+	// Constants from Flex: FlexUtilConstants
+	
+	// TypeDescriptorRegistry
+	public static final String CATEGORY_PREFIX = "category.";
+	public static final String CATEGORY_ALL = CATEGORY_PREFIX + "all";
+
+	public static final String EXTRA_INFO_VALUE_CONVERTER = "valueConverter";
+	public static final String EXTRA_INFO_CSV_TO_LIST_PREFIX = "csvToListPrefix";
+	public static final String EXTRA_INFO_CSV_TO_LIST_SUFFIX = "csvToListSuffix";
+	
+	// Other
+	public static final String VALUE_CONVERTER_STRING_HEX_TO_UINT = "stringHexToUint";
+	public static final String VALUE_CONVERTER_CSV_TO_LIST = "csvToList";
+
+	////////////////////////////////////////////////////////////////////
+	// Constants only in Java (or before the constants cleaning up)
+	////////////////////////////////////////////////////////////////////
+
 	//////////////////////////////////
 	// Resources
 	//////////////////////////////////
@@ -43,12 +65,5 @@ public final class UtilConstants {
 	
 	public static final File TEMP_FOLDER = new File(System.getProperty("java.io.tmpdir"), FLOWER_PLATFORM);
 	public static final char RESOURCE_PATH_SEPARATOR = '|';
-	
-	//////////////////////////////////
-	// Categories
-	//////////////////////////////////
-	
-	public static final String CATEGORY_PREFIX = "category.";
-	public static final String CATEGORY_ALL = CATEGORY_PREFIX + "all";
 	
 }

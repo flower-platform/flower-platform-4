@@ -21,7 +21,6 @@ import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_DIFFS_MODIFIED
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_TYPE;
 import static org.flowerplatform.tests.codesync.CodeSyncEclipseIndependentTestBase.DIR;
 import static org.flowerplatform.tests.TestUtil.INITIAL_TO_BE_COPIED;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

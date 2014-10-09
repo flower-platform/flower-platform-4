@@ -92,7 +92,7 @@ public class FileSystemControllersTest extends EclipseIndependentTestBase {
 		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceUris();
 		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceSets();
 		doReturn(-1L).when(remoteMethodInvocationInfo).getTimestampOfLastRequest();
-		remoteMethodInvocationInfo.setMethodName("test");
+		remoteMethodInvocationInfo.setServiceMethodOrUrl("test");
 
 	}
 
@@ -158,7 +158,7 @@ public class FileSystemControllersTest extends EclipseIndependentTestBase {
 		String fullNodeId = createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1");
 	        
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.addChild(fullNodeId, context);
+		nodeServiceRemote.addChild(fullNodeId, context.getContext());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 							 
 		Object newFile;
@@ -180,7 +180,7 @@ public class FileSystemControllersTest extends EclipseIndependentTestBase {
 		fullNodeId = createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder1");
 
 		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
-		nodeServiceRemote.addChild(fullNodeId, context);
+		nodeServiceRemote.addChild(fullNodeId, context.getContext());
 		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
 		Object newFolder;
 		try {

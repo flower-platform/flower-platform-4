@@ -31,10 +31,11 @@
 			import mx.collections.IList;
 			import mx.events.FlexEvent;
 			
+			import flashx.textLayout.conversion.TextConverter;
+			
 			import org.flowerplatform.flex_client.core.CoreConstants;
 			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
-			import org.flowerplatform.flex_client.core.node.remote.ServiceContext;
 			import org.flowerplatform.flex_client.properties.PropertiesConstants;
 			import org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer;
 			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
@@ -99,8 +100,8 @@
 						
 			override protected function okHandler(evt:Event = null):void {
 				var propertiesToSetAfterAddingNode:ArrayList = new ArrayList();
-				var context:ServiceContext = new ServiceContext();
-				context.add("type", nodeType);
+				var context:Object = new Object();
+				context["type"] = nodeType;
 				context.add(CoreConstants.INSERT_BEFORE_FULL_NODE_ID, siblingNodeUri);
 				
 				for (var i:int = 0; i < propertyForm.numElements; i++) {
@@ -116,7 +117,7 @@
 							return;
 						}
 						if (propertyItemRenderer.propertyDescriptor.contributesToCreation) {
-							context.add(propertyItemRenderer.propertyDescriptor[CoreConstants.NAME], propertyItemRenderer.value);
+							context[propertyItemRenderer.propertyDescriptor[CoreConstants.NAME]] = propertyItemRenderer.value;
 						} else {
 							if (propertyItemRenderer.value != null && propertyItemRenderer.value != "") {
 								propertiesToSetAfterAddingNode.addItem(propertyItemRenderer);

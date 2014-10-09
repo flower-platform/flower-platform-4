@@ -26,6 +26,8 @@ package org.flowerplatform.flex_client.web {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.global_menu.GlobalMenuBar;
+	import org.flowerplatform.flexutil.iframe.FlowerIFrameViewProvider;
+	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	import org.flowerplatform.flexutil.layout.event.ActiveViewChangedEvent;
 	import org.flowerplatform.flexutil.layout.event.ViewsRemovedEvent;
 	
@@ -54,7 +56,7 @@ package org.flowerplatform.flex_client.web {
 		
 		override public function start():void {
 			super.start();
-					
+			
 			EventDispatcher(FlexUtilGlobals.getInstance().workbench).addEventListener(ViewsRemovedEvent.VIEWS_REMOVED, CorePlugin.getInstance().resourceNodesManager.viewsRemovedHandler);
 			EventDispatcher(FlexUtilGlobals.getInstance().workbench).addEventListener(ActiveViewChangedEvent.ACTIVE_VIEW_CHANGED, CorePlugin.getInstance().resourceNodesManager.activeViewChangedHandler);
 			
@@ -68,6 +70,11 @@ package org.flowerplatform.flex_client.web {
 			
 			CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "virtual:user/repo|root");
 			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
+			
+			// test for embedded IFrame
+			var viewLayoutData:ViewLayoutData = new ViewLayoutData(FlowerIFrameViewProvider.ID, "js_client.core/index.html");
+			viewLayoutData.isEditor = true;
+			FlexUtilGlobals.getInstance().workbench.addEditorView(viewLayoutData, true);
 		}
 		
 		override protected function registerMessageBundle():void {

@@ -52,6 +52,7 @@ public final class CodeSyncSdiffConstants {
 	public static final String MATCH_COLOR_BODY_MODIFIED = "#FF00FF";
 	public static final String MATCH_COLOR_CHILDREN_MODIFIED = "#FFCC00";
 	public static final String MATCH_COLOR_COMMENT = "#FFFF00";
+	public static final String PROPERTY_NAME_WITH_PATH = "nameWithPath";
 		
 	//////////////////////////////////
 	// Service context options

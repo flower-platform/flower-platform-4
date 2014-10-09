@@ -20,18 +20,17 @@ package org.flowerplatform.flex_client.core.service {
 	import mx.collections.ArrayCollection;
 	import mx.messaging.ChannelSet;
 	import mx.rpc.AbstractOperation;
-	import mx.rpc.events.FaultEvent;
-	import mx.rpc.events.ResultEvent;
+	import mx.rpc.Fault;
 	import mx.rpc.remoting.RemoteObject;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction;
-	import org.flowerplatform.flex_client.core.node.IServiceInvocator;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.service.ServiceResponder;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
+	import org.flowerplatform.js_client.common_js_as.node.IHostServiceInvocator;
 
 	/**
 	 * Custom behavior to get updates registered after each message invocation.
@@ -49,7 +48,7 @@ package org.flowerplatform.flex_client.core.service {
 	 * @author Cristina Constantinescu
 	 * @author Mariana Gheorghe
 	 */ 
-	public class UpdatesProcessingServiceLocator extends ServiceLocator implements IServiceInvocator {
+	public class UpdatesProcessingServiceLocator extends ServiceLocator implements IHostServiceInvocator {
 		
 		private var communicationErrorViewContent:IViewContent;
 		
@@ -83,9 +82,7 @@ package org.flowerplatform.flex_client.core.service {
 			return operation;
 		}
 		
-		override public function resultHandler(event:ResultEvent, responder:ServiceResponder):void {			
-			var result:Object = event.result;
-			
+		override public function resultHandler(result:Object, responder:ServiceResponder):void {
 			if (result.hasOwnProperty(CoreConstants.LAST_UPDATE_TIMESTAMP)) {
 				CorePlugin.getInstance().lastUpdateTimestampOfServer = result[CoreConstants.LAST_UPDATE_TIMESTAMP];
 				CorePlugin.getInstance().lastUpdateTimestampOfClient = new Date().time;
@@ -114,15 +111,15 @@ package org.flowerplatform.flex_client.core.service {
 			}
 		}
 		
-		override public function faultHandler(event:FaultEvent, responder:ServiceResponder):void {
-			if (event.fault.faultCode == "Channel.Call.Failed" /*|| event.fault.faultCode == "Client.Error.MessageSend")*/) {
+		override public function faultHandler(fault:Fault, responder:ServiceResponder):void {
+			if (fault.faultCode == "Channel.Call.Failed" /*|| fault.faultCode == "Client.Error.MessageSend")*/) {
 				if (communicationErrorViewContent == null) {
 					communicationErrorViewContent = new ReconnectingViewContent();
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 						.setViewContent(communicationErrorViewContent)
 						.showModalOverAllApplication();
 				}
-			} else if (event.fault.faultCode == "Client.Error.MessageSend") {
+			} else if (fault.faultCode == "Client.Error.MessageSend") {
 				if (communicationErrorViewContent == null) {
 					if (FlexUtilGlobals.getInstance().clientCommunicationErrorViewContent == null) {
 						communicationErrorViewContent = new ReconnectingViewContent();
@@ -134,7 +131,7 @@ package org.flowerplatform.flex_client.core.service {
 						.showModalOverAllApplication();
 				}
 			}else {
-				super.faultHandler(event, responder);
+				super.faultHandler(fault, responder);
 			}
 		}
 

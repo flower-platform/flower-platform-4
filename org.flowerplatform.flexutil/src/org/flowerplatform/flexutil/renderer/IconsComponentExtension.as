@@ -104,7 +104,7 @@ package org.flowerplatform.flexutil.renderer {
 			iconDisplay.verticalAlign = "middle";
 			iconDisplay.depth = UIComponent(component).depth;
 			
-			IVisualElementContainer(component.getMainComponent()).addElementAt(iconDisplay, component.newIconIndex());
+			IVisualElementContainer(component).addElementAt(iconDisplay, component.newIconIndex());
 			
 			if (iconDisplays == null) {
 				iconDisplays = new ArrayList();
@@ -113,7 +113,7 @@ package org.flowerplatform.flexutil.renderer {
 		}
 		
 		protected function removeIconDisplay(iconDisplay:BitmapImage):void {
-			IVisualElementContainer(component.getMainComponent()).removeElement(iconDisplay);
+			IVisualElementContainer(component).removeElement(iconDisplay);
 			iconDisplays.removeItemAt(iconDisplays.getItemIndex(iconDisplay));
 			
 			UIComponent(component).invalidateSize();

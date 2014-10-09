@@ -15,14 +15,32 @@
  */
 package org.flowerplatform.core;
 
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_BACKGROUND_COLOR;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_FONT_BOLD;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_FONT_FAMILY;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_FONT_ITALIC;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_FONT_SIZE;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_ICONS;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_MAX_WIDTH;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_MIN_WIDTH;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_TEXT;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_TEXT_COLOR;
 import static org.flowerplatform.core.CoreConstants.DEFAULT_LOG_PATH;
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.LOGBACK_CONFIG_FILE;
+import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_CLOUD_COLOR;
+import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_CLOUD_TYPE;
+import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_HAS_CHILDREN;
+import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_SIDE;
+import static org.flowerplatform.core.CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE;
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.core.CoreConstants.ROOT_TYPE;
 import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
+import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_VALUE_CONVERTER;
+import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_CSV_TO_LIST;
+import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_STRING_HEX_TO_UINT;
 
 import java.io.File;
 
@@ -38,7 +56,6 @@ import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.DelegateToResourceController;
 import org.flowerplatform.core.node.controller.PropertyDescriptorDefaultPropertyValueProvider;
 import org.flowerplatform.core.node.controller.TypeDescriptorRegistryDebugControllers;
-import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
@@ -64,7 +81,11 @@ import org.flowerplatform.core.repository.RootPropertiesProvider;
 import org.flowerplatform.core.session.ComposedSessionListener;
 import org.flowerplatform.core.session.ISessionListener;
 import org.flowerplatform.core.session.SessionService;
+import org.flowerplatform.core.users.UserService;
 import org.flowerplatform.util.UtilConstants;
+import org.flowerplatform.util.Utils;
+import org.flowerplatform.util.controller.GenericDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.flowerplatform.util.servlet.ServletUtils;
@@ -80,7 +101,6 @@ import ch.qos.logback.core.joran.spi.JoranException;
  * @author Cristina Constantinescu
  * @author Mariana Gheorghe
  */
-@SuppressWarnings("restriction")
 public class CorePlugin extends AbstractFlowerJavaPlugin {
 
 	protected static CorePlugin instance;
@@ -291,6 +311,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getServiceRegistry().registerService("downloadService", new DownloadService());
 		getServiceRegistry().registerService("uploadService", new UploadService());
 		getServiceRegistry().registerService("preferenceService", new PreferencesServiceRemote());
+		getServiceRegistry().registerService("userService", new UserService());
 		
 		new ResourceUnsubscriber().start();
 		
@@ -321,9 +342,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(CoreConstants.ADD_NODE_CONTROLLER, updateController)
 			.addAdditiveController(CoreConstants.REMOVE_NODE_CONTROLLER, updateController)
 		
-			.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new PropertyDescriptorDefaultPropertyValueProvider())
-			.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.NAME))
-			.addSingleController(CoreConstants.PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CoreConstants.ICONS));
+			.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new PropertyDescriptorDefaultPropertyValueProvider());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CoreConstants.PREFERENCE_CATEGORY_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new PreferencePropertiesProvider().setOrderIndexAs(1000)); // after persistence props provider
@@ -342,7 +361,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		if (Boolean.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP))) {
 			FileUtils.deleteDirectory(UtilConstants.TEMP_FOLDER);
 		}
-		
+	
 		// Controllers for Command Stack
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_STACK_TYPE)
 				.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new CommandStackPropertiesProvider())
@@ -351,9 +370,55 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CoreConstants.COMMAND_TYPE);
 
 		CorePlugin.getInstance().getResourceService().addResourceHandler(CoreConstants.COMMAND_STACK_SCHEME, commandStackResourceHandler);
+		
+		// define the properties that feed the graphical properties/capabilities of the mind map renderer
+		// every node that has one of the properties below will be rendered. Probably the nodes that come from general persistence:
+		// we'll be able to modify them as well. The Freeplane plugin overrides them.
+		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(UtilConstants.CATEGORY_ALL);
+				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_TEXT);
+				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_ICONS)
+					.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_CSV_TO_LIST);
+				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MIND_MAP_RENDERER_HAS_CHILDREN);
+		
+				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_FONT_FAMILY);
+				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_FONT_SIZE);
+				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_FONT_BOLD);
+				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_FONT_ITALIC);
+				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_TEXT_COLOR)
+					.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_STRING_HEX_TO_UINT);
+				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_BACKGROUND_COLOR)
+					.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_STRING_HEX_TO_UINT);
+				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MIND_MAP_RENDERER_CLOUD_TYPE);
+				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MIND_MAP_RENDERER_CLOUD_COLOR)
+					.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_STRING_HEX_TO_UINT);
+				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_MIN_WIDTH);
+				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_MAX_WIDTH);
+				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MIND_MAP_RENDERER_SIDE);
+	}	
 	
+	/**
+	 * 
+	 * @param feature
+	 * @return
+	 */
+	public String getPropertyNameForVisualFeatureSupportedByMindMapRenderer(String feature) {
+		if (feature.endsWith(BASE_RENDERER_TEXT)) {
+			return CoreConstants.NAME;
+		} else if (feature.endsWith(BASE_RENDERER_ICONS)) {
+			// in this case it's the same property (i.e. shouldn't put a special case); but we use .ICONS, because it exists already
+			return CoreConstants.ICONS;
+		} else if (feature.endsWith(MIND_MAP_RENDERER_HAS_CHILDREN)) {
+			return CoreConstants.HAS_CHILDREN;
+		}
+		return Utils.substringFrom(feature, ".");
 	}
-
+	
+	private GenericDescriptor addGenericDescriptorWithSimilarNameAsFeature(TypeDescriptor descriptor, String  feature) {
+		GenericDescriptor d = new GenericDescriptor(getPropertyNameForVisualFeatureSupportedByMindMapRenderer(feature));
+		descriptor.addSingleController(feature, d);
+		return d;
+	}
+	
 	/**
 	 *@author Cristian Spiescu
 	 **/

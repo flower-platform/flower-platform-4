@@ -22,6 +22,8 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
@@ -46,9 +48,16 @@ public class Node implements Externalizable {
 	private boolean propertiesPopulated;
 
 	private Object rawNodeData;
+
+	/**
+	 * @author Mariana Gheorghe
+	 */
+	public Node() {
+		super();
+	}
 	
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public Node(String nodeUri, String type) {
 		setNodeUri(nodeUri);
@@ -71,6 +80,7 @@ public class Node implements Externalizable {
 		this.nodeUri = nodeUri;
 	}
 	
+	@XmlTransient
 	public String getScheme() {
 		return Utils.getScheme(nodeUri);
 	}
@@ -117,6 +127,7 @@ public class Node implements Externalizable {
 		return getProperties();
 	}
 	
+	@XmlTransient
 	public Object getRawNodeData() {
 		return rawNodeData;
 	}

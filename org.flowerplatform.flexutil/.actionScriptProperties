@@ -15,7 +15,8 @@
       <libraryPathEntry kind="1" linkType="1" path="lib"/>
       <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/mobile/mobilecomponents.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/themes/Mobile/mobile.swc" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flex_client.resources/bin/org.flowerplatform.flex_client.resources.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="lib/StageWebViewBridge.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="2" path="${PROJECT_FRAMEWORKS}/libs/air/airglobal.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>

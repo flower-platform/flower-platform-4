@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/test.js"></script>
+
+
+</head>
+<body>
+
+<script type="text/javascript">
+
+var sessionId;
+
+function setSessionId(id) {
+	sessionId = id;
+}
+
+function login() {
+	put("servlet/rest/coreService/login", null, null, { "JSESSIONID" : sessionId });
+}
+
+</script>
+
+</body>
+</html>

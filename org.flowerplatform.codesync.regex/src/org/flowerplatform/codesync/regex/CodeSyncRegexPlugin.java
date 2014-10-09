@@ -38,7 +38,6 @@ import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING;
-import static org.flowerplatform.core.CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 
 import java.util.ArrayList;
@@ -55,11 +54,11 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileSubscribableProvider;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
-import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.resources.ResourcesPlugin;
+import org.flowerplatform.util.controller.GenericDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.flowerplatform.util.regex.RegexAction;
 import org.flowerplatform.util.regex.RegexProcessingSession;
@@ -130,7 +129,6 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 					.setMandatoryAs(true).setOrderIndexAs(40));
 				
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_REGEX)
-			.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(NAME))			
 			.addAdditiveController(PROPERTIES_PROVIDER, new RegexController())
 			.addAdditiveController(PROPERTY_SETTER, new RegexController())
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(REGEX_WITH_MACROS).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING)
@@ -151,7 +149,7 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(CHILDREN_PROVIDER, new RegexMatchesChildrenProvider());
 				
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(VIRTUAL_REGEX_TYPE)
-			.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(REGEX_NAME))
+			.addSingleController(CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + CoreConstants.BASE_RENDERER_TEXT, new GenericDescriptor(REGEX_NAME))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING)
 					.setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(10))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FULL_REGEX).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING)
@@ -160,7 +158,6 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(CHILDREN_PROVIDER, new VirtualRegexChildrenProvider());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_MATCH_TYPE)
-			.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(NAME))
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/codesync.regex/brick.png")))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING)
 					.setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(10))

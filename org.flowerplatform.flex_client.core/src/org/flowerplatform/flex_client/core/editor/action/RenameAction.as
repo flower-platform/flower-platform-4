@@ -17,10 +17,10 @@ package org.flowerplatform.flex_client.core.editor.action {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.ui.RichTextWithRendererView;
-	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
-	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -33,7 +33,6 @@ package org.flowerplatform.flex_client.core.editor.action {
 			label = Resources.getMessage("mindmap.edit.node.core");
 			icon = Resources.editIcon;
 			orderIndex = 80;
-			
 		}
 								
 		override public function run():void {
@@ -43,12 +42,12 @@ package org.flowerplatform.flex_client.core.editor.action {
 			view.node = node;
 			view.diagramShellContext = diagramShellContext;
 			
-			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, node);
-			view.text = String(titleProvider.getValue(node));
+			var valuesProvider:ValuesProvider = CorePlugin.getInstance().getNodeValuesProviderForMindMap(diagramShellContext.diagramShell.registry, node);
+			view.text = String(valuesProvider.getValue(diagramShellContext.diagramShell.registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT));
 			
 			view.resultHandler = function(newValue:String):void {				
 				// invoke service method and wait for result to close the rename popup
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.nodeUri, titleProvider.getPropertyNameFromGenericDescriptor(node), newValue], 
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.nodeUri, valuesProvider.getPropertyName(diagramShellContext.diagramShell.registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT), newValue], 
 					function(data:Object):void {
 						if (view != null) {
 							FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(view);

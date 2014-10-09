@@ -21,14 +21,12 @@ import java.util.Map;
 
 /**
  * @author Sebastian Solomon
+ * @author Mariana Gheorghe
  */
 public class RemoteMethodInvocationInfo {
-	private String serviceId;
 
-	private String methodName;
-
-	private List<?> parameters;
-
+	private String serviceMethodOrUrl;
+	
 	private long startTimestamp;
 
 	private Object returnValue;
@@ -40,29 +38,12 @@ public class RemoteMethodInvocationInfo {
 	 */
 	private Map<?, ?> headers;
 	
-	
-	public String getServiceId() {
-		return serviceId;
+	public String getServiceMethodOrUrl() {
+		return serviceMethodOrUrl;
 	}
 
-	public void setServiceId(String serviceId) {
-		this.serviceId = serviceId;
-	}
-
-	public String getMethodName() {
-		return methodName;
-	}
-
-	public void setMethodName(String methodName) {
-		this.methodName = methodName;
-	}
-
-	public List<?> getParameters() {
-		return parameters;
-	}
-
-	public void setParameters(List<?> parameters) {
-		this.parameters = parameters;
+	public void setServiceMethodOrUrl(String serviceMethodOrUrl) {
+		this.serviceMethodOrUrl = serviceMethodOrUrl;
 	}
 
 	public long getStartTimestamp() {
@@ -115,7 +96,15 @@ public class RemoteMethodInvocationInfo {
 		return (List<String>) getHeaders().get(CoreConstants.RESOURCE_URIS);
 	}
 
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public long getTimestampOfLastRequest() {
-		return ((Number) getHeaders().get(CoreConstants.LAST_UPDATE_TIMESTAMP)).longValue();
+		// may be null if the request comes from the web app
+		Object timestamp = getHeaders().get(CoreConstants.LAST_UPDATE_TIMESTAMP);
+		if (timestamp == null) {
+			return 0;
+		}
+		return ((Number) timestamp).longValue();
 	}
 }
