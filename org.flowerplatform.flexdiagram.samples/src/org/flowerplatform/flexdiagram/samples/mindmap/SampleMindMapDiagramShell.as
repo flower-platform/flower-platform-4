@@ -79,10 +79,12 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 					.addExtraInfoProperty(FlexUtilConstants.EXTRA_INFO_VALUE_CONVERTER, FlexUtilConstants.VALUE_CONVERTER_CSV_TO_LIST)
 					.addExtraInfoProperty(FlexUtilConstants.EXTRA_INFO_CSV_TO_LIST_PREFIX, "../../org.flowerplatform.flexdiagram.samples/icons/")
 					.addExtraInfoProperty(FlexUtilConstants.EXTRA_INFO_CSV_TO_LIST_SUFFIX, ".png"))
+				//TODO: add controller: .addSingleController(FlexDiagramConstants.BASE_RENDERER_NOTE, new GenericDescriptor("note"))
 				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE, new GenericDescriptor("cloudType"))
 				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_COLOR, new GenericDescriptor("cloudColor"))
 				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_HAS_CHILDREN, new GenericDescriptor("hasChildren"))
 				.addSingleController("mindMapNodeRenderer.detailsText", new GenericDescriptor("details"));
+			
 							
 			registry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.TYPE)
 				.addSingleController(FlexDiagramConstants.MINDMAP_MODEL_CONTROLLER, new SampleMindMapModelController())			

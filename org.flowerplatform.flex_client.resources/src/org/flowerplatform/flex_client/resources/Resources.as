@@ -438,6 +438,10 @@ package org.flowerplatform.flex_client.resources {
 		[Embed(source="/mindmap/arrowUp.png")]
 		public static const arrowUpIcon:Class;
 		
+		// TODO: save the path fot _noteIcon
+		[Embed(source="/mindmap/icons/noteIcon.png")]
+		public static const mindmap_noteIcon:Class;
+		
 		public static const mindmapIcons:Object = {
 			"help" : mindmap_helpIcon,
 			"yes" : mindmap_yesIcon,

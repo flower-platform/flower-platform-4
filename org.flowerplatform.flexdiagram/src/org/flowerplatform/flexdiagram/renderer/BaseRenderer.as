@@ -2,10 +2,12 @@ package org.flowerplatform.flexdiagram.renderer {
 	import flash.display.GradientType;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
+	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.system.Capabilities;
 	
 	import mx.collections.IList;
+	import mx.controls.Alert;
 	import mx.core.DPIClassification;
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElement;
@@ -22,9 +24,11 @@ package org.flowerplatform.flexdiagram.renderer {
 	import spark.layouts.HorizontalLayout;
 	import spark.layouts.VerticalLayout;
 	import spark.primitives.BitmapImage;
+	import spark.primitives.Graphic;
 	
 	import flashx.textLayout.conversion.TextConverter;
 	
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
@@ -85,6 +89,11 @@ package org.flowerplatform.flexdiagram.renderer {
 		protected var _icons:IList;
 		
 		protected var _maxWidthAdvanced:Number;
+		
+		// TODO define variables for note and icon
+		/*protected var _noteIcon:BitmapImage;
+		
+		protected var _note:String;*/
 		
 		/**
 		 * Inspired from the Freeplane renderer, that increases the font a little bit.
@@ -163,6 +172,28 @@ package org.flowerplatform.flexdiagram.renderer {
 			}
 			invalidateSize();
 		}
+		
+		/* TODO:  1. set _noteText, _noteIcon 
+				  2. add event listener for _noteIcon -> appear toolTip
+			      3. add _noteIcon to the rest of _icons list 
+					 
+		public function set note(value:String):void {
+			_noteIcon = new BitmapImage();	
+			_noteIcon.source = Resources.mindmap_noteIcon;
+			
+			if (value != null) {
+				_note = value;
+			} else {
+				_note = null;
+			}
+		
+			// add _noteIcon to the list of _icons
+			if (_note != null && _note != "") {
+				_noteIcon.addEventListener(MouseEvent.MOUSE_OVER,createToolTip);
+				_icons.addItem(_noteIcon.source);
+				_icons.addEventListener(CollectionEvent.COLLECTION_CHANGE, handleIconsChanged);
+			}
+		}*/
 
 		protected override function measure():void {
 			super.measure();
@@ -277,6 +308,7 @@ package org.flowerplatform.flexdiagram.renderer {
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "icons", FlexDiagramConstants.BASE_RENDERER_ICONS, null);
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "minWidth", FlexDiagramConstants.BASE_RENDERER_MIN_WIDTH, NaN);
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "maxWidthAdvanced", FlexDiagramConstants.BASE_RENDERER_MAX_WIDTH, NaN);
+			// TODO: setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "note", FlexDiagramConstants.BASE_RENDERER_NOTE, "");
 		}
 		
 		protected function setFieldIfNeeded(valuesProvider:ValuesProvider, registry:TypeDescriptorRegistry, event:PropertyChangeEvent, field:String, featureForField:String, defaultValue:Object):void {
@@ -298,6 +330,8 @@ package org.flowerplatform.flexdiagram.renderer {
 			var iconDisplay:BitmapImage;
 			// loop over the icons list; and compare with the actual image components; the purpose: try to reuse the components
 			// there are 3 cases: the size theoretical list == the size of the actual list; or < or > 
+	
+			// TODO: search for _noteIcon first 
 			for (var i:int = 0; i < _icons.length; i++) {
 				var candidate:IVisualElement = getElementAt(i);
 				if (candidate is BitmapImage) {
@@ -553,6 +587,11 @@ package org.flowerplatform.flexdiagram.renderer {
 				hovered = (interactionStateDetector.state == InteractionState.OVER);
 			}
 		}
-	
+		
+		/* TODO: create toolTip for _noteIcon
+		private function createToolTip(event:MouseEvent):void {
+			//var toolTip:org.flowerplatform.flexdiagram.ui.ToolTip = new org.flowerplatform.flexdiagram.ui.ToolTip();
+		} 
+		*/
 	}
 }
