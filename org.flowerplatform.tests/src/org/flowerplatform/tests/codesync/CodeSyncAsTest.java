@@ -18,8 +18,6 @@ package org.flowerplatform.tests.codesync;
 import static org.flowerplatform.codesync.Match.MatchType._2MATCH_LEFT_RIGHT;
 import static org.flowerplatform.codesync.Match.MatchType._3MATCH;
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_RESOURCE_KEY;
-import static org.flowerplatform.tests.codesync.CodeSyncTestSuite.PROJECT;
-import static org.flowerplatform.tests.codesync.CodeSyncTestSuite.CODE_SYNC_SERVICE;
 import static org.junit.Assert.assertEquals;
 
 import org.flowerplatform.codesync.CodeSyncConstants;
@@ -27,27 +25,29 @@ import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.as.CodeSyncAsConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.Node;
+import org.flowerplatform.tests.TestUtil;
 import org.flowerplatform.util.Utils;
 import org.junit.Test;
 
 /**
  * @author Mariana Gheorghe
  */
-public class CodeSyncAsTest {
+public class CodeSyncAsTest extends CodeSyncEclipseIndependentTestBase {
 
 	public static final String INITIAL_AS = "initial_as";
 	
 	private static final String RESOURCE_NODE_ID = new Node(Utils.getUri(FREEPLANE_PERSISTENCE_RESOURCE_KEY, PROJECT + "|.codesync"), CodeSyncConstants.CODESYNC).getNodeUri();
+
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
 	@Test
 	public void test() {
 		String fullyQualifiedName = PROJECT + "/" + INITIAL_AS;
 		Node node = CorePlugin.getInstance().getResourceService().getNode(RESOURCE_NODE_ID);
-		String nodeUri = CodeSyncTestSuite.getChild(node, new String[] { INITIAL_AS }).getNodeUri();
+		String nodeUri = getChild(node, new String[] { INITIAL_AS }).getNodeUri();
 		
-		Match match = CODE_SYNC_SERVICE.synchronize(nodeUri, CodeSyncTestSuite.getFile(fullyQualifiedName), CodeSyncAsConstants.ACTIONSCRIPT, true);
+		Match match = codeSyncOperationsService.synchronize(nodeUri, TestUtil.getFile(fullyQualifiedName), CodeSyncAsConstants.ACTIONSCRIPT, true);
 		
 		assertEquals(2, match.getSubMatches().size()); // found 2 files
 		
@@ -65,7 +65,7 @@ public class CodeSyncAsTest {
 		testMxml.addChild("clickHandler(event:MouseEvent):void", _2MATCH_LEFT_RIGHT).addChild("event", _2MATCH_LEFT_RIGHT);
 		testMxml.addChild("HEIGHT", _2MATCH_LEFT_RIGHT).addChild("static", _2MATCH_LEFT_RIGHT);
 		
-		CodeSyncTestSuite.testMatchTree(match, expected, true, false);
+		testMatchTree(match, expected, true, false);
 	}
 	
 }

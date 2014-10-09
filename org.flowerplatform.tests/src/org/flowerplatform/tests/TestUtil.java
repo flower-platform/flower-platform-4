@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.CorePlugin;
 
 /**
  * @author Cristi
@@ -128,6 +129,18 @@ public final class TestUtil {
 		}
 	}
 
+	/**
+	 * @author Mariana Gheorghe
+	 **/
+	public static File getFile(String path) {
+		String absolutePath = /*"/org/ws_trunk/" +*/ path;
+		try {
+			return (File) CorePlugin.getInstance().getFileAccessController().getFile(absolutePath);
+		} catch (Exception e) {			
+			throw new RuntimeException(String.format("Error while getting resource %s", absolutePath), e);
+		}
+	}
+	
 	/**
 	 * Copied from http://stackoverflow.com/questions/326390/how-to-create-a-java-string-from-the-contents-of-a-file
 	 */
