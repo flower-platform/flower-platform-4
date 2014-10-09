@@ -31,7 +31,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelDragController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelInplaceEditorController;
-	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapNodeRendererController;
+	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelRendererController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapTypeProvider;
 	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapModelSelectionRenderer;
 	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
@@ -62,7 +62,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new MindMapAbsoluteLayoutRectangleController())
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new SampleMindMapModelChildrenController())
 				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
-				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new SampleMindMapNodeRendererController(new ClassFactoryWithConstructor(MindMapRenderer, { featureForValuesProvider: "mindMapValuesProvider" })))
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new SampleMindMapModelRendererController(new ClassFactoryWithConstructor(MindMapRenderer, { featureForValuesProvider: "mindMapValuesProvider" })))
 				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER,  new BasicSelectionController(SampleMindMapModelSelectionRenderer))	
 				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER,  new SampleMindMapModelInplaceEditorController())	
 				.addSingleController(FlexDiagramConstants.DRAG_CONTROLLER, new SampleMindMapModelDragController())

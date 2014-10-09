@@ -19,12 +19,9 @@ package org.flowerplatform.flexdiagram.mindmap {
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
-	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
-	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 	import org.flowerplatform.flexdiagram.renderer.BaseRenderer;
-	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	
 	/**
@@ -163,8 +160,6 @@ package org.flowerplatform.flexdiagram.mindmap {
 				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudType", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE, null);
 
 			}
-			
-			MindMapModelRendererController(ControllerUtils.getRendererController(diagramShellContext, data)).rendererModelChangedHandler(diagramShellContext, this, data, event);
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			

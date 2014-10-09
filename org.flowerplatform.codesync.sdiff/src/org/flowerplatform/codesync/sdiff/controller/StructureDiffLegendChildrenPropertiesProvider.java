@@ -43,30 +43,31 @@ public class StructureDiffLegendChildrenPropertiesProvider extends AbstractContr
 	@Override
 		
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
+		String backgroundColorProperty = CorePlugin.getInstance().getPropertyNameForVisualFeatureSupportedByMindMapRenderer(CoreConstants.BASE_RENDERER_BACKGROUND_COLOR);
 		switch(CorePlugin.getInstance().getVirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri())) {
 		case ADDED: 
 			node.getProperties().put(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("codesync.sdiff.newlyAddedElement"));
-			node.getProperties().put(COLOR_BACKGROUND, CodeSyncSdiffConstants.MATCH_COLOR_ADDED);
+			node.getProperties().put(backgroundColorProperty, CodeSyncSdiffConstants.MATCH_COLOR_ADDED);
 			break;
 		case REMOVED: 
 			node.getProperties().put(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("codesync.sdiff.deletedElement"));
-			node.getProperties().put(COLOR_BACKGROUND, CodeSyncSdiffConstants.MATCH_COLOR_REMOVED);
+			node.getProperties().put(backgroundColorProperty, CodeSyncSdiffConstants.MATCH_COLOR_REMOVED);
 			break;
 		case MODIFIED: 
 			node.getProperties().put(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("codesync.sdiff.modifiedElementStructure"));
-			node.getProperties().put(COLOR_BACKGROUND, CodeSyncSdiffConstants.MATCH_COLOR_PROP_MODIFIED);
+			node.getProperties().put(backgroundColorProperty, CodeSyncSdiffConstants.MATCH_COLOR_PROP_MODIFIED);
 			break;
 		case MODIFIED_BODY: 
 			node.getProperties().put(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("codesync.sdiff.modifiedElementBody"));
-			node.getProperties().put(COLOR_BACKGROUND, CodeSyncSdiffConstants.MATCH_COLOR_BODY_MODIFIED);
+			node.getProperties().put(backgroundColorProperty, CodeSyncSdiffConstants.MATCH_COLOR_BODY_MODIFIED);
 			break;
 		case MODIFIED_CHILDREN: 
 			node.getProperties().put(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("codesync.sdiff.modifiedChildren"));
-			node.getProperties().put(COLOR_BACKGROUND, CodeSyncSdiffConstants.MATCH_COLOR_CHILDREN_MODIFIED);
+			node.getProperties().put(backgroundColorProperty, CodeSyncSdiffConstants.MATCH_COLOR_CHILDREN_MODIFIED);
 			break;
 		case ADDED_COMMENT: 
 			node.getProperties().put(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("codesync.sdiff.commentAdded"));
-			node.getProperties().put(COLOR_BACKGROUND, CodeSyncSdiffConstants.MATCH_COLOR_COMMENT);
+			node.getProperties().put(backgroundColorProperty, CodeSyncSdiffConstants.MATCH_COLOR_COMMENT);
 			break;
 		default:
 			break;

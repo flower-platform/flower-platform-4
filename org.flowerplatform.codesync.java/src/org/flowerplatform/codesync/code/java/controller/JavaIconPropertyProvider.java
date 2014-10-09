@@ -35,7 +35,6 @@ import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.DECORA
 import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.VISIBILITY_DEFAULT;
 import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.VISIBILITY_PRIVATE;
 import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.VISIBILITY_PROTECTED;
-import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.getImagePath;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 
 import java.util.ArrayList;
@@ -115,7 +114,7 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	}
 	
 	private String append(String icon, String decorator) {
-		return CodeSyncJavaPlugin.getInstance().getImageComposerUrl(icon, getImagePath(decorator));
+		return CodeSyncJavaPlugin.getInstance().getImageComposerUrl(icon, CodeSyncJavaConstants.getImagePathFromPublicResources(decorator));
 	}
 
 	/**

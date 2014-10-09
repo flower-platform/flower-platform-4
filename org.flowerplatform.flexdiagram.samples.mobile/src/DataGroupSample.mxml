@@ -23,15 +23,12 @@
 			import mx.collections.ArrayList;
 			import mx.events.FlexEvent;
 			
-			[Embed(source="/info.png")]			
-			public const _iconInfo:Class;
-			
 			protected function creationCompleteHandler(event:FlexEvent):void {
 				var list:ArrayList = new ArrayList();
 				for (var i:int = 0; i < 1000; i++) {
 					var object:Object = new Object();
 					object.label = "Lorem " + i;
-					object.icon = _iconInfo;
+//					object.icon = _iconInfo;
 					list.addItem(object);
 				}
 				dataGroup.dataProvider = list;

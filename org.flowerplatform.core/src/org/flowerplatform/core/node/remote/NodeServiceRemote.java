@@ -215,9 +215,7 @@ public class NodeServiceRemote {
 	}
 	
 	private String getNodeTitleProperty(String nodeType) {
-		GenericValueDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(nodeType)
-				.getSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, null);
-		return (String) descriptor.getValue();
+		return CorePlugin.getInstance().getPropertyNameForVisualFeatureSupportedByMindMapRenderer(CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + CoreConstants.BASE_RENDERER_TEXT);
 	}
 	
 }

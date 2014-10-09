@@ -25,9 +25,7 @@ import static org.flowerplatform.core.CoreConstants.ADD_CHILD_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
-import static org.flowerplatform.core.CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
-import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
 
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffCommentController;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffLegendChildrenPropertiesProvider;
@@ -35,10 +33,11 @@ import org.flowerplatform.codesync.sdiff.controller.StructureDiffLegendControlle
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffMatchChildrenProvider;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffMatchPropertiesProvider;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffNodeLegendController;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileSubscribableProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
-import org.flowerplatform.core.node.remote.GenericValueDescriptor;
+import org.flowerplatform.util.controller.GenericDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -90,7 +89,7 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTY_SETTER, structureDiffMatchPropertiesController)
 			.addAdditiveController(CHILDREN_PROVIDER, new StructureDiffMatchChildrenProvider())
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(COMMENT))
-			.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(TEXT).setOrderIndexAs(-10000));
+			.addSingleController(CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + CoreConstants.BASE_RENDERER_TEXT, new GenericDescriptor(CodeSyncSdiffConstants.PROPERTY_NAME_WITH_PATH).setOrderIndexAs(-10000));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(COMMENT)
 			.addAdditiveController(PROPERTIES_PROVIDER, new StructureDiffCommentController());

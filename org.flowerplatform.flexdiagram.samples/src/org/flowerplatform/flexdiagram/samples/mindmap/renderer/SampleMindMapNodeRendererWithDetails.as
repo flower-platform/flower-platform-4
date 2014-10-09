@@ -13,7 +13,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.renderer {
 	/**
 	 * @author Cristian Spiescu
 	 */
-	public class SampleMindMapNodeRendererWithDetailsCS extends MindMapRenderer {
+	public class SampleMindMapNodeRendererWithDetails extends MindMapRenderer {
 		
 		protected var detailsLabel:RichText;
 		
@@ -27,7 +27,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.renderer {
 			}			
 		}
 		
-		public function SampleMindMapNodeRendererWithDetailsCS() {
+		public function SampleMindMapNodeRendererWithDetails() {
 			featureForValuesProvider = "mindMapValuesProvider";
 			canHaveChildren = true;
 		}

@@ -24,6 +24,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		public function MultiConnectorRenderer() {
 			// so that it appears above all elements (e.g. clouds)
 			depth = Infinity;
+			mouseEnabled = false;
 		}
 		
 		public function get diagramShellContext():DiagramShellContext {
@@ -41,16 +42,16 @@ package org.flowerplatform.flexdiagram.mindmap {
 		public function set data(value:Object):void {
 			width = MindMapDiagramShell(diagramShellContext.diagramShell).horizontalPadding;
 			if (_data != null) {
-				_data.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler1);
+				_data.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
 			}
 			_data = MultiConnectorModel(value);			
 			if (_data != null) {
-				_data.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler1);
-				modelChangedHandler1(null);
+				_data.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
+				modelChangedHandler(null);
 			}
 		}
 		
-		protected function modelChangedHandler1(event:PropertyChangeEvent):void {
+		protected function modelChangedHandler(event:PropertyChangeEvent):void {
 			if (event == null || "x" == event.property) {
 				x = _data.x;
 			}

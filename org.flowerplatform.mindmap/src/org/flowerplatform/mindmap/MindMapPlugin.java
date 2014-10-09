@@ -45,21 +45,18 @@ import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_ICONS_WITH_BUT
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_NODE_TYPE;
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE;
 import static org.flowerplatform.mindmap.MindMapConstants.MIN_WIDTH;
+import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ARC;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_NONE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_RECTANGLE;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ROUND_RECTANGLE;
-import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_ARC;
 import static org.flowerplatform.mindmap.MindMapConstants.SHAPE_STAR;
 import static org.flowerplatform.mindmap.MindMapConstants.STYLE_NAME;
-import static org.flowerplatform.mindmap.MindMapConstants.TEXT;
 
 import java.awt.GraphicsEnvironment;
 import java.util.Arrays;
 
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
-import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.mindmap.remote.MindMapServiceRemote;
 import org.flowerplatform.resources.ResourcesPlugin;
@@ -144,9 +141,7 @@ public class MindMapPlugin extends AbstractFlowerJavaPlugin {
 						new Pair<String, String>(SHAPE_ARC, resourcesPlugin.getMessage("mindmap.shape.arc")),
 						new Pair<String, String>(SHAPE_STAR, resourcesPlugin.getMessage("mindmap.shape.star"))))
 				.setCategoryAs(resourcesPlugin.getMessage("mindmap.cloud")).setOrderIndexAs(410))
-		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MINDMAP_NODE_TYPE))
-		// lower order index to override the default title property
-		.addSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(TEXT).setOrderIndexAs(-10000));
+		.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(MINDMAP_NODE_TYPE));
 		
 		// register the MindMapService into the serviceRegistry in CorePlugin
 		CorePlugin.getInstance().getServiceRegistry().registerService("mindMapService", new MindMapServiceRemote());

@@ -1,5 +1,5 @@
-package org.flowerplatform.flex_client.mindmap.renderer2 {
-	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
+package org.flowerplatform.flex_client.mindmap.renderer {
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRenderer;
 	
 	/**
@@ -9,7 +9,7 @@ package org.flowerplatform.flex_client.mindmap.renderer2 {
 		
 		public function NodeMindMapRenderer() {
 			super();
-			featureForValuesProvider = MindMapConstants.MIND_MAP_FEATURE_FOR_VALUES_PROVIDER;
+			featureForValuesProvider = CoreConstants.MIND_MAP_FEATURE_FOR_VALUES_PROVIDER;
 		}
 	}
 }

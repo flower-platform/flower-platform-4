@@ -17,6 +17,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	import spark.components.DataRenderer;
 	import spark.components.Group;
 	import spark.components.IItemRenderer;
+	import spark.components.RichText;
 	import spark.components.supportClasses.InteractionState;
 	import spark.components.supportClasses.InteractionStateDetector;
 	import spark.layouts.HorizontalLayout;
@@ -28,6 +29,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
+	import org.flowerplatform.flexdiagram.mindmap.IAbstractMindMapModelRenderer;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
@@ -55,7 +57,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	 * 
 	 * @author Cristian Spiescu
 	 */
-	public class BaseRenderer extends DataRenderer implements IDiagramShellContextAware, IItemRenderer {
+	public class BaseRenderer extends DataRenderer implements IDiagramShellContextAware, IItemRenderer, IAbstractMindMapModelRenderer {
 		
 		/**************************************************************************
 		 * Constants.
@@ -66,7 +68,7 @@ package org.flowerplatform.flexdiagram.renderer {
 		
 		protected static const TEXT_COLOR_DEFAULT:uint = 0x000000;
 		
-		protected static const FONT_FAMILY_DEFAULT:String = "SansSerif";
+		protected static const FONT_FAMILY_DEFAULT:String = null;
 		
 		protected static const FONT_SIZE_DEFAULT:Number = 9;
 		
@@ -209,6 +211,10 @@ package org.flowerplatform.flexdiagram.renderer {
 			interactionStateDetector.addEventListener(Event.CHANGE, interactionStateDetector_changeHandler);
 		}
 		
+		public function getLabelDisplay():RichText {
+			return _label;
+		}
+		
 		public function get diagramShellContext():DiagramShellContext {			
 			return _context;
 		}
@@ -299,7 +305,7 @@ package org.flowerplatform.flexdiagram.renderer {
 			// loop over the icons list; and compare with the actual image components; the purpose: try to reuse the components
 			// there are 3 cases: the size theoretical list == the size of the actual list; or < or > 
 			for (var i:int = 0; i < _icons.length; i++) {
-				var candidate:IVisualElement = getElementAt(i);
+				var candidate:IVisualElement = iconsAndLabelArea.getElementAt(i);
 				if (candidate is BitmapImage) {
 					// a BitmapImage that will be reused
 					iconDisplay = BitmapImage(candidate);
