@@ -1,0 +1,6 @@
+<!-- Alert Message View -->
+
+<div class="alert alert-dismissable" ng-class="{'alert-success':alertMessage.success, 'alert-danger':alertMessage.danger, hidden:!alertMessage.visible}" role="alert">
+	<button type="button" class="close" ng-click="alertMessage.danger=false; alertMessage.visible=false"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	<span>{{alertMessage.message}}</span>
+</div>

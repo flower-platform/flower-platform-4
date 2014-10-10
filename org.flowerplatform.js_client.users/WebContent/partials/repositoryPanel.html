@@ -1,0 +1,75 @@
+<!-- Repository Panel - contains information about a repository: view/edit -->
+
+<div>
+	<div class="panel panel-default" id="test">
+		<div class="panel-heading">
+			<div ng-show="!edit && repo.properties.name" >
+				<h3 class="panel-title flowerInline">{{repo.properties.name}}</h3>
+				<div class="flowerInlineFloat flowerMarginTop">
+					<button type="button" class="btn btn-default" ng-click="edit = !edit">Edit</button>
+					<button type="button" class="btn btn-success">Open</button>
+					<button type="button" class="btn btn-danger" ng-click="setDeleteNode(repo)" data-toggle="modal" data-target="#deleteModal"">Delete</button>
+				</div>
+			</div>
+			<div ng-show="edit || !repo.properties.name">
+				<form class="form" role="form">
+					<div class="form-group flowerInlineFloat">
+						<button type="submit" class="btn btn-default" ng-click="save(repo,$parent.$index)" >Save</button>
+						<button type="submit" class="btn btn-default" ng-click="edit=!edit;">Cancel</button>
+					</div>
+					<br>
+					<div class="form-group">
+						<label>Repository Name</label>
+						<input type="text" class="form-control" placeholder="{{repo.properties.name}}" value="{{repo.properties.name}}" id="{{ repo.properties.name + $parent.$index }}">
+					</div>
+				</form>
+			</div>
+		</div>
+		
+		<div class="panel-body" ng-model="repo.nodeUri" ng-init="repoExtensions=getExtensions(repo.nodeUri); ">
+			<div ng-show="!edit && repo.properties.name">
+				<div>{{repo.properties.description}}</div>
+				<br>
+				<div ng-show="repoExtensions.messageResult">
+					<label>Extensions:</label>
+					&nbsp;
+					<div class="flowerInline" ng-repeat="extension in repoExtensions.messageResult">
+						<span class="label" style="color: black; background-color: {{extension.color}};">{{extension.label}}</span>
+					</div>
+				</div>
+				<div ng-hide="repoExtensions.messageResult">
+					<label>This repository has no extensions!</label>
+				</div>
+				<button type="button" class="btn btn-default btn-sm flowerInlineFloat" data-toggle="modal" data-target="#myModal" ng-click="setExtensions(repoExtensions,repo)">Apply/Unapply Extensions</button>
+			</div>
+			<div ng-show="edit || !repo.properties.name">
+				<form class="form" role="form">
+					<div class="form-group">
+						<label>Description</label>
+						<textarea type="text" class="form-control" placeholder="{{repo.properties.description}}" id="{{ repo.properties.description + $parent.$index + $parent.$index}}">{{repo.properties.description}}</textarea>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+ 		<!-- Popup Apply/Unapply Extension --> 
+	<div ng-include src="'../js_client.users/partials/popupApplyUnapplyExtension.html'"></div>
+	
+	<div class="modal fade" id="deleteModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h3 class="flowerTextAlign">Are you sure you want to delete '{{deleteNode.properties.name}}' repository ?</h3>
+					<br>
+					<div class="flowerTextAlign">
+						<button type="button" class="btn btn-danger" ng-click="deleteRepository(deleteNodeUri)">Delete</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+  	 </div>
+  	 
+</div>

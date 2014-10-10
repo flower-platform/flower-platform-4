@@ -237,7 +237,8 @@ public final class CoreConstants {
 	public static final String USERS = "users";
 	public static final String USER = "user";
 	public static final String USERS_PATH = "fpp:|.users";
-
+	public static final String USERS_URI = USERS_PATH + "#" + USERS;
+	
 	public static final String USER_LOGIN = "login";
 	public static final String USER_EMAIL = "email";
 	public static final String USER_AVATAR = "avatar";
@@ -251,6 +252,10 @@ public final class CoreConstants {
 	public static final String HASH_ALGORITHM = "SHA-256";
 	public static final String PASS_CHANGED = "Password changed !";
 	public static final String PASS_NOT_CHANGED = "Password doesn't match !";
+	
+	public static final String OWNED_REPOSITORIES = "ownedRepositories";
+	public static final String MEMBER_IN_REPOSITORIES = "memberInRepositories";
+	public static final String STARRED_REPOSITORIES = "starredRepositories";
 	
 	//////////////////////////////////
 	// Login and users
@@ -269,4 +274,18 @@ public final class CoreConstants {
 	public static final String SOCIAL_ACCOUNT = "socialAccount";
 	public static final String OAUTH_TOKEN = "oauthToken";
 	
+	//////////////////////////////////
+	// Repositories
+	//////////////////////////////////
+	
+	public static final String REPOSITORIES = "repositories";
+	public static final String REPOSITORY = "repositoryy";
+	public static final String DESCRIPTION = "description";
+	public static final String MEMBERS = "members";
+	public static final String STARRED_BY = "starredBy";
+	public static final String EXTENSIONS = "extensions";
+	public static final String REPOSITORIES_URI = USERS_PATH + "#" + REPOSITORIES;
+	public static final String GENERAL_PURPOSE = "generalPurpose";
+	public static final String EXTENSION_DESCRIPTOR = "extensionMetadata";
+	public static final String FILESYSTEM_EXTENSION = "fileSystemExtension";
 }

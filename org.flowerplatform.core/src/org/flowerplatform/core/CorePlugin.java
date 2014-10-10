@@ -17,16 +17,21 @@ package org.flowerplatform.core;
 
 import static org.flowerplatform.core.CoreConstants.DEFAULT_LOG_PATH;
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.GENERAL_PURPOSE;
 import static org.flowerplatform.core.CoreConstants.LOGBACK_CONFIG_FILE;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE;
+import static org.flowerplatform.core.CoreConstants.REPOSITORIES;
+import static org.flowerplatform.core.CoreConstants.REPOSITORY;
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.core.CoreConstants.ROOT_TYPE;
-import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
-import static org.flowerplatform.core.CoreConstants.USERS;
 import static org.flowerplatform.core.CoreConstants.USER;
+import static org.flowerplatform.core.CoreConstants.USERS;
+import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -59,6 +64,8 @@ import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.core.preference.PreferencePropertiesProvider;
 import org.flowerplatform.core.preference.PreferencePropertySetter;
 import org.flowerplatform.core.preference.remote.PreferencesServiceRemote;
+import org.flowerplatform.core.repositories.ExtensionMetadata;
+import org.flowerplatform.core.repositories.RepositoriesService;
 import org.flowerplatform.core.repository.RepositoryChildrenProvider;
 import org.flowerplatform.core.repository.RepositoryPropertiesProvider;
 import org.flowerplatform.core.repository.RootChildrenProvider;
@@ -294,6 +301,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		getServiceRegistry().registerService("uploadService", new UploadService());
 		getServiceRegistry().registerService("preferenceService", new PreferencesServiceRemote());
 		getServiceRegistry().registerService("userService", new UserService());
+		getServiceRegistry().registerService("repositoriesService", new RepositoriesService());
 		
 		new ResourceUnsubscriber().start();
 		
@@ -303,6 +311,25 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USERS);
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USER);
+
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USERS);
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USER);
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORIES);
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY);
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GENERAL_PURPOSE)
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("fileSystem").setLabel("File System")
+					.setDependencies(new ArrayList<String>(Arrays.asList("mda", "freePlane"))).setColor("#2E8B57")
+					.setDescription("Here will be a short description of this extension"))
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("git").setLabel("Git")
+					.setDependencies(new ArrayList<String>(Arrays.asList("fileSystem", "codeSync"))).setColor("#008080")
+					.setDescription("Here will be a short description of this extension"))
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("codeSync").setLabel("Code Sync")
+					.setDependencies(new ArrayList<String>(Arrays.asList("mda"))).setColor("#708090")
+					.setDescription("Here will be a short description of this extension"))
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("mda").setLabel("MDA").setColor("#B0E0E6")
+					.setDescription("Here will be a short description of this extension"))
+			.addAdditiveController(CoreConstants.EXTENSION_DESCRIPTOR, new ExtensionMetadata().setId("freePlane").setLabel("FreePlane").setColor("#F5DEB3")
+					.setDescription("Here will be a short description of this extension"));
 
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ROOT_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new RootPropertiesProvider())

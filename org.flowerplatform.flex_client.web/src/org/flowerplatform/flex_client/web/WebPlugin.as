@@ -90,7 +90,7 @@ package org.flowerplatform.flex_client.web {
 		
 		override protected function registerMessageBundle():void {
 			// messages come from .flex_client.resources
-		}	
+		}
 		
 		public function invokeSaveResourcesDialog():Boolean {
 			CorePlugin.getInstance().nodeRegistryManager.resourceOperationsManager.showSaveDialog();

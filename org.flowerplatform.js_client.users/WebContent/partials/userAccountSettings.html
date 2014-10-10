@@ -78,8 +78,8 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-							<h3 style="text-align: center;"> Are you sure you want to do this ?</h3>
-							<div class="alert alert-danger" role="alert" id="alert-delete-account" style="margin-left: -15px; margin-right: -15px;">
+							<h3 class="flowerTextAlign"> Are you sure you want to do this ?</h3>
+							<div class="alert alert-danger flowerMarginLeftRight" role="alert" id="alert-delete-account" >
 						   		<span class="glyphicon glyphicon-exclamation-sign"></span>
 						   		 &nbsp;
 						   		 This is extremely important!
@@ -95,7 +95,7 @@
 									<label>Type in the following phrase: <em>delete my account</em></label></dt>
 									<input ng-model="user_phrase" type="text" pattern="delete my account" class="form-control">
 								</div>
-								<p/><button type="submit" class="btn btn-default" id="delete-account-button" ng-click="remove()"ng-disabled="!username || !user_phrase">
+								<p/><button type="submit" class="btn btn-danger flowerButtonWidth" id="delete-account-button" ng-click="remove()" ng-disabled="!username || !user_phrase">
 										Delete this account </button>	
 							</form>
 						</div>

@@ -113,3 +113,47 @@ routesConfig.push({
 		resolve: {}
 	}
 });
+
+///////////////////////////////////////////////////////
+// Repositories
+///////////////////////////////////////////////////////
+
+routesConfig.push({
+	path: '/repository/:id',
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers/repository.js', 'js_client.users/js/controllers/users.js'],
+	route: {
+		templateUrl: 'partials/composed/sideMenuLayout.html',
+		controller: 'ComposedCtrl',
+		resolve: {
+			contentTemplate : function() {
+				return 'userDashboard';
+			},
+			sideMenuTemplate : function() {
+				return 'userSideMenu';
+			},
+			sideMenuContentTemplate : function() {
+				return 'userRepositorySideMenuContent';
+			}
+		}
+	}
+});
+
+routesConfig.push({
+	path: '/repository/:id/search',
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers/repository.js', 'js_client.users/js/controllers/users.js'],
+	route: {
+		templateUrl: 'partials/composed/sideMenuLayout.html',
+		controller: 'ComposedCtrl',
+		resolve: {
+			contentTemplate : function() {
+				return 'searchRepository';
+			},
+			sideMenuTemplate : function() {
+				return 'userSideMenu';
+			},
+			sideMenuContentTemplate : function() {
+				return 'userRepositorySideMenuContent';
+			}
+		}
+	}
+});

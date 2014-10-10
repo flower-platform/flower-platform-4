@@ -19,4 +19,3 @@ flowerControllers.controller('ComposedCtrl', ['$scope', 'contentTemplate', 'side
 		
 }]);
 
-

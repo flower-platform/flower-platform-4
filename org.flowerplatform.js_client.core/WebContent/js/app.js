@@ -31,7 +31,7 @@ loadScripts(plugins, function() {
 	angular.bootstrap(document, ['flowerProject']);
 });
 
-flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', '$httpProvider', function($routeProvider, $provide, $controllerProvider, $httpProvider) {
+flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', '$compileProvider', '$httpProvider', function($routeProvider, $provide, $controllerProvider, $compileProvider, $httpProvider) {
 
 	logger.debug('Configure application');
 	
@@ -40,7 +40,8 @@ flowerProject.config(['$routeProvider', '$provide', '$controllerProvider', '$htt
 		controller: $controllerProvider.register,
         factory: 	$provide.factory,
         service: 	$provide.service,
-        decorator: 	$provide.decorator
+        decorator: 	$provide.decorator,
+        directive:  $compileProvider.directive
 	};
 	
 	// Add jsessionid header for the first API call

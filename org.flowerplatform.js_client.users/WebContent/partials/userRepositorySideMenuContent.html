@@ -1,0 +1,17 @@
+<div ng-controller="UserDashboardCtrl">
+	<p>
+	<div style="border-right: 10px solid transparent;">
+		<h4>Flower Platform Repositories </h4>
+		<em>{{repositoryDescription}}</em>
+	</div>
+
+	<br>
+	<div>
+		<h4>Available Extensions</h4>
+		<div ng-repeat="extension in availableExtensions.messageResult">
+			<p>
+			<h4><span class="label" style="color: black; background-color: {{extension.color}};">{{extension.label}}</span></h4>
+			&nbsp;<em>{{extension.description}}</em>
+		</div>
+	</div>
+</div>

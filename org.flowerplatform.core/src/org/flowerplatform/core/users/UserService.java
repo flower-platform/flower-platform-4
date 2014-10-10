@@ -48,9 +48,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Mariana Gheorghe
+ * @author Andreea Tita
  */
 @Path("/users")
 public class UserService {
+	
+	ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 	
@@ -92,7 +95,7 @@ public class UserService {
 	/**
 	 * @return the user with <code>nodeUri</code>
 	 */
-	@GET @Path("/{nodeUri}")
+	@GET @Path("/{nodeUri}")	
 	@Produces(MediaType.APPLICATION_JSON)
 	public Node getUser(@PathParam("nodeUri") String nodeUri) {
 		ServiceContext<ResourceService> context = new ServiceContext<ResourceService>();
@@ -104,6 +107,13 @@ public class UserService {
 		}
 
 		return null;
+	}
+	
+	/**
+	 * @author Andreea Tita
+	 */
+	public String getUserNodeUri(String login) {
+		return CoreConstants.USERS_PATH + "#" + login; 
 	}
 	
 	/**

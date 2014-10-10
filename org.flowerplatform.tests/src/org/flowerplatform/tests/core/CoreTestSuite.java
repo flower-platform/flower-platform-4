@@ -26,6 +26,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
 	NodeServiceTest.class
+
 })
 public class CoreTestSuite extends EclipseIndependentTestSuite {
 		

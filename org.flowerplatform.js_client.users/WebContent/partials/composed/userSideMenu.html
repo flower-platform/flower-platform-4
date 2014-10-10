@@ -4,7 +4,7 @@
 	<p/>
 	<div class="row" id="user-panel">
 		<div class="col-sm-12">
-			<h4 id="user-panel-header" ng-show="currentUser.messageResult">
+			<h4 class="flowerTextAlign" ng-show="currentUser.messageResult">
 				<img src="{{currentUser.messageResult.properties.avatar}}" class="user-avatar img-rounded"/>
 				<label>{{currentUser.messageResult.properties.login}}</label>
 			</h4>
@@ -33,9 +33,9 @@
 								<li><a ng-href="#/users/{{userID}}">Profile</a></li>
 
 								<hr style="margin: 0.1em auto;">
-								<li><a ng-class="{hidden:!currentUser.messageResult.properties.isAdmin}">{{repo}}</a>
-								<li><a ng-class="{hidden:!currentUser.messageResult.properties.isAdmin}">{{repo}}</a>
-								<li><a ng-href="#/users/" ng-class="{hidden:!currentUser.messageResult.properties.isAdmin}">Users</a>
+								<li><a ng-class="{hidden:!currentUser.messageResult.properties.isAdmin}" ng-href="#/repository/{{currentUser.messageResult.nodeUri}}">Dashboard/My Repositories</a>
+								<li><a ng-class="{hidden:!currentUser.messageResult.properties.isAdmin}" ng-href="#/repository/{{currentUser.messageResult.nodeUri}}/search" ng-click="setSearchType('all')">Search Repository</a>
+								<li><a ng-class="{hidden:!currentUser.messageResult.properties.isAdmin}" ng-href="#/users/">Users</a>
 								
 							</ul>
 						</div>
