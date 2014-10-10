@@ -36,6 +36,12 @@
 			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
+			[Embed(source="/defaultIcon.gif")]	
+			public static const defaultImage:Class;
+			
+			[Embed(source="/info.png")]	
+			public static const infoImage:Class;
+			
 			// static block
 			{
 				FlexUtilGlobals.getInstance().selectionManager.addEventListener(SelectionChangedEvent.SELECTION_CHANGED, function (event:SelectionChangedEvent):void {

@@ -15,8 +15,6 @@
  */
 package org.flowerplatform.tests.core;
 
-import static org.flowerplatform.tests.EclipseIndependentTestSuite.nodeService;
-import static org.flowerplatform.tests.EclipseIndependentTestSuite.startPlugin;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -46,6 +44,7 @@ import org.flowerplatform.core.node.update.remote.Update;
 import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.mindmap.MindMapConstants;
 import org.flowerplatform.mindmap.MindMapPlugin;
+import org.flowerplatform.tests.EclipseIndependentTestBase;
 import org.flowerplatform.tests.TestUtil;
 import org.flowerplatform.util.Utils;
 import org.junit.Before;
@@ -56,7 +55,7 @@ import org.junit.rules.ExpectedException;
 /**
  *@author Claudiu Matei
  **/
-public class CommandStackTest {
+public class CommandStackTest extends EclipseIndependentTestBase {
 
 	public static final String PROJECT = "commandstack";
 	public static final String DIR = TestUtil.getResourcesDir(CommandStackTest.class);

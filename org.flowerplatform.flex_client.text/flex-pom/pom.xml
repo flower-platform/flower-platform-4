@@ -10,7 +10,7 @@
 		<version>0.1.1_flex</version>
 	</parent>
 
-	<artifactId>org.flowerplatform.flex_client.codesync</artifactId>
+	<artifactId>org.flowerplatform.flex_client.text</artifactId>
 	<packaging>swc</packaging>
 
 	<dependencies>
@@ -19,6 +19,22 @@
 			<artifactId>flex-framework</artifactId>
 			<version>${flexVersion}</version>
 			<type>pom</type>
+			<exclusions>
+				<!-- exclude playerglobal for the classes from the AIR framework to be 
+					compiled -->
+				<exclusion>
+					<groupId>com.adobe.flash.framework</groupId>
+					<artifactId>playerglobal</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.air.framework</groupId>
+			<artifactId>airglobal</artifactId>
+			<version>3.2</version>
+			<type>swc</type>
+			<scope>merged</scope>
 		</dependency>
 
 		<dependency>
@@ -28,18 +44,10 @@
 			<type>swc</type>
 			<scope>external</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.flowerplatform</groupId>
 			<artifactId>org.flowerplatform.flex_client.core</artifactId>
-			<version>${project.version}</version>
-			<type>swc</type>
-			<scope>external</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.flowerplatform</groupId>
-			<artifactId>org.flowerplatform.flex_client.mindmap</artifactId>
 			<version>${project.version}</version>
 			<type>swc</type>
 			<scope>external</scope>

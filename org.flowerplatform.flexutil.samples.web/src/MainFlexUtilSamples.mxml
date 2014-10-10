@@ -43,9 +43,6 @@
 			<s:NavigatorContent label="TreeList">
 				<tree:TreeSample width="100%" height="100%"/>
 			</s:NavigatorContent>
-			<s:NavigatorContent label="Multi Icon Item Renderer">
-				<renderer:MultipleIconItemRendererSample width="100%" height="100%" />
-			</s:NavigatorContent>
 			<layout:WorkbenchViewHost label="Context Menu">
 				<ns:ContextMenuSample width="100%" height="100%"/>				
 			</layout:WorkbenchViewHost>

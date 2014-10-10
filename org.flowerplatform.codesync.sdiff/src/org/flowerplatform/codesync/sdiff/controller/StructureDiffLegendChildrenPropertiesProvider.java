@@ -15,13 +15,12 @@
  */
 package org.flowerplatform.codesync.sdiff.controller;
 
-import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.ADDED;
-import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.REMOVED;
+import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.ADDED_COMMENT;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MODIFIED;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MODIFIED_BODY;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MODIFIED_CHILDREN;
-import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.ADDED_COMMENT;
+import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.REMOVED;
 
 import org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants;
 import org.flowerplatform.core.CoreConstants;

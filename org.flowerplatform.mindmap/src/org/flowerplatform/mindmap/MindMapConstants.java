@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.util.UtilConstants;
 
 /**
  * @author Cristina Constantinescu

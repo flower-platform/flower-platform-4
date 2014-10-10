@@ -23,8 +23,8 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	 */
 	public class NodeRendererController extends ClassReferenceRendererController {
 		
-		public function NodeRendererController(rendererClassFactory:ClassFactoryWithConstructor, orderIndex:int = 0) {
-			super(rendererClassFactory, orderIndex);
+		public function NodeRendererController(rendererClassFactory:ClassFactoryWithConstructor, orderIndex:int = 0, removeRendererIfModelIsDisposed:Boolean = false) {
+			super(rendererClassFactory, orderIndex, removeRendererIfModelIsDisposed);
 		}
 		
 		/**

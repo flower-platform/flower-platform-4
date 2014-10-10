@@ -215,7 +215,8 @@ public class NodeServiceRemote {
 	}
 	
 	private String getNodeTitleProperty(String nodeType) {
-		return CorePlugin.getInstance().getPropertyNameForVisualFeatureSupportedByMindMapRenderer(CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + CoreConstants.BASE_RENDERER_TEXT);
+		return CorePlugin.getInstance().getPropertyNameForVisualFeatureSupportedByMindMapRenderer(
+				CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + CoreConstants.BASE_RENDERER_TEXT);
 	}
 	
 }

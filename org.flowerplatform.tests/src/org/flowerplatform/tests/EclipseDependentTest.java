@@ -15,31 +15,14 @@
  */
 package org.flowerplatform.tests;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.eclipse.core.runtime.Assert;
 import org.flowerplatform.core.CorePlugin;
-import org.junit.BeforeClass;
 import org.junit.Test;
 /**
  * @author Mariana Gheorghe
  */
-public class EclipseDependentTest extends EclipseDependentTestSuiteBase {
-	/**
-	 * @author Alexandra Topoloaga
-	 */
-	@BeforeClass
-	public static void beforeClass() {
-		HttpServletRequest request = mock(HttpServletRequest.class);
-		HttpSession httpSession = mock(HttpSession.class);
-		when(request.getSession()).thenReturn(httpSession);
-		when(httpSession.getId()).thenReturn("mockId");
-		CorePlugin.getInstance().getRequestThreadLocal().set(request);
-	}
+public class EclipseDependentTest {
+	
 	/**
 	 * @author Mariana Gheorghe
 	 */

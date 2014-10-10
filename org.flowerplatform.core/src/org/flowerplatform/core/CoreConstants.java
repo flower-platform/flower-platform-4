@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.core;
 
+import static org.flowerplatform.util.UtilConstants.CATEGORY_PREFIX;
+
 import org.flowerplatform.util.UtilConstants;
 
 /**
@@ -88,6 +90,8 @@ public final class CoreConstants {
 	public static final String FILE_SCHEME = "file";
 	public static final String FILE_SYSTEM_NODE_TYPE = "fileSystemNode";
 	public static final String FILE_NODE_TYPE = "fileNode";
+	public static final String FILE_CONTAINER_CATEGORY = CATEGORY_PREFIX + "fileContainer";
+	
 	public static final String COMMAND_TYPE = "command";
 	public static final String COMMAND_STACK_TYPE = "commandStack";
 	public static final String COMMAND_STACK_SCHEME = COMMAND_STACK_TYPE;

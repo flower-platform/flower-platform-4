@@ -15,8 +15,6 @@
  */
 package org.flowerplatform.codesync.sdiff.controller;
 
-import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
-
 import org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -33,7 +31,8 @@ public class StructureDiffCommentController extends AbstractController implement
 	
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		node.getProperties().put(CorePlugin.getInstance().getPropertyNameForVisualFeatureSupportedByMindMapRenderer(CoreConstants.BASE_RENDERER_BACKGROUND_COLOR), CodeSyncSdiffConstants.MATCH_COLOR_COMMENT);
+		node.getProperties().put(CorePlugin.getInstance().getPropertyNameForVisualFeatureSupportedByMindMapRenderer(
+				CoreConstants.BASE_RENDERER_BACKGROUND_COLOR), CodeSyncSdiffConstants.MATCH_COLOR_COMMENT);
 	}
 
 }

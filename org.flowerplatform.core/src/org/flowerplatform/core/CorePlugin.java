@@ -396,6 +396,11 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MIND_MAP_RENDERER_SIDE);
 	}	
 	
+	/**
+	 * 
+	 * @param feature
+	 * @return
+	 */
 	public String getPropertyNameForVisualFeatureSupportedByMindMapRenderer(String feature) {
 		if (feature.endsWith(BASE_RENDERER_TEXT)) {
 			return CoreConstants.NAME;

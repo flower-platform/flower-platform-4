@@ -22,7 +22,7 @@
 				<version>2.4</version>
 				<configuration>
 					<webXml>../WebContent/WEB-INF/web.xml</webXml>
-					<warName>flower-platform</warName>
+					<warName>flower-platform_${appVersion}.v${maven.build.timestamp}${version.qualifierSuffix}</warName>
 
 					<outputDirectory>war</outputDirectory>
 
@@ -54,6 +54,49 @@
 					</archive>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<version>1.5.3</version>
+				<inherited>false</inherited>
+				<executions>
+					<execution>
+						<id>set-version-java-after</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+						<configuration>
+							<file>../org.flowerplatform.core/src/org/flowerplatform/core/CoreConstants.java</file>
+							<regex>true</regex>
+							<replacements>
+								<replacement>
+									<token>APP_VERSION = .*;</token>
+									<value>APP_VERSION = "${appVersion}${qualifierSuffix}";</value>
+								</replacement>
+							</replacements>
+						</configuration>
+					</execution>
+					<execution>
+						<id>set-version-flex-after</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+						<configuration>
+							<file>../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/AbstractFlowerFlexPlugin.as</file>
+							<regex>true</regex>
+							<replacements>
+								<replacement>
+									<token>_appVersion:String = .*;</token>
+									<value>_appVersion:String = "${appVersion}${qualifierSuffix}";</value>
+								</replacement>
+							</replacements>
+						</configuration>						
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -67,7 +110,7 @@
 		<dependency>
 			<groupId>org.flowerplatform.host</groupId>
 			<artifactId>org.flowerplatform.host.servletbridge.base</artifactId>
-			<version>${appVersion}</version>
+			<version>${appVersion}${version.qualifierSuffix}</version>
 		</dependency>
 	</dependencies>
 </project>
