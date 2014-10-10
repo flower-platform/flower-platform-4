@@ -104,7 +104,7 @@ package org.flowerplatform.flex_client.mindmap {
 				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new MindMapAbsoluteLayoutRectangleController())
 				.addSingleController(FlexDiagramConstants.DRAG_CONTROLLER, new NodeDragController())
 				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER, new BasicSelectionController(NodeSelectionRenderer))
-				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NodeRendererController(new ClassFactoryWithConstructor(NodeMindMapRenderer)))
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NodeRendererController(new ClassFactoryWithConstructor(NodeMindMapRenderer), 0, true))
 				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER, new NodeInplaceEditorController());		
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapConstants.MINDMAP_NODE_TYPE)
