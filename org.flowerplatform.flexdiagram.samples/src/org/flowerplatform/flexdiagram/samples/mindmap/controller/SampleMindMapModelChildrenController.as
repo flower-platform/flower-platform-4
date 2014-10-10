@@ -18,11 +18,8 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	
-	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
-	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
-	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 	
 	/**
@@ -41,17 +38,5 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 			return EMPTY_LIST;
 		}
 		
-		override public function beginListeningForChanges(context:DiagramShellContext, model:Object):void {			
-			SampleMindMapModel(model).addEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, function (event:UpdateConnectionEndsEvent):void {updateConnectionEndsHandler(event, context);});
-		}
-		
-		override public function endListeningForChanges(context:DiagramShellContext, model:Object):void {			
-			SampleMindMapModel(model).removeEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, function (event:UpdateConnectionEndsEvent):void {updateConnectionEndsHandler(event, context);});
-		}
-				
-		protected function updateConnectionEndsHandler(event:UpdateConnectionEndsEvent, context:DiagramShellContext):void {
-			MindMapModelRendererController(ControllerUtils.getRendererController(context, event.target)).updateConnectors(context, event.target);
-		}
-
 	}
 }

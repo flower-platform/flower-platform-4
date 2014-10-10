@@ -17,10 +17,7 @@ package org.flowerplatform.flex_client.core.node_tree
 {
 	import mx.events.PropertyChangeEvent;
 	
-	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
-	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flexutil.tree.HierarchicalModelWrapper;
 	import org.flowerplatform.flexutil.tree.TreeListItemRenderer;
 
@@ -31,8 +28,8 @@ package org.flowerplatform.flex_client.core.node_tree
 		
 		public function NodeTreeItemRenderer() {
 			super();
-			labelFunction = getLabel;
-			iconFunction = getIcon;
+//			labelFunction = getLabel;
+//			iconFunction = getIcon;
 		}
 		
 		override public function set data(value:Object):void {
@@ -49,18 +46,18 @@ package org.flowerplatform.flex_client.core.node_tree
 			invalidateDisplayList();
 		}
 		
-		public function getLabel(data:HierarchicalModelWrapper):String {
-			var node:Node = Node(data.treeNode);
-			var label:String = String(NodeControllerUtils.getTitleProvider(CorePlugin.getInstance().nodeTypeDescriptorRegistry, node).getValue(node)); 
-			return label;
-		}
-
-		public function getIcon(data:HierarchicalModelWrapper):String {
-			var node:Node = Node(data.treeNode);
-			var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(CorePlugin.getInstance().nodeTypeDescriptorRegistry, node);
-			var icon:String = String(iconsProvider.getValue(node)); 
-			return icon;
-		}
+//		public function getLabel(data:HierarchicalModelWrapper):String {
+//			var node:Node = Node(data.treeNode);
+//			var label:String = String(NodeControllerUtils.getTitleProvider(CorePlugin.getInstance().nodeTypeDescriptorRegistry, node).getValue(node)); 
+//			return label;
+//		}
+//
+//		public function getIcon(data:HierarchicalModelWrapper):String {
+//			var node:Node = Node(data.treeNode);
+//			var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(CorePlugin.getInstance().nodeTypeDescriptorRegistry, node);
+//			var icon:String = String(iconsProvider.getValue(node)); 
+//			return icon;
+//		}
 
 		
 	}

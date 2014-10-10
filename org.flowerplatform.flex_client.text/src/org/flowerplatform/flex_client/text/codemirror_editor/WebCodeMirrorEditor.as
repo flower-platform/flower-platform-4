@@ -40,11 +40,11 @@ package org.flowerplatform.flex_client.text.codemirror_editor {
 			callIFrameFunction(method, arguments != null ? [].concat(arguments) : null, callback);
 		}
 		
-		public function addViewCompleteHandler(handler:Function):void {
+		override public function addViewCompleteHandler(handler:Function):void {
 			addEventListener("frameLoad", handler);
 		}
 		
-		public function dispose():void {
+		override public function dispose():void {
 			removeIFrame();
 		}
 		

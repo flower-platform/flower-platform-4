@@ -19,11 +19,8 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
-	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
-	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 		
 	/**
 	 * @author Cristina Constantinescu
@@ -39,19 +36,6 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		
 		override public function getChildren(context:DiagramShellContext, model:Object):IList	{
 			return EMPTY_LIST;
-		}
-		
-		override public function beginListeningForChanges(context:DiagramShellContext, model:Object):void	{	
-			Node(model).addEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, function (event:UpdateConnectionEndsEvent):void {updateConnectionEndsHandler(event, context);});			
-		}
-		
-		override public function endListeningForChanges(context:DiagramShellContext, model:Object):void {		
-			Node(model).removeEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, function (event:UpdateConnectionEndsEvent):void {updateConnectionEndsHandler(event, context);});			
-		}
-		
-		protected function updateConnectionEndsHandler(event:UpdateConnectionEndsEvent, context:DiagramShellContext):void {
-			var model:Object = event.target;
-			MindMapModelRendererController(ControllerUtils.getRendererController(context, model)).updateConnectors(context, model);
 		}
 		
 	}

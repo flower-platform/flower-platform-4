@@ -16,18 +16,22 @@
 package org.flowerplatform.flexdiagram.samples.mindmap {
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
+	import org.flowerplatform.flexdiagram.controller.renderer.ClassReferenceRendererController;
 	import org.flowerplatform.flexdiagram.controller.selection.BasicSelectionController;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRenderer;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
+	import org.flowerplatform.flexdiagram.mindmap.MultiConnectorModel;
+	import org.flowerplatform.flexdiagram.mindmap.MultiConnectorRenderer;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
+	import org.flowerplatform.flexdiagram.mindmap.controller.MultiConnectorAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelChildrenController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelDragController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelInplaceEditorController;
-	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapNodeRendererController;
+	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapModelRendererController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapTypeProvider;
 	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapModelSelectionRenderer;
 	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
@@ -58,7 +62,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new MindMapAbsoluteLayoutRectangleController())
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new SampleMindMapModelChildrenController())
 				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
-				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new SampleMindMapNodeRendererController(new ClassFactoryWithConstructor(MindMapRenderer, { featureForValuesProvider: "mindMapValuesProvider" })))
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new SampleMindMapModelRendererController(new ClassFactoryWithConstructor(MindMapRenderer, { featureForValuesProvider: "mindMapValuesProvider" })))
 				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER,  new BasicSelectionController(SampleMindMapModelSelectionRenderer))	
 				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER,  new SampleMindMapModelInplaceEditorController())	
 				.addSingleController(FlexDiagramConstants.DRAG_CONTROLLER, new SampleMindMapModelDragController())
@@ -80,11 +84,16 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_HAS_CHILDREN, new GenericDescriptor("hasChildren"))
 				.addSingleController("mindMapNodeRenderer.detailsText", new GenericDescriptor("details"));
 							
-			registry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.ID)
+			registry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.TYPE)
 				.addSingleController(FlexDiagramConstants.MINDMAP_MODEL_CONTROLLER, new SampleMindMapModelController())			
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new MindMapRootModelChildrenController())
 				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
-				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER,  new MindMapAbsoluteLayoutVisualChildrenController());			
+				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER,  new MindMapAbsoluteLayoutVisualChildrenController());
+			
+			registry.getOrCreateTypeDescriptor(MultiConnectorModel.TYPE)
+				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new ClassReferenceRendererController(new ClassFactoryWithConstructor(MultiConnectorRenderer), 0, true))
+				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new MultiConnectorAbsoluteLayoutRectangleController());
 		}
 				
 	}

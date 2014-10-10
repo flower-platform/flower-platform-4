@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flexdiagram.renderer {
 	import flash.display.GradientType;
 	import flash.events.Event;
@@ -17,6 +32,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	import spark.components.DataRenderer;
 	import spark.components.Group;
 	import spark.components.IItemRenderer;
+	import spark.components.RichText;
 	import spark.components.supportClasses.InteractionState;
 	import spark.components.supportClasses.InteractionStateDetector;
 	import spark.layouts.HorizontalLayout;
@@ -28,6 +44,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
+	import org.flowerplatform.flexdiagram.mindmap.IAbstractMindMapModelRenderer;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
@@ -55,7 +72,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	 * 
 	 * @author Cristian Spiescu
 	 */
-	public class BaseRenderer extends DataRenderer implements IDiagramShellContextAware, IItemRenderer {
+	public class BaseRenderer extends DataRenderer implements IDiagramShellContextAware, IItemRenderer, IAbstractMindMapModelRenderer {
 		
 		/**************************************************************************
 		 * Constants.
@@ -66,7 +83,7 @@ package org.flowerplatform.flexdiagram.renderer {
 		
 		protected static const TEXT_COLOR_DEFAULT:uint = 0x000000;
 		
-		protected static const FONT_FAMILY_DEFAULT:String = "SansSerif";
+		protected static const FONT_FAMILY_DEFAULT:String = null;
 		
 		protected static const FONT_SIZE_DEFAULT:Number = 9;
 		
@@ -110,7 +127,7 @@ package org.flowerplatform.flexdiagram.renderer {
 		 *************************************************************************/
 		public function set text(value:String):void {
 			if (value != null) {
-				_label.textFlow = TextConverter.importToFlow(value , Utils.isHTMLText(value) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);	
+				_label.textFlow = Utils.importTextFlowFromHtmlOrPlainText(value);
 			} else {
 				_label.textFlow = null;
 			}
@@ -157,6 +174,10 @@ package org.flowerplatform.flexdiagram.renderer {
 		
 		public function set maxWidthAdvanced(value:Number):void {
 			_maxWidthAdvanced = value;
+			if (isNaN(_maxWidthAdvanced)) {
+				// e.g. recycling a renderer that had maxW towards a model that doesn't have maxW
+				_label.maxWidth = NaN;
+			}
 			invalidateSize();
 		}
 
@@ -203,6 +224,10 @@ package org.flowerplatform.flexdiagram.renderer {
 			}
 			interactionStateDetector = new InteractionStateDetector(this);
 			interactionStateDetector.addEventListener(Event.CHANGE, interactionStateDetector_changeHandler);
+		}
+		
+		public function getLabelDisplay():RichText {
+			return _label;
 		}
 		
 		public function get diagramShellContext():DiagramShellContext {			
@@ -295,7 +320,7 @@ package org.flowerplatform.flexdiagram.renderer {
 			// loop over the icons list; and compare with the actual image components; the purpose: try to reuse the components
 			// there are 3 cases: the size theoretical list == the size of the actual list; or < or > 
 			for (var i:int = 0; i < _icons.length; i++) {
-				var candidate:IVisualElement = getElementAt(i);
+				var candidate:IVisualElement = iconsAndLabelArea.getElementAt(i);
 				if (candidate is BitmapImage) {
 					// a BitmapImage that will be reused
 					iconDisplay = BitmapImage(candidate);

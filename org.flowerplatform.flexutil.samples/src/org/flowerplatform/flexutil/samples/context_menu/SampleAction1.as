@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.flexutil.samples.context_menu {
 	import org.flowerplatform.flexutil.action.ActionBase;
-	import org.flowerplatform.flexutil.samples.renderer.MultipleIconItemRendererSample;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -23,7 +22,7 @@ package org.flowerplatform.flexutil.samples.context_menu {
 	public class SampleAction1 extends ActionBase {
 		public function SampleAction1() {
 			super();
-			icon = MultipleIconItemRendererSample.infoImage;
+			icon = ContextMenuSample.infoImage;
 			preferShowOnActionBar = true;
 		}
 		

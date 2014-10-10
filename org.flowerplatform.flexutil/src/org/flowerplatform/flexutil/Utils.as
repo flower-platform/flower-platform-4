@@ -25,6 +25,10 @@ package org.flowerplatform.flexutil {
 	import spark.components.TextInput;
 	import spark.components.supportClasses.SkinnableTextBase;
 	
+	import flashx.textLayout.conversion.TextConverter;
+	import flashx.textLayout.elements.IConfiguration;
+	import flashx.textLayout.elements.TextFlow;
+	
 	/**
 	 * @author Cristina Constantinescu
 	 */ 
@@ -246,7 +250,18 @@ package org.flowerplatform.flexutil {
 			
 			return text;
 		}
-			
+		
+		/**
+		 * @author Cristian Spiescu 
+		 */
+		public static function importTextFlowFromHtmlOrPlainText(text:String):TextFlow {
+			var format:String = TextConverter.PLAIN_TEXT_FORMAT;
+			if (isHTMLText(text)) {
+				format = TextConverter.TEXT_FIELD_HTML_FORMAT;
+				text = getCompatibleHTMLText(text);
+			}
+			return TextConverter.importToFlow(text, format);	
+		}
 		
 		private static var keyCodeNames:Dictionary;		
 		private static function getKeyCodeNames():Dictionary {

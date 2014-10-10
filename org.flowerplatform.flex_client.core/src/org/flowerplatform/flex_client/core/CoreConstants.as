@@ -20,7 +20,19 @@ package org.flowerplatform.flex_client.core {
 	 * @author Cristina Constantinescu
 	 */
 	public class CoreConstants {
-				
+
+		// Java and Flex
+		/**
+		 * @see CorePlugin#getNodeValuesProviderForMindMap
+		 */
+		public static const MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX:String = "mindMap.";
+
+		// Flex only
+		/**
+		 * @see CorePlugin#getNodeValuesProviderForMindMap
+		 */
+		public static const MIND_MAP_FEATURE_FOR_VALUES_PROVIDER:String = "mindMapValuesProvider";
+		
 		//////////////////////////////////
 		// Node types
 		//////////////////////////////////

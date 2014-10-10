@@ -32,11 +32,12 @@
 			
 			import flashx.textLayout.conversion.TextConverter;
 			
+			import org.flowerplatform.flex_client.core.CorePlugin;
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
-			import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
-			import org.flowerplatform.flexdiagram.mindmap.AbstractMindMapModelRenderer;
+			import org.flowerplatform.flexdiagram.FlexDiagramConstants;
+			import org.flowerplatform.flexdiagram.renderer.BaseRenderer;
 			import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 			import org.flowerplatform.flexutil.Utils;
 										
@@ -54,7 +55,7 @@
 			
 			public var resultHandler:Function;
 			
-			protected var renderer:AbstractMindMapModelRenderer;			
+			protected var renderer:BaseRenderer;			
 									
 			override protected function initializeHandler(event:FlexEvent):void {
 				super.initializeHandler(event);
@@ -75,7 +76,6 @@
 					var rendererClass:Class = getDefinitionByName(getQualifiedClassName(diagramShellContext.diagramShell.getRendererForModel(diagramShellContext, node))) as Class;
 					renderer = new ClassFactoryWithConstructor(rendererClass).newInstance();
 					renderer.diagramShellContext = diagramShellContext;		
-					renderer.drawOnlyBorderGraphics = true;
 					renderer.depth = 1;
 					rendererArea.addElement(renderer);
 				}
@@ -98,7 +98,9 @@
 					return;
 				}
 				// set new text
-				var titleProperty:String = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, node).getPropertyNameFromGenericDescriptor(node);				
+				var titleProperty:String = 
+						CorePlugin.getInstance().getNodeValuesProviderForMindMap(diagramShellContext.diagramShell.registry, node)
+							.getPropertyName(diagramShellContext.diagramShell.registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT);
 				renderer.data.properties[titleProperty] = textEditor.text;		
 			}
 			

@@ -4,7 +4,6 @@ import static org.flowerplatform.core.CoreConstants.FLOWER_PLATFORM_WORKSPACE;
 import static org.flowerplatform.core.repositories.RepositoriesService.fromStringListToExtensionInfoInFile;
 import static org.flowerplatform.core.repositories.RepositoriesService.getExtensionInfoInFile;
 import static org.flowerplatform.core.repositories.RepositoriesService.getExtensionMetadataForExtensionId;
-import static org.flowerplatform.tests.EclipseIndependentTestSuite.startPlugin;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -29,6 +28,7 @@ import org.flowerplatform.core.repositories.ExtensionInfoInFile;
 import org.flowerplatform.core.repositories.ExtensionMetadata;
 import org.flowerplatform.core.repositories.RepositoriesService;
 import org.flowerplatform.freeplane.FreeplanePlugin;
+import org.flowerplatform.tests.EclipseIndependentTestBase;
 import org.flowerplatform.tests.EclipseIndependentTestSuite;
 import org.flowerplatform.util.StringList;
 import org.flowerplatform.util.Utils;
@@ -42,7 +42,7 @@ import org.junit.Test;
  *
  */
 
-public class RepositoriesServiceTest {
+public class RepositoriesServiceTest extends EclipseIndependentTestBase {
 
 	public static final String REPOSITORIES = "repositories";
 	public static final String USERS_FILE = ".users";
@@ -728,11 +728,11 @@ public class RepositoriesServiceTest {
 
 	@AfterClass
 	public static void afterClass() throws Exception {
-		EclipseIndependentTestSuite.deleteFiles(REPOSITORIES);
+		deleteFiles(REPOSITORIES);
 		//new File("workspace/.users").delete();
-		EclipseIndependentTestSuite.deleteFiles("user1-random1");
-		EclipseIndependentTestSuite.deleteFiles("user2-random2");
-		EclipseIndependentTestSuite.deleteFiles("user3-random3");
+		deleteFiles("user1-random1");
+		deleteFiles("user2-random2");
+		deleteFiles("user3-random3");
 	}
 
 }

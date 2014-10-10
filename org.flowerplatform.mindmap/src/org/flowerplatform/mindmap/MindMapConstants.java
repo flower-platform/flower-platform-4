@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.util.UtilConstants;
 
 /**
  * @author Cristina Constantinescu
@@ -28,38 +27,6 @@ public final class MindMapConstants {
 	
 	private MindMapConstants() {
 	}
-	
-	// clean up by CS: begin
-	
-	/**
-	 * Contains nodes that belong to a general purpose/original mind maps. I.e. mind maps that do only the
-	 * original mind map cases (add, remove, set). E.g. Freeplane, FreeMind, etc.
-	 * 
-	 * @author Cristian Spiescu
-	 */
-	public static final String GENERAL_PURPOSE_MIND_MAP_CATEGORY = UtilConstants.CATEGORY_PREFIX + "generalPurposeMindMap";
-	
-	// Constants from Flex: FlexDiagramConstants
-	public static final String BASE_RENDERER_FONT_FAMILY = "baseRenderer.fontFamily";
-	public static final String BASE_RENDERER_FONT_SIZE = "baseRenderer.fontSize";
-	public static final String BASE_RENDERER_FONT_BOLD = "baseRenderer.fontBold";
-	public static final String BASE_RENDERER_FONT_ITALIC = "baseRenderer.fontItalic";
-	public static final String BASE_RENDERER_TEXT = "baseRenderer.text";
-	public static final String BASE_RENDERER_TEXT_COLOR = "baseRenderer.textColor";
-	public static final String BASE_RENDERER_BACKGROUND_COLOR = "baseRenderer.backgroundColor";
-	public static final String BASE_RENDERER_ICONS = "baseRenderer.icons";
-	public static final String BASE_RENDERER_MIN_WIDTH = "baseRenderer.minWidth";
-	public static final String BASE_RENDERER_MAX_WIDTH = "baseRenderer.maxWidth";
-	
-	public static final String MIND_MAP_RENDERER_CLOUD_TYPE = "mindMapRenderer.cloudType";
-	public static final String MIND_MAP_RENDERER_CLOUD_COLOR = "mindMapRenderer.cloudColor";
-	public static final String MIND_MAP_RENDERER_HAS_CHILDREN = "mindMapRenderer.hasChildren";
-	public static final String MIND_MAP_RENDERER_SIDE = "mindMapRenderer.side";
-	
-	// Constants from Flex: MindMapConstants
-	public static final String MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX = "mindMap.";
-
-	// clean up by CS: end
 	
 	//////////////////////////////////
 	// Node types
@@ -84,9 +51,11 @@ public final class MindMapConstants {
 	}
 	
 	// CLOUD SHAPES
-	public static final String SHAPE_NONE = "ARC";		
+	public static final String SHAPE_NONE = "NONE";		
 	public static final String SHAPE_RECTANGLE = "RECT";
 	public static final String SHAPE_ROUND_RECTANGLE = "ROUND_RECT";
+	public static final String SHAPE_ARC = "ARC";
+	public static final String SHAPE_STAR = "STAR";
 			
 	public static final int DEFAULT_MIN_WIDTH = 1;
 	public static final int DEFAULT_MAX_WIDTH = 600;

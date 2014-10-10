@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.flexdiagram.mindmap.controller {
 	
+	import flash.events.Event;
+	import flash.events.IEventDispatcher;
 	import flash.geom.Rectangle;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
@@ -58,9 +60,12 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 			var oldExpandedHeightLeft:Number = ds.getPropertyValue(context, model, "expandedHeightLeft", dynamicObject);		
 			var oldExpandedHeightRight:Number = ds.getPropertyValue(context, model, "expandedHeightRight", dynamicObject);
 			
+			// TODO CS/MM: I think it's not needed, see below
 			var side:int = ds.getModelController(context, model).getSide(context, model);
 			var isRoot:Boolean = ds.getModelController(context, model).isRoot(context, model);			
 			
+			// TODO CS/MM: I don't think it's necessary, as this method is always called for root; in fact the model parameter is not useful
+			// applies to the following method as well
 			if (model == ds.getRoot(context)) {
 				ds.setPropertyValue(context, model, "x", ds.getRootNodeX(context, model), dynamicObject);	
 				ds.setPropertyValue(context, model, "y", ds.getRootNodeY(context, model), dynamicObject);	
@@ -69,7 +74,9 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 			calculateRootExpandedWidthAndHeight(context, side);	
 			
 			if (isRoot || side == MindMapDiagramShell.POSITION_LEFT) {						
-				if (isRoot) {										
+				if (isRoot) {		
+					// TODO CS/MM: I think this variable is useless; inject ...Left and ...Right directly into the method. And for root: we shouldn't have expandedHeight; it's not used anywhere
+					// we should only have ..Right ..Left
 					oldExpandedHeight = oldExpandedHeightLeft;
 					ds.setPropertyValue(context, model, "expandedHeight", ds.getPropertyValue(context, model, "expandedHeightLeft", dynamicObject), dynamicObject);	
 				}				
@@ -99,6 +106,7 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 			
 			if (isRoot || side == MindMapDiagramShell.POSITION_LEFT) {
 				calculateExpandedWidthAndHeight(context, model, MindMapDiagramShell.POSITION_LEFT);
+				// TODO CS/MM: should use the values from the return result; same below 
 				ds.setPropertyValue(context, model, "expandedHeightLeft", ds.getPropertyValue(context, model, "expandedHeight", dynamicObject), dynamicObject);				
 				ds.setPropertyValue(context, model, "expandedWidthLeft", ds.getPropertyValue(context, model, "expandedWidth", dynamicObject), dynamicObject);
 			}
@@ -118,8 +126,8 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 			var additionalPadding:Number = ds.getPropertyValue(context, model, "additionalPadding", dynamicObject);
 			
 			if (ds.getModelController(context, model).getExpanded(context, model)) {
+				// i.e. expanded
 				var children:Array = ds.getChildrenBasedOnSide(context, model, side);
-				var logTsStart:Number = new Date().time;	
 				for (var i:int = 0; i < children.length; i++) {
 					var child:Object = children[i];
 					
@@ -143,7 +151,8 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 				expandedHeight += additionalPadding;
 				ds.setPropertyValue(context, model, "expandedHeight", expandedHeight, dynamicObject);				
 				expandedHeight = Math.max(expandedHeight, ds.getPropertyValue(context, model, "height", dynamicObject));				
-			} else {				
+			} else {	
+				// i.e. not expanded
 				expandedWidth = ds.getPropertyValue(context, model, "width", dynamicObject);				
 				ds.setPropertyValue(context, model, "expandedWidth", expandedWidth, dynamicObject);
 				// add additional padding here -> used only for return result to calculate parent's expandedWidth
@@ -151,14 +160,21 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 				
 				expandedHeight = ds.getPropertyValue(context, model, "height", dynamicObject) + additionalPadding;
 				
+				// TODO CS/MM: why? these should always have the same meaning. And why only for height?
 				// for collapse models, the expandedHeight must be 0
 				ds.setPropertyValue(context, model, "expandedHeight", 0, dynamicObject);				
 			}
 			return [expandedWidth, expandedHeight];
 		}
 		
+		/**
+		 * @author Cristina Constantinescu
+		 * @author Cristian Spiescu
+		 */
 		private function changeCoordinates(context:DiagramShellContext, model:Object, oldExpandedHeight:Number, newExpandedHeight:Number, side:int):void {			
 			changeChildrenCoordinates(context, model, side);	
+			// dispatch for root as well, because changeChildrenCoordinates dispatches for each children of "model", and not on "model" as well
+			IEventDispatcher(model).dispatchEvent(new Event(MindMapDiagramShell.COORDINATES_CHANGED_EVENT));
 			
 			var ds:MindMapDiagramShell = MindMapDiagramShell(context.diagramShell);
 			var dynamicObject:Object = ds.getDynamicObject(context, model);			
@@ -196,6 +212,10 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 			}
 		}		
 		
+		/**
+		 * @author Cristina Constantinescu
+		 * @author Cristian Spiescu
+		 */
 		private function changeChildrenCoordinates(context:DiagramShellContext, model:Object, side:int):void {	
 			var ds:MindMapDiagramShell = MindMapDiagramShell(context.diagramShell);
 			if (ds.getModelController(context, model).getExpanded(context, model)) {
@@ -221,6 +241,7 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 						ds.setPropertyValue(context, child, "x", modelX + modelWidth + ds.horizontalPadding, dynamicObject);															
 					}						
 					changeChildrenCoordinates(context, child, side);			
+					IEventDispatcher(child).dispatchEvent(new Event(MindMapDiagramShell.COORDINATES_CHANGED_EVENT));
 				}				
 			}
 		}

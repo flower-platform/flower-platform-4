@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,12 +19,9 @@ package org.flowerplatform.flexdiagram.mindmap {
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
-	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
-	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 	import org.flowerplatform.flexdiagram.renderer.BaseRenderer;
-	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	
 	/**
@@ -64,9 +61,17 @@ package org.flowerplatform.flexdiagram.mindmap {
 		 * Graphic properties supported by this renderer.
 		 *************************************************************************/
 		
+		public function get cloudColor():uint {
+			return _cloudColor;
+		}
+		
 		public function set cloudColor(value:uint):void {
 			_cloudColor = value;
 			invalidateDisplayList();
+		}
+		
+		public function get cloudType():String {
+			return _cloudType;
 		}
 		
 		public function set cloudType(value:String):void {
@@ -102,6 +107,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 				// don't change values if first resize, wait until component fully initialized
 				return;
 			}
+			
 			var refresh:Boolean = false;
 			if (mindMapDiagramShell.getPropertyValue(diagramShellContext, data, "width") != width) {
 				mindMapDiagramShell.setPropertyValue(diagramShellContext, data, "width", width);
@@ -116,6 +122,15 @@ package org.flowerplatform.flexdiagram.mindmap {
 				mindMapDiagramShell.shouldRefreshModelPositions(diagramShellContext, mindMapDiagramShell.rootModel);
 				mindMapDiagramShell.shouldRefreshVisualChildren(diagramShellContext, mindMapDiagramShell.rootModel);
 			}
+		}
+		
+		override protected function beginModelListen():void {
+			super.beginModelListen();
+			// we invoke this for the case when a recycled renderer has the exact same width; in
+			// this case, the resizeHandler is not called. We need to invoke it here, to inform the
+			// system of the real width. E.g. visible problem: without this, some nodes on the left 
+			// would be translated
+			resizeHandler(null);
 		}
 		
 		/**
@@ -143,9 +158,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 				}
 				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudColor", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_COLOR, CLOUD_COLOR_DEFAULT);
 				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudType", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE, null);
+
 			}
-			
-			MindMapModelRendererController(ControllerUtils.getRendererController(diagramShellContext, data)).rendererModelChangedHandler(diagramShellContext, this, data, event);
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			
@@ -155,50 +169,9 @@ package org.flowerplatform.flexdiagram.mindmap {
 				drawLittleCircle();
 			}
 		}
-		
+			
 		override protected function drawCloud(unscaledWidth:Number, unscaledHeight:Number):void {			
-			if (_cloudType == CLOUD_TYPE_RECTANGLE || _cloudType == CLOUD_TYPE_ROUNDED_RECTANGLE) {				
-				graphics.lineStyle(2, 0x808080); // gray line with bigger thickness
-				graphics.beginFill(Utils.convertValueToColor(_cloudColor), 1);
-				
-				var diagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShellContext.diagramShell);
-				var cloudPadding:Number = diagramShell.getPropertyValue(diagramShellContext, data, "additionalPadding");
-				var side:int = diagramShell.getModelController(diagramShellContext, data).getSide(diagramShellContext, data);
-				
-				var width:Number = diagramShell.getPropertyValue(diagramShellContext, data, "width");
-				var height:Number = diagramShell.getPropertyValue(diagramShellContext, data, "height");
-				var expandedWidth:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedWidth");
-				var expandedHeight:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedHeight");
-				
-				var shapeX:Number = - cloudPadding/2;
-				var shapeY:Number = - diagramShell.getDeltaBetweenExpandedHeightAndHeight(diagramShellContext, data, true)/2;
-				var shapeWidth:Number = expandedWidth + cloudPadding;
-				var shapeHeight:Number = Math.max(expandedHeight, height + cloudPadding);
-				
-				var expandedWidthLeft:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedWidthLeft");
-				var expandedWidthRight:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedWidthRight");
-				var expandedHeightLeft:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedHeightLeft");
-				var expandedHeightRight:Number = diagramShell.getPropertyValue(diagramShellContext, data, "expandedHeightRight");
-				var additionalPadding:Number = diagramShell.getPropertyValue(diagramShellContext, data, "additionalPadding");
-				
-				if (side == MindMapDiagramShell.POSITION_LEFT) {
-					shapeX -= (expandedWidth - width);
-				}
-				
-				if (side == MindMapDiagramShell.POSITION_CENTER) {
-					shapeX -= expandedWidthLeft - width;
-					shapeY = - (Math.max(expandedHeightLeft, expandedHeightRight) - height - additionalPadding)/2;
-					shapeWidth = expandedWidthLeft + expandedWidthRight - width; 
-					shapeHeight = Math.max(expandedHeightLeft, expandedHeightRight);
-				}
-				
-				if (_cloudType == CLOUD_TYPE_RECTANGLE) {
-					graphics.drawRect(shapeX - 3, shapeY - 3, shapeWidth + 5, shapeHeight + 5);
-				} else {
-					graphics.drawRoundRect(shapeX - 3, shapeY - 3, shapeWidth + 5, shapeHeight + 5, 25, 25);					
-				}
-				graphics.endFill();
-			}
+			new CloudDrawer().drawCloud(this, unscaledWidth, unscaledHeight);
 		}
 		
 		protected function shouldDrawCircle():Boolean {			

@@ -58,6 +58,11 @@ package org.flowerplatform.flexdiagram {
 		
 		// visual properties supported by the MindMapNodeRenderer
 		public static const MIND_MAP_RENDERER_CLOUD_TYPE:String = "mindMapRenderer.cloudType";
+		public static const MIND_MAP_RENDERER_CLOUD_TYPE_RECTANGLE:String = "RECT";
+		public static const MIND_MAP_RENDERER_CLOUD_TYPE_ROUNDED_RECTANGLE:String = "ROUND_RECT";
+		public static const MIND_MAP_RENDERER_CLOUD_TYPE_ARC:String = "ARC";
+		public static const MIND_MAP_RENDERER_CLOUD_TYPE_STAR:String = "STAR";
+		
 		public static const MIND_MAP_RENDERER_CLOUD_COLOR:String = "mindMapRenderer.cloudColor";
 		public static const MIND_MAP_RENDERER_HAS_CHILDREN:String = "mindMapRenderer.hasChildren";
 		// for the moment, this is not a feature of this renderer; the implementation from FD/samples and FP

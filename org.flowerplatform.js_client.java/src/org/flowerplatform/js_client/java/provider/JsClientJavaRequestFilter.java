@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.js_client.java.provider;
 
 import static org.flowerplatform.js_client.java.JsClientJavaConstants.METHOD_INVOCATION_SERVICE;
@@ -12,7 +27,6 @@ import javax.ws.rs.client.ClientRequestFilter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.js_client.java.JsClientJavaConstants;
 import org.flowerplatform.js_client.java.JsClientJavaPlugin;
 import org.flowerplatform.js_client.java.JsClientJavaUtils;
 import org.mozilla.javascript.NativeArray;

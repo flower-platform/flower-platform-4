@@ -29,9 +29,10 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 		
 		public var removeRendererIfModelIsDisposed:Boolean;
 		
-		public function ClassReferenceRendererController(rendererClassFactory:ClassFactoryWithConstructor = null, orderIndex:int = 0) {	
+		public function ClassReferenceRendererController(rendererClassFactory:ClassFactoryWithConstructor = null, orderIndex:int = 0, removeRendererIfModelIsDisposed:Boolean = false) {	
 			super(orderIndex);
 			this.rendererClassFactory = rendererClassFactory;
+			this.removeRendererIfModelIsDisposed = removeRendererIfModelIsDisposed;
 		}
 		
 		public function getRendererClass(context:DiagramShellContext, model:Object):Class {

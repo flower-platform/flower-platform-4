@@ -17,7 +17,6 @@ package org.flowerplatform.tests.controllers;
 
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.file.FileControllerUtils.createFileNodeUri;
-import static org.flowerplatform.tests.EclipseIndependentTestSuite.nodeService;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
@@ -45,7 +44,7 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
-import org.flowerplatform.tests.EclipseIndependentTestSuite;
+import org.flowerplatform.tests.EclipseIndependentTestBase;
 import org.flowerplatform.tests.TestUtil;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -54,7 +53,7 @@ import org.junit.Test;
 /**
  * @author Sebastian Solomon
  */
-public class FileSystemControllersTest {
+public class FileSystemControllersTest extends EclipseIndependentTestBase {
 	
 	public static final String FILE_SYSTEM_CONTROLLERS_DIR = "fileSystemControllers";
 	
@@ -65,32 +64,29 @@ public class FileSystemControllersTest {
 	private static RemoteMethodInvocationListener remoteMethodInvocationListener;
 	
 	private static IFileAccessController fileAccessController = new PlainFileAccessController();
+	
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
 	@BeforeClass
-	public static void beforeClass() throws Exception {
-		if (CorePlugin.getInstance() == null) {
-			// initialize in case this test is run alone
-			EclipseIndependentTestSuite.beforeClass();
-		}
-		EclipseIndependentTestSuite.deleteFiles(FILE_SYSTEM_CONTROLLERS_DIR);
-		EclipseIndependentTestSuite.copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, FILE_SYSTEM_CONTROLLERS_DIR);
+	public static void beforeClass() {
+		deleteFiles(FILE_SYSTEM_CONTROLLERS_DIR);
+		copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, FILE_SYSTEM_CONTROLLERS_DIR);
 		
 		CorePlugin.getInstance().getResourceService().subscribeToParentResource("", createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, null), 
 				new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 
 		remoteMethodInvocationListener = spy(CorePlugin.getInstance().getRemoteMethodInvocationListener());
 		doReturn("dummy-session").when(remoteMethodInvocationListener).getSessionId();
-
 	}
+
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
 	@Before
 	public void setUp() {
-		EclipseIndependentTestSuite.deleteFiles(FILE_SYSTEM_CONTROLLERS_DIR);
-		EclipseIndependentTestSuite.copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, FILE_SYSTEM_CONTROLLERS_DIR);
+		deleteFiles(FILE_SYSTEM_CONTROLLERS_DIR);
+		copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, FILE_SYSTEM_CONTROLLERS_DIR);
 
 		remoteMethodInvocationInfo = spy(new RemoteMethodInvocationInfo());
 		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceUris();
@@ -99,8 +95,9 @@ public class FileSystemControllersTest {
 		remoteMethodInvocationInfo.setServiceMethodOrUrl("test");
 
 	}
+
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
 	@Test
 	public void testGetChildren() {
@@ -126,7 +123,7 @@ public class FileSystemControllersTest {
 				.add(CoreConstants.POPULATE_WITH_PROPERTIES, false)), Arrays.asList(
 								new Node(createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, "A/Folder2/oneFolder"), FILE_NODE_TYPE)));
 	}
-	
+
 	/**
 	 * Test if lists contain the same elements. Order does not matter.
 	 * 
@@ -145,9 +142,9 @@ public class FileSystemControllersTest {
 			}
 		}
 	}
-	
+
 	/**
-	 *@author Solomon Sebastian
+	 * @author Solomon Sebastian
 	 **/
 	@Test
 	public void addChild() {
@@ -195,8 +192,9 @@ public class FileSystemControllersTest {
 		assertEquals(fileAccessController.exists(newFolder), true);
 		assertEquals(fileAccessController.isDirectory(newFolder), true);
 	}
+
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	@Test
 	public void removeNode() {
@@ -216,8 +214,9 @@ public class FileSystemControllersTest {
 		}
 		assertEquals(fileAccessController.exists(newFolder), false);
 	}
+
 	/**
-	 *@author Solomon Sebastian
+	 * @author Solomon Sebastian
 	 **/
 	public void copyDirectory(File srcPath, File dstPath) throws IOException {
 		if (srcPath.isDirectory()) {

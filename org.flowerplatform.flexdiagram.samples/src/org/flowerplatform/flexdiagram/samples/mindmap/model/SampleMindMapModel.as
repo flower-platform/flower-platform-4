@@ -47,5 +47,9 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 		
 		public var note:String;
 		public var details:String;
+		
+		public function toString():String {
+			return text;
+		}
 	}	
 }

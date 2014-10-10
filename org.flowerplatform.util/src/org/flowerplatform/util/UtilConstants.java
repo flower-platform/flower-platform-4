@@ -26,6 +26,10 @@ public final class UtilConstants {
 
 	public static final String FLOWER_PLATFORM = "flower-platform";
 	
+	////////////////////////////////////////////////////////////////////
+	// Constants Java and Flex
+	////////////////////////////////////////////////////////////////////
+
 	// Constants from Flex: FlexUtilConstants
 	
 	// TypeDescriptorRegistry
@@ -39,6 +43,10 @@ public final class UtilConstants {
 	// Other
 	public static final String VALUE_CONVERTER_STRING_HEX_TO_UINT = "stringHexToUint";
 	public static final String VALUE_CONVERTER_CSV_TO_LIST = "csvToList";
+
+	////////////////////////////////////////////////////////////////////
+	// Constants only in Java (or before the constants cleaning up)
+	////////////////////////////////////////////////////////////////////
 
 	//////////////////////////////////
 	// Resources
