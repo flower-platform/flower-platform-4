@@ -27,7 +27,6 @@ import javax.ws.rs.client.ClientRequestFilter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.js_client.java.JsClientJavaConstants;
 import org.flowerplatform.js_client.java.JsClientJavaPlugin;
 import org.flowerplatform.js_client.java.JsClientJavaUtils;
 import org.mozilla.javascript.NativeArray;

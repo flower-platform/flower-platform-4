@@ -28,6 +28,8 @@ import org.flowerplatform.js_client.java.node.INodeRegistryManagerListener;
 import org.flowerplatform.js_client.java.node.JavaHostInvocator;
 import org.flowerplatform.js_client.java.node.JavaHostResourceOperationsHandler;
 import org.flowerplatform.js_client.java.node.JavaHostServiceInvocator;
+import org.flowerplatform.tests.EclipseIndependentTestBase;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.NativeObject;
@@ -36,9 +38,19 @@ import org.mozilla.javascript.Scriptable;
 /**
  * @author Cristina Constantinescu
  */
-public class NodeRegistryScriptTest {
+public class NodeRegistryScriptTest extends EclipseIndependentTestBase {
 
 	private static final String URL = "http://localhost:8080/org.flowerplatform.host.web_app";
+	
+	/**
+	 * Make sure the plugins are started.
+	 * 
+	 * @auhor Mariana Gheorghe
+	 */
+	@BeforeClass
+	public static void beforeClass() {
+		startPlugin(new JsClientJavaPlugin());
+	}
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -115,7 +127,7 @@ public class NodeRegistryScriptTest {
 			JsClientJavaUtils.invokeJsFunction(nodeRegistry, "addNodeChangeListener", new NodeChangedListener());
 			
 			// subscribe
-			JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "subscribe", "fpm1:user1/repo-2|test1.mm", nodeRegistry, 
+			JsClientJavaUtils.invokeJsFunction(nodeRegistryManager, "subscribe", "fpm1:user1/repo-2|TestMap.mm", nodeRegistry, 
 				new IFunctionInvoker() {
 					@Override
 					public void call(Object instance, Object... params) {

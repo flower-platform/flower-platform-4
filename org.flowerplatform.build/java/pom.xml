@@ -50,10 +50,12 @@
 				<module>../../org.flowerplatform.flex_client.server</module>
 
 				<!-- js client plugins -->
+				<module>../../org.flowerplatform.js_client.common_js_as</module>
 				<module>../../org.flowerplatform.js_client.core</module>
 				<module>../../org.flowerplatform.js_client.users</module>
 				<module>../../org.flowerplatform.js_client.host_app.config.web</module>
 				<module>../../org.flowerplatform.js_client.server</module>
+				<module>../../org.flowerplatform.js_client.java</module>
 
 				<!-- tests -->
 				<module>../../org.flowerplatform.tests</module>
@@ -72,6 +74,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	
 		<output.java.prefix>..</output.java.prefix>
+		
+		<!-- this property will be changed for tests, to allow using a different output dir during eclipse build -->
+		<output.directory>${output.java.prefix}/${output.java}/classes/${project.artifactId}</output.directory>
 	
 		<tycho.version>0.21.0</tycho.version>
 		<eclipseRepo.url>http://download.eclipse.org/eclipse/updates/4.3/R-4.3.2-201402211700</eclipseRepo.url>
@@ -94,7 +99,7 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-		<outputDirectory>${output.java.prefix}/${output.java}/classes/${project.artifactId}</outputDirectory>
+		<outputDirectory>${output.directory}</outputDirectory>
 		<directory>${output.java.prefix}/${output.java}/distr/${project.artifactId}</directory>
 
 		<plugins>

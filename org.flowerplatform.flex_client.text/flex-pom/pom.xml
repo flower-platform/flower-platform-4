@@ -38,14 +38,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.google.code.stagewebviewbridge</groupId>
-			<artifactId>stagewebviewbridge</artifactId>
-			<version>1.0</version>
-			<type>swc</type>
-			<scope>merged</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.flowerplatform</groupId>
 			<artifactId>org.flowerplatform.flexutil</artifactId>
 			<version>${project.version}</version>

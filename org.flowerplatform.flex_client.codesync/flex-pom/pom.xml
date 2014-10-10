@@ -31,6 +31,14 @@
 		
 		<dependency>
 			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flexdiagram</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>external</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
 			<artifactId>org.flowerplatform.flex_client.core</artifactId>
 			<version>${project.version}</version>
 			<type>swc</type>

@@ -29,7 +29,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.js_client.java.JsClientJavaPlugin;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
