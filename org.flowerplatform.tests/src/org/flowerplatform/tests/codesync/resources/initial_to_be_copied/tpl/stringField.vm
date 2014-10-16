@@ -1,0 +1,4 @@
+<div class="form-group">
+	<label>${label}</label>
+	<input class="form-control" type="text" ng-model="${parent}.${entity}">
+</div>

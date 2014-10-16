@@ -69,7 +69,7 @@ public final class FileControllerUtils {
 	 **/
 	public static String createFileNodeUri(String repo, String path) {
 		// remove the repo prefix from the file path
-		if (path != null && path.startsWith(repo)) {
+		if (repo.length() > 0 && path != null && path.startsWith(repo)) {
 			path = path.substring(repo.length() + 1);
 		}
 		return createNodeUriWithRepo(FILE_SCHEME, repo, (path == null ? "" : path));

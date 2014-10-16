@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Template
+Bundle-SymbolicName: org.flowerplatform.codesync.template;singleton:=true
+Bundle-Version: 0.1.1.qualifier
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.flowerplatform.codesync,
+ org.flowerplatform.core,
+ org.flowerplatform.util,
+ org.eclipse.text
+Bundle-Activator: org.flowerplatform.codesync.template.CodeSyncTemplatePlugin
+Export-Package: org.flowerplatform.codesync.template
+Bundle-ClassPath: lib-from-maven/commons-collections-3.2.1.jar,
+ lib-from-maven/commons-lang-2.4.jar,
+ lib-from-maven/velocity-1.7.jar,
+ .

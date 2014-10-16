@@ -1,0 +1,5 @@
+<tabset>
+	#foreach (${tab} in ${node.children})
+	${tab.innerTemplate}
+	#end
+</tabset>

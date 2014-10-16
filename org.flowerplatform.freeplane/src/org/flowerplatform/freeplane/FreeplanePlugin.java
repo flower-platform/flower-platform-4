@@ -130,7 +130,8 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(ADD_NODE_CONTROLLER, mindMapFileAddNodeController)
 			.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController(".regexMatches", "regexMatches"))  // TODO delete
 			.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController(".regex", "regexConfig"))  // TODO delete
-			.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController(".sdiff", "structureDiff")); // TODO delete
+			.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController(".sdiff", "structureDiff")) // TODO delete
+			.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController(".codesyncTemplate", "codesyncTemplateRoot")); // TODO delete
 		
 		CorePlugin.getInstance().getResourceService().addResourceHandler(FREEPLANE_PERSISTENCE_RESOURCE_KEY, fppResourceHandler);
 		CorePlugin.getInstance().getResourceService().addResourceHandler(FREEPLANE_MINDMAP_RESOURCE_KEY, fpmResourceHandler);

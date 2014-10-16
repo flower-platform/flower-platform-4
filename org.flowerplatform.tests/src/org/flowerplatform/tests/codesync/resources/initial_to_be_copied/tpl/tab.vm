@@ -1,0 +1,7 @@
+<tab>
+	<tab-heading>
+		${label}
+	</tab-heading>
+	
+	${innerTemplate}
+</tab>

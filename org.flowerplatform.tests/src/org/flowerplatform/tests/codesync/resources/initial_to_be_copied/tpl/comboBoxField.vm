@@ -1,0 +1,7 @@
+<div class="form-group">
+	<label>${label}</label>
+	<select class="form-control" 
+		ng-model="${parent}.${id}"  ng-model-options="{ getterSetter: true }"
+		ng-options="${option}.${id} as ${labelFunction}(${option}) for ${option} in ${options}">
+	</select>
+</div>

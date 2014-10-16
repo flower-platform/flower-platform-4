@@ -18,6 +18,7 @@ Require-Bundle: org.eclipse.jdt.core,
  org.flowerplatform.codesync.as,
  org.flowerplatform.codesync.java,
  org.flowerplatform.codesync.sdiff,
+ org.flowerplatform.codesync.template,
  org.flowerplatform.mindmap,
  org.flowerplatform.freeplane,
  org.flowerplatform.js_client.java

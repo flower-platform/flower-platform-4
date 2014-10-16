@@ -1,0 +1,17 @@
+<table class="#if(${node.table-class})${node.table-class}#{else}table#end" ng-controller="${node.label}ListCtrl">
+	<thead>
+		<tr>
+			#foreach (${column} in ${node.children})
+			<th>${column.label}</th>
+			#end
+		</tr>
+	</thead>
+	
+	<tbody>
+		<tr ng-repeat="${node.entity} in ${node.entity}List">
+			#foreach (${column} in ${node.children})
+			<td>{{${node.entity}.${column.entity}}}</td>
+			#end
+		</tr>
+	</tbody>
+</table>

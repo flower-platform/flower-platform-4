@@ -63,7 +63,8 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 	@Override
 	public void setValueFeatureValue(Object file, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
-			codeSyncAlgorithm.getFilesToRename().put(getCodeSyncFile(file).getFile(), (String) value);
+//			codeSyncAlgorithm.getFilesToRename().put(getCodeSyncFile(file).getFile(), (String) value);
+			System.out.println();
 		}
 	}
 	
@@ -98,7 +99,7 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 				try {
 					document = new Document(fileAccessController.readFileToString(file));
 					TextEdit edits = rewrite(document, fileInfo);
-					if (edits != null && edits.getChildrenSize() != 0) {
+					if (edits != null) {
 						edits.apply(document);
 						fileAccessController.writeStringToFile(file, document.get());
 					}
