@@ -37,6 +37,7 @@
     <classEntry path="org.flowerplatform.flexdiagram.mindmap.MultiConnectorModel"/>
     <classEntry path="org.flowerplatform.flexdiagram.mindmap.MultiConnectorRenderer"/>
     <classEntry path="org.flowerplatform.flexdiagram.mindmap.controller.MultiConnectorAbsoluteLayoutRectangleController"/>
+    <classEntry path="org.flowerplatform.flexdiagram.ui.CalloutToolTip"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
