@@ -42,6 +42,7 @@ import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.core.CoreConstants.ROOT_TYPE;
 import static org.flowerplatform.core.CoreConstants.USER;
 import static org.flowerplatform.core.CoreConstants.USERS;
+import static org.flowerplatform.core.CoreConstants.USERS_ROOT;
 import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
 import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_VALUE_CONVERTER;
 import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_CSV_TO_LIST;
@@ -329,9 +330,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		virtualNodeResourceHandler.addVirtualNodeType(ROOT_TYPE);
 		virtualNodeResourceHandler.addVirtualNodeType(REPOSITORY_TYPE);
 		
-		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USERS);
-		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USER);
-
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USERS_ROOT);
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USERS);
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(USER);
 		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORIES);

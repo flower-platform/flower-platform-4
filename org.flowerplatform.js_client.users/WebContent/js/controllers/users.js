@@ -6,13 +6,16 @@ logger.debug('Initialize controllers: users');
 // User side menu controller
 ///////////////////////////////////////////////////////
 
-flowerProject.lazy.controller('UserSideMenuCtrl', ['$scope', '$location', '$route', 'Auth', 
-function($scope, $location, $route, Auth) {
+flowerProject.lazy.controller('UserSideMenuCtrl', ['$scope', '$location', '$route', 'Auth', 'SearchType',
+function($scope, $location, $route, Auth, SearchType) {
 
 	$scope.currentPath = $location.path();
   	$scope.content = $route.current.scope.template_sideMenuContentTemplate.url;
 
-  	$scope.currentUser = Auth.currentUser();
+  	Auth.currentUser().$promise.then(function(result) {
+  		$scope.currentUser = result;
+  		$scope.encodedNodeUri = encodeURIComponent($scope.currentUser.messageResult.nodeUri);
+  	});
 
   	$scope.logout = function() {
   		Auth.logout().$promise.then(function() {
@@ -21,7 +24,14 @@ function($scope, $location, $route, Auth) {
   			Auth.currentUser(null);
   			$route.reload();
   		});
-  	};
+  	};  	
+  	
+  	/**
+	 * Set type of search for Repositories
+	 */
+	$scope.setSearchType = function(type) {
+		SearchType. setSearchType(type);
+	}
   	
 }]);
 
@@ -42,6 +52,9 @@ flowerProject.lazy.controller('UserListCtrl', ['$scope', 'User', function($scope
 flowerProject.lazy.controller('UserFormCtrl', ['$scope', '$routeParams', '$location', 'User', 'UserNodeUri', 
 function($scope, $routeParams, $location, User, UserNodeUri) {
 	
+	// variable for AlertMessage directive
+	$scope.userAlert = {};
+	
 	/**
 	 * Get the user from the server, or create a new user for this $scope.
 	 */
@@ -56,13 +69,13 @@ function($scope, $routeParams, $location, User, UserNodeUri) {
 		$scope.user.messageResult['@class'] = 'org.flowerplatform.core.node.remote.Node';
 		$scope.user.messageResult.properties['@class'] = 'java.util.HashMap';
 		User.save($scope.user.messageResult).$promise.then(function(result) {
-			$scope.alert = {
+			$scope.userAlert = {
 				message: 'User information for ' + result.messageResult.properties.firstName + ' ' + result.messageResult.properties.lastName + ' has been successfully updated.',
 				visible: true,
 				success: true
 			};
 		}, function(error) {
-			$scope.alert = {
+			$scope.userAlert = {
 				message: error.statusText + ": " + error.data.messageResult,
 				visible: true,
 				danger: true
@@ -77,13 +90,13 @@ function($scope, $routeParams, $location, User, UserNodeUri) {
 		User.remove({
 			id: $scope.user.messageResult.nodeUri
 		}).$promise.then(function(result) {
-			$scope.alert = {
+			$scope.userAlert = {
 				message : 'User was deleted.',
 				visible : true,
 				success : true
 			};
 		}, function(error) {
-			$scope.alert = {
+			$scope.userAlert = {
 				message : 'Server error. Please try again.',
 				visible : true,
 				danger : true
@@ -107,6 +120,9 @@ function($scope, $routeParams, $location, User, UserNodeUri) {
 flowerProject.lazy.controller('UserAccountSettingsCtrl', ['$scope', 'ChangeSettings', 'UserNodeUri', 'User',
 function($scope, ChangeSettings, UserNodeUri, User) {
 
+	// variable for AlertMessage directive
+	$scope.userAlert = {};
+	
 	$scope.userNodeUri = UserNodeUri.getProperty();
 	$scope.user = User.get({ id: decodeURIComponent($scope.userNodeUri)});
 
@@ -121,13 +137,13 @@ function($scope, ChangeSettings, UserNodeUri, User) {
 			'oldPassword': oldPassword,
 			'newPassword': newPassword
 		}).$promise.then(function(result) {
-			$scope.alert = {
+			$scope.userAlert = {
 				message: result.messageResult,
 				visible: true,
 				success: true
 			};
 		}, function(error) {
-			$scope.alert = {
+			$scope.userAlert = {
 				message: 'Server error. Please try again.',
 				visible: true,
 				danger: true
@@ -143,13 +159,13 @@ function($scope, ChangeSettings, UserNodeUri, User) {
 			id : $scope.user.messageResult.nodeUri,
 			path : "login" 
 		}, $scope.user.messageResult.properties.login).$promise.then(function(result) {
-			$scope.alert = {
+			$scope.userAlert = {
 				message: 'User information for ' + result.messageResult.properties.firstName + ' ' + result.messageResult.properties.lastName + ' has been successfully updated.',
 				visible: true,
 				success: true
 			};
 		}, function(error) {
-			$scope.alert = {
+			$scope.userAlert = {
 				message: 'Server error. Please try again.',
 				visible: true,
 				danger: true
@@ -164,13 +180,13 @@ function($scope, ChangeSettings, UserNodeUri, User) {
 		User.remove({
 			id: $scope.user.messageResult.nodeUri 
 		}).$promise.then(function(result) {
-			$scope.alert = {
+			$scope.userAlert = {
 				message: 'User was deleted.',
 				visible: true,
 				success: true
 			};
 		}, function(error) {
-			$scope.alert = {
+			$scope.userAlert = {
 				message: 'Server error. Please try again.',
 	   			visible: true,
 	   			danger: true

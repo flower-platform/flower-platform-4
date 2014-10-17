@@ -259,6 +259,7 @@ public final class CoreConstants {
 	// Users
 	//////////////////////////////////
 	
+	public static final String USERS_ROOT = "usersRoot";
 	public static final String USERS = "users";
 	public static final String USER = "user";
 	public static final String USERS_PATH = "fpp:|.users";

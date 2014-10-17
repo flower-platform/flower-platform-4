@@ -3,6 +3,7 @@
   <includeClasses>
     <classEntry path="org.flowerplatform.flexutil.samples.tree.TreeNodeHierarchicalModelAdapter"/>
     <classEntry path="org.flowerplatform.flexutil.samples.tree.TreeSample"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.context_menu.ContextMenuSample"/>
     <classEntry path="org.flowerplatform.flexutil.samples.context_menu.SampleAction1"/>
     <classEntry path="org.flowerplatform.flexutil.samples.gradient_list.GradientBackgroundListSample"/>
     <classEntry path="org.flowerplatform.flexutil.samples.gradient_list.LeftList"/>

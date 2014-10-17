@@ -200,9 +200,9 @@ public class RepositoriesService {
 			throw new RuntimeException(e);
 		}
 
-		if (!CorePlugin.getInstance().getFileAccessController().exists(repository)) {
-			throw new RuntimeException(String.format("Repository '%s' for user '%s' doesn't exist!", repoName, login));
-		}
+//		if (!CorePlugin.getInstance().getFileAccessController().exists(repository)) {
+//			throw new RuntimeException(String.format("Repository '%s' for user '%s' doesn't exist!", repoName, login));
+//		}
 
 		// delete repository
 		try {

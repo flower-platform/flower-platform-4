@@ -157,3 +157,23 @@ routesConfig.push({
 		}
 	}
 });
+
+routesConfig.push({
+	path: '/repository/:id/searchAllRepositories',
+	deps: ['js_client.users/js/services.js', 'js_client.users/js/controllers/repository.js', 'js_client.users/js/controllers/users.js'],
+	route: {
+		templateUrl: 'partials/composed/sideMenuLayout.html',
+		controller: 'ComposedCtrl',
+		resolve: {
+			contentTemplate : function() {
+				return 'searchRepository';
+			},
+			sideMenuTemplate : function() {
+				return 'userSideMenu';
+			},
+			sideMenuContentTemplate : function() {
+				return 'userRepositorySideMenuContent';
+			}
+		}
+	}
+});

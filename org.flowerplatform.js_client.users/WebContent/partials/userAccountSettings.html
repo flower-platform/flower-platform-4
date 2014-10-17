@@ -3,11 +3,8 @@
 <div ng-controller="UserAccountSettingsCtrl">
 
 	<p/>
-	<div class="col-sm-12">
-		<div class="alert alert-dismissable" ng-class="{'alert-success':alert.success, 'alert-danger':alert.danger, hidden:!alert.visible}" role="alert">
-			<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-			<span ng-bind="alert.message"></span>
-		</div>
+	<div class="col-sm-12"> 
+		<alert info="userAlert"></alert>
 	</div>
 
 	<div>	

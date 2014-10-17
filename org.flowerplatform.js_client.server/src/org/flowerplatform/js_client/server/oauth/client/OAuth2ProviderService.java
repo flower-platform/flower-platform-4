@@ -26,8 +26,10 @@ public class OAuth2ProviderService {
 	public OAuth2ProviderService() {
 		// read providers from properties
 		String names = CorePlugin.getInstance().getFlowerProperties().getProperty("oauth.providers");
-		for (String name : names.split(",")) {
-			providers.put(name, new OAuth2Provider(name));
+		if (names != null) {
+			for (String name : names.split(",")) {
+				providers.put(name, new OAuth2Provider(name));
+			}
 		}
 	}
 	

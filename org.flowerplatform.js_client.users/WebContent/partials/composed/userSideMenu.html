@@ -2,7 +2,7 @@
 
 <div ng-controller="UserSideMenuCtrl">
 	<p/>
-	<div class="row" id="user-panel">
+	<div class="row flowerUser">
 		<div class="col-sm-12">
 			<h4 class="flowerTextAlign" ng-show="currentUser.messageResult">
 				<img src="{{currentUser.messageResult.properties.avatar}}" class="user-avatar img-rounded"/>
@@ -30,11 +30,11 @@
 								<li ng-hide="currentUser.messageResult"><a ng-href="#/auth">Login</a></li>
 								<li ng-show="currentUser.messageResult"><a ng-click="logout()">Logout</a></li>
 
-								<li><a ng-href="#/users/{{userID}}">Profile</a></li>
+								<li><a ng-href="#/users/{{encodedNodeUri}}">Profile</a></li>
 
 								<hr style="margin: 0.1em auto;">
 								<li><a ng-class="{hidden:!currentUser.messageResult.properties.isAdmin}" ng-href="#/repository/{{currentUser.messageResult.nodeUri}}">Dashboard/My Repositories</a>
-								<li><a ng-class="{hidden:!currentUser.messageResult.properties.isAdmin}" ng-href="#/repository/{{currentUser.messageResult.nodeUri}}/search" ng-click="setSearchType('all')">Search Repository</a>
+								<li><a ng-class="{hidden:!currentUser.messageResult.properties.isAdmin}" ng-href="#/repository/{{encodedNodeUri}}/searchAllRepositories" ng-click="setSearchType('all')">Search Repository</a>
 								<li><a ng-class="{hidden:!currentUser.messageResult.properties.isAdmin}" ng-href="#/users/">Users</a>
 								
 							</ul>
