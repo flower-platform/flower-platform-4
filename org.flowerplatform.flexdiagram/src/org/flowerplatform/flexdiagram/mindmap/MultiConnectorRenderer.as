@@ -65,6 +65,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 				height = _data.height;
 				invalidateDisplayList();
 			}
+			
+			//TODO if (event == null || MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS == event.property) -> invalidateDisplayList: draw
 		}
 		
 		protected override function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {

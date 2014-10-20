@@ -84,6 +84,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_HAS_CHILDREN, new GenericDescriptor("hasChildren"))
 				.addSingleController("mindMapNodeRenderer.detailsText", new GenericDescriptor("details"))
 				.addSingleController(FlexDiagramConstants.BASE_RENDERER_NOTE, new GenericDescriptor("note"));
+				// TODO addSingleController for connector style, width, color
 			
 							
 			registry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.TYPE)

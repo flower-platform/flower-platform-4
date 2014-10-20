@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.flexdiagram.mindmap {
 	import flash.events.IEventDispatcher;
+	import flash.sampler.NewObjectSample;
 	
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
@@ -60,6 +61,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		protected var _cloudType:String;
 		
+		//TODO protected var _connectorStyle, _connectorWidth, _connectorColor
+		
 		/**************************************************************************
 		 * Graphic properties supported by this renderer.
 		 *************************************************************************/
@@ -81,6 +84,28 @@ package org.flowerplatform.flexdiagram.mindmap {
 			_cloudType = value;
 			invalidateDisplayList();
 		}
+		
+		//TODO 
+		/* public function set connectorStryle(value:String):void {
+				-> set the new value for _connectorStyle
+				-> search for node parent
+				-> parent.dispatchEvent(new PropertyChangeEvent(MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS));			
+			
+		} 
+		
+		public function set connectorWidth(value:String):void {
+			-> set the new value for _connectorWidth
+			-> search for node parent
+			-> parent.dispatchEvent(new PropertyChangeEvent(MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS));
+		}
+		
+		public function set connectorColor(value:String):void {
+			-> set the new value for _connectorColor
+			-> search for node parent
+			-> parent.dispatchEvent(new PropertyChangeEvent(MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS));
+		}
+		*/
+		
 		
 		/**************************************************************************
 		 * Other functions.
@@ -161,6 +186,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 				}
 				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudColor", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_COLOR, CLOUD_COLOR_DEFAULT);
 				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudType", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE, null);
+				
+				//TODO setFieldIfNeeded for connector style/width/color
 
 			}
 			
