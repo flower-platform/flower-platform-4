@@ -85,26 +85,25 @@ package org.flowerplatform.flexdiagram.mindmap {
 			invalidateDisplayList();
 		}
 		
-		//TODO 
-		/* public function set connectorStryle(value:String):void {
-				-> set the new value for _connectorStyle
-				-> search for node parent
-				-> parent.dispatchEvent(new PropertyChangeEvent(MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS));			
+		public function set connectorStryle(value:String):void {
+			// TODO -> set the new value for _connectorStyle
+			// TODO -> search for node parent
+			// TODO -> parent.dispatchEvent(new PropertyChangeEvent(MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS));			
 			
 		} 
 		
 		public function set connectorWidth(value:String):void {
-			-> set the new value for _connectorWidth
-			-> search for node parent
-			-> parent.dispatchEvent(new PropertyChangeEvent(MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS));
+			// TODO -> set the new value for _connectorWidth
+			// TODO -> search for node parent
+			// TODO -> parent.dispatchEvent(new PropertyChangeEvent(MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS));
 		}
 		
 		public function set connectorColor(value:String):void {
-			-> set the new value for _connectorColor
-			-> search for node parent
-			-> parent.dispatchEvent(new PropertyChangeEvent(MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS));
+			// TODO -> set the new value for _connectorColor
+			// TODO -> search for node parent
+			// TODO -> parent.dispatchEvent(new PropertyChangeEvent(MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS));
 		}
-		*/
+		
 		
 		
 		/**************************************************************************
@@ -187,7 +186,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudColor", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_COLOR, CLOUD_COLOR_DEFAULT);
 				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudType", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE, null);
 				
-				//TODO setFieldIfNeeded for connector style/width/color
+				// TODO setFieldIfNeeded for connector style/width/color
 
 			}
 			

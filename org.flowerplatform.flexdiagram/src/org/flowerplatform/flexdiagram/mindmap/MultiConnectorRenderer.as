@@ -66,7 +66,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 				invalidateDisplayList();
 			}
 			
-			//TODO if (event == null || MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS == event.property) -> invalidateDisplayList: draw
+			// TODO check if event is childConnectorProperties
+			//if (event == null || MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS == event.property) -> invalidateDisplayList: draw
 		}
 		
 		protected override function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
