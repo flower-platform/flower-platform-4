@@ -47,6 +47,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	 */
 	public class SampleMindMapDiagramShell extends MindMapDiagramShell {
 						
+		// TODO addSingleController for connector style, width, color
 		public function SampleMindMapDiagramShell() {
 			super();
 			
@@ -83,8 +84,9 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_COLOR, new GenericDescriptor("cloudColor"))
 				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_HAS_CHILDREN, new GenericDescriptor("hasChildren"))
 				.addSingleController("mindMapNodeRenderer.detailsText", new GenericDescriptor("details"))
-				.addSingleController(FlexDiagramConstants.BASE_RENDERER_NOTE, new GenericDescriptor("note"));
 				// TODO addSingleController for connector style, width, color
+				.addSingleController(FlexDiagramConstants.BASE_RENDERER_NOTE, new GenericDescriptor("note"));
+				
 			
 							
 			registry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.TYPE)

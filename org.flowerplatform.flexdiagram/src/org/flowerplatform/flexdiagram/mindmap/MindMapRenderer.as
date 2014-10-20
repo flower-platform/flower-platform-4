@@ -80,6 +80,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			return _cloudType;
 		}
 		
+		// TODO set value, search for node parent, parent.dispatchEvent(new PropertyChangeEvent(MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS));
 		public function set cloudType(value:String):void {
 			_cloudType = value;
 			invalidateDisplayList();
@@ -164,6 +165,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		 * Besides the invocation scenarios of the initial function, invoked as well
 		 * when the mind map system recalculates data in the dynamic object.
 		 */
+		// TODO setFieldIfNeeded for connector style/width/color
 		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 			super.modelChangedHandler(event);
 			var valuesProvider:ValuesProvider = getRequiredValuesProvider();

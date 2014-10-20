@@ -50,6 +50,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			}
 		}
 		
+		// TODO check if event is childConnectorProperties -> invalidateDisplayList: draw
 		protected function modelChangedHandler1(event:PropertyChangeEvent):void {
 			if (event == null || "x" == event.property) {
 				x = _data.x;
@@ -67,7 +68,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			}
 			
 			// TODO check if event is childConnectorProperties
-			//if (event == null || MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS == event.property) -> invalidateDisplayList: draw
+			// if (event == null || MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS == event.property) -> invalidateDisplayList: draw
 		}
 		
 		protected override function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
