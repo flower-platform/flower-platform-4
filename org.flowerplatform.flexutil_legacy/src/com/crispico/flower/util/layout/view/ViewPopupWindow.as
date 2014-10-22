@@ -98,14 +98,16 @@ package com.crispico.flower.util.layout.view
 			close();
 		}	
 		
-		public function close(dispatchLayoutDataChangedEvent:Boolean = true):void {
+		public function close(dispatchLayoutDataChangedEvent:Boolean = true, shouldDispatchRemoveEvent:Boolean = true):void {
 			closeFormInternal();
 			
-			// dispatch remove events
-			var viewsRemovedEvent:ViewsRemovedEvent = new ViewsRemovedEvent(new ArrayCollection([component]));			
-			workbench.dispatchEvent(viewsRemovedEvent);
-			
-			component.dispatchEvent(new ViewRemovedEvent());	
+			if (shouldDispatchRemoveEvent) {
+				// dispatch remove events
+				var viewsRemovedEvent:ViewsRemovedEvent = new ViewsRemovedEvent(new ArrayCollection([component]));			
+				workbench.dispatchEvent(viewsRemovedEvent);
+				
+				component.dispatchEvent(new ViewRemovedEvent());	
+			}
 			if (dispatchLayoutDataChangedEvent) {
 				workbench.dispatchEvent(new LayoutDataChangedEvent());
 			}

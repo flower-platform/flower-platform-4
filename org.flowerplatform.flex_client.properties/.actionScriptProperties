@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="org.flowerplatform.flex_client.properties.as" projectUUID="31a4bdde-db56-4bd8-af2a-fb6da6376e0f" version="10">
+<actionScriptProperties analytics="false" mainApplicationPath="org.flowerplatform.flex_client.properties.as" projectUUID="31a4bdde-db56-4bd8-af2a-fb6da6376e0f" version="11">
   <compiler additionalCompilerArguments="-locale en_US" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="public-resources/swc" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
