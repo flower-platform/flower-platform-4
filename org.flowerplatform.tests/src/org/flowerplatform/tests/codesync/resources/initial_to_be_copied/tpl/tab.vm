@@ -1,7 +1,13 @@
+#macro( tab $node )
 <tab>
 	<tab-heading>
-		${label}
+		${node.label}
 	</tab-heading>
-	
-	${innerTemplate}
+
+#@indent("	")
+#foreach( $child in $node.children)
+#callMacro( $child )
+#end
+#end
 </tab>
+#end

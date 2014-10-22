@@ -1,0 +1,4 @@
+#macro( indent $indent)
+#set( $lines = $LineSplitter.lines("$bodyContent") )
+#foreach( $line in $lines )$!indent${line}#end
+#end

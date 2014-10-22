@@ -1,16 +1,13 @@
 package org.flowerplatform.codesync.template;
 
 import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.CODESYNC_TEMPLATE_ROOT;
-import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.HTML;
+import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.INNER_TEMPLATE;
 import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.INNER_TEMPLATES;
-import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.INNER_TEMPLATE_TYPE;
 import static org.flowerplatform.core.CoreConstants.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.flowerplatform.codesync.CodeSyncPlugin;
-import org.flowerplatform.codesync.adapter.file.FileModelAdapterSet;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -43,15 +40,10 @@ public class CodeSyncTemplatePlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getServiceRegistry().registerService("codeSyncTemplateService", codeSyncTemplateService);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CODESYNC_TEMPLATE_ROOT);
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(INNER_TEMPLATE_TYPE)
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(INNER_TEMPLATE)
 				.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(INNER_TEMPLATES));
-		
-		CodeSyncPlugin.getInstance().addTechnologyForExtension(HTML, HTML);
-		
-		CodeSyncPlugin.getInstance().addModelAdapterSet(HTML, new FileModelAdapterSet()
-				.setTypeProvider(new CodeSyncTemplateTypeProvider())
-				.setFileModelAdapterDelegate(new CodeSyncTemplateFileModelAdapter())
-				.addModelAdapter(INNER_TEMPLATE_TYPE, new CodeSyncTemplateModelAdapter()));
+	
+		new WebAppAngularJSModule().init();
 	}
 	
 	/**

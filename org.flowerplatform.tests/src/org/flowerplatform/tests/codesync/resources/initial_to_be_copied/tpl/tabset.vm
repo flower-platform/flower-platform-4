@@ -1,5 +1,9 @@
+#macro( tabset $node )
 <tabset>
-	#foreach (${tab} in ${node.children})
-	${tab.innerTemplate}
-	#end
+#@indent("	")
+#foreach( $child in $node.children )
+#callMacro( $child )
+#end
+#end
 </tabset>
+#end
