@@ -1,4 +1,0 @@
-#macro( callMacro $node )
-#set( $callMacro = "#${node.template}(\$node)" )
-#evaluate($callMacro)
-#end

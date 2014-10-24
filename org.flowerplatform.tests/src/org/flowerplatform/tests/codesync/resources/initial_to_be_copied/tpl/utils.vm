@@ -1,0 +1,14 @@
+#macro( alt $val $default )
+#if($val)$val#else$!default#end
+#end
+
+#macro( altFormat $val $format $default )
+#if($val)#evaluate($format)#else$!default#end
+#end
+
+#macro( callMacro $node $param)
+#set( $callMacro = "#${node.template}(\$node \$param)" )
+#evaluate($callMacro)
+#end
+
+#macro( indent )$Indenter.indent( "$bodyContent" )#end

@@ -5,9 +5,6 @@ import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.INN
 import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.INNER_TEMPLATES;
 import static org.flowerplatform.core.CoreConstants.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -23,8 +20,6 @@ public class CodeSyncTemplatePlugin extends AbstractFlowerJavaPlugin {
 	public static CodeSyncTemplatePlugin getInstance() {
 		return instance;
 	}
-	
-	private Map<String, String> templates = new HashMap<String, String>();
 	
 	private CodeSyncTemplateService codeSyncTemplateService = new CodeSyncTemplateService();
 	
@@ -42,27 +37,8 @@ public class CodeSyncTemplatePlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CODESYNC_TEMPLATE_ROOT);
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(INNER_TEMPLATE)
 				.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(INNER_TEMPLATES));
-	
-		new WebAppAngularJSModule().init();
 	}
 	
-	/**
-	 * Return the template from the cache, or read from file system and keep in cache.
-	 */
-	public String getTemplate(String name) {
-		String template = templates.get(name);
-		if (template == null) {
-			try {
-				Object file = CorePlugin.getInstance().getFileAccessController().getFile("codesync/tpl/" + name + ".vm");
-				template = CorePlugin.getInstance().getFileAccessController().readFileToString(file);
-			} catch (Exception e) {
-				throw new RuntimeException("Error loading template " + name + " from file", e);
-			}
-		}
-		return template;
-	}
-	
-
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);

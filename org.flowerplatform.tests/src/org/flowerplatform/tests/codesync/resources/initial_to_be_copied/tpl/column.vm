@@ -1,7 +1,15 @@
-#macro( column $node $header)
-#if( $header )
+#macro( column $node $param)
+#if( $param == 'header' )
 <th>$node.label</th>
+#elseif( $node.children )
+<td>
+#foreach( $child in $node.children )
+#@indent()
+	#callMacro( $child )
+#end
+#end
+</td>
 #else
-<td>{{${node.parent}.${node.entity}}}</td>
+<td>{{${node.parent}.${node.entity}#altFormat($node.filter ' | $node.filter')}}</td>
 #end
 #end

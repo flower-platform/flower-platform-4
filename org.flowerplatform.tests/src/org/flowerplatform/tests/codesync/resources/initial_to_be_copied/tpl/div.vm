@@ -1,0 +1,4 @@
+#macro( div $node )
+<div#foreach($attr in $node.attrs.entrySet()) $attr.key="$attr.value"#end>
+</div>
+#end

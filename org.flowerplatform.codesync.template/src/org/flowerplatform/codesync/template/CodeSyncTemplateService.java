@@ -1,8 +1,8 @@
 package org.flowerplatform.codesync.template;
 
 import static org.apache.velocity.runtime.RuntimeConstants.VM_LIBRARY;
+import static org.flowerplatform.core.CoreConstants.NAME;
 
-import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.runtime.RuntimeConstants;
@@ -25,16 +24,19 @@ import org.flowerplatform.core.node.remote.ServiceContext;
  */
 public class CodeSyncTemplateService {
 
+	private String templatesPath = "codesync/tpl/";
+	private String outputPath = "codesync/gen/";
+	
 	public CodeSyncTemplateService() {
 		try {
 			String path = CorePlugin.getInstance().getFileAccessController().getAbsolutePath(
-					CorePlugin.getInstance().getFileAccessController().getFile("codesync/tpl"));
+					CorePlugin.getInstance().getFileAccessController().getFile(templatesPath));
 			RuntimeSingleton.getRuntimeServices().setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, path);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		
-		addMacros("callMacro.vm,indent.vm");
+		addMacros("utils.vm");
 	}
 	
 	/**
@@ -68,15 +70,15 @@ public class CodeSyncTemplateService {
 		VelocityContext context = new VelocityContext();
 		context.put("node", toMap(node));
 		
-		context.put("LineSplitter", LineSplitter.class);
+		context.put("Indenter", Indenter.class);
 
 		Velocity.mergeTemplate("base.vm", "UTF-8", context, writer);
 		String output = writer.toString();
 		System.out.println(output);
 		
 		try {
-			FileUtils.write((File) CorePlugin.getInstance().getFileAccessController()
-					.getFile("codesync/gen/employeeForm.html"), output.toString());
+			Object outputFile = CorePlugin.getInstance().getFileAccessController().getFile(outputPath + node.getPropertyValue(NAME));
+			CorePlugin.getInstance().getFileAccessController().writeStringToFile(outputFile, output.toString());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

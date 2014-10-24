@@ -1,8 +1,8 @@
 #macro( tabset $node )
 <tabset>
-#@indent("	")
 #foreach( $child in $node.children )
-#callMacro( $child )
+#@indent()
+	#callMacro( $child )
 #end
 #end
 </tabset>

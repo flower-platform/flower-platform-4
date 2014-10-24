@@ -4,9 +4,9 @@
 		${node.label}
 	</tab-heading>
 
-#@indent("	")
-#foreach( $child in $node.children)
-#callMacro( $child )
+#foreach( $child in $node.children )
+#@indent()
+	#callMacro( $child )
 #end
 #end
 </tab>

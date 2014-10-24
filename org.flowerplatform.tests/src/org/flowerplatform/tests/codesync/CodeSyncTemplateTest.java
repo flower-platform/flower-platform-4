@@ -5,17 +5,13 @@ import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.ENT
 import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.INNER_TEMPLATE;
 import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.LABEL;
 import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.TEMPLATE;
-import static org.flowerplatform.codesync.template.WebAppModule.TEMPLATE_COLUMN;
-import static org.flowerplatform.codesync.template.WebAppModule.TEMPLATE_FIELD_COMBO_BOX;
-import static org.flowerplatform.codesync.template.WebAppModule.TEMPLATE_FIELD_STRING;
-import static org.flowerplatform.codesync.template.WebAppModule.TEMPLATE_FORM;
-import static org.flowerplatform.codesync.template.WebAppModule.TEMPLATE_TAB;
-import static org.flowerplatform.codesync.template.WebAppModule.TEMPLATE_TABLE;
-import static org.flowerplatform.codesync.template.WebAppModule.TEMPLATE_TABSET;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
 import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_RESOURCE_KEY;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.template.CodeSyncTemplatePlugin;
@@ -33,6 +29,32 @@ import org.junit.Test;
  */
 public class CodeSyncTemplateTest extends CodeSyncEclipseIndependentTestBase {
 
+	public static final String TEMPLATE_DIV = "div";
+	
+	public static final String TEMPLATE_A = "a";
+	
+	public static final String TEMPLATE_BUTTON = "button";
+		public static final String TEMPLATE_BUTTON_TYPE = "btn-type";
+		public static final String TEMPLATE_BUTTON_CLASS = "btn-cls";
+		public static final String TEMPLATE_BUTTON_CLICK = "btn-click";
+
+	public static final String TEMPLATE_FORM = "form";
+	public static final String TEMPLATE_FORM_ROW = "formRow";
+	
+	public static final String TEMPLATE_FIELD_STRING = "stringField";
+	public static final String TEMPLATE_FIELD_COMBO_BOX = "comboBoxField";
+	
+	public static final String TEMPLATE_TABSET = "tabset";
+	public static final String TEMPLATE_TAB = "tab";
+	
+	public static final String TEMPLATE_TABLE = "table";
+	public static final String TEMPLATE_COLUMN = "column";
+	
+	public static final String TEMPLATE_ROLE = "role";
+	
+	public static final String TEMPLATE_GLYPHICON = "glyphicon";
+	public static final String TEMPLATE_ATTRIBUTES = "attrs";
+	
 	/**
 	 * 
 	 */
@@ -65,40 +87,76 @@ public class CodeSyncTemplateTest extends CodeSyncEclipseIndependentTestBase {
 		
 		Node resource = CorePlugin.getInstance().getResourceService().getNode(resourceUri);
 		
-		// table
-		Node table = addNode(resource, FILE, TEMPLATE_TABLE, "employeeTable.html", "employee", "Employee");
-		addNode(table, INNER_TEMPLATE, TEMPLATE_COLUMN, "name", "name", "Name");
-		addNode(table, INNER_TEMPLATE, TEMPLATE_COLUMN, "email", "email", "Email");
-		addNode(table, INNER_TEMPLATE, TEMPLATE_COLUMN, "phoneNumber", "phoneNumber", "Phone Number");
+		// table: employees
+		Node table = addNode(resource, FILE, TEMPLATE_TABLE, "employeeList.html", "employee", "Employee");
+		setProperty(addNode(table, INNER_TEMPLATE, TEMPLATE_COLUMN, "name", "name", "Name"), "parent", "employee");
+		setProperty(addNode(table, INNER_TEMPLATE, TEMPLATE_COLUMN, "email", "email", "Email"), "parent", "employee");
+		setProperty(addNode(table, INNER_TEMPLATE, TEMPLATE_COLUMN, "phoneNumber", "phoneNumber", "Phone Number"), "parent", "employee");
+		Node actions = setProperty(addNode(table, INNER_TEMPLATE, TEMPLATE_COLUMN, "actions", "actions", "Actions"), "parent", "employee");
+		
+		Node editBtn = addNode(actions, INNER_TEMPLATE, TEMPLATE_A, "edit", "edit", "");
+		Map<String, String> editBtnAttrs = new HashMap<String, String>();
+		editBtnAttrs.put("role", "button");
+		editBtnAttrs.put("class", "btn btn-primary btn-xs");
+		editBtnAttrs.put("ng-href", "#employee/{{employee.id}}");
+		setProperty(editBtn, TEMPLATE_ATTRIBUTES, editBtnAttrs);
+		setProperty(editBtn, TEMPLATE_GLYPHICON, "edit");
+		
+		Node removeBtn = addNode(actions, INNER_TEMPLATE, TEMPLATE_BUTTON, "remove", "remove", "");
+		setProperty(removeBtn, TEMPLATE_BUTTON_TYPE, "button");
+		setProperty(removeBtn, TEMPLATE_BUTTON_CLASS, "btn btn-danger btn-xs");
+		setProperty(removeBtn, TEMPLATE_BUTTON_CLICK, "remove(employee)");
+		setProperty(removeBtn, TEMPLATE_GLYPHICON, "remove");
+		
+		// table: job entries
+		Node entries = addNode(resource, INNER_TEMPLATE, TEMPLATE_TABLE, "jobEntryList.html", "jobEntry", "JobEntry");
+		setProperty(entries, "actions", "edit,remove");
+		setProperty(setProperty(addNode(entries, INNER_TEMPLATE, TEMPLATE_COLUMN, "date", "date", "Date"), "parent", "jobEntry"), "filter", "date: 'medium'");
+		setProperty(addNode(entries, INNER_TEMPLATE, TEMPLATE_COLUMN, "type", "type", "Type"), "parent", "jobEntry");
+		setProperty(addNode(entries, INNER_TEMPLATE, TEMPLATE_COLUMN, "details", "details", "Details"), "parent", "jobEntry");
 		
 		// form
 		Node form = addNode(resource, FILE, TEMPLATE_FORM, "employeeForm.html", "employee", "Employee");
 		Node tabset = addNode(form, INNER_TEMPLATE, TEMPLATE_TABSET, "tabset", "tabset", "tabset");
 		
 		Node main = addNode(tabset, INNER_TEMPLATE, TEMPLATE_TAB, "details", "details", "Details");
-		CorePlugin.getInstance().getNodeService().setProperty(addNode(main, INNER_TEMPLATE, TEMPLATE_FIELD_STRING, "name", "name", "Name"), 
-				"parent", "employee", new ServiceContext<NodeService>());
-		CorePlugin.getInstance().getNodeService().setProperty(addNode(main, INNER_TEMPLATE, TEMPLATE_FIELD_STRING, "email", "email", "Email"),
-				"parent", "employee", new ServiceContext<NodeService>());
-		CorePlugin.getInstance().getNodeService().setProperty(addNode(main, INNER_TEMPLATE, TEMPLATE_FIELD_STRING, "phoneNumber", "phoneNumber", "Phone Number"), 
-				"parent", "employee", new ServiceContext<NodeService>());
-		CorePlugin.getInstance().getNodeService().setProperty(addNode(main, INNER_TEMPLATE, TEMPLATE_FIELD_COMBO_BOX, "job", "job", "Job"), 
-				"parent", "employee", new ServiceContext<NodeService>());
+		setProperty(addNode(main, INNER_TEMPLATE, TEMPLATE_FIELD_STRING, "name", "name", "Name"), "parent", "employee");
+		setProperty(addNode(main, INNER_TEMPLATE, TEMPLATE_FIELD_STRING, "email", "email", "Email"), "parent", "employee");
+		setProperty(addNode(main, INNER_TEMPLATE, TEMPLATE_FIELD_STRING, "phoneNumber", "phoneNumber", "Phone Number"), "parent", "employee");
+		
+		Node job = addNode(main, INNER_TEMPLATE, TEMPLATE_FIELD_COMBO_BOX, "job", "job", "Job");
+		setProperty(job, "parent", "employee");
+		setProperty(job, "id", "id");
+		setProperty(job, "option", "job");
+		setProperty(job, "options", "jobs");
+		setProperty(job, "comboBoxLabelFunction", "jobLabel");
+		
+		Node saveBtn = addNode(main, INNER_TEMPLATE, TEMPLATE_BUTTON, "saveBtn", "employee", "Save");
+		setProperty(saveBtn, TEMPLATE_BUTTON_TYPE, "submit");
+		setProperty(saveBtn, TEMPLATE_BUTTON_CLICK, "save(employee)");
+		setProperty(saveBtn, TEMPLATE_GLYPHICON, "ok");
+		
+		Node backBtn = addNode(main, INNER_TEMPLATE, TEMPLATE_A, "backBtn", "employee", "Back");
+		Map<String, String> backBtnAttrs = new HashMap<String, String>();
+		backBtnAttrs.put("role", "button");
+		backBtnAttrs.put("class", "btn btn-default");
+		backBtnAttrs.put("ng-href", "#employee");
+		setProperty(backBtn, TEMPLATE_ATTRIBUTES, backBtnAttrs);
 		
 		Node jobHistory = addNode(tabset, INNER_TEMPLATE, TEMPLATE_TAB, "jobHistory", "jobHistory", "Job History");
-		Node entries = addNode(jobHistory, INNER_TEMPLATE, TEMPLATE_TABLE, "jobEntry", "jobEntry", "JobEntry");
-		CorePlugin.getInstance().getNodeService().setProperty(addNode(entries, INNER_TEMPLATE, TEMPLATE_COLUMN, "date", "date", "Date"),
-				"parent", "employee", new ServiceContext<NodeService>());
-		CorePlugin.getInstance().getNodeService().setProperty(addNode(entries, INNER_TEMPLATE, TEMPLATE_COLUMN, "type", "type", "Type"),
-				"parent", "employee", new ServiceContext<NodeService>());
-		CorePlugin.getInstance().getNodeService().setProperty(addNode(entries, INNER_TEMPLATE, TEMPLATE_COLUMN, "details", "details", "Details"),
-				"parent", "employee", new ServiceContext<NodeService>());
+		Map<String, String> includeAttrs = new HashMap<String, String>();
+		includeAttrs.put("ng-include", "'js/employee/job/jobEntryList.html'");
+		setProperty(addNode(jobHistory, INNER_TEMPLATE, TEMPLATE_DIV, "", "", ""), TEMPLATE_ATTRIBUTES, includeAttrs);
 		
 		// save
 		CorePlugin.getInstance().getResourceService().save(resourceUri, new ServiceContext<ResourceService>());
 		
-//		CodeSyncTemplatePlugin.getInstance().getCodeSyncTemplateService().generate(table.getNodeUri());
+		CodeSyncTemplatePlugin.getInstance().getCodeSyncTemplateService()
+				.addMacros("div.vm,button.vm,a.vm,tabset.vm,tab.vm,form.vm,stringField.vm,comboBoxField.vm,table.vm,column.vm");
+		
+		CodeSyncTemplatePlugin.getInstance().getCodeSyncTemplateService().generate(table.getNodeUri());
 		CodeSyncTemplatePlugin.getInstance().getCodeSyncTemplateService().generate(form.getNodeUri());
+		CodeSyncTemplatePlugin.getInstance().getCodeSyncTemplateService().generate(entries.getNodeUri());
 	}
 	
 	private Node addNode(Node parent, String type, String template, String name, String entity, String label) {
@@ -110,6 +168,11 @@ public class CodeSyncTemplateTest extends CodeSyncEclipseIndependentTestBase {
 		context.getContext().put(LABEL, label);
 		context.getContext().put(CodeSyncConstants.SYNC_IN_PROGRESS, true);	
 		CorePlugin.getInstance().getNodeService().addChild(parent, node, context);
+		return node;
+	}
+	
+	private Node setProperty(Node node, String key, Object val) {
+		CorePlugin.getInstance().getNodeService().setProperty(node, key, val, new ServiceContext<NodeService>());
 		return node;
 	}
 	
