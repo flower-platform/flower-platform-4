@@ -49,7 +49,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 		public var details:String;
 		
 		public var connectorStyle:String;
-		public var connectorColor:uint;
+		public var connectorColor:uint = 0x808080;
 		public var connectorWidth:String;
 		
 		public function toString():String {
