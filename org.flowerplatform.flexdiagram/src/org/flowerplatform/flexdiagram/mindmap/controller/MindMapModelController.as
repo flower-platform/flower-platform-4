@@ -20,6 +20,8 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexutil.controller.AbstractController;
 
+	//import org.flowerplatform.flex_client.core.editor.remote.Node;
+	
 	/**
 	 * @author Cristina Constantinescu
 	 */
@@ -49,5 +51,8 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 			throw new Error("This method needs to be implemented.");
 		}
 		
+		public function getParent(context:DiagramShellContext, model:Object):Object {
+			throw new Error("This method needs to be implemented.");
+		}
 	}
 }

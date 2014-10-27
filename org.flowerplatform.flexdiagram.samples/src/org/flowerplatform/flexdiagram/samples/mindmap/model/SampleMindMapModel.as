@@ -48,6 +48,10 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 		public var note:String;
 		public var details:String;
 		
+		public var connectorStyle:String;
+		public var connectorColor:uint;
+		public var connectorWidth:String;
+		
 		public function toString():String {
 			return text;
 		}

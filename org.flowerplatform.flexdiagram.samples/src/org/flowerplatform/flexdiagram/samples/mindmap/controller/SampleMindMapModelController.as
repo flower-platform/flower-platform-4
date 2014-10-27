@@ -96,5 +96,8 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 			MindMapDiagramShell(context.diagramShell).shouldRefreshVisualChildren(context, context.diagramShell.rootModel);
 		}
 		
+		override public function getParent(context:DiagramShellContext, model:Object):Object {			
+			return SampleMindMapModel(model).parent;
+		}
 	}
 }

@@ -14,6 +14,8 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.samples.mindmap {
+	import mx.core.FlexSimpleButton;
+	
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.renderer.ClassReferenceRendererController;
@@ -84,10 +86,10 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_COLOR, new GenericDescriptor("cloudColor"))
 				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_HAS_CHILDREN, new GenericDescriptor("hasChildren"))
 				.addSingleController("mindMapNodeRenderer.detailsText", new GenericDescriptor("details"))
-				// TODO addSingleController for connector style, width, color
-				.addSingleController(FlexDiagramConstants.BASE_RENDERER_NOTE, new GenericDescriptor("note"));
-				
-			
+				.addSingleController(FlexDiagramConstants.BASE_RENDERER_NOTE, new GenericDescriptor("note"))
+				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_CONNECTOR_STYLE,  new GenericDescriptor("connectorStyle"))
+				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_CONNECTOR_WIDTH,  new GenericDescriptor("connectorWidth"))
+				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_CONNECTOR_COLOR,  new GenericDescriptor("connectorColor"));		
 							
 			registry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.TYPE)
 				.addSingleController(FlexDiagramConstants.MINDMAP_MODEL_CONTROLLER, new SampleMindMapModelController())			

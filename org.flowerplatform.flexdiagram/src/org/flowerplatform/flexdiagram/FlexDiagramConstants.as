@@ -64,11 +64,16 @@ package org.flowerplatform.flexdiagram {
 		public static const MIND_MAP_RENDERER_CLOUD_TYPE_ARC:String = "ARC";
 		public static const MIND_MAP_RENDERER_CLOUD_TYPE_STAR:String = "STAR";
 		
-		// TODO set constants for connector style/width/color
 		public static const MIND_MAP_RENDERER_CONNECTOR_STYLE:String = "mindMapRenderer.connectorStyle";
 		public static const MIND_MAP_RENDERER_CONNECTOR_WIDTH:String = "mindMapRenderer.connectorWidth";
 		public static const MIND_MAP_RENDERER_CONNECTOR_COLOR:String = "mindMapRenderer.connectorColor";
-		public static const MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS:String = "childConnectorProperties";
+		public static const MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIES:String = "childConnectorProperties";
+		// Connector styles
+		public static const MIND_MAP_CONNECTOR_SMOOTHLY_CURVED:String = "smoothly curved";
+		public static const MIND_MAP_CONNECTOR_HIDE:String = "hide";
+		public static const MIND_MAP_CONNECTOR_HORIZONTAL:String = "horizontal";
+		public static const MIND_MAP_CONNECTOR_LINEAR:String = "linear";
+		
 		
 		public static const MIND_MAP_RENDERER_CLOUD_COLOR:String = "mindMapRenderer.cloudColor";
 		public static const MIND_MAP_RENDERER_HAS_CHILDREN:String = "mindMapRenderer.hasChildren";

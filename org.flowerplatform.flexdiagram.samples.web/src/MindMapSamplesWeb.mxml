@@ -98,9 +98,9 @@
 			}
 			
 			public function onFontSizeChange():void {
-				if (textInputFontSize.text != '' && int(textInputFontSize.text) >= 0 && int(textInputFontSize.text) < 720 ) {
-					selectedItem.fontSize = int(textInputFontSize.text);	
-				}
+//				if (textInputFontSize.text != '' && int(textInputFontSize.text) >= 0 && int(textInputFontSize.text) < 720 ) {
+//					selectedItem.fontSize = int(textInputFontSize.text);	
+//				}
 			}
 			
 		]]>
@@ -207,6 +207,21 @@
 						<s:TextInput width="100%" text="@{selectedItem.details}"/>
 					</s:FormItem>
 					
+					<s:FormItem id="connectorStyle" label="Connector Style:">
+						<s:DropDownList width="100%" selectedItem="@{selectedItem.connectorStyle}"> 
+							<s:ArrayCollection source="{[FlexDiagramConstants.MIND_MAP_CONNECTOR_HIDE, FlexDiagramConstants.MIND_MAP_CONNECTOR_LINEAR, FlexDiagramConstants.MIND_MAP_CONNECTOR_HORIZONTAL, FlexDiagramConstants.MIND_MAP_CONNECTOR_SMOOTHLY_CURVED]}"/>
+						</s:DropDownList>
+					</s:FormItem>
+					
+					<s:FormItem id="connectorWidth" label="Connector Width:">
+						<s:TextInput width="100%" text="@{selectedItem.connectorWidth}"/> 
+					</s:FormItem>
+					
+					<s:FormItem id="connectorColor" label="Connector Color:">
+						<mx:ColorPicker id="backgroundConnectorColorPicker"
+										selectedColor="@{selectedItem.connectorColor}" showTextField="true"/>
+					</s:FormItem>
+									
 				</s:Form>	
 			</s:Panel>
 		</s:VGroup>
@@ -220,7 +235,7 @@
 		</s:Rect>
 		<infinitegroup:InfiniteScroller id="scroller" width="100%" height="100%">
 			<mindmap1:MindMapDiagramRenderer id="diagramRenderer" width="100%" height="100%"
-											 viewPortRectOffsetTowardOutside="-10"/>
+											 viewPortRectOffsetTowardOutside="-1"/>
 		</infinitegroup:InfiniteScroller>	
 	</s:Group>
 	

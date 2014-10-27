@@ -14,15 +14,19 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.mindmap {
+	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import flash.sampler.NewObjectSample;
+	import flash.utils.flash_proxy;
 	
+	import mx.collections.IList;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
+	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 	import org.flowerplatform.flexdiagram.renderer.BaseRenderer;
 	import org.flowerplatform.flexutil.Utils;
@@ -53,6 +57,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		public static const CLOUD_COLOR_DEFAULT:uint = 0xFFFBBF;
 				
+		public static const CONNECTOR_STYLE_DEFAULT:String = FlexDiagramConstants.MIND_MAP_CONNECTOR_LINEAR;
+		
 		/**************************************************************************
 		 * Attributes.
 		 *************************************************************************/
@@ -61,7 +67,11 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		protected var _cloudType:String;
 		
-		//TODO protected var _connectorStyle, _connectorWidth, _connectorColor
+		protected var _connectorStyle:String;
+		
+		protected var _connectorWidth:Number;
+		
+		protected var _connectorColor:uint;
 		
 		/**************************************************************************
 		 * Graphic properties supported by this renderer.
@@ -80,32 +90,48 @@ package org.flowerplatform.flexdiagram.mindmap {
 			return _cloudType;
 		}
 		
-		// TODO set value, search for node parent, parent.dispatchEvent(new PropertyChangeEvent(MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS));
+		public function get connectorStyle():String {
+			return _connectorStyle;
+		}
+		
+		public function get connectorWidth():Number {
+			return _connectorWidth;
+		}
+		
+		public function get connectorColor():uint {
+			return _connectorColor;
+		}
+		
 		public function set cloudType(value:String):void {
 			_cloudType = value;
 			invalidateDisplayList();
 		}
 		
-		public function set connectorStryle(value:String):void {
-			// TODO -> set the new value for _connectorStyle
-			// TODO -> search for node parent
-			// TODO -> parent.dispatchEvent(new PropertyChangeEvent(MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS));			
+		public function connectorEventHandler():void {
+			var actualObject:IEventDispatcher = getRequiredValuesProvider().getActualObject(IEventDispatcher(data));
+			var mindMapModelController:MindMapModelController = mindMapDiagramShell.getModelController(diagramShellContext, actualObject);
 			
+			var parent:Object = mindMapModelController.getParent(diagramShellContext, actualObject);
+
+			if (parent != null) {
+				IEventDispatcher(parent).dispatchEvent(PropertyChangeEvent.createUpdateEvent(actualObject,FlexDiagramConstants.MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIES,null,null));
+			}
+		}
+		
+		public function set connectorStyle(value:String):void {
+			_connectorStyle = value;
+			connectorEventHandler();
 		} 
 		
-		public function set connectorWidth(value:String):void {
-			// TODO -> set the new value for _connectorWidth
-			// TODO -> search for node parent
-			// TODO -> parent.dispatchEvent(new PropertyChangeEvent(MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS));
+		public function set connectorWidth(value:Number):void {
+			_connectorWidth = value;
+			connectorEventHandler();			
 		}
 		
-		public function set connectorColor(value:String):void {
-			// TODO -> set the new value for _connectorColor
-			// TODO -> search for node parent
-			// TODO -> parent.dispatchEvent(new PropertyChangeEvent(MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIRS));
+		public function set connectorColor(value:uint):void {
+			_connectorColor = value;
+			connectorEventHandler();
 		}
-		
-		
 		
 		/**************************************************************************
 		 * Other functions.
@@ -165,7 +191,6 @@ package org.flowerplatform.flexdiagram.mindmap {
 		 * Besides the invocation scenarios of the initial function, invoked as well
 		 * when the mind map system recalculates data in the dynamic object.
 		 */
-		// TODO setFieldIfNeeded for connector style/width/color
 		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 			super.modelChangedHandler(event);
 			var valuesProvider:ValuesProvider = getRequiredValuesProvider();
@@ -187,9 +212,10 @@ package org.flowerplatform.flexdiagram.mindmap {
 				}
 				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudColor", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_COLOR, CLOUD_COLOR_DEFAULT);
 				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudType", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE, null);
-				
-				// TODO setFieldIfNeeded for connector style/width/color
-
+				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "connectorStyle", FlexDiagramConstants.MIND_MAP_RENDERER_CONNECTOR_STYLE, CONNECTOR_STYLE_DEFAULT);
+				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "connectorWidth", FlexDiagramConstants.MIND_MAP_RENDERER_CONNECTOR_WIDTH, "");
+				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "connectorColor", FlexDiagramConstants.MIND_MAP_RENDERER_CONNECTOR_COLOR, "");
+		
 			}
 			
 			MindMapModelRendererController(ControllerUtils.getRendererController(diagramShellContext, data)).rendererModelChangedHandler(diagramShellContext, this, data, event);
