@@ -15,11 +15,21 @@
  */
 package org.flowerplatform.tests;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.tests.codesync.CodeSyncSdiffTest;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite.SuiteClasses;
+
+//CHECKSTYLE:OFF
 /**
- *@author Mariana Gheorghe
+ * @author Mariana Gheorghe
  **/
 @RunWith(EclipseDependentSuite.class)
 @SuiteClasses({ 
@@ -29,5 +39,19 @@ import org.junit.runners.Suite.SuiteClasses;
 //	ListenerTestSuite.class,
 //	ChangesProcessorTest.class
 })
-public class EclipseDependentTestSuite extends EclipseDependentTestSuiteBase {
+public class EclipseDependentTestSuite {
+//CHECKSTYLE:ON	
+	
+	/**
+	 * 
+	 */
+	@BeforeClass
+	public static void beforeClass() {
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		HttpSession httpSession = mock(HttpSession.class);
+		when(request.getSession()).thenReturn(httpSession);
+		when(httpSession.getId()).thenReturn("mockId");
+		CorePlugin.getInstance().getRequestThreadLocal().set(request);
+	}
+	
 }

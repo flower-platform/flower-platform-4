@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flexdiagram.renderer {
 	import flash.display.GradientType;
 	import flash.events.Event;
@@ -18,6 +33,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	import spark.components.DataRenderer;
 	import spark.components.Group;
 	import spark.components.IItemRenderer;
+	import spark.components.RichText;
 	import spark.components.supportClasses.InteractionState;
 	import spark.components.supportClasses.InteractionStateDetector;
 	import spark.layouts.HorizontalLayout;
@@ -59,7 +75,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	 * 
 	 * @author Cristian Spiescu
 	 */
-	public class BaseRenderer extends DataRenderer implements IDiagramShellContextAware, IItemRenderer {
+	public class BaseRenderer extends DataRenderer implements IDiagramShellContextAware, IItemRenderer, IAbstractMindMapModelRenderer {
 		
 		/**************************************************************************
 		 * Constants.
@@ -70,7 +86,7 @@ package org.flowerplatform.flexdiagram.renderer {
 		
 		protected static const TEXT_COLOR_DEFAULT:uint = 0x000000;
 		
-		protected static const FONT_FAMILY_DEFAULT:String = "SansSerif";
+		protected static const FONT_FAMILY_DEFAULT:String = null;
 		
 		protected static const FONT_SIZE_DEFAULT:Number = 9;
 		
@@ -250,6 +266,10 @@ package org.flowerplatform.flexdiagram.renderer {
 			}
 			interactionStateDetector = new InteractionStateDetector(this);
 			interactionStateDetector.addEventListener(Event.CHANGE, interactionStateDetector_changeHandler);
+		}
+		
+		public function getLabelDisplay():RichText {
+			return _label;
 		}
 		
 		public function get diagramShellContext():DiagramShellContext {			

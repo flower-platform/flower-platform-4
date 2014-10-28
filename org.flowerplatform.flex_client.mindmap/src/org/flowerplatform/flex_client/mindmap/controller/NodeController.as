@@ -87,7 +87,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		override public function getSide(context:DiagramShellContext, model:Object):int {			
 			var node:Node = Node(model);
 			var typeDescriptorRegistry:TypeDescriptorRegistry = MindMapEditorDiagramShell(context.diagramShell).registry;
-			var valuesProvider:ValuesProvider = ValuesProvider(typeDescriptorRegistry.getExpectedTypeDescriptor(node.type).getSingleController(MindMapConstants.MIND_MAP_FEATURE_FOR_VALUES_PROVIDER, model));
+			var valuesProvider:ValuesProvider = CorePlugin.getInstance().getNodeValuesProviderForMindMap(typeDescriptorRegistry, node);
 			var sideProperty:String = valuesProvider.getPropertyName(typeDescriptorRegistry, node, FlexDiagramConstants.MIND_MAP_RENDERER_SIDE); 
 			
 			if (sideProperty != null) {

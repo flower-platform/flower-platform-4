@@ -183,7 +183,7 @@
 						<s:HGroup width="100%">
 							<s:TextInput id="iconsTextInput" width="100%" text="@{selectedItem.icons}"/>  
 							<s:Graphic toolTip="E.g. bee,family,penguin,bookmark,freemind_butterfly,wizard,ksmiletris">
-								<s:BitmapImage source="@Embed('../images/Info.png')"/>
+								<s:BitmapImage source="@Embed('../../org.flowerplatform.flexdiagram.samples/icons/info.png')"/>
 							</s:Graphic> 
 						</s:HGroup>
 					</s:FormItem>

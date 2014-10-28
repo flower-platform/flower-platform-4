@@ -13,21 +13,22 @@
  * 
  * license-end
  */
-package org.flowerplatform.tests;
+package org.flowerplatform.flexutil.iframe {
+	
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.action.ActionBase;
 
-import org.junit.BeforeClass;
-/**
- *@author Mariana Gheorghe
- **/
-//CHECKSTYLE:OFF
-public class EclipseDependentTestSuiteBase {
-//CHECKSTYLE:ON
-	
-	/**
-	 *@author Mariana Gheorghe
-	 **/
-	@BeforeClass
-	public static void setUp() {
+	public class IFrameOpenUrlAction extends ActionBase {
+		
+		override public function run():void {
+			var view:IFrameOpenUrlView = new IFrameOpenUrlView();
+			FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()			
+				.setViewContent(view)
+				.setTitle(label)
+				.setIcon(icon)
+				.setWidth(350)
+				.setHeight(150)
+				.show();
+		}
 	}
-	
 }

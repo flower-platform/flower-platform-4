@@ -50,10 +50,12 @@
 				<module>../../org.flowerplatform.flex_client.server</module>
 
 				<!-- js client plugins -->
+				<module>../../org.flowerplatform.js_client.common_js_as</module>
 				<module>../../org.flowerplatform.js_client.core</module>
 				<module>../../org.flowerplatform.js_client.users</module>
 				<module>../../org.flowerplatform.js_client.host_app.config.web</module>
 				<module>../../org.flowerplatform.js_client.server</module>
+				<module>../../org.flowerplatform.js_client.java</module>
 
 				<!-- tests -->
 				<module>../../org.flowerplatform.tests</module>
@@ -72,6 +74,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	
 		<output.java.prefix>..</output.java.prefix>
+		
+		<!-- this property will be changed for tests, to allow using a different output dir during eclipse build -->
+		<output.directory>${output.java.prefix}/${output.java}/classes/${project.artifactId}</output.directory>
 	
 		<tycho.version>0.21.0</tycho.version>
 		<eclipseRepo.url>http://download.eclipse.org/eclipse/updates/4.3/R-4.3.2-201402211700</eclipseRepo.url>
@@ -94,10 +99,39 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-		<outputDirectory>${output.java.prefix}/${output.java}/classes/${project.artifactId}</outputDirectory>
+		<outputDirectory>${output.directory}</outputDirectory>
 		<directory>${output.java.prefix}/${output.java}/distr/${project.artifactId}</directory>
 
 		<plugins>
+		
+			<!-- replace version numbers in CoreConstants.java -->
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<version>1.5.3</version>
+				<inherited>false</inherited>
+				<executions>
+					<execution>
+						<id>set-version-before</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+						<configuration>
+							<file>../org.flowerplatform.core/src/org/flowerplatform/core/CoreConstants.java</file>
+							<regex>true</regex>
+							<replacements>
+								<replacement>
+									<token>APP_VERSION = .*;</token>
+									<value>APP_VERSION = "${appVersion}.v${maven.build.timestamp}${qualifierSuffix}";</value>
+								</replacement>
+							</replacements>
+						</configuration>
+					</execution>
+         		</executions>
+			</plugin>
+		
+			<!-- Tycho build -->
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-compiler-plugin</artifactId>
@@ -117,7 +151,7 @@
 						<extraClasspathElement>
 							<groupId>org.flowerplatform.host</groupId>
 							<artifactId>org.flowerplatform.host.web_app</artifactId>
-							<version>${appVersion}</version>
+							<version>${appVersion}${version.qualifierSuffix}</version>
 						</extraClasspathElement>
 					</extraClasspathElements>
 				</configuration>
@@ -140,9 +174,7 @@
 						<addMavenDescriptor>false</addMavenDescriptor>
 					</archive>
 					
-					<!-- version.qualifierSuffixForFormat property must already contain single quotes -->
-					<!-- or be the empty string for no suffix -->
-					<format>'v'yyyyMMdd-HHmm${version.qualifierSuffixForFormat}</format>
+					<format>'v${maven.build.timestamp}${version.qualifierSuffix}'</format>
 
 					<!-- resources to be packaged -->
 					<additionalFileSets>

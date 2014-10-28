@@ -21,7 +21,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.core.editor.action.RenameAction;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.link.LinkHandler;
-	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.mindmap.action.EditNodeDetailsInDialogAction;
 	import org.flowerplatform.flex_client.mindmap.action.EditNoteInDialogAction;
@@ -32,17 +31,13 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.mindmap.action.NodeRightAction;
 	import org.flowerplatform.flex_client.mindmap.action.NodeUpAction;
 	import org.flowerplatform.flex_client.mindmap.action.RefreshAction;
-	import org.flowerplatform.flex_client.mindmap.controller.NodeAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeChildrenController;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeController;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeDragController;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeInplaceEditorController;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
-	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeRenderer1;
-	import org.flowerplatform.flex_client.mindmap.renderer.MindMapNodeWithDetailsRenderer;
-	import org.flowerplatform.flex_client.mindmap.renderer.NodeRenderer;
+	import org.flowerplatform.flex_client.mindmap.renderer.NodeMindMapRenderer;
 	import org.flowerplatform.flex_client.mindmap.renderer.NodeSelectionRenderer;
-	import org.flowerplatform.flex_client.mindmap.renderer2.NodeMindMapRenderer;
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsView;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.property_renderer.DropDownListPropertyRenderer;
@@ -54,6 +49,7 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexdiagram.mindmap.MultiConnectorModel;
 	import org.flowerplatform.flexdiagram.mindmap.MultiConnectorRenderer;
+	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapAbsoluteLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapRootModelChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MultiConnectorAbsoluteLayoutRectangleController;
@@ -62,7 +58,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.NullController;
-	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 
 	/**
@@ -87,9 +82,6 @@ package org.flowerplatform.flex_client.mindmap {
 			CorePlugin.getInstance().serviceLocator.addService("mindMapService");
 			CorePlugin.getInstance().serviceLocator.addService("freeplaneService");
 			
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(MindMapConstants.GENERAL_PURPOSE_MIND_MAP_CATEGORY)
-				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NodeRendererController(new ClassFactoryWithConstructor(NodeMindMapRenderer)));
-			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapRootModelWrapper.TYPE)			
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new MindMapRootModelChildrenController(-10))
 				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, new MindMapAbsoluteLayoutVisualChildrenController(-10))
@@ -98,21 +90,21 @@ package org.flowerplatform.flex_client.mindmap {
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NullController(-10))
 				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER, new NullController(-10));	
 			
-			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MultiConnectorModel.TYPE)
 				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())
+				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER, new NullController())
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new ClassReferenceRendererController(new ClassFactoryWithConstructor(MultiConnectorRenderer), 0, true))
 				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new MultiConnectorAbsoluteLayoutRectangleController(-100)); // we want it before the one registered for ALL
 						
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
-				.addSingleController(MindMapConstants.MIND_MAP_FEATURE_FOR_VALUES_PROVIDER, new NodeValuesProvider(MindMapConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX))
+				.addSingleController(CoreConstants.MIND_MAP_FEATURE_FOR_VALUES_PROVIDER, new NodeValuesProvider(CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX))
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new NodeChildrenController())
 				.addSingleController(FlexDiagramConstants.MINDMAP_MODEL_CONTROLLER, new NodeController())				
 				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
-				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new NodeAbsoluteLayoutRectangleController())
+				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new MindMapAbsoluteLayoutRectangleController())
 				.addSingleController(FlexDiagramConstants.DRAG_CONTROLLER, new NodeDragController())
 				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER, new BasicSelectionController(NodeSelectionRenderer))
-				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NodeRendererController(new ClassFactoryWithConstructor(NodeRenderer)))
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new NodeRendererController(new ClassFactoryWithConstructor(NodeMindMapRenderer), 0, true))
 				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER, new NodeInplaceEditorController());		
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(MindMapConstants.MINDMAP_NODE_TYPE)

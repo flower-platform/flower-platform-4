@@ -28,11 +28,9 @@
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
-			import mx.events.FlexEvent;
-			
 			import org.flowerplatform.flexutil.action.ActionBase;
 			import org.flowerplatform.flexutil.action.VectorActionProvider;
-			import org.flowerplatform.flexutil.samples.renderer.MultipleIconItemRendererSample;
+			import org.flowerplatform.flexutil.samples.context_menu.ContextMenuSample;
 
 			
 			private function creationCompleteHandler():void {
@@ -42,7 +40,7 @@
 				var action:ActionBase = new SampleActionGlobalMenuC1();
 				action.label = "First Action";
 				action.id = "firstaction";
-				action.icon = MultipleIconItemRendererSample.infoImage;
+				action.icon = ContextMenuSample.infoImage;
 				actionProvider.getActions(null).push(action);
 				
 				action = new SampleActionGlobalMenuC1();
@@ -64,7 +62,7 @@
 				action.label = "Second SubAction";
 				action.id = "secondsubaction";
 				action.parentId = "secondaction";
-				action.icon = MultipleIconItemRendererSample.defaultImage;
+				action.icon = ContextMenuSample.defaultImage;
 				actionProvider.getActions(null).push(action);
 				
 				action = new SampleActionGlobalMenu1();
@@ -88,7 +86,7 @@
 				
 				action = new SampleActionGlobalMenu1();
 				action.parentId = "secondsubaction";
-				action.icon = MultipleIconItemRendererSample.defaultImage;
+				action.icon = ContextMenuSample.defaultImage;
 				actionProvider.getActions(null).push(action);
 				
 				mainMenu.actionProvider = actionProvider;

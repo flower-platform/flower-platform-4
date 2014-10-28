@@ -17,24 +17,11 @@ package org.flowerplatform.flex_client.mindmap {
 	import flash.system.Capabilities;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
-	import org.flowerplatform.flexutil.FlexUtilConstants;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class MindMapConstants {
-		
-		// clean up by CS: begin
-		
-		// Java and Flex
-		public static const GENERAL_PURPOSE_MIND_MAP_CATEGORY:String = FlexUtilConstants.CATEGORY_PREFIX + "generalPurposeMindMap";
-		
-		public static const MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX:String = "mindMap.";
-		
-		// Flex only
-		public static const MIND_MAP_FEATURE_FOR_VALUES_PROVIDER:String = "mindMapValuesProvider";
-		
-		// clean up by CS: end
 		
 		//////////////////////////////////
 		// Node types and categories

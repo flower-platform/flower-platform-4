@@ -40,7 +40,6 @@ import static org.flowerplatform.codesync.CodeSyncConstants.NODE_ANCESTOR;
 import static org.flowerplatform.codesync.CodeSyncConstants.NODE_LEFT;
 import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
-import static org.flowerplatform.core.CoreConstants.CODESYNC_ICONS;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.NAME;
@@ -48,7 +47,6 @@ import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN;
-import static org.flowerplatform.core.CoreConstants.PROPERTY_FOR_ICON_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
@@ -76,7 +74,6 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileSubscribableProvider;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
-import org.flowerplatform.core.node.remote.GenericValueDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
@@ -324,8 +321,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor()
 					.setNameAs(MATCH_DIFFS_MODIFIED_RIGHT).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_DIFFS_CONFLICT).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_BODY_MODIFIED).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN))
-			.addSingleController(PROPERTY_FOR_ICON_DESCRIPTOR, new GenericValueDescriptor(CODESYNC_ICONS).setOrderIndexAs(-1000));
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(MATCH_BODY_MODIFIED).setReadOnlyAs(true).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN));
 		
 		// TODO test
 		setProjectAccessController(new ProjectAccessController());

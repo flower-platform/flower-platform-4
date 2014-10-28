@@ -36,6 +36,17 @@ public final class Utils {
 	}
 	
 	/**
+	 * @author Cristian Spiescu
+	 */
+	public static String substringFrom(String source, String find) {
+		int i = source.lastIndexOf(find);
+		if (i < 0 || i >= source.length() - 1) {
+			return null;
+		}
+		return source.substring(i + 1);
+	}
+	
+	/**
 	 *@author Mariana Gheorghe
 	 **/
 	public static boolean safeEquals(Object a, Object b) {

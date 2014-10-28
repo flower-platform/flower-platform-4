@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,13 +23,10 @@ package org.flowerplatform.flexdiagram.mindmap {
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
-	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
-	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 	import org.flowerplatform.flexdiagram.renderer.BaseRenderer;
-	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	
 	/**
@@ -220,8 +217,6 @@ package org.flowerplatform.flexdiagram.mindmap {
 				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "connectorWidth", FlexDiagramConstants.MIND_MAP_RENDERER_CONNECTOR_WIDTH, CONNECTOR_WIDTH_DEFAULT);
 				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "connectorColor", FlexDiagramConstants.MIND_MAP_RENDERER_CONNECTOR_COLOR, CONNECTOR_COLOR_DEFAULT);		
 			}
-			
-			MindMapModelRendererController(ControllerUtils.getRendererController(diagramShellContext, data)).rendererModelChangedHandler(diagramShellContext, this, data, event);
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {			

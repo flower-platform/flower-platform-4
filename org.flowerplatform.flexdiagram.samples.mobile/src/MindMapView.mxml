@@ -127,10 +127,10 @@
 				
 				<s:Panel id="listofChildrenPanel" visible="false" width="100%"
 						 title="List of children for selected node's parent">
-					<s:List id="childrenProviderList" width="100%" borderVisible="false" 
+<!--					<s:List id="childrenProviderList" width="100%" borderVisible="false" 
 							dataProvider="{selectedItem.parent.children}" 
 							itemRenderer="org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapNodeRenderer"/>
-				</s:Panel>
+-->				</s:Panel>
 				
 				
 				<s:Panel id="formPanel" visible="false" width="100%" title="Properties Editor">

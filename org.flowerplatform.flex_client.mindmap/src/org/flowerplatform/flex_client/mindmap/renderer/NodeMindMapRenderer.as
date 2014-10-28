@@ -13,15 +13,18 @@
  * 
  * license-end
  */
-package org.flowerplatform.flex_client.core.node.controller {
-	import org.flowerplatform.flex_client.core.editor.remote.Node;
-		
+package org.flowerplatform.flex_client.mindmap.renderer {
+	import org.flowerplatform.flex_client.core.CoreConstants;
+	import org.flowerplatform.flexdiagram.mindmap.MindMapRenderer;
+	
 	/**
-	 * @author Mariana Gheorghe
+	 * @author Cristian Spiescu
 	 */
-	public interface IGenericValueProvider {
+	public class NodeMindMapRenderer extends MindMapRenderer {
 		
-		function getValue(node:Node):Object;
-		
+		public function NodeMindMapRenderer() {
+			super();
+			featureForValuesProvider = CoreConstants.MIND_MAP_FEATURE_FOR_VALUES_PROVIDER;
+		}
 	}
 }

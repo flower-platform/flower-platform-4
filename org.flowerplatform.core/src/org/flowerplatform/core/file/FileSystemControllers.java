@@ -18,6 +18,7 @@ package org.flowerplatform.core.file;
 import static org.flowerplatform.core.CoreConstants.ADD_CHILD_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.FILE_CONTAINER_CATEGORY;
 import static org.flowerplatform.core.CoreConstants.FILE_CREATION_TIME;
 import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
 import static org.flowerplatform.core.CoreConstants.FILE_LAST_ACCESS_TIME;
@@ -48,7 +49,7 @@ public class FileSystemControllers {
 	 **/
 	public void registerControllers() {
 		FileChildrenController fileChildrenController = new FileChildrenController();
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor("category.fileContainer")
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(FILE_CONTAINER_CATEGORY)
 		.addAdditiveController(CHILDREN_PROVIDER, fileChildrenController)
 		.addAdditiveController(REMOVE_NODE_CONTROLLER, fileChildrenController)
 		.addAdditiveController(ADD_NODE_CONTROLLER, fileChildrenController)
@@ -56,7 +57,7 @@ public class FileSystemControllers {
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_SYSTEM_NODE_TYPE)
 		.addAdditiveController(PROPERTIES_PROVIDER, new FileSystemNodeController())
-		.addCategory("category.fileContainer");
+		.addCategory(FILE_CONTAINER_CATEGORY);
 		
 		FilePropertiesController filePropertiesController = new FilePropertiesController();
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
@@ -72,7 +73,7 @@ public class FileSystemControllers {
 				.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DATE).setOrderIndexAs(11))
 		.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FILE_LAST_ACCESS_TIME).setReadOnlyAs(true)
 				.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_DATE).setOrderIndexAs(12))
-		.addCategory("category.fileContainer");
+		.addCategory(FILE_CONTAINER_CATEGORY);
 		
 		CorePlugin.getInstance().getResourceService().addResourceHandler(FILE_SCHEME, new FileSystemResourceHandler());
 	}

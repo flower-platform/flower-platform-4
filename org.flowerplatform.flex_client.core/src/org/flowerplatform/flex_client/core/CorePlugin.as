@@ -56,10 +56,8 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.link.LinkView;
 	import org.flowerplatform.flex_client.core.node.FlexHostInvocator;
 	import org.flowerplatform.flex_client.core.node.FlexHostResourceOperationsHandler;
-	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.ResourceDebugControllers;
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
-	import org.flowerplatform.flex_client.core.node.remote.GenericValueDescriptor;
 	import org.flowerplatform.flex_client.core.node_tree.GenericNodeTreeViewProvider;
 	import org.flowerplatform.flex_client.core.node_tree.NodeTreeAction;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
@@ -81,8 +79,9 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
+	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	import org.flowerplatform.flexutil.iframe.FlowerIFrameViewProvider;
-	import org.flowerplatform.flexutil.iframe.IFrameOpenUrl;
+	import org.flowerplatform.flexutil.iframe.IFrameOpenUrlAction;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
@@ -104,6 +103,8 @@ package org.flowerplatform.flex_client.core {
 		private static const MAIN_PAGE:String = "main.jsp";
 		
 		protected static var INSTANCE:CorePlugin;
+		
+		protected var _serverAppVersion:String;
 		
 		public var serviceLocator:ServiceLocator;
 		
@@ -203,16 +204,11 @@ package org.flowerplatform.flex_client.core {
 			
 			// check version compatibility with server side
 			serviceLocator.invoke("coreService.getVersions", null, 
-				function (result:Object):void {		
-					// disable app version check
-//					if (_appVersion != result[0]) { // application version is old 
-//						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-//						.setTitle(Resources.getMessage('version.error'))
-//						.setText(Resources.getMessage('version.error.message', [_appVersion, result[0], Resources.getMessage('version.error.details')]))
-//						.setWidth(400)
-//						.setHeight(300)
-//						.showMessageBox();						
-//					} else
+				function (result:Object /* = [serverAppVersion, apiVersion] */):void {
+					// keep server app version
+					_serverAppVersion = result[0];
+					
+					// check API version
 					if (_apiVersion != result[1]) { // API version is old
 						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 						.setTitle(Resources.getMessage('version.error'))
@@ -220,13 +216,10 @@ package org.flowerplatform.flex_client.core {
 						.setWidth(400)
 						.setHeight(300)
 						.showMessageBox();
-					} else { // versions ok 
-						_appVersion = result[0];
-						_apiVersion = result[1];						
+					} else { // API version ok 
+						// INITIALIZATION SPINNER END
+						ModalSpinner.removeGlobalModalSpinner();
 					}
-					
-					// INITIALIZATION SPINNER END
-					ModalSpinner.removeGlobalModalSpinner();
 				}
 			);
 
@@ -273,9 +266,7 @@ package org.flowerplatform.flex_client.core {
 			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(NodeTreeAction.ID))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(OpenAction.ID))
-				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(OpenWithEditorComposedAction.ID))
-				.addSingleController(CoreConstants.NODE_TITLE_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR))
-				.addSingleController(CoreConstants.NODE_ICONS_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_ICONS_DESCRIPTOR));
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(OpenWithEditorComposedAction.ID));
 						
 			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RenameAction.ID))
@@ -360,7 +351,7 @@ package org.flowerplatform.flex_client.core {
 					.show();
 				}));
 			
-			registerActionToGlobalMenu(new IFrameOpenUrl()
+			registerActionToGlobalMenu(new IFrameOpenUrlAction()
 				.setLabel(Resources.getMessage("iframe.title"))
 				.setIcon(Resources.urlIcon)
 				.setParentId(CoreConstants.NAVIGATE_MENU_ID)
@@ -397,12 +388,27 @@ package org.flowerplatform.flex_client.core {
 				.setFunctionDelegate(function ():void {
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 					.setViewContent(new AboutView())
-					.setWidth(300)
-					.setHeight(250)
+					.setWidth(320)
+					.setHeight(280)
 					.show();
 				}));			
 		}
-				
+		
+		public function get serverAppVersion():String {
+			return _serverAppVersion;
+		}
+		
+		/**
+		 * The 2 constants MIND_MAP* and the method below should normally stay in MindMapConstants, thinking that
+		 * in theory there may be several values providers (e.g. another one for another type
+		 * of diagram. But until then, it's useful to have them here, as general logic use it (e.g. RenameAction)
+		 * 
+		 * @author Cristian Spiescu
+		 */
+		public function getNodeValuesProviderForMindMap(typeDescriptorRegistry:TypeDescriptorRegistry, node:Node):ValuesProvider {
+			return ValuesProvider(typeDescriptorRegistry.getExpectedTypeDescriptor(node.type).getSingleController(CoreConstants.MIND_MAP_FEATURE_FOR_VALUES_PROVIDER, node));
+		}
+	
 		override protected function registerClassAliases():void {		
 			super.registerClassAliases();
 			registerClassAliasFromAnnotation(Node);
@@ -418,7 +424,6 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(PropertyWrapper);
 			registerClassAliasFromAnnotation(StylePropertyWrapper);
 			registerClassAliasFromAnnotation(TypeDescriptorRemote);
-			registerClassAliasFromAnnotation(GenericValueDescriptor);
 			registerClassAliasFromAnnotation(AddChildDescriptor);
 			registerClassAliasFromAnnotation(Pair);			
 		}

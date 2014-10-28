@@ -16,35 +16,37 @@
 package org.flowerplatform.freeplane;
 
 import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_BACKGROUND_COLOR;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_FONT_BOLD;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_FONT_FAMILY;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_FONT_ITALIC;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_FONT_SIZE;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_ICONS;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_MAX_WIDTH;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_MIN_WIDTH;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_TEXT;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_TEXT_COLOR;
 import static org.flowerplatform.core.CoreConstants.CATEGORY_RESOURCE_PREFIX;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
+import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_CLOUD_COLOR;
+import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_CLOUD_TYPE;
+import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_SIDE;
+import static org.flowerplatform.core.CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX;
 import static org.flowerplatform.core.CoreConstants.PARENT_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.freeplane.FreeplaneConstants.FREEPLANE_MINDMAP_RESOURCE_DELEGATE_CATEGORY;
 import static org.flowerplatform.freeplane.FreeplaneConstants.FREEPLANE_MINDMAP_RESOURCE_SCHEMA;
-import static org.flowerplatform.mindmap.MindMapConstants.BASE_RENDERER_BACKGROUND_COLOR;
-import static org.flowerplatform.mindmap.MindMapConstants.BASE_RENDERER_FONT_BOLD;
-import static org.flowerplatform.mindmap.MindMapConstants.BASE_RENDERER_FONT_FAMILY;
-import static org.flowerplatform.mindmap.MindMapConstants.BASE_RENDERER_FONT_ITALIC;
-import static org.flowerplatform.mindmap.MindMapConstants.BASE_RENDERER_FONT_SIZE;
-import static org.flowerplatform.mindmap.MindMapConstants.BASE_RENDERER_ICONS;
-import static org.flowerplatform.mindmap.MindMapConstants.BASE_RENDERER_MAX_WIDTH;
-import static org.flowerplatform.mindmap.MindMapConstants.BASE_RENDERER_MIN_WIDTH;
-import static org.flowerplatform.mindmap.MindMapConstants.BASE_RENDERER_TEXT;
-import static org.flowerplatform.mindmap.MindMapConstants.BASE_RENDERER_TEXT_COLOR;
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_MINDMAP_CATEGORY;
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_MINDMAP_RESOURCE_KEY;
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_CATEGORY;
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_CONTENT_TYPE;
-import static org.flowerplatform.mindmap.MindMapConstants.MIND_MAP_RENDERER_CLOUD_COLOR;
-import static org.flowerplatform.mindmap.MindMapConstants.MIND_MAP_RENDERER_CLOUD_TYPE;
-import static org.flowerplatform.mindmap.MindMapConstants.MIND_MAP_RENDERER_HAS_CHILDREN;
-import static org.flowerplatform.mindmap.MindMapConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX;
+import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_CSV_TO_LIST_PREFIX;
+import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_CSV_TO_LIST_SUFFIX;
 import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_VALUE_CONVERTER;
 import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_CSV_TO_LIST;
 import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_STRING_HEX_TO_UINT;
@@ -73,9 +75,7 @@ import org.flowerplatform.freeplane.style.controller.MindMapStyleChildrenProvide
 import org.flowerplatform.freeplane.style.controller.MindMapStyleResourceHandler;
 import org.flowerplatform.freeplane.style.controller.StyleRootChildrenProvider;
 import org.flowerplatform.freeplane.style.controller.StyleRootPropertiesProvider;
-import org.flowerplatform.mindmap.MindMapConstants;
 import org.flowerplatform.resources.ResourcesPlugin;
-import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.controller.GenericDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.freeplane.features.url.UrlManager;
@@ -181,8 +181,6 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 //			.addAdditiveController(PROPERTIES_PROVIDER, new DefaultPropertiesProvider());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FreeplaneConstants.FREEPLANE_NODE_TYPE)
-			.addCategory(MindMapConstants.GENERAL_PURPOSE_MIND_MAP_CATEGORY)
-			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MIND_MAP_RENDERER_HAS_CHILDREN, new GenericDescriptor("hasChildren"))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_FONT_FAMILY, new GenericDescriptor("font.NAME"))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_FONT_SIZE, new GenericDescriptor("font.SIZE"))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_FONT_BOLD, new GenericDescriptor("font.BOLD"))
@@ -194,8 +192,8 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 				.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_STRING_HEX_TO_UINT))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_ICONS, new GenericDescriptor("icons")
 				.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_CSV_TO_LIST)
-				.addExtraInfoProperty(UtilConstants.EXTRA_INFO_CSV_TO_LIST_PREFIX, ResourcesPlugin.getInstance().getResourceUrl("images/mindmap/icons/"))
-				.addExtraInfoProperty(UtilConstants.EXTRA_INFO_CSV_TO_LIST_SUFFIX, ".png"))
+				.addExtraInfoProperty(EXTRA_INFO_CSV_TO_LIST_PREFIX, ResourcesPlugin.getInstance().getResourceUrl("images/mindmap/icons/"))
+				.addExtraInfoProperty(EXTRA_INFO_CSV_TO_LIST_SUFFIX, ".png"))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MIND_MAP_RENDERER_CLOUD_TYPE, new GenericDescriptor("cloud.SHAPE"))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MIND_MAP_RENDERER_CLOUD_COLOR, new GenericDescriptor("cloud.COLOR")
 				.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_STRING_HEX_TO_UINT))

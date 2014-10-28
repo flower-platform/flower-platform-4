@@ -13,67 +13,82 @@
 	<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="antlib:org.apache.maven.artifact.ant" classpathref="maven-ant-tasks.classpath" />
 
 	<target name="set-version" description="Set the new version in the pom.xml files">
+		<record name="set-version.log" action="start" loglevel="verbose" />
+		
+		<echo>Set version for parent</echo>
 		<artifact:mvn mavenHome="${mavenHome}" fork="true">
 			<arg value="-Nversions:set" />
 			<arg value="-DnewVersion=${version.appVersion}${version.qualifierSuffix}" />
 			<arg value="-DgenerateBackupPoms=${version.generateBackupPoms}" />
 		</artifact:mvn>
-
-		<!-- Set the version for the flex build -->
-		<!-- Add _flex suffix because some flex projects are also packaged as Eclipse plugins -->
-		<!-- and the Tycho build does not allow duplicate pom versions in the same reactor -->
+		
+		<echo>Set the version for the flex build</echo>
+		<echo>Add _flex suffix because some flex projects are also packaged as Eclipse plugins and the Tycho build does not allow duplicate pom versions in the same reactor</echo>
 		<artifact:mvn pom="flex" mavenHome="${mavenHome}" fork="true">
 			<arg value="-Nversions:set" />
 			<arg value="-DnewVersion=${version.appVersion}${version.qualifierSuffix}_flex" />
 			<arg value="-DgenerateBackupPoms=${version.generateBackupPoms}" />
+			<arg value="-DflexVersion=${flexVersion}" />
 		</artifact:mvn>
-
-		<!-- Set the version in .inc files for the flex app -->
-		<replaceregexp file="../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/appVersion.inc" match="_appVersion = .*" replace="_appVersion = &quot;${version.appVersion}${version.qualifierSuffix}&quot;" />
-		<replaceregexp file="../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/apiVersion.inc" match="_apiVersion = .*" replace="_apiVersion = &quot;${version.apiVersion}&quot;" />
-
+		
+		<echo>Set the version in .inc files for the flex app</echo>
+		<replaceregexp file="../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/version.inc" match="_appVersion = .*" replace="_appVersion = &quot;${version.appVersion}${version.qualifierSuffix}&quot;" />
+		<replaceregexp file="../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/version.inc" match="_apiVersion = .*" replace="_apiVersion = &quot;${version.apiVersion}&quot;" />
+	
+		<echo>Set the version in mobile app</echo>
 		<replaceregexp file="../org.flowerplatform.flex_client.host_app.mobile/src/MainMobile-app.xml" match="&lt;versionNumber&gt;.*&lt;/versionNumber&gt;" replace="&lt;versionNumber&gt;${version.appVersion}&lt;/versionNumber&gt;" />
-
-		<!-- Set the version for the java build -->
-		<!-- Set the version in MANIFEST.MF -->
+		
+		<echo>Set the version for the java build</echo>
+		<echo>This will change MANIFEST files and pom files</echo>
 		<artifact:mvn pom="java" mavenHome="${mavenHome}" fork="true">
 			<arg value="org.eclipse.tycho:tycho-versions-plugin:set-version" />
 			<arg value="-N" />
 			<arg value="-DnewVersion=${version.appVersion}.qualifier" />
 		</artifact:mvn>
-
-		<!-- Add .qualifier suffix to match the bundle version in MANIFEST.MF -->
+	
+		<echo>Add .qualifier suffix to match the bundle version in MANIFEST.MF, if not SNAPSHOT</echo>
+		<condition property="version.qualifierForTycho" value=".qualifier" else="${version.qualifierSuffix}">
+			<equals arg1="${version.qualifierSuffix}" arg2="" />
+		</condition>
+		
 		<artifact:mvn pom="java" mavenHome="${mavenHome}" fork="true">
 			<arg value="versions:set" />
 			<arg value="-N" />
-			<arg value="-DnewVersion=${version.appVersion}${version.qualifierSuffix}.qualifier" />
+			<arg value="-DnewVersion=${version.appVersion}${version.qualifierForTycho}" />
 			<arg value="-DgenerateBackupPoms=${version.generateBackupPoms}" />
 		</artifact:mvn>
-
+	
+		<echo>Set the version for remaining projects</echo>
+		
 		<artifact:mvn pom="../org.flowerplatform.host.servletbridge.base" mavenHome="${mavenHome}" fork="true">
 			<arg value="versions:set" />
 			<arg value="-N" />
 			<arg value="-DnewVersion=${version.appVersion}${version.qualifierSuffix}" />
 			<arg value="-DgenerateBackupPoms=${version.generateBackupPoms}" />
 		</artifact:mvn>
-
+	
 		<artifact:mvn pom="../org.flowerplatform.host.web_app" mavenHome="${mavenHome}" fork="true">
 			<arg value="versions:set" />
 			<arg value="-N" />
 			<arg value="-DnewVersion=${version.appVersion}${version.qualifierSuffix}" />
 			<arg value="-DgenerateBackupPoms=${version.generateBackupPoms}" />
 		</artifact:mvn>
-
+	
+		<echo>Set the version in CoreConstants.java</echo>
 		<replaceregexp file="../org.flowerplatform.core/src/org/flowerplatform/core/CoreConstants.java" match="APP_VERSION = .*;" replace="APP_VERSION = &quot;${version.appVersion}${version.qualifierSuffix}&quot;;" />
 		<replaceregexp file="../org.flowerplatform.core/src/org/flowerplatform/core/CoreConstants.java" match="API_VERSION = .*;" replace="API_VERSION = &quot;${version.apiVersion}&quot;;" />
-
-		<!-- Set the version for the war build -->
+	
+		<echo>Set the version for the war build</echo>
 		<artifact:mvn pom="../org.flowerplatform.host.web_app/war-pck" mavenHome="${mavenHome}" fork="true">
 			<arg value="versions:set" />
 			<arg value="-N" />
 			<arg value="-DnewVersion=${version.appVersion}${version.qualifierSuffix}_war" />
 			<arg value="-DgenerateBackupPoms=${version.generateBackupPoms}" />
+			<arg value="-DappVersion=${version.appVersion}" />
+			<arg value="-Dversion.qualifierSuffix=${version.qualifierSuffix}" />
 		</artifact:mvn>
+		
+		<record name="set-version.log" action="stop" loglevel="verbose" />
 	</target>
 
 	<!-- Must be run once for each machine where the build is performed, and whenever the lib version changes -->
@@ -125,11 +140,8 @@
 	</target>
 	
 	<target name="build" description="Perform and validate build">
-		
-		<!-- the qualifier suffix needs to be wrapped in quotes ONLY if it is not the empty string -->
-		<condition property="version.qualifierSuffixForFormat" value="" else="'${version.qualifierSuffix}'">
-			<equals arg1="${version.qualifierSuffix}" arg2="" />
-		</condition>
+		<delete file="build.log" />
+		<record name="build.log" action="start" loglevel="verbose" />
 
 		<artifact:mvn pom="pom.xml" mavenHome="${mavenHome}" fork="true">
 			<jvmarg value="-Xmx1024m" />
@@ -152,15 +164,16 @@
 
 			<arg value="-Doutput.flex=${output.flex}" />
 			<arg value="-Doutput.java=${output.java}" />
+			<arg value="-DappVersion=${version.appVersion}" />
+			<arg value="-DapiVersion=${version.apiVersion}" />
+			<arg value="-DqualifierSuffix=${version.qualifierSuffix}" />
 			
 			<!-- Java build -->
-			<arg value="-DappVersion=${version.appVersion}" />
 			<arg value="-Dos=${os}" />
 			<arg value="-Dws=${ws}" />
 			<arg value="-Darch=${arch}" />
 			<arg value="-Dproduct-environment=${productEnvironment}" />
-			<arg value="-Dversion.qualifierSuffixForFormat=${version.qualifierSuffixForFormat}" />
-
+			<arg value="-Dversion.qualifierSuffix=${version.qualifierSuffix}" />
 
 			<!-- Flex build -->
 			<arg value="-DflexVersion=${flexVersion}" />
@@ -169,6 +182,8 @@
 			<arg value="-Dkeystore.file=${keystore.file}" />
 			<arg value="-Dkeystore.password=${keystore.password}" />
 		</artifact:mvn>
+		
+		<record name="build.log" action="stop" loglevel="verbose" />
 	</target>
 
 </project>
