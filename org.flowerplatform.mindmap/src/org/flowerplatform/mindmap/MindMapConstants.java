@@ -124,6 +124,16 @@ public final class MindMapConstants {
 	
 	public static final String MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE = "MindMapIconsWithButton";
 	public static final String MINDMAP_STYLE_NAME_DESCRIPTOR_TYPE = "MindMapStyles";
+	
+	public static final String MIND_MAP_RENDERER_CONNECTOR_STYLE = "mindMapRenderer.connectorStyle";
+	public static final String MIND_MAP_RENDERER_CONNECTOR_WIDTH = "mindMapRenderer.connectorWidth";
+	public static final String MIND_MAP_RENDERER_CONNECTOR_COLOR = "mindMapRenderer.connectorColor";
+	public static final String MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIES = "childConnectorProperties";
+	// Connector styles
+	public static final String MIND_MAP_CONNECTOR_SMOOTHLY_CURVED = "smoothly curved";
+	public static final String MIND_MAP_CONNECTOR_HIDE = "hide";
+	public static final String MIND_MAP_CONNECTOR_HORIZONTAL = "horizontal";
+	public static final String MIND_MAP_CONNECTOR_LINEAR = "linear";
 		
 	//////////////////////////////////
 	// Resource

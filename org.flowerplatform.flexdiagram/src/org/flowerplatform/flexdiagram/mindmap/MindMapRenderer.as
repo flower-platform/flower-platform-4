@@ -59,6 +59,10 @@ package org.flowerplatform.flexdiagram.mindmap {
 				
 		public static const CONNECTOR_STYLE_DEFAULT:String = FlexDiagramConstants.MIND_MAP_CONNECTOR_LINEAR;
 		
+		public static const CONNECTOR_COLOR_DEFAULT:uint = 0x808080;
+		
+		public static const CONNECTOR_WIDTH_DEFAULT:Number = 1;
+		
 		/**************************************************************************
 		 * Attributes.
 		 *************************************************************************/
@@ -213,9 +217,8 @@ package org.flowerplatform.flexdiagram.mindmap {
 				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudColor", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_COLOR, CLOUD_COLOR_DEFAULT);
 				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "cloudType", FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE, null);
 				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "connectorStyle", FlexDiagramConstants.MIND_MAP_RENDERER_CONNECTOR_STYLE, CONNECTOR_STYLE_DEFAULT);
-				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "connectorWidth", FlexDiagramConstants.MIND_MAP_RENDERER_CONNECTOR_WIDTH, "");
-				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "connectorColor", FlexDiagramConstants.MIND_MAP_RENDERER_CONNECTOR_COLOR, "");
-		
+				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "connectorWidth", FlexDiagramConstants.MIND_MAP_RENDERER_CONNECTOR_WIDTH, CONNECTOR_WIDTH_DEFAULT);
+				setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "connectorColor", FlexDiagramConstants.MIND_MAP_RENDERER_CONNECTOR_COLOR, CONNECTOR_COLOR_DEFAULT);		
 			}
 			
 			MindMapModelRendererController(ControllerUtils.getRendererController(diagramShellContext, data)).rendererModelChangedHandler(diagramShellContext, this, data, event);

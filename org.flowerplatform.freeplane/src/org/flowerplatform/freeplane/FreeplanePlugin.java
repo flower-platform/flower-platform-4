@@ -201,8 +201,10 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 				.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_STRING_HEX_TO_UINT))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_MIN_WIDTH, new GenericDescriptor("MIN_WIDTH"))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_MAX_WIDTH, new GenericDescriptor("MAX_WIDTH"))
-			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_SIDE, new GenericDescriptor("POSITION"));
-			
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_SIDE, new GenericDescriptor("POSITION"))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_CONNECTOR_STYLE, new GenericDescriptor("edge.STYLE"))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_CONNECTOR_WIDTH, new GenericDescriptor("edge.WIDTH"))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_CONNECTOR_COLOR, new GenericDescriptor("edge.COLOR"));
 		
 	}
 
