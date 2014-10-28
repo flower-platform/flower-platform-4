@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mindmap:MindMapSample xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:mindmap="org.flowerplatform.flexdiagram.samples.mindmap.*" 
+					   initialize="colorPickers.forEach(function (item:IVisualElement, ...args):void { hardcodedProperties.addElement(item) })">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.IVisualElement;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<fx:Vector id="colorPickers" type="mx.core.IVisualElement">
+			<s:FormItem label="Text Color:">
+				<mx:ColorPicker id="textColorPicker" selectedColor="@{selectedItem.textColor}" showTextField="true"/>
+			</s:FormItem>
+			
+			<s:FormItem label="Background Color:">
+				<mx:ColorPicker id="backgroundColorPicker" selectedColor="@{selectedItem.backgroundColor}" showTextField="true"/>
+			</s:FormItem>
+			
+			<s:FormItem id="cloudColorPickerForm" label="Cloud Color:">
+				<mx:ColorPicker id="cloudColorPicker" selectedColor="@{selectedItem.cloudColor}" showTextField="true"/>
+			</s:FormItem>
+		</fx:Vector>
+	</fx:Declarations>
+</mindmap:MindMapSample>

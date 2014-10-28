@@ -33,7 +33,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 			removeRendererIfModelIsDisposed = true;
 		}
 		
-		override public function geUniqueKeyForRendererToRecycle(context:Object, model:Object):Object {
+		override public function getUniqueKeyForRendererToRecycle(context:Object, model:Object):Object {
 			var result:String = Utils.getClassNameForObject(getRendererClass(context, model), false);
 			if (SampleMindMapModel(model).details != null && SampleMindMapModel(model).details != "") {
 				result += ".hasDetails";

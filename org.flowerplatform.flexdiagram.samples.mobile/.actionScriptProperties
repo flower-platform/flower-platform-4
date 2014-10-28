@@ -29,6 +29,7 @@
       </libraryPathEntry>
       <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexdiagram/bin/org.flowerplatform.flexdiagram.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexdiagram.samples/bin/org.flowerplatform.flexdiagram.samples.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/org.flowerplatform.flexutil/bin/org.flowerplatform.flexutil.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
@@ -39,7 +40,7 @@
     <application path="DataGroupSample.mxml">
       <airExcludes/>
     </application>
-    <application path="MindMapDiagramSampleMobile.mxml">
+    <application path="MainFlexDiagramSamplesMobile.mxml">
       <airExcludes/>
     </application>
   </applications>

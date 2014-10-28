@@ -22,6 +22,9 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
+	import org.flowerplatform.flexutil.flexdiagram.RendererController;
+	import org.flowerplatform.flexutil.flexdiagram.StandAloneSequentialLayoutVisualChildrenController;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -49,6 +52,10 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 			refreshVisualChildrenDiagramOrStandAlone(context, context.diagramShell.registry, parentRenderer, parentModel, children);
 		
 			IVisualChildrenRefreshable(parentRenderer).shouldRefreshVisualChildren = false;
+		}
+		
+		override protected function getRendererController(typeDescriptorRegistry:TypeDescriptorRegistry, childModel:Object):RendererController {
+			return RendererController(typeDescriptorRegistry.getSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, childModel));
 		}
 		
 		override protected function delegateToDiagramShell_addInModelMapIfNecesssary(untypedContext:Object, childModel:Object):void {

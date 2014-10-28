@@ -13,10 +13,9 @@
  * 
  * license-end
  */
-package org.flowerplatform.flexdiagram.controller.renderer {
+package org.flowerplatform.flexutil.flexdiagram {
 	import mx.core.IVisualElement;
 	
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexutil.controller.AbstractController;
 	
 	/**
@@ -40,7 +39,7 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 		 * a string composed of the elements that form the state. E.g. "MyRenderer.hasDetails.hasProperties".
 		 * No listening needed by this class; however the renderer should listen the model and change the state.
 		 */
-		public function geUniqueKeyForRendererToRecycle(context:Object, model:Object):Object {
+		public function getUniqueKeyForRendererToRecycle(context:Object, model:Object):Object {
 			throw new Error("This method needs to be implemented.");
 		}
 		

@@ -38,7 +38,7 @@ package org.flowerplatform.flexdiagram {
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.ModelExtraInfoController;
-	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
+	import org.flowerplatform.flexutil.flexdiagram.RendererController;
 	import org.flowerplatform.flexdiagram.controller.selection.SelectionController;
 	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;

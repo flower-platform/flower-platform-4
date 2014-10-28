@@ -46,7 +46,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
-	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
+	import org.flowerplatform.flexutil.flexdiagram.VisualChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.IAbstractMindMapModelRenderer;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;

@@ -14,7 +14,6 @@
  * license-end
  */
 package org.flowerplatform.flex_client.mindmap.controller {
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.renderer.ClassReferenceRendererController;
 	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	
@@ -32,7 +31,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		 * 
 		 * @author Mariana Gheorghe
 		 */
-		override public function getRendererClass(context:DiagramShellContext, model:Object):Class {
+		override public function getRendererClass(context:Object, model:Object):Class {
 //			var node:Node = Node(model);
 //			if ((node.properties.hasOwnProperty(MindMapConstants.NOTE) && String(node.properties[MindMapConstants.NOTE]).length > 0) ||
 //				(node.properties.hasOwnProperty(MindMapConstants.NODE_DETAILS) && String(node.properties[MindMapConstants.NODE_DETAILS]).length > 0)) {

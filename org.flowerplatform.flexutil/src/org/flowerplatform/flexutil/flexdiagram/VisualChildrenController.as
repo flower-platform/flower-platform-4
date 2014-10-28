@@ -13,10 +13,9 @@
  * 
  * license-end
  */
-package org.flowerplatform.flexdiagram.controller.visual_children {
+package org.flowerplatform.flexutil.flexdiagram {
 	import mx.core.IVisualElementContainer;
 	
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexutil.controller.AbstractController;
 	
 	/**

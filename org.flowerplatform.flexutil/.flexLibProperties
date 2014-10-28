@@ -43,6 +43,10 @@
     <classEntry path="org.flowerplatform.flexutil.properties.IPropertyCommitControllerAware"/>
     <classEntry path="org.flowerplatform.flexutil.properties.editor.BooleanPropertyEditor"/>
     <classEntry path="org.flowerplatform.flexutil.properties.PropertiesForm"/>
+    <classEntry path="org.flowerplatform.flexutil.flexdiagram.RendererController"/>
+    <classEntry path="org.flowerplatform.flexutil.flexdiagram.VisualChildrenController"/>
+    <classEntry path="org.flowerplatform.flexutil.flexdiagram.StandAloneSequentialLayoutVisualChildrenController"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.PropertyEntryRendererController"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

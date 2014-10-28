@@ -34,8 +34,8 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleSequentialLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapModelSelectionRenderer;
 	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapRenderer;
-	import org.flowerplatform.flexdiagram.samples.properties.PropertyEntryRendererController;
-	import org.flowerplatform.flexdiagram.samples.properties.SamplePropertyCommitController;
+	import org.flowerplatform.flexutil.properties.PropertyEntryRendererController;
+	import org.flowerplatform.flexutil.samples.properties.SamplePropertyCommitController;
 	import org.flowerplatform.flexdiagram.samples.renderer.SubModelIconItemRenderer;
 	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	import org.flowerplatform.flexutil.FlexUtilConstants;

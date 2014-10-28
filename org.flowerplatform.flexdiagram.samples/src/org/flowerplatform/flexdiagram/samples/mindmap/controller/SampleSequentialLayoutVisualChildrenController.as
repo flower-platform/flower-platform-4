@@ -2,7 +2,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	import mx.core.IVisualElementContainer;
 	
 	import org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenController;
-	import org.flowerplatform.flexdiagram.controller.visual_children.StandAloneSequentialLayoutVisualChildrenController;
+	import org.flowerplatform.flexutil.flexdiagram.StandAloneSequentialLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.SampleMindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 	import org.flowerplatform.flexutil.properties.PropertiesForm;

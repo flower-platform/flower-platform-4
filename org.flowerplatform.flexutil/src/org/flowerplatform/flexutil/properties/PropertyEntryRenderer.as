@@ -31,8 +31,6 @@ package org.flowerplatform.flexutil.properties {
 			super.createChildren();
 			percentWidth = 100;
 			UIComponent(labelDisplay).setStyle("fontWeight", "normal");
-			UIComponent(labelDisplay).setStyle("fontSize", 9);
-			UIComponent(labelDisplay).setStyle("fontFamily", "Arial");
 			UIComponent(labelDisplay).setStyle("left", 0);
 			UIComponent(contentGroup).setStyle("right", 0);	
 		}
@@ -73,7 +71,7 @@ package org.flowerplatform.flexutil.properties {
 			if (editor == null || Object(editor).constructor != clazz) {
 				// i.e. not same property editor
 				if (editor != null) {
-					editor.removeEventListener(FlexEvent.VALUE_COMMIT, commitValueHandler);
+					editor.removeEventListener(FlexUtilConstants.EVENT_COMMIT_PROPERTY, commitValueHandler);
 					if (editor is IFocusManagerComponent) {
 						editor.removeEventListener(FocusEvent.FOCUS_OUT, commitValueHandler);
 					}
@@ -82,7 +80,7 @@ package org.flowerplatform.flexutil.properties {
 				editor = UIComponent(new clazz());
 				editor.percentHeight = 100;
 				editor.percentWidth = 100;
-				editor.addEventListener(FlexEvent.VALUE_COMMIT, commitValueHandler);
+				editor.addEventListener(FlexUtilConstants.EVENT_COMMIT_PROPERTY, commitValueHandler);
 				if (editor is IFocusManagerComponent) {
 					editor.addEventListener(FocusEvent.FOCUS_OUT, commitValueHandler);
 				}

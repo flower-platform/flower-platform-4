@@ -1,4 +1,4 @@
-package org.flowerplatform.flexdiagram.samples.properties {
+package org.flowerplatform.flexutil.samples.properties {
 	import org.flowerplatform.flexutil.properties.PropertyCommitController;
 	import org.flowerplatform.flexutil.properties.PropertyEntry;
 	

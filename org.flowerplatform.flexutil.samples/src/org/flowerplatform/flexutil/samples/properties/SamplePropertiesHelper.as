@@ -1,6 +1,5 @@
-package org.flowerplatform.flexdiagram.samples.properties {
+package org.flowerplatform.flexutil.samples.properties {
 	import flash.events.IEventDispatcher;
-	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayList;
 	import mx.collections.IList;

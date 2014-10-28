@@ -4,7 +4,7 @@
 -->
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" initialize="initializeHandler()" xmlns:properties="org.flowerplatform.flexdiagram.samples.properties.*">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" initialize="initializeHandler()" xmlns:properties="org.flowerplatform.flexutil.properties.*" implements="org.flowerplatform.flexutil.view_content_host.IViewContent">
 	<s:layout>
 		<s:VerticalLayout/>
 	</s:layout>
@@ -15,27 +15,38 @@
 			import spark.events.IndexChangeEvent;
 			
 			import org.apache.flex.collections.VectorList;
-			import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
+			import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
+			import org.flowerplatform.flexutil.properties.PropertiesHelper;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			[Bindable]
 			protected var dataProvider:IList;
 			
+			public function additionalCloseHandler():void {
+			}
+			
+			public function set viewHost(viewHost:IViewHost):void {
+			}
+			
 			protected function initializeHandler():void {
 				dataProvider = new VectorList();
-				var model:SampleMindMapModel;
+				var model:SamplePropertiesModel;
 				
-				model = new SampleMindMapModel();
+				model = new SamplePropertiesModel();
 				model.text = "Model 1";
 				model.properties.p1 = "v1";
+				model.properties.p2 = "v2";
 				dataProvider.addItem(model);
 				
-				model = new SampleMindMapModel();
+				model = new SamplePropertiesModel();
 				model.text = "Model 2";
 				dataProvider.addItem(model);
 				
-				model = new SampleMindMapModel();
+				model = new SamplePropertiesModel();
 				model.text = "Model 3";
 				dataProvider.addItem(model);
+				list.selectedIndex = 0;
+				listChangeHandler(null);
 			}
 			
 			protected function listChangeHandler(event:IndexChangeEvent):void {
@@ -49,7 +60,7 @@
 			
 		]]>
 	</fx:Script>
-	<s:Panel title="Sample Data" height="20%">
+	<s:Panel title="Sample Data" height="30%">
 		<s:layout>
 			<s:VerticalLayout/>
 		</s:layout>
@@ -63,14 +74,14 @@
 		</s:HGroup>
 		<s:Button label="Reset selection" click="list.selectedItem = null; listChangeHandler(null)"/>
 	</s:Panel>
-	<s:Panel title="Properties" height="80%">
+	<s:Panel title="Properties" height="70%">
 		<s:Scroller height="100%" width="100%">
 			<s:HGroup width="100%">
-				<properties:PropertiesForm id="propertiesForm" width="100%">
-					<properties:layout>
-						<s:FormLayout gap="-14"/>
-					</properties:layout>
-				</properties:PropertiesForm>
+				<properties:PropertiesForm id="propertiesForm" width="100%" 
+					visualChildrenController="{new SampleStandAloneSequentialLayoutVisualChildrenController()}"
+					typeDescriptorRegistry="{PropertiesHelper.registerPropertyRenderers(new TypeDescriptorRegistry())}"
+					propertiesHelper="{new SamplePropertiesHelper()}"
+					/>
 			</s:HGroup>
 		</s:Scroller>
 	</s:Panel>

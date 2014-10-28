@@ -13,15 +13,13 @@
  * 
  * license-end
  */
-package org.flowerplatform.flexdiagram.controller.visual_children {
+package org.flowerplatform.flexutil.flexdiagram {
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.IDataRenderer;
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	
-	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
-	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
@@ -88,6 +86,10 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 			}
 		}
 		
+		protected function getRendererController(typeDescriptorRegistry:TypeDescriptorRegistry, childModel:Object):RendererController {
+			throw new Error("This method should be implemented");
+		}
+		
 		protected function delegateToDiagramShell_addInModelMapIfNecesssary(untypedContext:Object, childModel:Object):void {
 		}
 		
@@ -136,7 +138,7 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 			for (var i:int = 0; i < children.length; i++) {
 				var childRendererCandidate:IVisualElement = null;
 				var childModel:Object = children.getItemAt(i);				
-				var childRendererController:RendererController = RendererController(typeDescriptorRegistry.getSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, childModel));
+				var childRendererController:RendererController = getRendererController(typeDescriptorRegistry, childModel);
 				
 				if (context != null) {
 					delegateToDiagramShell_addInModelMapIfNecesssary(context, childModel);
@@ -156,7 +158,7 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 							// that don't have any model
 							delegateToDiagramShell_unassociateModelFromRenderer(context, modelRendererCandidate, childRendererCandidate, true);
 						}
-						if (Object(childRendererCandidate).constructor != childRendererController.geUniqueKeyForRendererToRecycle(context, modelRendererCandidate)) {
+						if (Object(childRendererCandidate).constructor != childRendererController.getUniqueKeyForRendererToRecycle(context, modelRendererCandidate)) {
 							// the candidate renderer are not compatible => remove it
 							// Remark: we don't have the renderer controller of the renderer candidate, because we don't know it's model.
 							// Hence, the constraint that geUniqueKeyForRendererToRecycle SHOULD return the renderer class as key

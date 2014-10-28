@@ -1,9 +1,13 @@
 package org.flowerplatform.flexutil.properties.editor {
+	import flash.events.Event;
+	
 	import mx.core.IDataRenderer;
 	import mx.events.FlexEvent;
 	
 	import spark.components.TextInput;
 	import spark.events.TextOperationEvent;
+	
+	import org.flowerplatform.flexutil.FlexUtilConstants;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -16,7 +20,6 @@ package org.flowerplatform.flexutil.properties.editor {
 			super();
 			addEventListener(TextOperationEvent.CHANGE, changeHandler);
 			addEventListener(FlexEvent.ENTER, enterHandler);
-			setStyle("fontSize", 9);
 		}
 		
 		protected function changeHandler(event:TextOperationEvent):void {
@@ -24,7 +27,7 @@ package org.flowerplatform.flexutil.properties.editor {
 		}
 		
 		protected function enterHandler(event:FlexEvent):void {
-			dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
+			dispatchEvent(new Event(FlexUtilConstants.EVENT_COMMIT_PROPERTY));
 		}
 
 		public function get data():Object {

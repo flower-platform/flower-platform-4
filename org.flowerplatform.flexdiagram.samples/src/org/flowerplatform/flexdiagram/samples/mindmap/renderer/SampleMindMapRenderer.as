@@ -36,7 +36,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.renderer {
 	
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRenderer;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
-	import org.flowerplatform.flexdiagram.samples.properties.SamplePropertiesHelper;
+	import org.flowerplatform.flexutil.samples.properties.SamplePropertiesHelper;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	import org.flowerplatform.flexutil.properties.PropertyEntry;

@@ -19,6 +19,7 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
+	import org.flowerplatform.flexutil.flexdiagram.RendererController;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -39,7 +40,7 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 			return rendererClassFactory.generator;
 		}
 
-		override public function geUniqueKeyForRendererToRecycle(context:Object, model:Object):Object {
+		override public function getUniqueKeyForRendererToRecycle(context:Object, model:Object):Object {
 			return getRendererClass(context, model);
 		}
 		

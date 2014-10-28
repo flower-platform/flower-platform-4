@@ -25,9 +25,10 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
-	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
+	import org.flowerplatform.flexutil.flexdiagram.RendererController;
 	import org.flowerplatform.flexdiagram.renderer.IAbsoluteLayoutRenderer;
 	import org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable;
+	import org.flowerplatform.flexutil.flexdiagram.VisualChildrenController;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -112,7 +113,7 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 //							figuresToAdd++;
 						} else {
 //							AbsolutePositionEditPartUtils.setChildFigureIndex(IVisualElementContainer(getFigure()), IVisualElement(ep.getFigure()), visualIndex - figuresToAdd);
-							var uniqueKeyForRendererToRecycle:Object = childRendererController.geUniqueKeyForRendererToRecycle(context, childModel);
+							var uniqueKeyForRendererToRecycle:Object = childRendererController.getUniqueKeyForRendererToRecycle(context, childModel);
 							var actualRendererClass:Class = Class(Object(childRenderer).constructor); 
 							// we use class equality and not "is"; because the 2 renderers may be related (i.e. one extends the other one)
 							if (uniqueKeyForRendererToRecycle is Class && !(actualRendererClass == uniqueKeyForRendererToRecycle)) {
@@ -141,7 +142,7 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 						
 						if (childRenderer != null) {
 							// the model may not be visible (and it is currently) => the renderer is reusable
-							uniqueKeyForRendererToRecycle = childRendererController.geUniqueKeyForRendererToRecycle(context, childModel);
+							uniqueKeyForRendererToRecycle = childRendererController.getUniqueKeyForRendererToRecycle(context, childModel);
 							var renderersToRemove:Vector.<IVisualElement> = renderersToReuse[uniqueKeyForRendererToRecycle];
 							// lazy init the collection
 							if (renderersToRemove == null) {
@@ -193,7 +194,7 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 				childModel = modelsToAdd[i];				
 				childRendererController = ControllerUtils.getRendererController(context, childModel);
 
-				renderersToRemove = renderersToReuse[childRendererController.geUniqueKeyForRendererToRecycle(context, childModel)];
+				renderersToRemove = renderersToReuse[childRendererController.getUniqueKeyForRendererToRecycle(context, childModel)];
 //				currentCorrection += entry.correctionStartingWithMe;
 				
 				if (renderersToRemove != null && renderersToRemove.length > 0) {

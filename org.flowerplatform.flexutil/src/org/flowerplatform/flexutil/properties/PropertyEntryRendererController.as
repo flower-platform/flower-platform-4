@@ -1,13 +1,7 @@
-package org.flowerplatform.flexdiagram.samples.properties {
+package org.flowerplatform.flexutil.properties {
 	import mx.core.IVisualElement;
 	
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
-	import org.flowerplatform.flexutil.properties.GroupPropertyEntryRenderer;
-	import org.flowerplatform.flexutil.properties.IPropertyCommitControllerAware;
-	import org.flowerplatform.flexutil.properties.PropertyCommitController;
-	import org.flowerplatform.flexutil.properties.PropertyEntry;
-	import org.flowerplatform.flexutil.properties.PropertyEntryRenderer;
+	import org.flowerplatform.flexutil.flexdiagram.RendererController;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -22,7 +16,7 @@ package org.flowerplatform.flexdiagram.samples.properties {
 		}
 		
 		override public function createRenderer(context:Object, model:Object):IVisualElement {
-			var clazz:Class = Class(geUniqueKeyForRendererToRecycle(context, model));
+			var clazz:Class = Class(getUniqueKeyForRendererToRecycle(context, model));
 			var renderer:IVisualElement = IVisualElement(new clazz());
 			if (renderer is IPropertyCommitControllerAware) {
 				IPropertyCommitControllerAware(renderer).propertyCommitController = propertyCommitController;
@@ -30,7 +24,7 @@ package org.flowerplatform.flexdiagram.samples.properties {
 			return renderer;
 		}
 		
-		override public function geUniqueKeyForRendererToRecycle(context:Object, model:Object):Object {
+		override public function getUniqueKeyForRendererToRecycle(context:Object, model:Object):Object {
 			if (PropertyEntry(model).isGroup) {
 				return GroupPropertyEntryRenderer;
 			} else {

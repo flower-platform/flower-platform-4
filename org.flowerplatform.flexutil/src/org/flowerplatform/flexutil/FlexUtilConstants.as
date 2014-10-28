@@ -29,6 +29,7 @@ package org.flowerplatform.flexutil {
 		public static const EXTRA_INFO_CSV_TO_LIST_SUFFIX:String = "csvToListSuffix";
 		
 		// Properties
+		public static const EVENT_COMMIT_PROPERTY:String = "CommitProperty";
 		public static const FEATURE_PROPERTY_COMMIT_CONTROLLER:String = "PropertyCommitController";
 		public static const NOTYPE_PROPERTY_EDITORS:String = NOTYPE_PREFIX + "propertyEditors";
 		public static const PROPERTY_EDITOR_TYPE_STRING:String = "string";

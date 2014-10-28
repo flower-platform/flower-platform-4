@@ -21,7 +21,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
-	import org.flowerplatform.flexdiagram.samples.properties.SamplePropertiesHelper;
+	import org.flowerplatform.flexutil.samples.properties.SamplePropertiesHelper;
 	
 	/**
 	 * @author Cristina Constantinescu

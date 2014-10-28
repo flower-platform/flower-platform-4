@@ -24,7 +24,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
-	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
+	import org.flowerplatform.flexutil.flexdiagram.VisualChildrenController;
 	import org.flowerplatform.flexdiagram.util.RectangularGrid;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteDataRenderer;
 	

@@ -32,7 +32,7 @@
 			
 			import org.flowerplatform.flexdiagram.ControllerUtils;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
-			import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
+			import org.flowerplatform.flexutil.flexdiagram.VisualChildrenController;
 			
 			protected var visualChildrenController:VisualChildrenController;
 			private var _shouldRefreshVisualChildren:Boolean;
