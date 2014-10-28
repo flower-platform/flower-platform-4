@@ -17,23 +17,20 @@ package org.flowerplatform.flexdiagram.renderer {
 	import flash.display.GradientType;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
+	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.system.Capabilities;
 	
 	import mx.collections.IList;
 	import mx.core.DPIClassification;
 	import mx.core.FlexGlobals;
-	import mx.core.IFlexDisplayObject;
 	import mx.core.IVisualElement;
 	import mx.core.UIComponent;
 	import mx.events.CollectionEvent;
 	import mx.events.PropertyChangeEvent;
-	import mx.managers.IFocusManagerComponent;
-	import mx.managers.IFocusManagerContainer;
 	
 	import spark.components.DataGroup;
 	import spark.components.DataRenderer;
-	import spark.components.Form;
 	import spark.components.Group;
 	import spark.components.IItemRenderer;
 	import spark.components.RichText;
@@ -42,16 +39,19 @@ package org.flowerplatform.flexdiagram.renderer {
 	import spark.layouts.HorizontalLayout;
 	import spark.layouts.VerticalLayout;
 	import spark.primitives.BitmapImage;
+	import spark.primitives.Graphic;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
-	import org.flowerplatform.flexutil.flexdiagram.VisualChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.IAbstractMindMapModelRenderer;
+	import org.flowerplatform.flexdiagram.ui.CalloutToolTip;
+	import org.flowerplatform.flexutil.FlexUtilAssets;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.ValuesProvider;
+	import org.flowerplatform.flexutil.flexdiagram.VisualChildrenController;
 	import org.flowerplatform.flexutil.focusable_component.FocusableRichText;
 
 	/**
@@ -111,6 +111,10 @@ package org.flowerplatform.flexdiagram.renderer {
 		
 		protected var _maxWidthAdvanced:Number;
 		
+		protected var _noteText:String;
+		
+		protected var _noteIconContainer:Graphic;
+		
 		/**
 		 * Inspired from the Freeplane renderer, that increases the font a little bit.
 		 */
@@ -129,6 +133,8 @@ package org.flowerplatform.flexdiagram.renderer {
 		protected var _canHaveChildren:Boolean;
 		
 		protected var iconsAndLabelArea:Group;
+	
+		protected var noteToolTip:CalloutToolTip;
 		
 		protected var _shouldRefreshVisualChildren:Boolean;
 		
@@ -191,6 +197,48 @@ package org.flowerplatform.flexdiagram.renderer {
 				_label.maxWidth = NaN;
 			}
 			invalidateSize();
+		}
+		
+		public function set noteText(value:String):void {	
+			var indexOfNoteIcon:int, _noteIcon:BitmapImage;
+			
+			if (value != null) {
+				_noteText = value;
+			} else {
+				_noteText = null;
+			}
+			
+			if (_noteText != null && _noteText != "") {
+				// should have an icon ...
+				if (_noteIconContainer == null) {
+					// ... but it doesn't => create it
+					_noteIcon = new BitmapImage();
+					_noteIcon.source = FlexUtilAssets.noteIcon;
+				
+					_noteIconContainer = new Graphic();
+					_noteIconContainer.addElement(_noteIcon);
+					
+					iconsAndLabelArea.addElementAt(_noteIconContainer, 0);
+					
+					_noteIconContainer.addEventListener(MouseEvent.MOUSE_OVER, noteIconRollOverHandler);
+					// useful for tablet, where we don't have mouse
+					_noteIconContainer.addEventListener(MouseEvent.CLICK, noteIconRollOverHandler);
+					_noteIconContainer.addEventListener(MouseEvent.MOUSE_OUT, noteIconOutHandler);
+				}
+				// else: it has an icon => nothing to do
+			} else {
+				// shouldn't have an icon ...
+				if (_noteIconContainer != null) {
+					// ... and it has => remove it
+					iconsAndLabelArea.removeElement(_noteIconContainer);
+					_noteIconContainer.removeEventListener(MouseEvent.MOUSE_OVER, noteIconRollOverHandler);
+					_noteIconContainer.removeEventListener(MouseEvent.CLICK, noteIconRollOverHandler);
+					_noteIconContainer.removeEventListener(MouseEvent.MOUSE_OUT, noteIconOutHandler);
+					_noteIconContainer = null;
+				}
+				// else: it hasn't got an icon => nothing to do
+			}
+			
 		}
 
 		protected override function measure():void {
@@ -324,6 +372,7 @@ package org.flowerplatform.flexdiagram.renderer {
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "icons", FlexDiagramConstants.BASE_RENDERER_ICONS, null);
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "minWidth", FlexDiagramConstants.BASE_RENDERER_MIN_WIDTH, NaN);
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "maxWidthAdvanced", FlexDiagramConstants.BASE_RENDERER_MAX_WIDTH, NaN);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "noteText", FlexDiagramConstants.BASE_RENDERER_NOTE, "");
 		}
 		
 		protected function setFieldIfNeeded(valuesProvider:ValuesProvider, registry:TypeDescriptorRegistry, event:PropertyChangeEvent, field:String, featureForField:String, defaultValue:Object):void {
@@ -342,11 +391,19 @@ package org.flowerplatform.flexdiagram.renderer {
 			if (_icons == null) {
 				return;
 			}
+			
 			var iconDisplay:BitmapImage;
+			var offsetBecauseOfNoteIcon:int = 0;
+			
+			if (_noteIconContainer != null) {
+				offsetBecauseOfNoteIcon = getElementIndex(_noteIconContainer) + 1;
+			}
+			
 			// loop over the icons list; and compare with the actual image components; the purpose: try to reuse the components
 			// there are 3 cases: the size theoretical list == the size of the actual list; or < or > 
+			
 			for (var i:int = 0; i < _icons.length; i++) {
-				var candidate:IVisualElement = iconsAndLabelArea.getElementAt(i);
+				var candidate:IVisualElement = iconsAndLabelArea.getElementAt(i + offsetBecauseOfNoteIcon);
 				if (candidate is BitmapImage) {
 					// a BitmapImage that will be reused
 					iconDisplay = BitmapImage(candidate);
@@ -356,14 +413,26 @@ package org.flowerplatform.flexdiagram.renderer {
 					iconDisplay.contentLoader = FlexUtilGlobals.getInstance().imageContentCache;
 					iconDisplay.verticalAlign = "middle";
 					iconDisplay.depth = UIComponent(this).depth;
-					iconsAndLabelArea.addElementAt(iconDisplay, i);
+					iconsAndLabelArea.addElementAt(iconDisplay, i + offsetBecauseOfNoteIcon);
 				}
 				iconDisplay.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(_icons.getItemAt(i));
 			}
+			
 			// now delete all images that exist visually, but that are not needed; e.g. if we have 4 visual icons, but the list contains only 3 => we would remove(3)
-			while (iconsAndLabelArea.getElementAt(_icons.length) is BitmapImage) {
-				iconsAndLabelArea.removeElementAt(_icons.length);
+	
+			while (iconsAndLabelArea.getElementAt(_icons.length + offsetBecauseOfNoteIcon) is BitmapImage) {
+				iconsAndLabelArea.removeElementAt(_icons.length + offsetBecauseOfNoteIcon);
 			}
+		}
+		
+		private function noteIconRollOverHandler(event:MouseEvent):void {
+			noteToolTip = new CalloutToolTip();
+			noteToolTip.text = _noteText;
+			noteToolTip.open(_noteIconContainer, false);
+		}
+		
+		private function noteIconOutHandler(event:MouseEvent):void {
+			noteToolTip.close();
 		}
 		
 		public function get canHaveChildren():Boolean {
@@ -428,6 +497,7 @@ package org.flowerplatform.flexdiagram.renderer {
 			_label.setStyle("paddingTop", 3);
 			_label.right = 0;
 			iconsAndLabelArea.addElement(_label);
+			
 		}
 		
 		protected function drawCloud(unscaledWidth:Number, unscaledHeight:Number):void {
@@ -638,6 +708,6 @@ package org.flowerplatform.flexdiagram.renderer {
 				hovered = (interactionStateDetector.state == InteractionState.OVER);
 			}
 		}
-	
+		
 	}
 }

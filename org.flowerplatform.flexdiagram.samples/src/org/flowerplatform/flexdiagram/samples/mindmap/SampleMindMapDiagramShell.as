@@ -92,7 +92,9 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE, new GenericDescriptor("cloudType"))
 				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_COLOR, new GenericDescriptor("cloudColor"))
 				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_HAS_CHILDREN, new GenericDescriptor("hasChildren"))
-				.addSingleController("mindMapNodeRenderer.detailsText", new GenericDescriptor("details"));
+				.addSingleController("mindMapNodeRenderer.detailsText", new GenericDescriptor("details"))
+				.addSingleController(FlexDiagramConstants.BASE_RENDERER_NOTE, new GenericDescriptor("note"));
+			
 			
 			registry.getOrCreateTypeDescriptor("propertyEntry")
 				// WARNING: because these wrappers are always recreated on ".getChildren()" => no MODEL_EXTRA_INFO_CONTROLLER should be registered for this type!
