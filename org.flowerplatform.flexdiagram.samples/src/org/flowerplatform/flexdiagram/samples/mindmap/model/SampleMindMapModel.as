@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.flexdiagram.samples.mindmap.model {
 	import mx.collections.ArrayList;
+	import mx.collections.IList;
+	import mx.utils.ObjectProxy;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -47,6 +49,16 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 		
 		public var note:String;
 		public var details:String;
+		
+		public var showProperties:Boolean;
+		
+		public var editProperties:Boolean;
+		
+		public var properties:ObjectProxy = new ObjectProxy({ 
+			dynamicProperty1: "dynamicProperty1", 
+			dynamicProperty2: "dynamicProperty2",
+			hasGroupWithoutGroupDescriptor1: "value"
+		});
 		
 		public function toString():String {
 			return text;

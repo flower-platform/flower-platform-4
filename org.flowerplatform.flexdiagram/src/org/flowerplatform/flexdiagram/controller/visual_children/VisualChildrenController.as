@@ -14,6 +14,8 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.controller.visual_children {
+	import mx.core.IVisualElementContainer;
+	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexutil.controller.AbstractController;
 	
@@ -27,7 +29,7 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 			super(orderIndex);
 		}
 		
-		public function refreshVisualChildren(context:DiagramShellContext, model:Object):void {
+		public function refreshVisualChildren(context:Object, renderer:IVisualElementContainer, model:Object):void {
 			throw new Error("This method needs to be implemented.");
 		}
 		

@@ -62,8 +62,8 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 		 * @author Cristian Spiescu
 		 * @author Cristina Constantinescu
 		 */ 
-		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
-			updateConnectionEnds(context, model, null);
+		override public function associatedModelToRenderer(context:Object, model:Object, renderer:IVisualElement):void {
+			updateConnectionEnds(DiagramShellContext(context), model, null);
 			
 			var connectionRenderer:ConnectionRenderer = ConnectionRenderer(renderer);
 			connectionRenderer.sourceEndType = getSourceEndFigureType(model);

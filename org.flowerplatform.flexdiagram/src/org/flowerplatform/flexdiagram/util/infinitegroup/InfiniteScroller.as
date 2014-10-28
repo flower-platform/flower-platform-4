@@ -26,7 +26,6 @@ package org.flowerplatform.flexdiagram.util.infinitegroup {
 	
 	import spark.components.Group;
 	import spark.components.supportClasses.SkinnableComponent;
-	import spark.core.ContentRequest;
 
 	use namespace mx_internal;
 	
@@ -37,7 +36,7 @@ package org.flowerplatform.flexdiagram.util.infinitegroup {
 	 * @author Cristina Constantinescu
 	 */ 
 	public class InfiniteScroller extends SkinnableComponent implements IVisualElementContainer, IFocusManagerComponent {
-						
+
 		/////////////////
 		
 		[SkinPart(required="false", type="org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteVScrollBar")]
@@ -87,6 +86,10 @@ package org.flowerplatform.flexdiagram.util.infinitegroup {
 		
 		public function InfiniteScroller() {
 			setStyle("skinClass", InfiniteScrollerSkin);
+			// same code as in Scroller; @see comment for "hasFocusableChildren"
+			// without this, forms within diagram elements wouldn't allow navigation with tab
+			hasFocusableChildren = true;
+			focusEnabled = false;
 		}
 		
 		private function installViewport():void	{

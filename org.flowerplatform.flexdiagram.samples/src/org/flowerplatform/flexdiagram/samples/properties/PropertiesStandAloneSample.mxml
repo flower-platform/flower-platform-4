@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+@author Cristian Spiescu
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" initialize="initializeHandler()" xmlns:properties="org.flowerplatform.flexdiagram.samples.properties.*">
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.IList;
+			
+			import spark.events.IndexChangeEvent;
+			
+			import org.apache.flex.collections.VectorList;
+			import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
+			
+			[Bindable]
+			protected var dataProvider:IList;
+			
+			protected function initializeHandler():void {
+				dataProvider = new VectorList();
+				var model:SampleMindMapModel;
+				
+				model = new SampleMindMapModel();
+				model.text = "Model 1";
+				model.properties.p1 = "v1";
+				dataProvider.addItem(model);
+				
+				model = new SampleMindMapModel();
+				model.text = "Model 2";
+				dataProvider.addItem(model);
+				
+				model = new SampleMindMapModel();
+				model.text = "Model 3";
+				dataProvider.addItem(model);
+			}
+			
+			protected function listChangeHandler(event:IndexChangeEvent):void {
+				propertiesForm.data = list.selectedItem;
+				if (propertiesForm.data == null || !propertiesForm.data.properties.hasOwnProperty(property.text)) {
+					value.text = null;
+				} else {
+					value.text = propertiesForm.data.properties[property.text];
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Panel title="Sample Data" height="20%">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+		<s:List id="list" dataProvider="{dataProvider}" width="100%" height="100%" change="listChangeHandler(event)"/>	
+		<s:HGroup verticalAlign="middle">
+			<s:Label text="Property"/>
+			<s:TextInput id="property" text="hasGroupWithoutGroupDescriptor1"/>
+			<s:Label text="Value"/>
+			<s:TextInput id="value"/>
+			<s:Button label="Change" click="propertiesForm.data.properties[property.text] = value.text;"/>
+		</s:HGroup>
+		<s:Button label="Reset selection" click="list.selectedItem = null; listChangeHandler(null)"/>
+	</s:Panel>
+	<s:Panel title="Properties" height="80%">
+		<s:Scroller height="100%" width="100%">
+			<s:HGroup width="100%">
+				<properties:PropertiesForm id="propertiesForm" width="100%">
+					<properties:layout>
+						<s:FormLayout gap="-14"/>
+					</properties:layout>
+				</properties:PropertiesForm>
+			</s:HGroup>
+		</s:Scroller>
+	</s:Panel>
+</s:Group>

@@ -28,12 +28,14 @@
 			   implements="org.flowerplatform.flexdiagram.samples.IModelHolder">
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.IList;
 			import mx.events.CollectionEvent;
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flexdiagram.ControllerUtils;
 			import org.flowerplatform.flexdiagram.DiagramShellContext;
 			import org.flowerplatform.flexdiagram.FlexDiagramConstants;
+			import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer;
 			import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 			import org.flowerplatform.flexdiagram.renderer.BaseRenderer;
@@ -116,11 +118,12 @@
 	<s:Scroller width="40%" height="100%">
 		<s:VGroup width="40%" height="100%" clipAndEnableScrolling="true">
 			<s:Panel title="MindMapRootModelWrapper.children (size = {mindMapRootModelWrapper.children.length})" width="100%" height="30%">
-				<s:List width="100%" height="100%" dataProvider="{mindMapRootModelWrapper.children}"/>
+				<s:List id="list" width="100%" height="100%" dataProvider="{mindMapRootModelWrapper.children}"/>
 			</s:Panel>
 			<s:Panel id="listofChildrenPanel" width="100%" height="30%"
 					 title="List of children for selected node's parent">
 				<s:List id="childrenProviderList" width="100%" height="100%" 
+						doubleClick="selectedItem = childrenProviderList.selectedItem" doubleClickEnabled="true"
 						dataProvider="{selectedItem.parent.children}" 
 						itemRenderer="{new ClassFactoryWithConstructor(BaseRenderer, { 
 							showSelected : true,
@@ -134,6 +137,14 @@
 					<s:layout>
 						<s:FormLayout id="fromLayout" gap="-7"/>
 					</s:layout>
+					
+					<s:FormItem label="Edit properties in renderer&#13;Must have no icons!&#13;Can only show; not hide.">
+						<s:CheckBox id="showPropertiesInline" selected="@{selectedItem.editProperties}" click="diagramShell.shouldRefreshVisualChildren(diagramShell.getNewDiagramShellContext(), selectedItem)"/>
+					</s:FormItem>
+					
+					<s:FormItem label="Show properties in renderer">
+						<s:CheckBox selected="@{selectedItem.showProperties}"/>
+					</s:FormItem>
 					
 					<s:FormItem label="Text:">
 						<s:TextInput width="100%" text="@{selectedItem.text}"/>
@@ -212,7 +223,7 @@
 		</s:VGroup>
 	</s:Scroller>
 	<s:Group width="100%" height="100%" >
-		<s:Rect  x="{-diagramRenderer.viewPortRectOffsetTowardOutside}" y="{-diagramRenderer.viewPortRectOffsetTowardOutside}"
+		<s:Rect x="{-diagramRenderer.viewPortRectOffsetTowardOutside}" y="{-diagramRenderer.viewPortRectOffsetTowardOutside}"
 				 width="{scroller.width + 2 * diagramRenderer.viewPortRectOffsetTowardOutside}" height="{scroller.height + 2 * diagramRenderer.viewPortRectOffsetTowardOutside}">
 			<s:stroke>
 				<s:SolidColorStroke color="0x0000FF" weight="2" />					

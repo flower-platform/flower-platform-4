@@ -21,6 +21,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
+	import org.flowerplatform.flexdiagram.samples.properties.SamplePropertiesHelper;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -35,7 +36,8 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 		
 		override public function getChildren(context:DiagramShellContext, model:Object):IList	{
 			// no children; this controller is used only to dispatch events
-			return EMPTY_LIST;
+//			return EMPTY_LIST;
+			return new SamplePropertiesHelper().getPropertyEntries(context.diagramShell.registry, model, true);
 		}
 		
 	}

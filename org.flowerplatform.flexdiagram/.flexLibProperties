@@ -5,7 +5,6 @@
     <classEntry path="org.flowerplatform.flexdiagram.controller.model_children.ParentAwareArrayListModelChildrenController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.model_extra_info.LightweightModelExtraInfoController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenController"/>
     <classEntry path="org.flowerplatform.flexdiagram.renderer.DiagramRenderer"/>
     <classEntry path="org.flowerplatform.flexdiagram.renderer.IAbsoluteLayoutRenderer"/>
     <classEntry path="org.flowerplatform.flexdiagram.renderer.IDiagramShellAware"/>

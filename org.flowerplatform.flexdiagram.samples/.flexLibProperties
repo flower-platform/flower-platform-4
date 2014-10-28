@@ -21,6 +21,12 @@
     <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicSubModelChildrenProvider"/>
     <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicTypeProvider"/>
     <classEntry path="org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapTypeProvider"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.properties.PropertiesStandAloneSample"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.properties.PropertiesForm"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.properties.SamplePropertiesHelper"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.properties.PropertyEntryRendererController"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.properties.SamplePropertyCommitController"/>
+    <classEntry path="org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleSequentialLayoutVisualChildrenController"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -23,13 +23,17 @@ package org.flowerplatform.flexdiagram.renderer {
 	import mx.collections.IList;
 	import mx.core.DPIClassification;
 	import mx.core.FlexGlobals;
+	import mx.core.IFlexDisplayObject;
 	import mx.core.IVisualElement;
 	import mx.core.UIComponent;
 	import mx.events.CollectionEvent;
 	import mx.events.PropertyChangeEvent;
+	import mx.managers.IFocusManagerComponent;
+	import mx.managers.IFocusManagerContainer;
 	
 	import spark.components.DataGroup;
 	import spark.components.DataRenderer;
+	import spark.components.Form;
 	import spark.components.Group;
 	import spark.components.IItemRenderer;
 	import spark.components.RichText;
@@ -39,11 +43,10 @@ package org.flowerplatform.flexdiagram.renderer {
 	import spark.layouts.VerticalLayout;
 	import spark.primitives.BitmapImage;
 	
-	import flashx.textLayout.conversion.TextConverter;
-	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
+	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.IAbstractMindMapModelRenderer;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
@@ -58,12 +61,17 @@ package org.flowerplatform.flexdiagram.renderer {
 	 * 
 	 * <p>
 	 * To see visual properties that are supported take a look at the constants around: 
-	 * <code>FlexDiagramConstants.BASE_RENDERER_FONT_FAMILY</code>.
+	 * <code>FlexDiagramConstants.BASE_RENDERER_FONT_FAMILY</code>. Changing <code>canHaveChildren</code>
+	 * does a layout modification, by adding an additional group, and the component behaves like a 
 	 * 
 	 * <p>
 	 * This renderer can be used in a diagram, or stand alone (e.g. as a renderer in a list). For the
 	 * second case, <code>typeNodeRegistry</code> should be provided at construction (which can be
 	 * provided by the <code>IFactory</code> instance that creates the renderer).
+	 * 
+	 * <p>
+	 * If the renderer is used within a diagram, it delegates to a <code>VisualChildrenController</code>
+	 * if such a controller is registered.
 	 * 
 	 * <p>
 	 * This class can be subclassed if needed. Although, for the most common use cases it can be used
@@ -72,7 +80,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	 * 
 	 * @author Cristian Spiescu
 	 */
-	public class BaseRenderer extends DataRenderer implements IDiagramShellContextAware, IItemRenderer, IAbstractMindMapModelRenderer {
+	public class BaseRenderer extends DataRenderer implements IDiagramShellContextAware, IItemRenderer, IAbstractMindMapModelRenderer, IVisualChildrenRefreshable {
 		
 		/**************************************************************************
 		 * Constants.
@@ -118,9 +126,13 @@ package org.flowerplatform.flexdiagram.renderer {
 		 */
 		public var typeDescriptorRegistry:TypeDescriptorRegistry;
 		
-		public var canHaveChildren:Boolean;
+		protected var _canHaveChildren:Boolean;
 		
 		protected var iconsAndLabelArea:Group;
+		
+		protected var _shouldRefreshVisualChildren:Boolean;
+		
+		protected var visualChildrenController:VisualChildrenController;
 		
 		/**************************************************************************
 		 * Graphic properties supported by this renderer.
@@ -241,13 +253,27 @@ package org.flowerplatform.flexdiagram.renderer {
 			}
 		}
 		
+		public function get shouldRefreshVisualChildren():Boolean {
+			return _shouldRefreshVisualChildren;
+		}
+		
+		public function set shouldRefreshVisualChildren(value:Boolean):void {
+			_shouldRefreshVisualChildren = value;
+		}
+		
 		override public function set data(value:Object):void {
 			if (data != null) {
-				endModelListen();	
+				endModelListen();
+				visualChildrenController = null;
 			}
 			super.data = value;
 			if (data != null) {
 				beginModelListen();
+				if (diagramShellContext != null) {
+					visualChildrenController = VisualChildrenController(diagramShellContext.diagramShell.registry.getExpectedTypeDescriptor(					
+						diagramShellContext.diagramShell.registry.typeProvider.getType(value)).getSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, value));
+					// if not null => this element has children
+				}
 			}
 		}
 		
@@ -340,14 +366,41 @@ package org.flowerplatform.flexdiagram.renderer {
 			}
 		}
 		
-		override protected function createChildren():void {
-			super.createChildren();
+		public function get canHaveChildren():Boolean {
+			return _canHaveChildren;
+		}
+		
+		public function set canHaveChildren(value:Boolean):void {
+			if (_canHaveChildren == value) {
+				return;
+			}
+			_canHaveChildren = value;
+			if (_label == null) {
+				// i.e. createChildren() not invoked yet
+				return;
+			}
 			
+			var elementsToMove:Array = new Array();
+			for (var i:int = 0; i < iconsAndLabelArea.numElements; i++) {
+				elementsToMove.push(iconsAndLabelArea.getElementAt(i));
+			}
+			createIconsAndLabelArea();
+			for each (var element:IVisualElement in elementsToMove) {
+				iconsAndLabelArea.addElement(element);
+			}
+		}
+		
+		protected function createIconsAndLabelArea():void {
 			if (canHaveChildren) {
 				this.layout = new VerticalLayout();
+				VerticalLayout(this.layout).gap = 1;
 				iconsAndLabelArea = new Group();
 				addElement(iconsAndLabelArea);
 			} else {
+				if (iconsAndLabelArea != null && iconsAndLabelArea != this) {
+					// i.e. had children
+					removeAllElements();
+				}
 				iconsAndLabelArea = this;
 			}
 			
@@ -359,6 +412,12 @@ package org.flowerplatform.flexdiagram.renderer {
 			hLayout.paddingRight = PADDING;
 			hLayout.verticalAlign = "middle";
 			iconsAndLabelArea.layout = hLayout;				
+		}
+		
+		override protected function createChildren():void {
+			super.createChildren();
+			
+			createIconsAndLabelArea();
 			
 			_label = new FocusableRichText();
 			// no need for setting width/height percents. This way, the label "pushes" the container
@@ -391,6 +450,11 @@ package org.flowerplatform.flexdiagram.renderer {
 			graphics.endFill();
 			
 			drawBackground(unscaledWidth, unscaledHeight);
+			
+			if (visualChildrenController != null) {
+				// i.e. has children
+				visualChildrenController.refreshVisualChildren(diagramShellContext, this, data);
+			}
 		}
 		
 		/**************************************************************************

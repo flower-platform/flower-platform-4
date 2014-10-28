@@ -41,7 +41,9 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 		}
 		
 		// TODO the commented code was code that handled the order (i.e. depth), in the previous FD implementation/Flex 3
-		override public function refreshVisualChildren(context:DiagramShellContext, parentModel:Object):void {			
+		override public function refreshVisualChildren(untypedContext:Object, parentRenderer:IVisualElementContainer, parentModel:Object):void {			
+			var context:DiagramShellContext = DiagramShellContext(untypedContext);
+			
 			// log related
 			var logTsStart:Number = new Date().time;
 			var logNewModels:int = 0;
@@ -52,7 +54,6 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 			
 			// I have preffixed the variables with "parent" and "child", to avoid making mistakes and
 			// using one instead of the other. It helped!
-			var parentRenderer:IVisualElementContainer = IVisualElementContainer(ControllerUtils.getModelExtraInfoController(context, parentModel).getRenderer(context, context.diagramShell.modelToExtraInfoMap[parentModel]));
 
 			var scrollRect:Rectangle = IAbsoluteLayoutRenderer(parentRenderer).getViewportRect();
 			var noNeedToRefreshRect:Rectangle = IAbsoluteLayoutRenderer(parentRenderer).noNeedToRefreshRect;

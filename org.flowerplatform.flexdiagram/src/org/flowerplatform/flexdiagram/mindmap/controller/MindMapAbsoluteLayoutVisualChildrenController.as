@@ -19,6 +19,8 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 	import flash.events.IEventDispatcher;
 	import flash.geom.Rectangle;
 	
+	import mx.core.IVisualElementContainer;
+	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController;
@@ -35,14 +37,13 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 			super(orderIndex);
 		}
 		
-		override public function refreshVisualChildren(context:DiagramShellContext, parentModel:Object):void {
-			var parentRenderer:MindMapDiagramRenderer = MindMapDiagramRenderer(ControllerUtils.getModelExtraInfoController(context, parentModel).getRenderer(context, context.diagramShell.modelToExtraInfoMap[parentModel]));
-			
+		override public function refreshVisualChildren(untypedContext:Object, parentRenderer:IVisualElementContainer, parentModel:Object):void {
+			var context:DiagramShellContext = DiagramShellContext(untypedContext);
 			var scrollRect:Rectangle = IAbsoluteLayoutRenderer(parentRenderer).getViewportRect();
 			var noNeedToRefreshRect:Rectangle = IAbsoluteLayoutRenderer(parentRenderer).noNeedToRefreshRect;
 			
-			if (parentRenderer.shouldRefreshModelPositions) {				
-				parentRenderer.shouldRefreshModelPositions = false;
+			if (MindMapDiagramRenderer(parentRenderer).shouldRefreshModelPositions) {				
+				MindMapDiagramRenderer(parentRenderer).shouldRefreshModelPositions = false;
 				
 				var logTsStart:Number = new Date().time;
 				refreshModelPositions(context, MindMapDiagramShell(context.diagramShell).getRoot(context));
@@ -50,7 +51,7 @@ package org.flowerplatform.flexdiagram.mindmap.controller {
 //				trace("MMAbsLayout.refrMP(): " + (new Date().time - logTsStart) + "ms");				
 			}
 			
-			super.refreshVisualChildren(context, parentModel);
+			super.refreshVisualChildren(context, parentRenderer, parentModel);
 		}		
 		
 		public function refreshModelPositions(context:DiagramShellContext, model:Object):void {		

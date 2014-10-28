@@ -258,7 +258,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		override public function unassociateModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, modelIsDisposed:Boolean):void {
 			if (modelIsDisposed && !(model is MultiConnectorModel)) {
 				var dynamicObject:Object = getDynamicObject(context, model);
-				if (dynamicObject.hasOwnProperty("multiConnectorModel")) {
+				if (dynamicObject != null && dynamicObject.hasOwnProperty("multiConnectorModel")) {
 					var multiConnectorModel:MultiConnectorModel = dynamicObject["multiConnectorModel"];
 					unassociateModelFromRenderer(context, multiConnectorModel, getRendererForModel(context, multiConnectorModel), true);
 				}

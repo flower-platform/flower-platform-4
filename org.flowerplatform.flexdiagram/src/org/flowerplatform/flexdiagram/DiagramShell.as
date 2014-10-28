@@ -315,9 +315,11 @@ package org.flowerplatform.flexdiagram {
 		
 		protected function moveResizeHandler(event:Event, model:Object = null):void {
 			if (model == null) {
-				model = IEventDispatcher(event.target.data);
+				model = event.target.data;
 			}
-			model.dispatchEvent(new UpdateConnectionEndsEvent());
+			if (model is IEventDispatcher) {
+				model.dispatchEvent(new UpdateConnectionEndsEvent());
+			}
 			
 			var context:DiagramShellContext = getNewDiagramShellContext();
 			var controller:ModelChildrenController = ControllerUtils.getModelChildrenController(context, model);
@@ -442,7 +444,12 @@ package org.flowerplatform.flexdiagram {
 		}
 		
 		public function getDynamicObject(context:DiagramShellContext, model:Object):Object {
-			return DynamicModelExtraInfoController(ControllerUtils.getModelExtraInfoController(context, model)).getDynamicObject(context, model);
+			var controller:ModelExtraInfoController = ControllerUtils.getModelExtraInfoController(context, model);
+			if (controller is DynamicModelExtraInfoController) {
+				return DynamicModelExtraInfoController(controller).getDynamicObject(context, model);
+			} else {
+				return null;
+			}
 		}
 		
 		public function makeModelRendererVisible(model:Object, context:DiagramShellContext, padding:int = 10):void {

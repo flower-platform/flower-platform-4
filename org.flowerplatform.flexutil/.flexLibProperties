@@ -33,6 +33,16 @@
     <classEntry path="org.flowerplatform.flexutil.iframe.FlowerIFrameViewProvider"/>
     <classEntry path="org.flowerplatform.flexutil.controller.AbstractValueConverter"/>
     <classEntry path="org.flowerplatform.flexutil.value_converter.StringHexToUintValueConverter"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.PropertiesHelper"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.PropertyEntry"/>
+    <classEntry path="org.flowerplatform.flexutil.LinkedListWrapper"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.PropertyEntryRenderer"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.editor.StringPropertyEditor"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.PropertyCommitController"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.DelegatingPropertyCommitController"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.IPropertyCommitControllerAware"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.editor.BooleanPropertyEditor"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.PropertiesForm"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
