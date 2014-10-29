@@ -21,7 +21,6 @@
     <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicSubModelChildrenProvider"/>
     <classEntry path="org.flowerplatform.flexdiagram.samples.controller.BasicTypeProvider"/>
     <classEntry path="org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleMindMapTypeProvider"/>
-    <classEntry path="org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleSequentialLayoutVisualChildrenController"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

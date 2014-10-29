@@ -45,7 +45,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
 	import org.flowerplatform.flexdiagram.mindmap.IAbstractMindMapModelRenderer;
-	import org.flowerplatform.flexdiagram.ui.CalloutToolTip;
+	import org.flowerplatform.flexutil.components.CalloutToolTip;
 	import org.flowerplatform.flexutil.FlexUtilAssets;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
@@ -113,6 +113,7 @@ package org.flowerplatform.flexdiagram.renderer {
 		
 		protected var _noteText:String;
 		
+		// Graphic is needed because BitmapImage doesn't support tooltip
 		protected var _noteIconContainer:Graphic;
 		
 		/**
@@ -202,11 +203,7 @@ package org.flowerplatform.flexdiagram.renderer {
 		public function set noteText(value:String):void {	
 			var indexOfNoteIcon:int, _noteIcon:BitmapImage;
 			
-			if (value != null) {
-				_noteText = value;
-			} else {
-				_noteText = null;
-			}
+			_noteText = value;
 			
 			if (_noteText != null && _noteText != "") {
 				// should have an icon ...
@@ -372,7 +369,7 @@ package org.flowerplatform.flexdiagram.renderer {
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "icons", FlexDiagramConstants.BASE_RENDERER_ICONS, null);
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "minWidth", FlexDiagramConstants.BASE_RENDERER_MIN_WIDTH, NaN);
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "maxWidthAdvanced", FlexDiagramConstants.BASE_RENDERER_MAX_WIDTH, NaN);
-			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "noteText", FlexDiagramConstants.BASE_RENDERER_NOTE, "");
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "noteText", FlexDiagramConstants.BASE_RENDERER_NOTE, null);
 		}
 		
 		protected function setFieldIfNeeded(valuesProvider:ValuesProvider, registry:TypeDescriptorRegistry, event:PropertyChangeEvent, field:String, featureForField:String, defaultValue:Object):void {
@@ -427,6 +424,7 @@ package org.flowerplatform.flexdiagram.renderer {
 		
 		private function noteIconRollOverHandler(event:MouseEvent):void {
 			noteToolTip = new CalloutToolTip();
+			noteToolTip.bitmapImageSource = FlexUtilAssets.noteIcon;
 			noteToolTip.text = _noteText;
 			noteToolTip.open(_noteIconContainer, false);
 		}

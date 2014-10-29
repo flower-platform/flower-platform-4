@@ -14,7 +14,7 @@
  * license-end
  */
 package org.flowerplatform.util.controller;
-//CHECKSTYLE:OFF
+
 import java.util.HashMap;
 import java.util.Map;
 

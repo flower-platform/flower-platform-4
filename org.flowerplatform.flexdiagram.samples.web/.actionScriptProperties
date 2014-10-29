@@ -18,9 +18,9 @@
     <sourceAttachmentPath/>
   </compiler>
   <applications>
-    <application path="NoteSampleWeb.mxml"/>
-    <application path="MainFlexDiagramSamples.mxml"/>
     <application path="FlexDiagramSamplesWeb.mxml"/>
+    <application path="MainFlexDiagramSamples.mxml"/>
+    <application path="NoteSampleWeb.mxml"/>
   </applications>
   <modules/>
   <workers/>
