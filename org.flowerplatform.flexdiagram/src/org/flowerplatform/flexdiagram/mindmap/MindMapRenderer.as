@@ -14,12 +14,8 @@
  * license-end
  */
 package org.flowerplatform.flexdiagram.mindmap {
-	import flash.events.Event;
 	import flash.events.IEventDispatcher;
-	import flash.sampler.NewObjectSample;
-	import flash.utils.flash_proxy;
 	
-	import mx.collections.IList;
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
@@ -54,7 +50,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		public static const CLOUD_COLOR_DEFAULT:uint = 0xFFFBBF;
 				
-		public static const CONNECTOR_STYLE_DEFAULT:String = FlexDiagramConstants.MIND_MAP_CONNECTOR_LINEAR;
+		public static const CONNECTOR_STYLE_DEFAULT:String = FlexDiagramConstants.MIND_MAP_CONNECTOR_SMOOTHLY_CURVED;
 		
 		public static const CONNECTOR_COLOR_DEFAULT:uint = 0x808080;
 		
@@ -72,7 +68,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 		
 		protected var _connectorWidth:Number;
 		
-		protected var _connectorColor:uint;
+		protected var _connectorColor:String;
 		
 		/**************************************************************************
 		 * Graphic properties supported by this renderer.
@@ -99,7 +95,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			return _connectorWidth;
 		}
 		
-		public function get connectorColor():uint {
+		public function get connectorColor():String {
 			return _connectorColor;
 		}
 		
@@ -109,13 +105,12 @@ package org.flowerplatform.flexdiagram.mindmap {
 		}
 		
 		public function connectorEventHandler():void {
-			var actualObject:IEventDispatcher = getRequiredValuesProvider().getActualObject(IEventDispatcher(data));
-			var mindMapModelController:MindMapModelController = mindMapDiagramShell.getModelController(diagramShellContext, actualObject);
+			var mindMapModelController:MindMapModelController = mindMapDiagramShell.getModelController(diagramShellContext, data);
 			
-			var parent:Object = mindMapModelController.getParent(diagramShellContext, actualObject);
+			var parent:Object = mindMapModelController.getParent(diagramShellContext, data);
 
 			if (parent != null) {
-				IEventDispatcher(parent).dispatchEvent(PropertyChangeEvent.createUpdateEvent(actualObject,FlexDiagramConstants.MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIES,null,null));
+				IEventDispatcher(parent).dispatchEvent(PropertyChangeEvent.createUpdateEvent(data, FlexDiagramConstants.MIND_MAP_RENDERER_CHILD_CONNECTOR_PROPERTIES,null,null));
 			}
 		}
 		
@@ -129,8 +124,13 @@ package org.flowerplatform.flexdiagram.mindmap {
 			connectorEventHandler();			
 		}
 		
-		public function set connectorColor(value:uint):void {
-			_connectorColor = value;
+		public function set connectorColor(value:String):void {
+			// check if value is in hexa format
+			if (value.charAt(0) == '#') {
+				_connectorColor = "0x" + value.substr(1);
+			} else {
+				_connectorColor = value;
+			}
 			connectorEventHandler();
 		}
 		

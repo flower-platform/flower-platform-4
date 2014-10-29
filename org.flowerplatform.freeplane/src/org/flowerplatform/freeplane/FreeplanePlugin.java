@@ -32,6 +32,9 @@ import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_CLOUD_COLOR;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_CLOUD_TYPE;
+import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_CONNECTOR_COLOR;
+import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_CONNECTOR_STYLE;
+import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_CONNECTOR_WIDTH;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_SIDE;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX;
 import static org.flowerplatform.core.CoreConstants.PARENT_PROVIDER;
@@ -199,10 +202,10 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 				.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_STRING_HEX_TO_UINT))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_MIN_WIDTH, new GenericDescriptor("MIN_WIDTH"))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_MAX_WIDTH, new GenericDescriptor("MAX_WIDTH"))
-			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_SIDE, new GenericDescriptor("POSITION"))
-			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_CONNECTOR_STYLE, new GenericDescriptor("edge.STYLE"))
-			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_CONNECTOR_WIDTH, new GenericDescriptor("edge.WIDTH"))
-			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MindMapConstants.MIND_MAP_RENDERER_CONNECTOR_COLOR, new GenericDescriptor("edge.COLOR"));
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MIND_MAP_RENDERER_SIDE, new GenericDescriptor("POSITION"))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MIND_MAP_RENDERER_CONNECTOR_STYLE, new GenericDescriptor("edge.STYLE"))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MIND_MAP_RENDERER_CONNECTOR_WIDTH, new GenericDescriptor("edge.WIDTH"))
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MIND_MAP_RENDERER_CONNECTOR_COLOR, new GenericDescriptor("edge.COLOR"));
 		
 	}
 

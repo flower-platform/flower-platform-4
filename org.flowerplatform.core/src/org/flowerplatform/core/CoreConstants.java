@@ -47,7 +47,11 @@ public final class CoreConstants {
 	public static final String MIND_MAP_RENDERER_CLOUD_COLOR = "mindMapRenderer.cloudColor";
 	public static final String MIND_MAP_RENDERER_HAS_CHILDREN = "mindMapRenderer.hasChildren";
 	public static final String MIND_MAP_RENDERER_SIDE = "mindMapRenderer.side";
-
+	
+	public static final String MIND_MAP_RENDERER_CONNECTOR_STYLE = "mindMapRenderer.connectorStyle";
+	public static final String MIND_MAP_RENDERER_CONNECTOR_WIDTH = "mindMapRenderer.connectorWidth";
+	public static final String MIND_MAP_RENDERER_CONNECTOR_COLOR = "mindMapRenderer.connectorColor";
+	
 	// from MindMapConstants
 	public static final String MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX = "mindMap.";
 

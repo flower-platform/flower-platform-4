@@ -41,11 +41,10 @@ package org.flowerplatform.flexdiagram.renderer {
 	import spark.primitives.BitmapImage;
 	import spark.primitives.Graphic;
 	
-	import flashx.textLayout.conversion.TextConverter;
-	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
+	import org.flowerplatform.flexdiagram.mindmap.IAbstractMindMapModelRenderer;
 	import org.flowerplatform.flexdiagram.ui.CalloutToolTip;
 	import org.flowerplatform.flexutil.FlexUtilAssets;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;

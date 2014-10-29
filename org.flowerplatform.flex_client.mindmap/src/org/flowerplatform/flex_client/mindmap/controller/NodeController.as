@@ -36,7 +36,11 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		override public function getChildren(context:DiagramShellContext, model:Object):IList {			
 			return Node(model).children;
 		}
-					
+		
+		override public function getParent(context:DiagramShellContext, model:Object):Object {
+			return Node(model).parent;
+		}
+		
 		override public function getExpanded(context:DiagramShellContext, model:Object):Boolean {
 			return Node(model).children != null && Node(model).children.length > 0;
 		}

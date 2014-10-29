@@ -131,41 +131,44 @@ package org.flowerplatform.flexdiagram.mindmap {
 				
 				y2 = mindMapDiagramShell.getPropertyValue(diagramShellContext, child, "y") + mindMapDiagramShell.getPropertyValue(diagramShellContext, child, "height") / 2  - y;
 				
-//				if (child.connectorColor != 0 || child.connectorStyle != null || child.connectorWidth != null) {
-//					// check if color or width is selected
-//					if (child.connectorColor != 0 && (child.connectorWidth != null || child.connectorWidth != "")) {
-//						graphics.lineStyle(Number(child.connectorWidth), child.connectorColor);
-//					} else if (child.connectorColor != 0 ) {
-//						graphics.lineStyle(lineWidth, child.connectorColor);
-//					} else if (child.connectorWidth != null || child.connectorWidth != "") {
-//						graphics.lineStyle(Number(child.connectorWidth), lineColor);
-//					}
-//					
-//					// check if style is selected
-//					if (child.connectorStyle == null || child.connectorStyle == "") {
-//						drawStraightLine(x1 ,y1, x2, y2);
-//					} else {
-//						changeConnectorStyle(child, x1, y1);
-//					}
-//					
-//				} else {
-//					graphics.lineStyle(lineWidth, lineColor);
-//					drawStraightLine(x1, y1, x2, y2);
-//				}
+				var childRenderer:MindMapRenderer = MindMapRenderer (mindMapDiagramShell.getRendererForModel(diagramShellContext, child));
+				
+				if (childRenderer == null) {
+					continue;
+				}
+				var childConnectorColor:String = childRenderer.connectorColor;
+				var childConnectorWidth:Number = childRenderer.connectorWidth;
+				var childConnectorStyle:String = childRenderer.connectorStyle;
+				
+				if (childConnectorColor != null || childConnectorColor != "") {
+					lineColor = uint(childConnectorColor);
+				}
+				
+				if (!isNaN(childConnectorWidth)) {
+					lineWidth = childConnectorWidth;
+				}
+				
+				graphics.lineStyle(lineWidth, lineColor);
+					
+				// check if style is selected
+				if (childConnectorStyle == null || childConnectorStyle == "") {
+					drawStraightLine(x1 ,y1, x2, y2);
+				} else {
+					changeConnectorStyle(childRenderer, x1, y1);
+				}	
 			}
 		}
 		
-		protected function changeConnectorStyle(child:Object, xParent:Number, yParent:Number):void {
+		protected function changeConnectorStyle(childRenderer:MindMapRenderer, xParent:Number, yParent:Number):void {
 			
 			var mindMapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShellContext.diagramShell);
-			var connectorStyle:String = child.connectorStyle;
-			var connectorColor:uint = child.connectorColor;
-			var connectorWidth:String = child.connectorWidth;
-			var sideChildIsRight:Boolean = child.side == MindMapDiagramShell.POSITION_RIGHT;
-			var xChild:int = mindMapDiagramShell.getPropertyValue(diagramShellContext, child, "x");
-			var yChild:int = mindMapDiagramShell.getPropertyValue(diagramShellContext, child, "y");
-			var widthChild:int = mindMapDiagramShell.getPropertyValue(diagramShellContext, child, "width");
-			var heightChild:int = mindMapDiagramShell.getPropertyValue(diagramShellContext, child , "height");
+			var mindMapModelController:MindMapModelController = mindMapDiagramShell.getModelController(diagramShellContext, childRenderer.data);
+			var connectorStyle:String = childRenderer.connectorStyle;
+			var sideChildIsRight:Boolean = mindMapModelController.getSide(diagramShellContext, childRenderer.data) == MindMapDiagramShell.POSITION_RIGHT;
+			var xChild:int = mindMapDiagramShell.getPropertyValue(diagramShellContext, childRenderer.data, "x");
+			var yChild:int = mindMapDiagramShell.getPropertyValue(diagramShellContext, childRenderer.data, "y");
+			var widthChild:int = mindMapDiagramShell.getPropertyValue(diagramShellContext, childRenderer.data, "width");
+			var heightChild:int = mindMapDiagramShell.getPropertyValue(diagramShellContext, childRenderer.data , "height");
 		
 			if (sideChildIsRight) {
 				xChild -= x;
