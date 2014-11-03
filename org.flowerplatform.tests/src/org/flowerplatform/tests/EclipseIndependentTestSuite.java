@@ -35,7 +35,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	CommandStackTest.class,
 	CoreTestSuite.class,
 //	JsClientJavaTestSuite.class,
-	XmlParserTest.class
+	XmlParserTest.class,
+	RegexTestSuite.class
 })
 public class EclipseIndependentTestSuite {
 

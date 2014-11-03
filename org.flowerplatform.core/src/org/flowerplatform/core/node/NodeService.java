@@ -359,7 +359,15 @@ public class NodeService {
 	 *@author see class
 	 **/
 	public void removeChild(Node node, Node child, ServiceContext<NodeService> context) {	
-
+		List<Node> grandChildren = CorePlugin.getInstance().getNodeService().getChildren(child, context);
+		if (context.get("parentNode") == null) {
+			context.add("parentNode", node);
+		}
+		for (int i = grandChildren.size() - 1; i >= 0; i--) {
+			Node grandChild = grandChildren.get(i);
+			removeChild(child, grandChild, context);
+		}
+		
 		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;

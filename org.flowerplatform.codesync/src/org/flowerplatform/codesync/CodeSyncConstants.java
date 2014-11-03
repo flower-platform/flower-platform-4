@@ -43,6 +43,8 @@ public final class CodeSyncConstants {
 	public static final String CODESYNC_ROOT = "codeSyncRoot";
 	public static final String MDA_ROOT = "mdaRoot";
 	
+	public static final String REGEX_CONFIGS_NODE_TYPE = "regexConfigs";
+
 	public static final String DIAGRAM = "diagram";
 	public static final String DIAGRAM_EXTENSION = getFileExtension(DIAGRAM);
 	
