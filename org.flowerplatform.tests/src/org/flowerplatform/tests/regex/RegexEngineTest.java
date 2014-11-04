@@ -18,11 +18,12 @@
  */
 package org.flowerplatform.tests.regex;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import junit.framework.Assert;
 
 import org.flowerplatform.util.regex.IfFindThisAnnounceMatchCandidate;
 import org.flowerplatform.util.regex.RegexConfiguration;
@@ -55,8 +56,8 @@ public class RegexEngineTest extends RegexTestBase {
 				public void executeActions(RegexProcessingSession session) {
 					super.executeActions(session);
 					results.add(rule1Descr);
-					Assert.assertEquals(1, session.getCurrentSubMatchesForCurrentRegex().length);
-					Assert.assertEquals("23", session.getCurrentSubMatchesForCurrentRegex()[0]);
+					assertEquals(1, session.getCurrentSubMatchesForCurrentRegex().length);
+					assertEquals("23", session.getCurrentSubMatchesForCurrentRegex()[0]);
 				}
 			})
 			.add(new IfFindThisAnnounceMatchCandidate(rule2Descr, "string", "categ: " + rule2Descr) {
@@ -65,7 +66,7 @@ public class RegexEngineTest extends RegexTestBase {
 				public void executeActions(RegexProcessingSession session) {
 					super.executeActions(session);
 					results.add(rule2Descr);					
-					Assert.assertNull(session.getCurrentSubMatchesForCurrentRegex());
+					assertNull(session.getCurrentSubMatchesForCurrentRegex());
 				}
 			})
 			.add(new IfFindThisAnnounceMatchCandidate(rule3Descr, "(\\w*):(\\w*)", "categ: " + rule3Descr) {
@@ -74,9 +75,9 @@ public class RegexEngineTest extends RegexTestBase {
 				public void executeActions(RegexProcessingSession session) {
 					super.executeActions(session);
 					results.add(rule3Descr);					
-					Assert.assertEquals(2, session.getCurrentSubMatchesForCurrentRegex().length);
-					Assert.assertEquals("atr", session.getCurrentSubMatchesForCurrentRegex()[0]);
-					Assert.assertEquals("tip", session.getCurrentSubMatchesForCurrentRegex()[1]);
+					assertEquals(2, session.getCurrentSubMatchesForCurrentRegex().length);
+					assertEquals("atr", session.getCurrentSubMatchesForCurrentRegex()[0]);
+					assertEquals("tip", session.getCurrentSubMatchesForCurrentRegex()[1]);
 				}
 			})
 			.compile(Pattern.DOTALL);	
@@ -88,9 +89,9 @@ public class RegexEngineTest extends RegexTestBase {
 			throw new RuntimeException(e);
 		}
 		
-		Assert.assertEquals("We have exactly 3 matches", 3, results.size());
-		Assert.assertEquals("2nd match = 1st rule", rule1Descr, results.get(1));
-		Assert.assertEquals("1st match = 2nd rule", rule2Descr, results.get(0));
-		Assert.assertEquals("3rd match = 3rd rule", rule3Descr, results.get(2));
+		assertEquals("We have exactly 3 matches", 3, results.size());
+		assertEquals("2nd match = 1st rule", rule1Descr, results.get(1));
+		assertEquals("1st match = 2nd rule", rule2Descr, results.get(0));
+		assertEquals("3rd match = 3rd rule", rule3Descr, results.get(2));
 	}
 }

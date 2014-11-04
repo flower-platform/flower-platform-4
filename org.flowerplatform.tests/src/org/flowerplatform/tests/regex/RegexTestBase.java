@@ -18,18 +18,18 @@
  */
 package org.flowerplatform.tests.regex;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import junit.framework.Assert;
-
+import org.flowerplatform.tests.EclipseIndependentTestBase;
 import org.flowerplatform.tests.TestUtil;
 import org.flowerplatform.util.regex.RegexConfiguration;
 import org.flowerplatform.util.regex.RegexProcessingSession;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Cristi
  *
  */
-public class RegexTestBase {
+public class RegexTestBase extends EclipseIndependentTestBase {
 
 	protected static final String FILES_ROOT_DIR = TestUtil.getResourcesDir(RegexTestBase.class) + TestUtil.NORMAL + "/";
 	
@@ -55,10 +55,10 @@ public class RegexTestBase {
 	protected void assertAllExpectedElementsFound(String humanReadable, List<String> list, String elementPreffix, int startIndex, int endIndex) {
 		int currentAttrSuffix = startIndex;
 		for (String currentFoundAttr : list) {
-			Assert.assertEquals(humanReadable + ": expected item vs found item", elementPreffix + currentAttrSuffix++, currentFoundAttr);
+			assertEquals(humanReadable + ": expected item vs found item", elementPreffix + currentAttrSuffix++, currentFoundAttr);
 		}
 		
-		Assert.assertEquals(humanReadable + ": count", endIndex - startIndex + 1, currentAttrSuffix - 1);
+		assertEquals(humanReadable + ": count", endIndex - startIndex + 1, currentAttrSuffix - 1);
 
 	}
 	

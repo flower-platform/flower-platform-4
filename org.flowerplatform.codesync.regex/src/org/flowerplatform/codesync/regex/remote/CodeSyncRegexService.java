@@ -123,8 +123,7 @@ public class CodeSyncRegexService {
 		// get regexConfig file
 		Object file = fileController.getFile(FileControllerUtils.getFilePathWithRepo(resourceNode));
 
-		// get parent (matches file will be created under match-files, under
-		// parent)
+		// get parent (matches file will be created under match-files, under parent)
 		Object parentFile = fileController.getParentFile(file);
 		String technologyFilePath = fileController.getPath(parentFile);
 
@@ -287,8 +286,7 @@ public class CodeSyncRegexService {
 		// get regexConfig file
 		Object file = fileController.getFile(FileControllerUtils.getFilePathWithRepo(resourceNode));
 
-		// get parent (matches file will be created under match-files, under
-		// parent)
+		// get parent (matches file will be created under match-files, under parent)
 		Object parentFile = fileController.getParentFile(file);
 
 		// create regEx configuration

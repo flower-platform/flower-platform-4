@@ -1,5 +1,8 @@
 package org.flowerplatform.util.regex;
 
+/**
+ * @author Cristian Spiescu
+ */
 public class IfFindThisModifyNesting extends RegexWithActions {
 
 	protected int increment;

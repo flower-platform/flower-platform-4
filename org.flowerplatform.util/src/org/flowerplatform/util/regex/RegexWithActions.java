@@ -26,24 +26,23 @@ import java.util.List;
  */
 public class RegexWithActions extends AbstractRegexWithActions {
 
-	protected List<RegexAction> actions = new ArrayList<RegexAction>();
+	protected List<RegexAction> regexActions = new ArrayList<RegexAction>();
 
 	public RegexWithActions() {
 	}
-	
+
 	public RegexWithActions(String name, String regex) {
 		super();
 		setName(name);
 		setRegex(regex);
-	}	
+	}
 
-
-	public void setRegexActions(List<RegexAction> actions) {
-		this.actions = actions;
+	public void setRegexActions(List<RegexAction> regexActions) {
+		this.regexActions = regexActions;
 	}
 
 	public List<RegexAction> getRegexActions() {
-		return actions;
+		return regexActions;
 	}
 
 	@Override
@@ -51,7 +50,7 @@ public class RegexWithActions extends AbstractRegexWithActions {
 		List<RegexAction> listOfRegexActionsAvailable = getRegexActions();
 		session.context.put("DO_NOT_EXECUTE_OTHER_ACTIONS", false);
 		for (RegexAction listItem : listOfRegexActionsAvailable) {
-			if ((boolean)session.context.get("DO_NOT_EXECUTE_OTHER_ACTIONS")) {
+			if ((boolean) session.context.get("DO_NOT_EXECUTE_OTHER_ACTIONS")) {
 				break;
 			}
 			listItem.executeAction(session);

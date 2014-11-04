@@ -345,9 +345,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 			.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new PropertyDescriptorDefaultPropertyValueProvider());
 		
-		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CONFIG_SETTINGS)
+		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CoreConstants.CATEGORY_CONFIG_SETTINGS)
 			.addAdditiveController(PROPERTY_DESCRIPTOR, 
-					new PropertyDescriptor().setNameAs(CONFIG_SETTING_DISABLED)
+					new PropertyDescriptor().setNameAs(CoreConstants.CONFIG_SETTING_DISABLED)
 					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(false).setContributesToCreationAs(true));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CoreConstants.PREFERENCE_CATEGORY_TYPE)

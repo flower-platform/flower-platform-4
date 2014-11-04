@@ -41,6 +41,10 @@ public abstract class AbstractRegexWithActions {
 		return regex;
 	}
 
+	/**
+	 * 
+	 * @param regex
+	 */
 	public void setRegex(String regex) {
 		this.regex = regex;
 		this.numberOfCaptureGroups = Pattern.compile(regex).matcher("").groupCount();
@@ -55,6 +59,10 @@ public abstract class AbstractRegexWithActions {
 		return "RegexWithAction [name=" + name + ", regex=" + regex + ", numberOfCaptureGroups=" + numberOfCaptureGroups + "]";
 	}
 
+	/**
+	 * 
+	 * @param session
+	 */
 	public abstract void executeActions(RegexProcessingSession session);
 
 }

@@ -1,5 +1,8 @@
 package org.flowerplatform.util.regex;
 
+/**
+ * @author Cristian Spiescu
+ */
 public class IfFindThisSkip extends RegexWithActions {
 
 	public IfFindThisSkip(String humanReadableRegexMeaning, String regex) {

@@ -16,7 +16,6 @@
 package org.flowerplatform.codesync.regex;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_MODEL;
-import static org.flowerplatform.codesync.CodeSyncConstants.REGEX_CONFIGS_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_ATTACH_NODE_TO_CURRENT_STATE_ACTION;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_ATTACH_SPECIFIC_INFO;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_ATTACH_SPECIFIC_INFO_IS_CONTAINMENT_PROPERTY;
@@ -41,6 +40,7 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.CATEGORY_
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.FULL_REGEX;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEXES_NODE_TYPE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_CONFIGS_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_CONFIG_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_EXPECTED_MATCHES_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_EXPECTED_MODEL_TREE_NODE_TYPE;
@@ -72,6 +72,7 @@ import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
+import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,6 +83,7 @@ import org.flowerplatform.codesync.regex.controller.AttachNodeToCurrentStateConf
 import org.flowerplatform.codesync.regex.controller.AttachSpecificInfoConfigurationProcessor;
 import org.flowerplatform.codesync.regex.controller.CheckStateNodeConfigurationProcessor;
 import org.flowerplatform.codesync.regex.controller.ClearSpecificInfoConfigurationProcessor;
+import org.flowerplatform.codesync.regex.controller.CodeSyncRegexRepositoryChildrenProvider;
 import org.flowerplatform.codesync.regex.controller.CreateNodeConfigurationProcessor;
 import org.flowerplatform.codesync.regex.controller.DecreaseNestingLevelConfigurationProcessor;
 import org.flowerplatform.codesync.regex.controller.EnterStateConfigurationProcessor;
@@ -165,6 +167,9 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		instance = this;
 				
 		CorePlugin.getInstance().getServiceRegistry().registerService("codeSyncRegexService", regexService);
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY_TYPE)
+			.addAdditiveController(CHILDREN_PROVIDER, new CodeSyncRegexRepositoryChildrenProvider());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_CONFIG_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("regexes.root")))
@@ -395,7 +400,6 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("regexMatches.root")));
 				
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(VIRTUAL_REGEX_TYPE)
-			.addSingleController(PROPERTY_FOR_TITLE_DESCRIPTOR, new GenericValueDescriptor(REGEX_NAME))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, 
 					new PropertyDescriptor().setNameAs(NAME)
 					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(10))

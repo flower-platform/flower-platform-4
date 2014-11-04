@@ -28,6 +28,8 @@ public final class CodeSyncRegexConstants {
 	// Node types and categories
 	//////////////////////////////////
 	
+	public static final String REGEX_CONFIGS_NODE_TYPE = "regexConfigs";
+	
 	public static final String REGEX_CONFIG_TYPE = "regexConfig";
 	
 	public static final String REGEX_TYPE = "regex";
