@@ -26,6 +26,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.editor.BasicEditorDescriptor;
 	import org.flowerplatform.flex_client.core.editor.ContentTypeRegistry;
 	import org.flowerplatform.flex_client.core.editor.EditorFrontend;
+	import org.flowerplatform.flex_client.core.editor.NodeTypeProvider;
 	import org.flowerplatform.flex_client.core.editor.UpdateTimer;
 	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
 	import org.flowerplatform.flex_client.core.editor.action.DownloadAction;
@@ -55,10 +56,8 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.link.LinkView;
 	import org.flowerplatform.flex_client.core.node.FlexHostInvocator;
 	import org.flowerplatform.flex_client.core.node.FlexHostResourceOperationsHandler;
-	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
 	import org.flowerplatform.flex_client.core.node.controller.ResourceDebugControllers;
 	import org.flowerplatform.flex_client.core.node.controller.TypeDescriptorRegistryDebugControllers;
-	import org.flowerplatform.flex_client.core.node.remote.GenericValueDescriptor;
 	import org.flowerplatform.flex_client.core.node_tree.GenericNodeTreeViewProvider;
 	import org.flowerplatform.flex_client.core.node_tree.NodeTreeAction;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
@@ -66,7 +65,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flex_client.core.shortcut.AssignHotKeyAction;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -77,15 +75,19 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.action.ComposedAction;
 	import org.flowerplatform.flexutil.action.VectorActionProvider;
 	import org.flowerplatform.flexutil.controller.AbstractController;
+	import org.flowerplatform.flexutil.controller.ITypeProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
+	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	import org.flowerplatform.flexutil.iframe.FlowerIFrameViewProvider;
-	import org.flowerplatform.flexutil.iframe.IFrameOpenUrl;
+	import org.flowerplatform.flexutil.iframe.IFrameOpenUrlAction;
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.spinner.ModalSpinner;
+	import org.flowerplatform.flexutil.value_converter.CsvToListValueConverter;
+	import org.flowerplatform.flexutil.value_converter.StringHexToUintValueConverter;
 	import org.flowerplatform.js_client.common_js_as.node.IHostServiceInvocator;
 
 	/**
@@ -102,6 +104,8 @@ package org.flowerplatform.flex_client.core {
 		
 		protected static var INSTANCE:CorePlugin;
 		
+		protected var _serverAppVersion:String;
+		
 		public var serviceLocator:ServiceLocator;
 		
 		public var perspectives:Vector.<Perspective> = new Vector.<Perspective>();
@@ -115,7 +119,7 @@ package org.flowerplatform.flex_client.core {
 		
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 
-		public var nodeTypeProvider:ITypeProvider;
+		public var nodeTypeProvider:ITypeProvider = new NodeTypeProvider();
 		
 		public var contentTypeRegistry:ContentTypeRegistry = new ContentTypeRegistry();
 								
@@ -212,16 +216,11 @@ package org.flowerplatform.flex_client.core {
 			
 			// check version compatibility with server side
 			serviceLocator.invoke("coreService.getVersions", null, 
-				function (result:Object):void {		
-					// disable app version check
-//					if (_appVersion != result[0]) { // application version is old 
-//						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-//						.setTitle(Resources.getMessage('version.error'))
-//						.setText(Resources.getMessage('version.error.message', [_appVersion, result[0], Resources.getMessage('version.error.details')]))
-//						.setWidth(400)
-//						.setHeight(300)
-//						.showMessageBox();						
-//					} else
+				function (result:Object /* = [serverAppVersion, apiVersion] */):void {
+					// keep server app version
+					_serverAppVersion = result[0];
+					
+					// check API version
 					if (_apiVersion != result[1]) { // API version is old
 						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 						.setTitle(Resources.getMessage('version.error'))
@@ -229,13 +228,10 @@ package org.flowerplatform.flex_client.core {
 						.setWidth(400)
 						.setHeight(300)
 						.showMessageBox();
-					} else { // versions ok 
-						_appVersion = result[0];
-						_apiVersion = result[1];						
+					} else { // API version ok 
+						// INITIALIZATION SPINNER END
+						ModalSpinner.removeGlobalModalSpinner();
 					}
-					
-					// INITIALIZATION SPINNER END
-					ModalSpinner.removeGlobalModalSpinner();
 				}
 			);
 
@@ -273,16 +269,33 @@ package org.flowerplatform.flex_client.core {
 				}
 			);
 			
+			nodeTypeDescriptorRegistry.typeProvider = nodeTypeProvider;
+
+			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(FlexUtilConstants.NOTYPE_VALUE_CONVERTERS)
+				.addSingleController(FlexUtilConstants.VALUE_CONVERTER_STRING_HEX_TO_UINT, new StringHexToUintValueConverter())
+				.addSingleController(FlexUtilConstants.VALUE_CONVERTER_CSV_TO_LIST, new CsvToListValueConverter());
+			
 			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(NodeTreeAction.ID))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(OpenAction.ID))
-				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(OpenWithEditorComposedAction.ID))
-				.addSingleController(CoreConstants.NODE_TITLE_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR))
-				.addSingleController(CoreConstants.NODE_ICONS_PROVIDER, new GenericValueProviderFromDescriptor(CoreConstants.PROPERTY_FOR_ICONS_DESCRIPTOR));
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(OpenWithEditorComposedAction.ID));
 						
 			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RenameAction.ID))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RemoveNodeAction.ID));
+			
+			if (!FlexUtilGlobals.getInstance().isMobile) {
+				FlexUtilGlobals.getInstance().registerAction(DownloadAction);
+				FlexUtilGlobals.getInstance().registerAction(UploadAction);
+				
+				nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_SYSTEM_NODE_TYPE)
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DownloadAction.ID))
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));
+				
+				nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DownloadAction.ID))
+					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));				
+			}
 			
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				FlexUtilGlobals.getInstance().registerAction(DownloadAction);
@@ -317,7 +330,7 @@ package org.flowerplatform.flex_client.core {
 									
 			// Navigate Menu
 			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.navigate")).setId(CoreConstants.NAVIGATE_MENU_ID).setOrderIndex(20));
-			
+						
 			// get/follow link action
 			registerActionToGlobalMenu(new ActionBase()
 				.setLabel(Resources.getMessage("link.title"))
@@ -350,7 +363,7 @@ package org.flowerplatform.flex_client.core {
 					.show();
 				}));
 			
-			registerActionToGlobalMenu(new IFrameOpenUrl()
+			registerActionToGlobalMenu(new IFrameOpenUrlAction()
 				.setLabel(Resources.getMessage("iframe.title"))
 				.setIcon(Resources.urlIcon)
 				.setParentId(CoreConstants.NAVIGATE_MENU_ID)
@@ -372,8 +385,6 @@ package org.flowerplatform.flex_client.core {
 				}));
 			
 			// Tools menu
-			globalMenuActionProvider.addAction(resourceNodesManager.showCommandStackAction);
-			
 			globalMenuActionProvider.addAction(new ComposedAction().setLabel(Resources.getMessage("menu.tools")).setId(CoreConstants.TOOLS_MENU_ID).setOrderIndex(30));	
 			
 			// assign hot key action
@@ -389,12 +400,27 @@ package org.flowerplatform.flex_client.core {
 				.setFunctionDelegate(function ():void {
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()				
 					.setViewContent(new AboutView())
-					.setWidth(300)
-					.setHeight(250)
+					.setWidth(320)
+					.setHeight(280)
 					.show();
 				}));			
 		}
-				
+		
+		public function get serverAppVersion():String {
+			return _serverAppVersion;
+		}
+		
+		/**
+		 * The 2 constants MIND_MAP* and the method below should normally stay in MindMapConstants, thinking that
+		 * in theory there may be several values providers (e.g. another one for another type
+		 * of diagram. But until then, it's useful to have them here, as general logic use it (e.g. RenameAction)
+		 * 
+		 * @author Cristian Spiescu
+		 */
+		public function getNodeValuesProviderForMindMap(typeDescriptorRegistry:TypeDescriptorRegistry, node:Node):ValuesProvider {
+			return ValuesProvider(typeDescriptorRegistry.getExpectedTypeDescriptor(node.type).getSingleController(CoreConstants.MIND_MAP_FEATURE_FOR_VALUES_PROVIDER, node));
+		}
+	
 		override protected function registerClassAliases():void {		
 			super.registerClassAliases();
 			registerClassAliasFromAnnotation(Node);
@@ -410,7 +436,6 @@ package org.flowerplatform.flex_client.core {
 			registerClassAliasFromAnnotation(PropertyWrapper);
 			registerClassAliasFromAnnotation(StylePropertyWrapper);
 			registerClassAliasFromAnnotation(TypeDescriptorRemote);
-			registerClassAliasFromAnnotation(GenericValueDescriptor);
 			registerClassAliasFromAnnotation(AddChildDescriptor);
 			registerClassAliasFromAnnotation(Pair);			
 		}
@@ -433,15 +458,18 @@ package org.flowerplatform.flex_client.core {
 		 * @author Mariana Gheorghe
 		 * @author Claudiu Matei
 		 * @author Cristina Constantinescu
+		 * @author Cristian Spiescu
 		 */
-		public function getSubscribableResource(node:Node, contentType:String = null):Pair {			
+		public function getSubscribableResource(node:Node, contentType:String = null, schema:String = null):Pair {			
 			if (!node.properties[CoreConstants.USE_NODE_URI_ON_NEW_EDITOR]) {
 				var subscribableResources:ArrayCollection = node == null ? null : ArrayCollection(node.properties[CoreConstants.SUBSCRIBABLE_RESOURCES]);
 				if (subscribableResources != null && subscribableResources.length > 0) {
 					var index:int = 0;
 					if (contentType != null) {
 						for (index = 0; index < subscribableResources.length; index++) {
-							if (Pair(subscribableResources.getItemAt(index)).b == contentType) {															
+							var currentContentType:String = String(Pair(subscribableResources.getItemAt(index)).b);
+							var currentSubscribableResource:String = String(Pair(subscribableResources.getItemAt(index)).a);
+							if (currentContentType == contentType && (schema == null || CorePlugin.getInstance().getSchema(currentSubscribableResource) == schema)) {															
 								break;
 							}
 						}
@@ -457,8 +485,8 @@ package org.flowerplatform.flex_client.core {
 		 * @author Claudiu Matei
 		 * @author Cristina Constantinescu
 		 */
-		public function openEditor(node:Node, ct:String = null, addEditorInRight:Boolean = false):UIComponent {
-			var sr:Pair = getSubscribableResource(node, ct);
+		public function openEditor(node:Node, ct:String = null, schema:String = null, addEditorInRight:Boolean = false):UIComponent {
+			var sr:Pair = getSubscribableResource(node, ct, schema);
 			var resourceUri:String = sr == null ? node.nodeUri : sr.a as String;
 			var contentType:String = sr == null ? (ct == null ? contentTypeRegistry.defaultContentType : ct) : sr.b as String;
 			if (contentType == null) {
@@ -557,17 +585,6 @@ package org.flowerplatform.flex_client.core {
 		}
 		
 		/**
-		 * @author Valentina-Camelia Bojan
-		 */
-		public function getRepository(nodeUri:String):String {
-			var index:int = nodeUri.indexOf("|");
-			if (index < 0) {
-				index = nodeUri.length;
-			}
-			return nodeUri.substring(nodeUri.indexOf(":") + 1, index);
-		}
-		
-		/**
 		 * @author Sebastian Solomon
 		 */
 		public function selectNode(diagramShellContext:DiagramShellContext, fullNodeId:String):void {
@@ -584,6 +601,24 @@ package org.flowerplatform.flex_client.core {
 		 */
 		public function createNodeUriWithRepo(scheme:String, repoPath:String, schemeSpecificPart:String):String {
 			return scheme + ":"+ repoPath + "|" + schemeSpecificPart;
+		}
+		
+		/**
+		 * @author Valentina-Camelia Bojan
+		 */
+		public function getRepository(nodeUri:String):String {
+			var index:int = nodeUri.indexOf("|");
+			if (index < 0) {
+				index = nodeUri.length;
+			}
+			return nodeUri.substring(nodeUri.indexOf(":") + 1, index);
+		}
+		
+		/**
+		 * @author Cristian Spiescu
+		 */
+		public function getSchema(nodeUri:String):String {
+			return nodeUri.substring(0, nodeUri.indexOf(":"));
 		}
 			
 	}

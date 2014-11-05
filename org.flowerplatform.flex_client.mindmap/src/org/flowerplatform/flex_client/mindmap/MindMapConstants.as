@@ -17,7 +17,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import flash.system.Capabilities;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
-	import org.flowerplatform.flexutil.FlexUtilConstants;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -41,14 +40,13 @@ package org.flowerplatform.flex_client.mindmap {
 		// Node properties
 		//////////////////////////////////
 		
-		public static const PROPERTY_FOR_SIDE_DESCRIPTOR:String = "propertyForSideDescriptor";
-		public static const NODE_SIDE_PROVIDER:String = "nodeSideProvider";
-		
 		// CLOUD SHAPES
-		public static const SHAPE_NONE:String = "ARC";		
+		public static const SHAPE_NONE:String = "NONE";		
 		public static const SHAPE_RECTANGLE:String = "RECT";
 		public static const SHAPE_ROUND_RECTANGLE:String = "ROUND_RECT";
-				
+		public static const SHAPE_ARC:String = "ARC";
+		public static const SHAPE_STAR:String = "STAR";
+		
 		public static const TEXT:String = "text";
 		
 		public static const MIN_WIDTH:String = "minWidth";
@@ -84,7 +82,7 @@ package org.flowerplatform.flex_client.mindmap {
 			+ "licq;penguin;freemind_butterfly;bee;"
 			+ "forward;back;up;down;"
 			+ "addition;subtraction;multiplication;division";
-
+		
 		
 		/**
 		 * Font size correction.

@@ -15,8 +15,6 @@
  */
 package org.flowerplatform.flexutil.view_content_host {
 	import mx.core.IVisualElement;
-	
-	import org.flowerplatform.flexutil.action.IActionProvider;
 
 	/**
 	 * @see ISelectionProvider

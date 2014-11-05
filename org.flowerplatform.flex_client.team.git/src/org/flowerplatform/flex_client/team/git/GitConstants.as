@@ -52,8 +52,11 @@ package org.flowerplatform.flex_client.team.git {
 
 		public static const NAME:String = "name";
 		public static const COMMIT_ID:String = "commitID";
+
 		public static const IS_GIT_REPOSITORY:String = "isGitRepository";
+
 		public static const FULL_NAME:String = "fullName";
+		
 		public static const CONFIG_REMOTE:String = "configRemote";
 		public static const CONFIG_UPSTREAM_BRANCH:String = "configUpstreamBranch";
 		public static const CONFIG_REBASE:String = "configRebase";
@@ -61,7 +64,6 @@ package org.flowerplatform.flex_client.team.git {
 		public static const IS_CHECKEDOUT:String = "isCheckedOut";
 
 		public static const FETCH_REF_SPECS:String = "fetchRefSpecs";
-
 		public static const PUSH_REF_SPECS:String = "pushRefSpecs";
 		public static const REMOTE_URIS:String = "URIs";
 		public static const IS_REPO:String = "isRepo";
@@ -150,6 +152,5 @@ package org.flowerplatform.flex_client.team.git {
 			"#489977", "#1765A0", "#FF8A01", "#7BBB5F", "#E95862", "#5D9EFE", 
 			"#E8A815", "#00ACBF", "#FB3A04", "#3F40FF", "#1BC282", "#0068B7"));
 	}
-
 }
 

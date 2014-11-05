@@ -34,8 +34,9 @@ public class EclipseDependentSuite extends Suite {
 	static {
 		System.setProperty("FLOWER_PLATFORM_HOME", new File("").getAbsolutePath());
 	}
+
 	/**
-	 *@author Branza Cristina
+	 * @author Branza Cristina
 	 **/
 	public EclipseDependentSuite(Class<?> klass, RunnerBuilder builder) throws InitializationError {
 		super(klass, builder);

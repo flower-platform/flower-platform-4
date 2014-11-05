@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.flexdiagram.mindmap {
 	import mx.collections.ArrayList;
-	import mx.utils.object_proxy;
 	
 	/**
 	 * Wrapper for the <code>rootModel</code> of a <code>MindMapDiagramShell</code>.
@@ -32,9 +31,10 @@ package org.flowerplatform.flexdiagram.mindmap {
 	 * 
 	 * @author Cristina Constantinescu
 	 */ 
+	[Bindable]
 	public class MindMapRootModelWrapper {
 		
-		public static const ID:String = "mindMapRootModelWrapper";
+		public static const TYPE:String = "mindMapRootModelWrapper";
 		
 		public var model:Object;
 		

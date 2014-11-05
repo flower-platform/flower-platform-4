@@ -23,7 +23,6 @@ package org.flowerplatform.flexdiagram {
 	import flash.ui.MultitouchInputMode;
 	import flash.utils.Dictionary;
 	
-	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.IDataRenderer;
 	import mx.core.IInvalidating;
@@ -36,11 +35,10 @@ package org.flowerplatform.flexdiagram {
 	import mx.events.PropertyChangeEvent;
 	import mx.events.ResizeEvent;
 	
-	import org.flowerplatform.flexdiagram.controller.ITypeProvider;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.ModelExtraInfoController;
-	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
+	import org.flowerplatform.flexutil.flexdiagram.RendererController;
 	import org.flowerplatform.flexdiagram.controller.selection.SelectionController;
 	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
@@ -49,7 +47,8 @@ package org.flowerplatform.flexdiagram {
 	import org.flowerplatform.flexdiagram.tool.Tool;
 	import org.flowerplatform.flexdiagram.tool.WakeUpTool;
 	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
-	import org.flowerplatform.flexutil.FactoryWithInitialization;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
+	import org.flowerplatform.flexutil.controller.ITypeProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
@@ -74,18 +73,14 @@ package org.flowerplatform.flexdiagram {
 		
 		public var registry:TypeDescriptorRegistry;
 		
-		private var _typeProvider:ITypeProvider;
+		public var typeProvider:ITypeProvider;
 			
-		public function set typeProvider(provider:ITypeProvider):void {			
-			_typeProvider = provider;
-		}
-		
 		/**
 		 * @see ControllerUtils
 		 */ 
 		public function getType(context:DiagramShellContext, model:Object):String {
-			if (_typeProvider != null) {				
-				var type:String = _typeProvider.getType(context, model);
+			if (typeProvider != null) {				
+				var type:String = typeProvider.getType(model);
 				if (type != null) {
 					return type;
 				}
@@ -201,8 +196,8 @@ package org.flowerplatform.flexdiagram {
 		/**
 		 *@author Diana Balutoiu
 		 */
-		public function registerTool(id:String, tool:FactoryWithInitialization):void {
-			tools[id] = tool.newInstance(true, this);
+		public function registerTool(id:String, tool:ClassFactoryWithConstructor):void {
+			tools[id] = tool.newInstanceWithConstructorParameter(this);
 		}
 				
 		public function addInModelMapIfNecesssary(context:DiagramShellContext, model:Object):Boolean {
@@ -320,9 +315,11 @@ package org.flowerplatform.flexdiagram {
 		
 		protected function moveResizeHandler(event:Event, model:Object = null):void {
 			if (model == null) {
-				model = IEventDispatcher(event.target.data);
+				model = event.target.data;
 			}
-			model.dispatchEvent(new UpdateConnectionEndsEvent());
+			if (model is IEventDispatcher) {
+				model.dispatchEvent(new UpdateConnectionEndsEvent());
+			}
 			
 			var context:DiagramShellContext = getNewDiagramShellContext();
 			var controller:ModelChildrenController = ControllerUtils.getModelChildrenController(context, model);
@@ -447,7 +444,12 @@ package org.flowerplatform.flexdiagram {
 		}
 		
 		public function getDynamicObject(context:DiagramShellContext, model:Object):Object {
-			return DynamicModelExtraInfoController(ControllerUtils.getModelExtraInfoController(context, model)).getDynamicObject(context, model);
+			var controller:ModelExtraInfoController = ControllerUtils.getModelExtraInfoController(context, model);
+			if (controller is DynamicModelExtraInfoController) {
+				return DynamicModelExtraInfoController(controller).getDynamicObject(context, model);
+			} else {
+				return null;
+			}
 		}
 		
 		public function makeModelRendererVisible(model:Object, context:DiagramShellContext, padding:int = 10):void {

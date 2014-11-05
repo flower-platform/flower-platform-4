@@ -18,12 +18,10 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	
-	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
-	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
-	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
+	import org.flowerplatform.flexutil.samples.properties.SamplePropertiesHelper;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -38,20 +36,9 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 		
 		override public function getChildren(context:DiagramShellContext, model:Object):IList	{
 			// no children; this controller is used only to dispatch events
-			return EMPTY_LIST;
+//			return EMPTY_LIST;
+			return new SamplePropertiesHelper().getPropertyEntries(context.diagramShell.registry, model, true);
 		}
 		
-		override public function beginListeningForChanges(context:DiagramShellContext, model:Object):void {			
-			SampleMindMapModel(model).addEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, function (event:UpdateConnectionEndsEvent):void {updateConnectionEndsHandler(event, context);});
-		}
-		
-		override public function endListeningForChanges(context:DiagramShellContext, model:Object):void {			
-			SampleMindMapModel(model).removeEventListener(UpdateConnectionEndsEvent.UPDATE_CONNECTION_ENDS, function (event:UpdateConnectionEndsEvent):void {updateConnectionEndsHandler(event, context);});
-		}
-				
-		protected function updateConnectionEndsHandler(event:UpdateConnectionEndsEvent, context:DiagramShellContext):void {
-			MindMapModelRendererController(ControllerUtils.getRendererController(context, event.target)).updateConnectors(context, event.target);
-		}
-
 	}
 }

@@ -5,7 +5,6 @@
     <classEntry path="org.flowerplatform.flexdiagram.controller.model_children.ParentAwareArrayListModelChildrenController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.model_extra_info.LightweightModelExtraInfoController"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.visual_children.AbsoluteLayoutVisualChildrenController"/>
-    <classEntry path="org.flowerplatform.flexdiagram.controller.visual_children.SequentialLayoutVisualChildrenController"/>
     <classEntry path="org.flowerplatform.flexdiagram.renderer.DiagramRenderer"/>
     <classEntry path="org.flowerplatform.flexdiagram.renderer.IAbsoluteLayoutRenderer"/>
     <classEntry path="org.flowerplatform.flexdiagram.renderer.IDiagramShellAware"/>
@@ -34,7 +33,10 @@
     <classEntry path="org.flowerplatform.flexdiagram.util.MultilineLabelItemRenderer"/>
     <classEntry path="org.flowerplatform.flexdiagram.mindmap.MindMapDragTool"/>
     <classEntry path="org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer"/>
-    <classEntry path="org.flowerplatform.flexdiagram.mindmap.AbstractMindMapNodeRenderer"/>
+    <classEntry path="org.flowerplatform.flexdiagram.mindmap.MultiConnectorModel"/>
+    <classEntry path="org.flowerplatform.flexdiagram.mindmap.MultiConnectorRenderer"/>
+    <classEntry path="org.flowerplatform.flexdiagram.mindmap.controller.MultiConnectorAbsoluteLayoutRectangleController"/>
+    <classEntry path="org.flowerplatform.flexdiagram.ui.CalloutToolTip"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

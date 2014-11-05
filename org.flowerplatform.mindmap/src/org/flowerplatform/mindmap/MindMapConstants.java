@@ -26,15 +26,14 @@ import org.flowerplatform.core.CoreConstants;
 public final class MindMapConstants {
 	
 	private MindMapConstants() {
-		
 	}
+	
 	//////////////////////////////////
 	// Node types
 	//////////////////////////////////
 	
 	public static final String FREEPLANE_PERSISTENCE_NODE_TYPE_KEY = "nodeType";
 	public static final String MINDMAP_NODE_TYPE = "freeplaneNode";
-	public static final String MINDMAP_NODE_TYPE_1 = "freeplaneNode1";
 	
 	//////////////////////////////////
 	// Node properties
@@ -51,15 +50,12 @@ public final class MindMapConstants {
 		}
 	}
 	
-	public static final String PROPERTY_FOR_SIDE_DESCRIPTOR = "propertyForSideDescriptor";
-	public static final String SIDE = "side";
-	public static final int POSITION_LEFT = -1;
-	public static final int POSITION_RIGHT = 1;
-	
 	// CLOUD SHAPES
-	public static final String SHAPE_NONE = "ARC";		
+	public static final String SHAPE_NONE = "NONE";		
 	public static final String SHAPE_RECTANGLE = "RECT";
 	public static final String SHAPE_ROUND_RECTANGLE = "ROUND_RECT";
+	public static final String SHAPE_ARC = "ARC";
+	public static final String SHAPE_STAR = "STAR";
 			
 	public static final int DEFAULT_MIN_WIDTH = 1;
 	public static final int DEFAULT_MAX_WIDTH = 600;
@@ -101,9 +97,7 @@ public final class MindMapConstants {
 	//////////////////////////////////
 	
 	public static final String FREEPLANE_MINDMAP_RESOURCE_KEY = "fpm";
-	public static final String FREEPLANE_MINDMAP_RESOURCE_KEY_1 = "fpm1";
 	public static final String FREEPLANE_PERSISTENCE_RESOURCE_KEY = "fpp";
-	public static final String FREEPLANE_MINDMAP_CATEGORY_1 = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY_1;
 	public static final String FREEPLANE_MINDMAP_CATEGORY = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY;
 	public static final String FREEPLANE_PERSISTENCE_CATEGORY = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 	

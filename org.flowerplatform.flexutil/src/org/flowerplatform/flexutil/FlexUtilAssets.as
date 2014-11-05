@@ -78,5 +78,8 @@ package org.flowerplatform.flexutil {
 		
 		[Embed(source="/unchecked.png")]
 		public static const uncheckedIcon:Class;
+		
+		[Embed(source="../icons/noteIcon.png")]
+		public static const noteIcon:Class;
 	}
 }

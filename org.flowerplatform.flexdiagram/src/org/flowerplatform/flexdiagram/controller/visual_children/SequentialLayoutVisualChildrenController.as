@@ -15,110 +15,67 @@
  */
 package org.flowerplatform.flexdiagram.controller.visual_children {
 	import mx.collections.IList;
-	import mx.core.IDataRenderer;
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	
-	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
+	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.renderer.IVisualChildrenRefreshable;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
+	import org.flowerplatform.flexutil.flexdiagram.RendererController;
+	import org.flowerplatform.flexutil.flexdiagram.StandAloneSequentialLayoutVisualChildrenController;
 	
 	/**
 	 * @author Cristian Spiescu
 	 */
-	public class SequentialLayoutVisualChildrenController extends VisualChildrenController {
+	public class SequentialLayoutVisualChildrenController extends StandAloneSequentialLayoutVisualChildrenController {
 		
-		public function SequentialLayoutVisualChildrenController(orderIndex:int = 0) {
-			super(orderIndex);
+		public function SequentialLayoutVisualChildrenController(visualElementsToSkip:int = 0, requiredContainerClass:Class = null, orderIndex:int = 0) {
+			super(visualElementsToSkip, requiredContainerClass, orderIndex);
 		}
 		
-		protected function getVisualElementsToSkip(model:Object):int {
-			return 0;
-		}
-		
-		override public function refreshVisualChildren(context:DiagramShellContext, parentModel:Object):void {
-			// log related
-			var logSameModelAndRenderer:int = 0;
-			var logRenderersReused:int = 0;
-			var logRenderersRemoved:int = 0;
-			var logRenderersAdded:int = 0;
-			
-			// I have preffixed the variables with "parent" and "child", to avoid making mistakes and
-			// using one instead of the other. It helped!			
-			var parentRenderer:IVisualElementContainer = IVisualElementContainer(ControllerUtils.getModelExtraInfoController(context, parentModel).getRenderer(context, context.diagramShell.modelToExtraInfoMap[parentModel]));
-			
+		override public function refreshVisualChildren(untypedContext:Object, parentRenderer:IVisualElementContainer, parentModel:Object):void {
 			if (!IVisualChildrenRefreshable(parentRenderer).shouldRefreshVisualChildren) {
 				return;
 			}
-			
-			var visualElementsToSkip:int = getVisualElementsToSkip(parentModel);
-			var children:IList = ControllerUtils.getModelChildrenController(context, parentModel).getChildren(context, parentModel);
-			
-			for (var i:int = 0; i < children.length; i++) {
-				var childRendererCandidate:IVisualElement = null;
-				var childModel:Object = children.getItemAt(i);				
-				var childRendererController:RendererController = ControllerUtils.getRendererController(context, childModel);
-				
-				context.diagramShell.addInModelMapIfNecesssary(context, childModel);
-				
-				if (i + visualElementsToSkip < parentRenderer.numElements) {
-					// we still have renderer candidates
-					childRendererCandidate = parentRenderer.getElementAt(i + visualElementsToSkip); 
-					var modelRendererCandidate:Object = IDataRenderer(childRendererCandidate).data;
-					if (modelRendererCandidate == childModel) {
-						// nothing to do, so skip
-						logSameModelAndRenderer++;
-						continue;
-					} else {
-						if (modelRendererCandidate != null) {
-							// the model is null if the entire parent renderer is reused. So it has several child renderers
-							// that don't have any model
-							context.diagramShell.unassociateModelFromRenderer(context, modelRendererCandidate, childRendererCandidate, true);
-						}
-						if (Object(childRendererCandidate).constructor != childRendererController.geUniqueKeyForRendererToRecycle(context, modelRendererCandidate)) {
-							// the candidate renderer are not compatible => remove it
-							// Remark: we don't have the renderer controller of the renderer candidate, because we don't know it's model.
-							// Hence, the constraint that geUniqueKeyForRendererToRecycle SHOULD return the renderer class as key
-							parentRenderer.removeElementAt(i + visualElementsToSkip);
-							childRendererCandidate = null; // i.e. instruct the code below to create
-							logRenderersRemoved++;
-						} else {
-							// a valid candidate
-							logRenderersReused++;
-						}
-					}
-				} 
-				
-				if (childRendererCandidate == null) {
-					// i.e. either we have reached numElements,
-					// or the candidate was not compatible/recyclable so it was removed
-					childRendererCandidate = childRendererController.createRenderer(context, childModel);
-					parentRenderer.addElementAt(childRendererCandidate, i + visualElementsToSkip);
-					logRenderersAdded++;
-				}
-				
-				// TODO CC: temporary code
-				// special case: the childModel already has a renderer associated
-				// in while (line 115), the old renderer will be unassoc and the model deleted from diagramShell map
-				// -> problems
-				var renderer:IVisualElement = context.diagramShell.getRendererForModel(context, childModel);
-				if (renderer != null) {
-					context.diagramShell.unassociateModelFromRenderer(context, childModel, renderer, false);
-				}
-				context.diagramShell.associateModelToRenderer(context, childModel, childRendererCandidate);
-			}
-			
-			// this loop happens if the number of models < number of renderers in the (probably recycled) parent renderer
-			while (parentRenderer.numElements > children.length + visualElementsToSkip) {
-				childRendererCandidate = parentRenderer.getElementAt(parentRenderer.numElements - 1);
-				context.diagramShell.unassociateModelFromRenderer(context, IDataRenderer(childRendererCandidate).data, childRendererCandidate, true);
-				parentRenderer.removeElementAt(parentRenderer.numElements - 1);
-				logRenderersRemoved++;
-			}
 
+			var context:DiagramShellContext = DiagramShellContext(untypedContext);
+			var children:IList;
+			if (parentModel == null) {
+				children = StandAloneSequentialLayoutVisualChildrenController.EMPTY_LIST;
+			} else {
+				var logTsStart:Number = new Date().time;
+				children = ModelChildrenController(context.diagramShell.registry.getSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, parentModel)).getChildren(context, parentModel);
+//				trace("SeqLayout.refrVC().getChildren(): " + (new Date().time - logTsStart) + " ms");
+			}
+			refreshVisualChildrenDiagramOrStandAlone(context, context.diagramShell.registry, parentRenderer, parentModel, children);
+		
 			IVisualChildrenRefreshable(parentRenderer).shouldRefreshVisualChildren = false;
-			trace("SeqLayout.refrVC(): sameModelAndRenderer=" + logSameModelAndRenderer + ",renderersReused=" + logRenderersReused + ",renderersRemoved=" + logRenderersRemoved + ",renderersAdded=" + logRenderersAdded);
+		}
+		
+		override protected function getRendererController(typeDescriptorRegistry:TypeDescriptorRegistry, childModel:Object):RendererController {
+			return RendererController(typeDescriptorRegistry.getSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, childModel));
+		}
+		
+		override protected function delegateToDiagramShell_addInModelMapIfNecesssary(untypedContext:Object, childModel:Object):void {
+			var context:DiagramShellContext = DiagramShellContext(untypedContext);
+			context.diagramShell.addInModelMapIfNecesssary(context, childModel);
+		}
+		
+		override protected function delegateToDiagramShell_getRendererForModel(untypedContext:Object, childModel:Object):IVisualElement {
+			var context:DiagramShellContext = DiagramShellContext(untypedContext);
+			return context.diagramShell.getRendererForModel(context, childModel);
+		}
+		
+		override protected function delegateToDiagramShell_associateModelToRenderer(untypedContext:Object, childModel:Object, childRendererCandidate:IVisualElement):void {
+			var context:DiagramShellContext = DiagramShellContext(untypedContext);
+			context.diagramShell.associateModelToRenderer(context, childModel, childRendererCandidate);
+		}
+		
+		override protected function delegateToDiagramShell_unassociateModelFromRenderer(untypedContext:Object, childModel:Object, childRendererCandidate:IVisualElement, modelIsDisposed:Boolean):void {
+			var context:DiagramShellContext = DiagramShellContext(untypedContext);
+			context.diagramShell.unassociateModelFromRenderer(context, childModel, childRendererCandidate, modelIsDisposed);
 		}
 		
 	}

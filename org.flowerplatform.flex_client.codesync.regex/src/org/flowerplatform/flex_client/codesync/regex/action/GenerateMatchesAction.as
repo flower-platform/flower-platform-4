@@ -87,7 +87,7 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 						if (allResourceUris.indexOf(matchUri) != -1) {
 							CorePlugin.getInstance().nodeRegistryManager.serviceInvocator.invoke("resourceService.reload", [CorePlugin.getInstance().nodeRegistryManager.getResourceSetsForResourceUris([matchUri])[0]]);
 						} else {
-							CorePlugin.getInstance().openEditor(new Node(matchUri), null);
+							CorePlugin.getInstance().openEditor(new Node(matchUri));
 						}
 					});
 			};

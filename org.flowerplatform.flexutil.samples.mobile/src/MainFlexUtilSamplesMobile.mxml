@@ -16,7 +16,7 @@
 	license-end
 -->
 <flexutil_mobile:FlowerViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:flexutil_mobile="org.flowerplatform.flexutil.mobile.*" 
-	firstView="org.flowerplatform.flexutil.samples.views.HomeView" applicationDPI="160">
+	firstView="org.flowerplatform.flexutil.samples.views.HomeView" applicationDPI="160" initialize="FlexUtilGlobals.getInstance().isMobile = true">
 
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
@@ -27,12 +27,20 @@
 		}
 		
 	</fx:Style>
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+		]]>
+	</fx:Script>
 
 	<flexutil_mobile:navigationContent>
-		<s:Button label="Back">
+		<s:Button label="Back (or Exit)">
 			<s:click>
 				<![CDATA[
 				navigator.popView();
+				if (navigator.activeView == null) {
+					NativeApplication.nativeApplication.exit()
+				}
 				]]>
 			</s:click>
 		</s:Button>

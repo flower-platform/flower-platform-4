@@ -14,8 +14,6 @@
  * license-end
  */
 package org.flowerplatform.flexutil.controller {
-	import flash.utils.Dictionary;
-	
 	import mx.collections.ArrayCollection;
 	
 	/**

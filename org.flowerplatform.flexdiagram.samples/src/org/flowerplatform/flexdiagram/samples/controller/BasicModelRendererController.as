@@ -23,6 +23,7 @@ package org.flowerplatform.flexdiagram.samples.controller {
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.renderer.ClassReferenceRendererController;
 	import org.flowerplatform.flexdiagram.samples.renderer.BasicModelRendererWithChildren;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -30,24 +31,24 @@ package org.flowerplatform.flexdiagram.samples.controller {
 	public class BasicModelRendererController extends ClassReferenceRendererController {
 		
 		public function BasicModelRendererController(orderIndex:int = 0) {
-			super(BasicModelRendererWithChildren, orderIndex);
+			super(new ClassFactoryWithConstructor(BasicModelRendererWithChildren), orderIndex);
 		}
 		
-		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
+		override public function associatedModelToRenderer(context:Object, model:Object, renderer:IVisualElement):void {
 			IEventDispatcher(model).removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, modelChangedHandler);
 		}
 		
-		override public function unassociatedModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, isModelDisposed:Boolean):void {
+		override public function unassociatedModelFromRenderer(context:Object, model:Object, renderer:IVisualElement, isModelDisposed:Boolean):void {
 			if (isModelDisposed) {
 				if (renderer != null) {
 					IVisualElementContainer(renderer.parent).removeElement(renderer);
 				}
-				IEventDispatcher(model).removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, function (event:PropertyChangeEvent):void {modelChangedHandler(event, context);});
+				IEventDispatcher(model).removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, function (event:PropertyChangeEvent):void {modelChangedHandler(event, DiagramShellContext(context));});
 			} else {
 				// weak referenced. In theory, this is not needed, but to be sure...
 				// The only case where it would make sense: if the model children controller fails to inform us of a disposal;
 				// but in this case, the stray model may be as well left on the diagram 
-				IEventDispatcher(model).addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, function (event:PropertyChangeEvent):void {modelChangedHandler(event, context);}, false, 0, true);
+				IEventDispatcher(model).addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, function (event:PropertyChangeEvent):void {modelChangedHandler(event, DiagramShellContext(context));}, false, 0, true);
 			}
 		}
 		

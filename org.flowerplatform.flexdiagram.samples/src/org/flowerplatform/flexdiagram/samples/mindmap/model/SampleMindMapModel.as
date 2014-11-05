@@ -15,26 +15,44 @@
  */
 package org.flowerplatform.flexdiagram.samples.mindmap.model {
 	import mx.collections.ArrayList;
+	import mx.utils.ObjectProxy;
+	
+	import org.flowerplatform.flexutil.samples.properties.SamplePropertiesModel;
 	
 	/**
 	 * @author Cristina Constantinescu
+	 * @author Alexandra Topoloaga
 	 */
 	[Bindable]
-	public class SampleMindMapModel {
-				
+	public class SampleMindMapModel extends SamplePropertiesModel {
+		
 		public var parent:Object;
 		public var children:ArrayList = new ArrayList();
 		public var hasChildren:Boolean;
-
-		public var text:String;
+		
 		public var side:int;
 		
 		public var expanded:Boolean;
 		
 		public var fontFamily:String;
-		public var fontSize:Number;
-		public var fontWeight:Boolean;
-		public var fontStyle:Boolean;
+		public var fontSize:Number = 9;
+		public var fontBold:Boolean;
+		public var fontItalic:Boolean;
+		
+		public var textColor:uint;
+		public var backgroundColor:uint = 0xDDDDDD;
+		
+		public var cloudColor:uint;
+		public var cloudType:String;
+		
+		public var icons:String;
+		
+		public var note:String;
+		public var details:String;
+		
+		public var showProperties:Boolean;
+		
+		public var editProperties:Boolean;
 		
 	}	
 }

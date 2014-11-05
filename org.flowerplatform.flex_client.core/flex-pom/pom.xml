@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<relativePath>../../org.flowerplatform.build/flex/pom.xml</relativePath>
+		<groupId>org.flowerplatform</groupId>
+		<artifactId>parent-flex</artifactId>
+		<version>0.1.1_flex</version>
+	</parent>
+
+	<artifactId>org.flowerplatform.flex_client.core</artifactId>
+	<packaging>swc</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.flex.framework</groupId>
+			<artifactId>flex-framework</artifactId>
+			<version>${flexVersion}</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flexutil</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>merged</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flexdiagram</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>merged</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flexutil_legacy</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>external</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>org.flowerplatform.flex_client.resources</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>external</scope>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<!-- additional source folders, since the pom only allows one -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>../../org.flowerplatform.js_client.common_js_as/src_flex</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -15,14 +15,29 @@
  */
 package org.flowerplatform.flexutil {
 	
+	
 	public class FlexUtilConstants {
 		
-		//////////////////////////////////
-		// Categories
-		//////////////////////////////////
-		
+		// TypeDescriptorRegistry
 		public static const CATEGORY_PREFIX:String = "category.";
 		public static const CATEGORY_ALL:String = CATEGORY_PREFIX + "all";
+		public static const NOTYPE_PREFIX:String = "noType.";
+		public static const NOTYPE_VALUE_CONVERTERS:String = NOTYPE_PREFIX + "valueConverters";
+		
+		public static const EXTRA_INFO_VALUE_CONVERTER:String = "valueConverter";
+		public static const EXTRA_INFO_CSV_TO_LIST_PREFIX:String = "csvToListPrefix";
+		public static const EXTRA_INFO_CSV_TO_LIST_SUFFIX:String = "csvToListSuffix";
+		
+		// Properties
+		public static const EVENT_COMMIT_PROPERTY:String = "CommitProperty";
+		public static const FEATURE_PROPERTY_COMMIT_CONTROLLER:String = "PropertyCommitController";
+		public static const NOTYPE_PROPERTY_EDITORS:String = NOTYPE_PREFIX + "propertyEditors";
+		public static const PROPERTY_EDITOR_TYPE_STRING:String = "string";
+		public static const PROPERTY_EDITOR_TYPE_BOOLEAN:String = "boolean";
+		
+		// other
+		public static const VALUE_CONVERTER_STRING_HEX_TO_UINT:String = "stringHexToUint";
+		public static const VALUE_CONVERTER_CSV_TO_LIST:String = "csvToList";
 		
 		public static const CONTROL:String = "CONTROL";
 		public static const COMMAND:String = "COMMAND";

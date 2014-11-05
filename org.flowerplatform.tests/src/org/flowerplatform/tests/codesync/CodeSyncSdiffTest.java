@@ -19,7 +19,7 @@ import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_BODY_MODIFIED;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_CHILDREN_MODIFIED_RIGHT;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_DIFFS_MODIFIED_RIGHT;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_TYPE;
-import static org.flowerplatform.tests.codesync.CodeSyncTestSuite.DIR;
+import static org.flowerplatform.tests.codesync.CodeSyncEclipseIndependentTestBase.DIR;
 import static org.flowerplatform.tests.TestUtil.INITIAL_TO_BE_COPIED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -85,7 +85,7 @@ public class CodeSyncSdiffTest {
 	
 	private static void test(String filePatch) {
 		String patchName = PROJECT + "/" + filePatch;
-		File patch = CodeSyncTestSuite.getFile(patchName);
+		File patch = TestUtil.getFile(patchName);
 		String sdiffOutputPath = "sdiffs/test.sdiff";
 		Node node = CodeSyncSdiffPlugin.getInstance().getSDiffService().createStructureDiff(TestUtil
 				.readFile(patch.toString()), PROJECT, sdiffOutputPath, new WorkspaceAndPatchFileContentProvider());

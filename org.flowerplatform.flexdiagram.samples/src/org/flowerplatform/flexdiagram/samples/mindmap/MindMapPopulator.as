@@ -17,104 +17,53 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
 	import org.flowerplatform.flexdiagram.samples.IModelHolder;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
-	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
 	
 	/**
-	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
 	 */
 	public class MindMapPopulator {
-			
-		public static function populateRootModel(modelHolder:IModelHolder):void {
-//			var rootModel:ParentAwareArrayList = modelHolder.rootModel;
-//			if (rootModel == null) {
-//				rootModel = new ParentAwareArrayList(null);
-//			}
-//			
-			var rootModel:SampleMindMapModel = getMindMapModel(rootModel);
-			rootModel.text = "Root";
-			rootModel.children.addItem(getMindMapModel(rootModel));
-			rootModel.children.addItem(getMindMapModel(rootModel));
-			rootModel.children.addItem(getMindMapModel(rootModel));
-			rootModel.expanded = true;
-			
-			var child2:SampleMindMapModel = getMindMapModel(rootModel);	
-			child2.side = MindMapDiagramShell.POSITION_LEFT;
-			for (var i:int = 0; i < 10; i++) {
-				child2.children.addItem(getMindMapModel(child2));
-			}
-			child2.children.addItem(getMindMapModel(child2));	
-			child2.hasChildren = true;
-			
-			rootModel.children.addItem(child2);
-			rootModel.hasChildren = true;
-			
-			var child:SampleMindMapModel = getMindMapModel(rootModel);
-			child.side = MindMapDiagramShell.POSITION_RIGHT;
-			for (var i:int = 0; i < 10; i++) {
-				child.children.addItem(getMindMapModel(child));
-			}
-			child.children.addItem(getMindMapModel(child));
-			child.children.addItem(getMindMapModel(child));
-			child.children.addItem(getMindMapModel(child));
-			child.hasChildren = true;
-			child.parent = rootModel;
-			
-			rootModel.children.addItem(child);
-			
-			var child1:SampleMindMapModel = getMindMapModel(rootModel);	
-			child1.side = MindMapDiagramShell.POSITION_RIGHT;
-			child1.children.addItem(getMindMapModel(child1));
-			child1.hasChildren = true;
-			child1.parent = rootModel;				
-			rootModel.children.addItem(child1);	
-			
-			var child11:SampleMindMapModel = getMindMapModel(child1);
-			for (var i:int = 0; i < 10; i++) {
-				child11.children.addItem(getMindMapModel(child11));
-			}
-			child11.children.addItem(getMindMapModel(child11));
-			child11.hasChildren = true;
-			child1.children.addItem(child11);			
-			
-			var child111:SampleMindMapModel = getMindMapModel(child11);				
-			child111.children.addItem(getMindMapModel(child111));
-			child111.children.addItem(getMindMapModel(child111));
-			child111.hasChildren = true;
-			child11.children.addItem(child111);	
-			
-			modelHolder.rootModel = rootModel;
+		
+		protected const labels:Array = [0, "1. Short", "2. A longer label", "3. This label is very looong"];
+		protected const icons:Array = [0, "bee", "family,penguin", "bookmark,freemind_butterfly,wizard,ksmiletris"];
+		
+		protected function getCurrent(array:Array):String {
+			var current:int = int(array[0]);
+			array[0] = (current + 1) % (array.length - 1);
+			return array[current + 1];
 		}
 		
-		/**
-		 * @author Alexandra Topoloaga
-		 */
-		private static var currentModel:int;
-		
-	 	/**
-		 * @author Cristina Constantinescu
-	     * @author Alexandra Topoloaga
-		 */
-		private static function getMindMapModel(parent:Object):SampleMindMapModel {
-			var model:SampleMindMapModel;
-			
-			model = new SampleMindMapModel();
-			model.text = "MindMap" + currentModel++;
-//			model.width = 151;
-//			model.height = 22;
-			model.hasChildren = false;
-			model.fontFamily = "Times New Roman";
-			model.fontSize = 28;
-			model.fontStyle = true;
-			model.fontWeight = true;
-			if (parent is SampleMindMapModel && parent != null && parent.side != 0) {
-				model.side = parent.side;
-			} else if (parent is SampleMindMapModel && parent != null) {
-				model.side = MindMapDiagramShell.POSITION_LEFT;
-			}
-			if (!(parent is ParentAwareArrayList)) {
-				model.parent = parent;
-			}
-			return model;
+		protected function createNode(parent:SampleMindMapModel):SampleMindMapModel {
+			var result:SampleMindMapModel = new SampleMindMapModel();
+			result.text = getCurrent(labels);
+			result.icons = getCurrent(icons);
+			result.parent = parent;
+			result.side = parent.side;
+			parent.children.addItem(result);
+			return result;
 		}
+		
+		public function populate(modelHolder:IModelHolder, topLevelModels:int, secondLevelModels:int):void { 
+			var instanceNo:int = 0;
+			var l0:SampleMindMapModel = new SampleMindMapModel();
+			l0.text = "Mind Map Root";
+			l0.hasChildren = true;
+			
+			for (var i:int = 0; i < topLevelModels; i++) {
+				var l1:SampleMindMapModel = createNode(l0);
+				l1.text += " " + instanceNo++;
+				l1.hasChildren = true;
+				if (i < topLevelModels / 2) {
+					l1.side = MindMapDiagramShell.POSITION_LEFT;
+				} else {
+					l1.side = MindMapDiagramShell.POSITION_RIGHT;
+				}
+				for (var j:int = 0; j < secondLevelModels; j++) {
+					var l2:SampleMindMapModel = createNode(l1);
+					l2.text += " " + instanceNo++;
+				}
+			}
+			modelHolder.rootModel = l0;
+		}
+		
 	}
 }

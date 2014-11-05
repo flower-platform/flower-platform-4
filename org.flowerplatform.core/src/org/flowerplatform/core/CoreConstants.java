@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.core;
 
+import static org.flowerplatform.util.UtilConstants.CATEGORY_PREFIX;
+
 import org.flowerplatform.util.UtilConstants;
 
 /**
@@ -23,8 +25,36 @@ import org.flowerplatform.util.UtilConstants;
 public final class CoreConstants {
 
 	private CoreConstants() {
-		
 	}
+	
+	////////////////////////////////////////////////////////////////////
+	// Constants Java and Flex
+	////////////////////////////////////////////////////////////////////
+
+	// from FlexDiagramConstants
+	public static final String BASE_RENDERER_FONT_FAMILY = "baseRenderer.fontFamily";
+	public static final String BASE_RENDERER_FONT_SIZE = "baseRenderer.fontSize";
+	public static final String BASE_RENDERER_FONT_BOLD = "baseRenderer.fontBold";
+	public static final String BASE_RENDERER_FONT_ITALIC = "baseRenderer.fontItalic";
+	public static final String BASE_RENDERER_TEXT = "baseRenderer.text";
+	public static final String BASE_RENDERER_TEXT_COLOR = "baseRenderer.textColor";
+	public static final String BASE_RENDERER_BACKGROUND_COLOR = "baseRenderer.backgroundColor";
+	public static final String BASE_RENDERER_ICONS = "baseRenderer.icons";
+	public static final String BASE_RENDERER_MIN_WIDTH = "baseRenderer.minWidth";
+	public static final String BASE_RENDERER_MAX_WIDTH = "baseRenderer.maxWidth";
+
+	public static final String MIND_MAP_RENDERER_CLOUD_TYPE = "mindMapRenderer.cloudType";
+	public static final String MIND_MAP_RENDERER_CLOUD_COLOR = "mindMapRenderer.cloudColor";
+	public static final String MIND_MAP_RENDERER_HAS_CHILDREN = "mindMapRenderer.hasChildren";
+	public static final String MIND_MAP_RENDERER_SIDE = "mindMapRenderer.side";
+
+	// from MindMapConstants
+	public static final String MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX = "mindMap.";
+
+	////////////////////////////////////////////////////////////////////
+	// Constants only in Java (or before the constants cleaning up)
+	////////////////////////////////////////////////////////////////////
+
 	public static final String APP_VERSION = "0.1.1";
 	public static final String API_VERSION = "0.1.0";
 	
@@ -60,6 +90,8 @@ public final class CoreConstants {
 	public static final String FILE_SCHEME = "file";
 	public static final String FILE_SYSTEM_NODE_TYPE = "fileSystemNode";
 	public static final String FILE_NODE_TYPE = "fileNode";
+	public static final String FILE_CONTAINER_CATEGORY = CATEGORY_PREFIX + "fileContainer";
+	
 	public static final String COMMAND_TYPE = "command";
 	public static final String COMMAND_STACK_TYPE = "commandStack";
 	public static final String COMMAND_STACK_SCHEME = COMMAND_STACK_TYPE;
@@ -73,10 +105,8 @@ public final class CoreConstants {
 	
 	public static final String HAS_CHILDREN = "hasChildren";
 	public static final String NAME = "name";
-	
 	public static final String ICONS = "icons";
 	public static final String ICONS_SEPARATOR = ",";
-	public static final String CODESYNC_ICONS = "codeSyncIcons";
 	
 	public static final String IS_DIRTY = "isDirty";
 	public static final String RESOURCE_SET = "resourceSet";
@@ -124,26 +154,21 @@ public final class CoreConstants {
 	public static final String MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR = "memberOfChildCategoryDescriptor";
 	public static final String PROPERTY_DESCRIPTOR = "propertyDescriptor";
 	
-		// Property descriptors types
-	
-		public static final String PROPERTY_DESCRIPTOR_TYPE_STRING = "String";
-		public static final String PROPERTY_DESCRIPTOR_TYPE_BOOLEAN = "Boolean";
-		public static final String PROPERTY_DESCRIPTOR_TYPE_NUMBER = "Number";
-		public static final String PROPERTY_DESCRIPTOR_TYPE_NUMBER_STEPPER = "NumberStepper";
-		public static final String PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST = "DropDownList";
-		public static final String PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER = "ColorPicker";
-		public static final String PROPERTY_DESCRIPTOR_TYPE_DATE = "Date";
-		public static final String PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY = "";
-	
-		public static final String PROPERTY_LINE_RENDERER_TYPE_DEFAULT = "Default";
-		public static final String PROPERTY_LINE_RENDERER_TYPE_STYLABLE = "Stylable";
-		public static final String PROPERTY_LINE_RENDERER_TYPE_PREFERENCE = "Preference";
+	// Property descriptors types
+
+	public static final String PROPERTY_DESCRIPTOR_TYPE_STRING = "String";
+	public static final String PROPERTY_DESCRIPTOR_TYPE_BOOLEAN = "Boolean";
+	public static final String PROPERTY_DESCRIPTOR_TYPE_NUMBER = "Number";
+	public static final String PROPERTY_DESCRIPTOR_TYPE_NUMBER_STEPPER = "NumberStepper";
+	public static final String PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST = "DropDownList";
+	public static final String PROPERTY_DESCRIPTOR_TYPE_COLOR_PICKER = "ColorPicker";
+	public static final String PROPERTY_DESCRIPTOR_TYPE_DATE = "Date";
+	public static final String PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY = "";
+
+	public static final String PROPERTY_LINE_RENDERER_TYPE_DEFAULT = "Default";
+	public static final String PROPERTY_LINE_RENDERER_TYPE_STYLABLE = "Stylable";
+	public static final String PROPERTY_LINE_RENDERER_TYPE_PREFERENCE = "Preference";
 		
-	// Generic value descriptors
-	
-	public static final String PROPERTY_FOR_TITLE_DESCRIPTOR = "propertyForTitleDescriptor";
-	public static final String PROPERTY_FOR_ICON_DESCRIPTOR = "propertyForIconDescriptor";
-	
 	//////////////////////////////////
 	// Service context options
 	//////////////////////////////////

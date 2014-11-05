@@ -65,6 +65,22 @@ public class NodeServiceRemote {
 		rss.startCommand(rss.getResourceSet(fullNodeId), commandTitle);
 		getNodeService().setProperty(node, property, value, new ServiceContext<NodeService>(getNodeService()));	
 	}
+	
+	/**
+	 * @author Claudiu Matei
+	 * @author Valentina Bojan
+	 */
+	public void setProperties(String fullNodeId, Map<String, Object> properties) {
+		ResourceSetService rss = CorePlugin.getInstance().getResourceSetService();
+		Node node = CorePlugin.getInstance().getResourceService().getNode(fullNodeId);
+		node.getOrPopulateProperties(new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()));
+		String typeLabel = ResourcesPlugin.getInstance().getLabelForNodeType(node.getType());
+		String nodeName = (String) node.getPropertyValue(getNodeTitleProperty(node.getType()));
+		String nodeLabel = typeLabel + (nodeName != null ? "(" + nodeName + ")" : "");
+		String commandTitle = ResourcesPlugin.getInstance().getMessage("commandStack.command.setProperties", nodeLabel);
+		rss.startCommand(rss.getResourceSet(fullNodeId), commandTitle);
+		getNodeService().setProperties(node, properties, new ServiceContext<NodeService>(getNodeService()));
+	}
 		
 	/**
 	 * @author Cristina Constantinescu
@@ -199,8 +215,8 @@ public class NodeServiceRemote {
 	}
 	
 	private String getNodeTitleProperty(String nodeType) {
-		GenericValueDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(nodeType)
-				.getSingleController(CoreConstants.PROPERTY_FOR_TITLE_DESCRIPTOR, null);
-		return (String) descriptor.getValue();
+		return CorePlugin.getInstance().getPropertyNameForVisualFeatureSupportedByMindMapRenderer(
+				CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + CoreConstants.BASE_RENDERER_TEXT);
 	}
+	
 }

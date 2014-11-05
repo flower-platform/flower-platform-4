@@ -14,16 +14,31 @@
  * license-end
  */
 package org.flowerplatform.flex_client.mindmap.controller {
-	import org.flowerplatform.flex_client.mindmap.MindMapConnector;
-	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelRendererController;
+	import org.flowerplatform.flexdiagram.controller.renderer.ClassReferenceRendererController;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
-	public class NodeRendererController extends MindMapModelRendererController {
+	public class NodeRendererController extends ClassReferenceRendererController {
 		
-		public function NodeRendererController(rendererClass:Class, orderIndex:int = 0) {
-			super(rendererClass, MindMapConnector, orderIndex);
+		public function NodeRendererController(rendererClassFactory:ClassFactoryWithConstructor, orderIndex:int = 0, removeRendererIfModelIsDisposed:Boolean = false) {
+			super(rendererClassFactory, orderIndex, removeRendererIfModelIsDisposed);
+		}
+		
+		/**
+		 * Return the <code>MindMapNodeWithDetailsRenderer</code> for nodes with details or notes.
+		 * 
+		 * @author Mariana Gheorghe
+		 */
+		override public function getRendererClass(context:Object, model:Object):Class {
+//			var node:Node = Node(model);
+//			if ((node.properties.hasOwnProperty(MindMapConstants.NOTE) && String(node.properties[MindMapConstants.NOTE]).length > 0) ||
+//				(node.properties.hasOwnProperty(MindMapConstants.NODE_DETAILS) && String(node.properties[MindMapConstants.NODE_DETAILS]).length > 0)) {
+//				return MindMapNodeWithDetailsRenderer;
+//			}
+			// TODO CS/MM: dezactivat pana cand o sa reintroducem nod cu details
+			return super.getRendererClass(context, model);
 		}
 		
 	}

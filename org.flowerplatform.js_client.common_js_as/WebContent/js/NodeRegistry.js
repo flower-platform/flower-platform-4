@@ -63,7 +63,7 @@ NodeRegistry.prototype.unregisterNode = function(node, parent) {
 			parent.children = null;
 		}
 	}
-	for (var i=0; i < this.nodeChangeListeners.length; i++){
+	for (var i = 0; i < this.nodeChangeListeners.length; i++){
 		this.nodeChangeListeners[i].nodeRemoved(node);
 	}
 };

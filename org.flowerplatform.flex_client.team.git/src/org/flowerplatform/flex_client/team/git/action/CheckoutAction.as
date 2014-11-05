@@ -84,7 +84,7 @@ package org.flowerplatform.flex_client.team.git.action
 				if (index != -1) {
 					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 						.setText(event.fault.faultString.substring(index))
-						.setTitle(Resources.getMessage("flex_client.team.git.createSdiff.getInfo"))
+						.setTitle(Resources.getMessage("info"))
 						.setWidth(300)
 						.setHeight(150)
 						.addButton(Resources.getMessage("flex_client.team.git.action.commitChanges"), function():void {commitChanges();})
@@ -93,10 +93,23 @@ package org.flowerplatform.flex_client.team.git.action
 						.showMessageBox();	
 				}
 			}
-		}	
-
+		}
+		
 		public function checkout(node:Node, commitID:String = null):void {			
-			CorePlugin.getInstance().serviceLocator.invoke("GitService.checkout", [node.nodeUri, commitID], null, function(event:FaultEvent):void {faultCallback(event, node)});
+			CorePlugin.getInstance().serviceLocator.invoke(
+				"GitService.checkout", 
+				[node.nodeUri, commitID], 
+				function(text:String):void {
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+					.setText(text)
+					.setTitle(Resources.getMessage("info"))
+					.setWidth(300)
+					.setHeight(150)
+					.showMessageBox(); 
+				},
+				function(event:FaultEvent):void {
+					faultCallback(event, node)
+				});
 		}
 
 		override public function run():void {
@@ -104,19 +117,19 @@ package org.flowerplatform.flex_client.team.git.action
 			var name:String = node.properties[GitConstants.NAME];
 
 			if (!useNodeAsCommitId) {
-				if (node.type == "gitLocalBranch" || node.type == "gitTag") {
+				if (node.type == GitConstants.GIT_LOCAL_BRANCH_TYPE || node.type == GitConstants.GIT_TAG_TYPE) {
 					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 						.setText(Resources.getMessage("flex_client.team.git.action.checkout.popup",[name]))
-						.setTitle(Resources.getMessage("flex_client.team.git.createSdiff.getInfo"))
+						.setTitle(Resources.getMessage("info"))
 						.setWidth(300)
 						.setHeight(125)
 						.addButton(Resources.getMessage("flex_client.team.git.action.Yes"), function():void {checkout(node);})
 						.addButton(Resources.getMessage("flex_client.team.git.action.No"))
 						.showMessageBox();
-				} else if (node.type == "gitRemoteBranch") {
+				} else if (node.type == GitConstants.GIT_REMOTE_BRANCH_TYPE) {
 					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 						.setText(Resources.getMessage("flex_client.team.git.action.checkout.remote"))
-						.setTitle(Resources.getMessage("flex_client.team.git.createSdiff.getInfo"))
+						.setTitle(Resources.getMessage("info"))
 						.setWidth(350)
 						.setHeight(200)
 						.addButton(Resources.getMessage("flex_client.team.git.action.CreateNewBranch"), function():void {createNewBranch(node);})

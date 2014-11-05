@@ -17,9 +17,9 @@ package org.flowerplatform.flexdiagram {
 	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.ModelExtraInfoController;
-	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
+	import org.flowerplatform.flexutil.flexdiagram.RendererController;
 	import org.flowerplatform.flexdiagram.controller.selection.SelectionController;
-	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
+	import org.flowerplatform.flexutil.flexdiagram.VisualChildrenController;
 	import org.flowerplatform.flexdiagram.mindmap.controller.MindMapModelController;
 	import org.flowerplatform.flexdiagram.tool.controller.DragToCreateRelationController;
 	import org.flowerplatform.flexdiagram.tool.controller.InplaceEditorController;

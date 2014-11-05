@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico Software, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  */
 package org.flowerplatform.freeplane.resource;
 
-import org.flowerplatform.mindmap.MindMapConstants;
+import org.flowerplatform.freeplane.FreeplaneConstants;
 import org.freeplane.features.map.NodeModel;
 
 /**
@@ -26,7 +26,7 @@ public class FreeplaneMindmapResourceHandler1 extends FreeplaneMindmapResourceHa
 	
 	@Override
 	protected String getType(String nodeUri, NodeModel nodeModel) {
-		return MindMapConstants.MINDMAP_NODE_TYPE_1;
+		return FreeplaneConstants.FREEPLANE_NODE_TYPE;
 	}
 
 }

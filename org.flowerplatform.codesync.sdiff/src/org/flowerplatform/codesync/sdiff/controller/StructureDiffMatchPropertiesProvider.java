@@ -25,21 +25,20 @@ import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COL
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COLOR_CHILDREN_MODIFIED;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COLOR_PROP_MODIFIED;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COLOR_REMOVED;
-import static org.flowerplatform.core.CoreConstants.CODESYNC_ICONS;
 import static org.flowerplatform.core.CoreConstants.ICONS;
-import static org.flowerplatform.mindmap.MindMapConstants.COLOR_BACKGROUND;
 
 import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.Match.MatchType;
+import org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants;
 import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.mindmap.MindMapConstants;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.AbstractController;
 
@@ -67,7 +66,7 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 
 		String codeSyncIcons = getCodeSyncIcons(node);
 		if (codeSyncIcons != null) {
-			node.getProperties().put(CODESYNC_ICONS, codeSyncIcons);
+			node.getProperties().put(CoreConstants.ICONS, codeSyncIcons);
 		}
 
 		setBackgroundColor(node); 
@@ -141,7 +140,7 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 
 		// set color
 		if (color != null) {
-			node.getProperties().put(COLOR_BACKGROUND, color);
+			node.getProperties().put(CorePlugin.getInstance().getPropertyNameForVisualFeatureSupportedByMindMapRenderer(CoreConstants.BASE_RENDERER_BACKGROUND_COLOR), color);
 		}
 	}
 	
@@ -155,9 +154,9 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 		String name = (String) node.getProperties().get(CoreConstants.NAME);
 		String textPath = (String) node.getProperties().get(CodeSyncConstants.MATCH_PATH);
 		if (textPath != null) {
-			node.getProperties().put(MindMapConstants.TEXT, "<html><head>" + name + "</head><br><body><font size=9>" + textPath + "</font></body></html>");
+			node.getProperties().put(CodeSyncSdiffConstants.PROPERTY_NAME_WITH_PATH, "<html><head>" + name + "</head><br><body><font size=9>" + textPath + "</font></body></html>");
 		} else {
-			node.getProperties().put(MindMapConstants.TEXT, name);
+			node.getProperties().put(CodeSyncSdiffConstants.PROPERTY_NAME_WITH_PATH, name);
 		}
 	} 
 
@@ -176,7 +175,7 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 				if (codeSyncIcons == null) {
 					codeSyncIcons = "";
 				}
-				context.getService().setProperty(node, CODESYNC_ICONS, codeSyncIcons, context);
+				context.getService().setProperty(node, CoreConstants.ICONS, codeSyncIcons, context);
 			}
 		}
 	}

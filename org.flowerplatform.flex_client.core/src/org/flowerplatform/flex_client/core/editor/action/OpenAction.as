@@ -23,20 +23,24 @@ package org.flowerplatform.flex_client.core.editor.action {
 	/**
 	 * @author Mariana Gheorghe
 	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
 	 */
 	public class OpenAction extends ActionBase {
-		
-		public var contentType:String;
 
 		public static const ID:String = "org.flowerplatform.flex_client.core.editor.action.OpenAction";
 		
-		public function OpenAction(contentType:String = null) {
+		protected var contentType:String;
+
+		protected var schema:String;
+		
+		public function OpenAction(contentType:String = null, schema:String = null) {
 			super();					
-			
 			this.contentType = contentType;
+			this.schema = schema;
+			
 			if (contentType != null) {
 				var editorDescriptor:BasicEditorDescriptor = CorePlugin.getInstance().contentTypeRegistry[contentType];
-				label = editorDescriptor.getEditorName();
+				label = editorDescriptor.getEditorName() + " (" + schema + ")";
 				icon = editorDescriptor.getIcon();
 				parentId = OpenWithEditorComposedAction.ID;
 			} else {
@@ -52,7 +56,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 		
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));									
-			CorePlugin.getInstance().openEditor(node, contentType);
+			CorePlugin.getInstance().openEditor(node, contentType, schema);
 		}
 		
 	}

@@ -26,6 +26,7 @@ package org.flowerplatform.flex_client.team.git {
 	import org.flowerplatform.flex_client.team.git.action.ConfigureRemoteAction;
 	import org.flowerplatform.flex_client.team.git.action.CreateBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.CreateStructureDiffFromGitCommitsAction;
+	import org.flowerplatform.flex_client.team.git.action.CreateTagAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteBranchAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteGitRepositoryAction;
 	import org.flowerplatform.flex_client.team.git.action.DeleteRemoteAction;
@@ -83,6 +84,7 @@ package org.flowerplatform.flex_client.team.git {
 			FlexUtilGlobals.getInstance().registerAction(ShowGitStagingAction);
 			FlexUtilGlobals.getInstance().registerAction(FetchAction);
 			FlexUtilGlobals.getInstance().registerAction(PushAction);
+			FlexUtilGlobals.getInstance().registerAction(CreateTagAction);
 			
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitHistoryViewProvider());
 			FlexUtilGlobals.getInstance().composedViewProvider.addViewProvider(new GitStagingViewProvider());
@@ -137,6 +139,9 @@ package org.flowerplatform.flex_client.team.git {
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CreateBranchAction.ID))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DeleteBranchAction.ID))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CheckoutAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(GitConstants.GIT_TAGS_TYPE)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(CreateTagAction.ID));
 		}
 		
 		override protected function registerMessageBundle():void {

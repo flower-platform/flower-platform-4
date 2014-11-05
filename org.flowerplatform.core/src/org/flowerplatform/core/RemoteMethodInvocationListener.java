@@ -123,8 +123,10 @@ public class RemoteMethodInvocationListener {
 			}	
 			
 			// prepare result
-			remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
-			
+			if (remoteMethodInvocationInfo.getReturnValue() != null) {
+				remoteMethodInvocationInfo.getEnrichedReturnValue().put(CoreConstants.MESSAGE_RESULT, remoteMethodInvocationInfo.getReturnValue());
+			}
+				
 			Long timestampOfLastRequest = remoteMethodInvocationInfo.getTimestampOfLastRequest();
 			long timestamp = new Date().getTime();		
 			

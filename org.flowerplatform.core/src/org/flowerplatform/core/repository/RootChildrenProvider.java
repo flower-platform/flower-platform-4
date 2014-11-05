@@ -77,6 +77,9 @@ public class RootChildrenProvider extends AbstractController implements IChildre
 		}
 		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
 		for (Object user : fileAccessController.listFiles(root)) {
+			if (!fileAccessController.isDirectory(user)) {
+				continue;
+			}
 			if (METADATA.equals(fileAccessController.getName(user))) {
 				// skip the .metadata directory from the workspace
 				continue;
