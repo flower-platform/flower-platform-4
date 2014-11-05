@@ -3,45 +3,47 @@ package org.flowerplatform.codesync.regex.action;
 import java.util.HashMap;
 import java.util.List;
 
+import org.flowerplatform.codesync.regex.CodeSyncRegexConstants;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.util.regex.RegexAction;
 import org.flowerplatform.util.regex.RegexProcessingSession;
 
 /**
+ * Create a new node and keep in the context under {@link CodeSyncRegexConstants#CURRENT_NODE}.
+ * The node will have the given {@link #type} and properties, mapped under {@link #propertiesKeys}.
+ * 
  * @author Elena Posea
  */
 public class CreateNodeAction extends RegexAction {
 	
 	private String type;
-	private List<String> properties;
+	private List<String> propertiesKeys;
 	
-	/**
-	 * @param type the type of the action (attach info, clear info ...)
-	 * @param properties
-	 */
 	public CreateNodeAction(String type, List<String> properties) {
-		this.properties = properties;
 		this.type = type;
+		this.propertiesKeys = properties;
 	}
 
 	@Override
 	public void executeAction(RegexProcessingSession param) {
-		Node c = new Node(null, type);
 		// set type and properties accordingly
-		HashMap<String, Object> listOfProperties = new HashMap<String, Object>();
-		String []listOfValues = param.getCurrentSubMatchesForCurrentRegex();
+		Node node = new Node(null, type);
+		HashMap<String, Object> parsedProperties = new HashMap<String, Object>();
+		String[] listOfValues = param.getCurrentSubMatchesForCurrentRegex();
 		int i, n;
 		if (listOfValues != null) {
-			n = listOfValues.length; //because I can have more properties than actual capture groups;
+			n = listOfValues.length;
 			for (i = 0; i < n; i++) {
 				if (listOfValues[i] == null) {
-					continue;
+					break; // just in case there are more keys than capture groups
 				}
-				listOfProperties.put(properties.get(i), listOfValues[i]);
+				parsedProperties.put(propertiesKeys.get(i), listOfValues[i]);
 			}
 		}
-		c.setProperties(listOfProperties);
-		param.context.put("currentNode", c);
+		node.setProperties(parsedProperties);
+		
+		// keep the node
+		param.context.put(CodeSyncRegexConstants.CURRENT_NODE, node);
 	}
 
 }

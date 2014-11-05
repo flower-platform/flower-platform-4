@@ -24,7 +24,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.NodeService;
@@ -77,11 +76,6 @@ public class RegexConfigsChildrenProvider extends AbstractController implements 
 		Object[] files = getFileAccessController().listFiles(file);
 		if (files == null) {
 			return false;
-		}
-		if (files.length == 1 && CoreConstants.METADATA.equals(getFileAccessController().getName(files[0]))) {
-			// calculate hasChildren without metadata directory
-			return false;
-
 		}
 		return files.length > 0;
 	}

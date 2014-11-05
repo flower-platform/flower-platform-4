@@ -39,7 +39,7 @@ package org.flowerplatform.flex_client.codesync.regex.action {
 			var selectedTestFiles:IList = selection;
 			var size:int = selectedTestFiles.length;
 			for (var i:int = 0; i < size; i++) {
-				CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.generateMatchesForSelection", [Node(selectedTestFiles.getItemAt(i)).nodeUri], null );
+				CorePlugin.getInstance().serviceLocator.invoke("codeSyncRegexService.generateMatches", [Node(selectedTestFiles.getItemAt(i)).nodeUri, false], null);
 			}
 		}
 	}

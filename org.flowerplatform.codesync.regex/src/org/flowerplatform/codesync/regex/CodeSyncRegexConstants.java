@@ -22,8 +22,6 @@ import org.flowerplatform.util.UtilConstants;
  */
 public final class CodeSyncRegexConstants {
 
-	private CodeSyncRegexConstants() {
-	}
 	//////////////////////////////////
 	// Node types and categories
 	//////////////////////////////////
@@ -117,4 +115,15 @@ public final class CodeSyncRegexConstants {
 	public static final String SKIP_PROVIDER = "skipProvider";
 	public static final String SHOW_GROUPED_BY_REGEX = "showGroupedByRegex";
 	
+	//////////////////////////////////
+	// Model tree creation
+	//////////////////////////////////
+	
+	public static final String CURRENT_NODE = "currentNode";
+	public static final String CURRENT_NESTING_LEVEL = "currentNestingLevel";
+	public static final String STATE_STACK = "stateStack";
+	public static final String DO_NOT_EXECUTE_OTHER_ACTIONS = "doNotExecuteOtherActions";
+	
+	private CodeSyncRegexConstants() {
+	}
 }

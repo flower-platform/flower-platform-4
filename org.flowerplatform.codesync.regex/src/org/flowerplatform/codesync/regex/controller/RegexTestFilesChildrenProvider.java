@@ -20,12 +20,12 @@ import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TES
 import static org.flowerplatform.core.CoreUtils.getRepoFromNode;
 import static org.flowerplatform.core.file.FileControllerUtils.getFileAccessController;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.flowerplatform.codesync.regex.CodeSyncRegexConstants;
-import org.flowerplatform.codesync.regex.remote.CodeSyncRegexService;
+import org.flowerplatform.codesync.regex.CodeSyncRegexPlugin;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
@@ -47,19 +47,26 @@ public class RegexTestFilesChildrenProvider extends AbstractController implement
 		String nodeSpecificPart = virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri());
 		String path = CoreUtils.getRepoFromNode(node) + "/" + REGEX_CONFIGS_FOLDER + "/" + nodeSpecificPart + "/"
 				+ CodeSyncRegexConstants.REGEX_TEST_FILES_FOLDER;
-		Object folder = null;
+
+		Object testFilesFolder = null;
 		try {
-			folder = getFileAccessController().getFile(path);
+			testFilesFolder = CorePlugin.getInstance().getFileAccessController().getFile(path);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		
+		List<Object> testFiles = CodeSyncRegexPlugin.getInstance().getRegexService().getTestFiles(testFilesFolder);
+		if (testFiles == null) {
+			// there are no test files
+			return Collections.emptyList();
+		}
 		List<Node> children = new ArrayList<Node>();
-		List<String> testFiles = CodeSyncRegexService.getTestFilesRelativeToFolder((File) folder, "");
-		for (String testFileToBeParsed : testFiles) {
-					String typeSpecificPart = nodeSpecificPart + "$" + testFileToBeParsed; 
-					Node child = new Node(virtualNodeHandler.createVirtualNodeUri(getRepoFromNode(node), REGEX_TEST_FILE_NODE_TYPE, typeSpecificPart),
-							REGEX_TEST_FILE_NODE_TYPE);
-					children.add(child);
+		for (Object testFile : testFiles) {
+			String relativePath = CorePlugin.getInstance().getFileAccessController().getPathRelativeToFile(testFile, testFilesFolder);
+			String typeSpecificPart = nodeSpecificPart + "$" + relativePath;
+			Node child = new Node(virtualNodeHandler.createVirtualNodeUri(getRepoFromNode(node),
+					REGEX_TEST_FILE_NODE_TYPE, typeSpecificPart), REGEX_TEST_FILE_NODE_TYPE);
+			children.add(child);
 		}
 		return children;
 	}

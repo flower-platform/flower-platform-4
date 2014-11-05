@@ -79,17 +79,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.flowerplatform.codesync.regex.controller.AttachNodeToCurrentStateConfigurationProcessor;
-import org.flowerplatform.codesync.regex.controller.AttachSpecificInfoConfigurationProcessor;
-import org.flowerplatform.codesync.regex.controller.CheckStateNodeConfigurationProcessor;
-import org.flowerplatform.codesync.regex.controller.ClearSpecificInfoConfigurationProcessor;
 import org.flowerplatform.codesync.regex.controller.CodeSyncRegexRepositoryChildrenProvider;
-import org.flowerplatform.codesync.regex.controller.CreateNodeConfigurationProcessor;
-import org.flowerplatform.codesync.regex.controller.DecreaseNestingLevelConfigurationProcessor;
-import org.flowerplatform.codesync.regex.controller.EnterStateConfigurationProcessor;
-import org.flowerplatform.codesync.regex.controller.ExitStateConfigurationProcessor;
-import org.flowerplatform.codesync.regex.controller.IncreaseNestingLevelConfigurationProcessor;
-import org.flowerplatform.codesync.regex.controller.KeepSpecificInfoConfigurationProcessor;
 import org.flowerplatform.codesync.regex.controller.RegexActionController;
 import org.flowerplatform.codesync.regex.controller.RegexConfigsChildrenProvider;
 import org.flowerplatform.codesync.regex.controller.RegexConfigurationProcessor;
@@ -107,6 +97,16 @@ import org.flowerplatform.codesync.regex.controller.RegexTestMatchesController;
 import org.flowerplatform.codesync.regex.controller.RegexWithActionsProcessor;
 import org.flowerplatform.codesync.regex.controller.RegexesController;
 import org.flowerplatform.codesync.regex.controller.VirtualRegexChildrenProvider;
+import org.flowerplatform.codesync.regex.controller.action.AddAsChildOfStateNodeConfigurationProcessor;
+import org.flowerplatform.codesync.regex.controller.action.AttachSpecificInfoConfigurationProcessor;
+import org.flowerplatform.codesync.regex.controller.action.CheckStateNodeConfigurationProcessor;
+import org.flowerplatform.codesync.regex.controller.action.ClearSpecificInfoConfigurationProcessor;
+import org.flowerplatform.codesync.regex.controller.action.CreateNodeConfigurationProcessor;
+import org.flowerplatform.codesync.regex.controller.action.DecreaseNestingLevelConfigurationProcessor;
+import org.flowerplatform.codesync.regex.controller.action.EnterStateConfigurationProcessor;
+import org.flowerplatform.codesync.regex.controller.action.ExitStateConfigurationProcessor;
+import org.flowerplatform.codesync.regex.controller.action.IncreaseNestingLevelConfigurationProcessor;
+import org.flowerplatform.codesync.regex.controller.action.KeepSpecificInfoConfigurationProcessor;
 import org.flowerplatform.codesync.regex.remote.CodeSyncRegexService;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
@@ -173,7 +173,7 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_CONFIG_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("regexes.root")))
-				.addAdditiveController(ADD_CHILD_DESCRIPTOR,
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR,
 						new AddChildDescriptor().setChildTypeAs(REGEX_TYPE).setIconAs(ResourcesPlugin.getInstance().getResourceUrl("images/codesync.regex/bricks.png")))
 			.addSingleController(CONFIG_NODE_PROCESSOR, new RegexConfigurationProcessor());
 		
@@ -234,7 +234,7 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(CATEGORY_REGEX_ACTION);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_ATTACH_NODE_TO_CURRENT_STATE_ACTION)
-			.addSingleController(CONFIG_NODE_PROCESSOR, new AttachNodeToCurrentStateConfigurationProcessor())
+			.addSingleController(CONFIG_NODE_PROCESSOR, new AddAsChildOfStateNodeConfigurationProcessor())
 			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
 
@@ -317,7 +317,7 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_TEST_FILES_NODE_TYPE)
 			.addAdditiveController(CHILDREN_PROVIDER, new RegexTestFilesChildrenProvider().setOrderIndexAs(1000))
-			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(NAME, "test-files"))
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(NAME, "Test Files")) // TODO from messages
 			.addCategory(CATEGORY_MODEL);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_TEST_FILE_NODE_TYPE)

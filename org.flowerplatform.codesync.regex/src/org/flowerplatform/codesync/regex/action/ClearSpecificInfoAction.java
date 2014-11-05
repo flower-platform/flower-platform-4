@@ -4,15 +4,14 @@ import org.flowerplatform.util.regex.RegexAction;
 import org.flowerplatform.util.regex.RegexProcessingSession;
 
 /**
+ * Clear the value stored in the context under {@link #clearInfoKey}.
+ * 
  * @author Elena Posea
  */
-public class ClearSpecificInfoAction   extends RegexAction {
+public class ClearSpecificInfoAction extends RegexAction {
 
-	String clearInfoKey;
+	private String clearInfoKey;
 	
-	/**
-	 * @param clearInfoKey the key for the info that you want to remove
-	 */
 	public ClearSpecificInfoAction(String clearInfoKey) {
 		this.clearInfoKey = clearInfoKey;
 	}

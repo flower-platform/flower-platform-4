@@ -2,6 +2,7 @@ package org.flowerplatform.codesync.regex.action;
 
 import java.util.List;
 
+import org.flowerplatform.codesync.regex.CodeSyncRegexConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
@@ -10,17 +11,18 @@ import org.flowerplatform.util.regex.RegexAction;
 import org.flowerplatform.util.regex.RegexProcessingSession;
 
 /**
+ * Attach the value stored in the context under {@link #attachInfoKey} to the current node, 
+ * either as a property in the properties map, or to the children list, depending on the
+ * {@link #isContainment} flag.
+ * 
  * @author Elena Posea
+ * @author Mariana Gheorghe
  */
 public class AttachSpecificInfoAction extends RegexAction {
 
-	String attachInfoKey;
-	Boolean isContainment;
+	private String attachInfoKey;
+	private Boolean isContainment;
 
-	/**
-	 * @param attachInfoKey where to attach the info
-	 * @param isContainment if true, the info should be added as property; otherwise, add it as child
-	 */
 	public AttachSpecificInfoAction(String attachInfoKey, Boolean isContainment) {
 		this.attachInfoKey = attachInfoKey;
 		this.isContainment = isContainment;
@@ -28,24 +30,32 @@ public class AttachSpecificInfoAction extends RegexAction {
 
 	@Override
 	public void executeAction(RegexProcessingSession param) {
-		Node currentNode = (Node) param.context.get("currentNode");
-		ServiceContext<NodeService> serviceContext;
+		Node currentNode = (Node) param.context.get(CodeSyncRegexConstants.CURRENT_NODE);
+		Object value = param.context.get(attachInfoKey);
 		if (isContainment) {
 			// attach info as children
-			Object currentValue = param.context.get(attachInfoKey);
-			if (currentValue instanceof List) {
-				List<Object> listOfChildrenToBeAdded = (List<Object>) currentValue;
+			if (value instanceof List) {
+				// add the whole list to the children list
+				@SuppressWarnings("unchecked")
+				List<Object> listOfChildrenToBeAdded = (List<Object>) value;
 				for (Object child : listOfChildrenToBeAdded) {
-					serviceContext = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
-					serviceContext.setContext(((Node) child).getProperties());
-					CorePlugin.getInstance().getNodeService().addChild(currentNode, (Node) child, serviceContext);
+					addChild(currentNode, (Node) child);
 				}
+			} else {
+				addChild(currentNode, (Node) value);
 			}
 		} else {
-			// attach info as properties in the properties map
-			serviceContext = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
-			CorePlugin.getInstance().getNodeService().setProperty(currentNode, attachInfoKey, param.context.get(attachInfoKey), serviceContext);
+			// add info in the properties map
+			ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+			CorePlugin.getInstance().getNodeService().setProperty(currentNode, attachInfoKey, value, serviceContext);
 		}
+	}
+	
+	private void addChild(Node parent, Node child) {
+		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+		// make sure to copy properties
+		serviceContext.setContext(child.getProperties());
+		CorePlugin.getInstance().getNodeService().addChild(parent, (Node) child, serviceContext);
 	}
 
 }

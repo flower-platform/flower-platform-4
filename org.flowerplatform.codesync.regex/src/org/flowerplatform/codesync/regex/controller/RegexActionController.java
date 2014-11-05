@@ -50,6 +50,7 @@ public class RegexActionController extends AbstractController implements IProper
 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
+		// TODO workaround for a client bug that hides properties (even with descriptor!) from the properties view when there is no value
 		node.getProperties().put(CoreConstants.NAME, node.getType());
 		if (node.getType().equals(ACTION_TYPE_CREATE_NODE)) {
 			if (node.getProperties().get(ACTION_TYPE_CREATE_NODE_PROPERTIES) == null) {
