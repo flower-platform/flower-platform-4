@@ -32,6 +32,10 @@ public class AttachSpecificInfoAction extends RegexAction {
 	public void executeAction(RegexProcessingSession param) {
 		Node currentNode = (Node) param.context.get(CodeSyncRegexConstants.CURRENT_NODE);
 		Object value = param.context.get(attachInfoKey);
+		if (value == null) {
+			// no value found
+			return;
+		}
 		if (isContainment) {
 			// attach info as children
 			if (value instanceof List) {

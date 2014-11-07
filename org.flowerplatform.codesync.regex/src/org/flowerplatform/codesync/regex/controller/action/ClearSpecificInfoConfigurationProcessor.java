@@ -1,6 +1,6 @@
 package org.flowerplatform.codesync.regex.controller.action;
 
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_CLEAR_SPECIFIC_INFO_KEY_PROPERTY;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_PROPERTY_INFO_KEY;
 
 import org.flowerplatform.codesync.regex.action.ClearSpecificInfoAction;
 import org.flowerplatform.core.node.remote.Node;
@@ -13,6 +13,6 @@ public class ClearSpecificInfoConfigurationProcessor extends RegexActionConfigur
 
 	@Override
 	protected RegexAction createRegexAction(Node node) {
-		return new ClearSpecificInfoAction((String) node.getPropertyValue(ACTION_TYPE_CLEAR_SPECIFIC_INFO_KEY_PROPERTY));
+		return new ClearSpecificInfoAction((String) node.getPropertyValue(ACTION_PROPERTY_INFO_KEY));
 	}
 }

@@ -1,0 +1,447 @@
+<map version="freeplane 1.3.0">
+<!--To view this file, download free mind mapping software Freeplane from http://freeplane.sourceforge.net -->
+<node TEXT="New Mindmap" ID="ID_323539750" CREATED="1415273392270" MODIFIED="1415273392270"><hook NAME="MapStyle">
+
+<map_styles>
+<stylenode LOCALIZED_TEXT="styles.root_node">
+<stylenode LOCALIZED_TEXT="styles.predefined" POSITION="right">
+<stylenode LOCALIZED_TEXT="default" MAX_WIDTH="600" COLOR="#000000" STYLE="as_parent">
+<font NAME="SansSerif" SIZE="10" BOLD="false" ITALIC="false"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="defaultstyle.details"/>
+<stylenode LOCALIZED_TEXT="defaultstyle.note"/>
+<stylenode LOCALIZED_TEXT="defaultstyle.floating">
+<edge STYLE="hide_edge"/>
+<cloud COLOR="#f0f0f0" SHAPE="ROUND_RECT"/>
+</stylenode>
+</stylenode>
+<stylenode LOCALIZED_TEXT="styles.user-defined" POSITION="right">
+<stylenode LOCALIZED_TEXT="styles.topic" COLOR="#18898b" STYLE="fork">
+<font NAME="Liberation Sans" SIZE="10" BOLD="true"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="styles.subtopic" COLOR="#cc3300" STYLE="fork">
+<font NAME="Liberation Sans" SIZE="10" BOLD="true"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="styles.subsubtopic" COLOR="#669900">
+<font NAME="Liberation Sans" SIZE="10" BOLD="true"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="styles.important">
+<icon BUILTIN="yes"/>
+</stylenode>
+</stylenode>
+<stylenode LOCALIZED_TEXT="styles.AutomaticLayout" POSITION="right">
+<stylenode LOCALIZED_TEXT="AutomaticLayout.level.root" COLOR="#000000">
+<font SIZE="18"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="AutomaticLayout.level,1" COLOR="#0033ff">
+<font SIZE="16"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="AutomaticLayout.level,2" COLOR="#00b439">
+<font SIZE="14"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="AutomaticLayout.level,3" COLOR="#990000">
+<font SIZE="12"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="AutomaticLayout.level,4" COLOR="#111111">
+<font SIZE="10"/>
+</stylenode>
+</stylenode>
+</stylenode>
+</map_styles>
+</hook>
+<attribute NAME="nodeType" VALUE="regexConfig"/>
+<node TEXT="" POSITION="right" ID="ID_1693407237" CREATED="1415273862322" MODIFIED="1415273862322">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="\{"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="open-bracket"/>
+<attribute NAME="type" VALUE="regex"/>
+<node TEXT="" ID="ID_5895686" CREATED="1415292342300" MODIFIED="1415292342300">
+<attribute NAME="nodeType" VALUE="increaseNestingLevelAction"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="increaseNestingLevelAction"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1213693474" CREATED="1415360892263" MODIFIED="1415360892263">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="(?=\{)"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="open-bracket-give-back"/>
+<attribute NAME="type" VALUE="regex"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_725492507" CREATED="1415374195209" MODIFIED="1415374195209">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="(?=(\{))"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="open-bracket-capture-give-back"/>
+<attribute NAME="type" VALUE="regex"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_160306053" CREATED="1415274147398" MODIFIED="1415274147398">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="*?"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="reluctant-zero-or-more"/>
+<attribute NAME="type" VALUE="regex"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1953243070" CREATED="1415277797595" MODIFIED="1415277797595">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="+?"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="reluctant-one-or-more"/>
+<attribute NAME="type" VALUE="regex"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1561149344" CREATED="1415273885638" MODIFIED="1415273885638">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="\}"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="close-bracket"/>
+<attribute NAME="type" VALUE="regex"/>
+<node TEXT="" ID="ID_210340658" CREATED="1415292349999" MODIFIED="1415292349999">
+<attribute NAME="nodeType" VALUE="decreaseNestingLevelAction"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="decreaseNestingLevelAction"/>
+</node>
+<node TEXT="" ID="ID_1791188263" CREATED="1415292367376" MODIFIED="1415292367376">
+<attribute NAME="nodeType" VALUE="exitStateAction"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="exitStateAction"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_133863300" CREATED="1415274291881" MODIFIED="1415274291881">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="\r"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="CR"/>
+<attribute NAME="type" VALUE="regex"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1569813232" CREATED="1415274306311" MODIFIED="1415274306311">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="\n"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="LF"/>
+<attribute NAME="type" VALUE="regex"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1102212387" CREATED="1415277243945" MODIFIED="1415277243945">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="/\*\*(.%reluctant-zero-or-more%)\*/"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="asdoc"/>
+<attribute NAME="type" VALUE="regex"/>
+<node TEXT="" ID="ID_1002180292" CREATED="1415355296719" MODIFIED="1415355296719">
+<attribute NAME="nodeType" VALUE="keepSpecificInfoAction"/>
+<attribute NAME="isContainment" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="infoKey" VALUE="documentation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="keepSpecificInfoAction"/>
+<attribute NAME="isList" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_424005972" CREATED="1415274095721" MODIFIED="1415274095721">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="/\*.%reluctant-zero-or-more%\*/"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="multiline-comment"/>
+<attribute NAME="type" VALUE="regex"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1006420477" CREATED="1415274376071" MODIFIED="1415274376071">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="//[^%CR%^%LF%]*%CR%?%LF%?"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="single-line-comment"/>
+<attribute NAME="type" VALUE="regex"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1222006420" CREATED="1415277663379" MODIFIED="1415277663379">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="[a-zA-Z_$][\w_$]*"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="identifier"/>
+<attribute NAME="type" VALUE="regex"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1324073539" CREATED="1415277764912" MODIFIED="1415277764912">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="(?:\s*|%multiline-comment%|%single-line-comment%)%reluctant-zero-or-more%"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="noise"/>
+<attribute NAME="type" VALUE="regex"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_491473338" CREATED="1415359646689" MODIFIED="1415359646689">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="%noise%(?::%noise%(\*|%identifier%))?%noise%"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="typed"/>
+<attribute NAME="type" VALUE="regex"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_628995902" CREATED="1415278194771" MODIFIED="1415278194771">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="(\w*)%noise%\bvar\b%noise%(%identifier%)%typed%"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="attribute-var"/>
+<attribute NAME="type" VALUE="regex"/>
+<node TEXT="" ID="ID_1080287705" CREATED="1415292271780" MODIFIED="1415292271780">
+<attribute NAME="nodeType" VALUE="checkStateAction"/>
+<attribute NAME="validStates" VALUE="asClass"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="checkStateAction"/>
+</node>
+<node TEXT="" ID="ID_1400904067" CREATED="1415292317807" MODIFIED="1415292317807">
+<attribute NAME="nodeType" VALUE="createNodeAction"/>
+<attribute NAME="newNodeType" VALUE="asVarAttribute"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="createNodeAction"/>
+<attribute NAME="properties" VALUE="visibility,name,typedElementType"/>
+</node>
+<node TEXT="" ID="ID_438364461" CREATED="1415292330252" MODIFIED="1415292330252">
+<attribute NAME="nodeType" VALUE="attachNodeToCurrentStateAction"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="attachNodeToCurrentStateAction"/>
+</node>
+<node TEXT="" ID="ID_1547354741" CREATED="1415355454619" MODIFIED="1415355454619">
+<attribute NAME="nodeType" VALUE="attachSpecificInfoAction"/>
+<attribute NAME="isContainment" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="infoKey" VALUE="documentation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="attachSpecificInfoAction"/>
+</node>
+<node TEXT="" ID="ID_1023296032" CREATED="1415355463667" MODIFIED="1415355463667">
+<attribute NAME="nodeType" VALUE="clearSpecificInfoAction"/>
+<attribute NAME="infoKey" VALUE="documentation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="clearSpecificInfoAction"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_714846000" CREATED="1415359464141" MODIFIED="1415359464141">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="\bfunction\b"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="function"/>
+<attribute NAME="type" VALUE="regex"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_757700858" CREATED="1415359554939" MODIFIED="1415359554939">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="\(.*?\)"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="params"/>
+<attribute NAME="type" VALUE="regex"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1727990430" CREATED="1415360151842" MODIFIED="1415360151842">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="\bget\b"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="get"/>
+<attribute NAME="type" VALUE="regex"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_629956600" CREATED="1415359158630" MODIFIED="1415359158630">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="%function%%noise%(%get%%noise%%identifier%)%params%%typed%%open-bracket-capture-give-back%"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="operation-getter"/>
+<attribute NAME="type" VALUE="regex"/>
+<node TEXT="" ID="ID_1563908416" CREATED="1415359849102" MODIFIED="1415359849102">
+<attribute NAME="nodeType" VALUE="checkStateAction"/>
+<attribute NAME="validStates" VALUE="asClass,asInterface"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="checkStateAction"/>
+</node>
+<node TEXT="" ID="ID_296395469" CREATED="1415359776240" MODIFIED="1415359776240">
+<attribute NAME="nodeType" VALUE="createNodeAction"/>
+<attribute NAME="newNodeType" VALUE="asGettterOperation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="createNodeAction"/>
+<attribute NAME="properties" VALUE="name,typedElementType,hasBody"/>
+</node>
+<node TEXT="" ID="ID_368137652" CREATED="1415359861995" MODIFIED="1415359861995">
+<attribute NAME="nodeType" VALUE="attachNodeToCurrentStateAction"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="attachNodeToCurrentStateAction"/>
+</node>
+<node TEXT="" ID="ID_1472383002" CREATED="1415359876551" MODIFIED="1415359876551">
+<attribute NAME="nodeType" VALUE="attachSpecificInfoAction"/>
+<attribute NAME="isContainment" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="infoKey" VALUE="documentation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="attachSpecificInfoAction"/>
+</node>
+<node TEXT="" ID="ID_1840207580" CREATED="1415359889635" MODIFIED="1415359889635">
+<attribute NAME="nodeType" VALUE="clearSpecificInfoAction"/>
+<attribute NAME="infoKey" VALUE="documentation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="clearSpecificInfoAction"/>
+</node>
+<node TEXT="" ID="ID_1112476096" CREATED="1415361038349" MODIFIED="1415361038349">
+<attribute NAME="nodeType" VALUE="enterStateAction"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE=""/>
+<attribute NAME="property" VALUE="hasBody"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1309064570" CREATED="1415360286649" MODIFIED="1415360286649">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="\bset\b"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="set"/>
+<attribute NAME="type" VALUE="regex"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_307034222" CREATED="1415360303547" MODIFIED="1415360303547">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="%function%%noise%(%set%%noise%%identifier%)%params%%typed%%open-bracket-capture-give-back%"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="operation-setter"/>
+<attribute NAME="type" VALUE="regex"/>
+<node TEXT="" ID="ID_1552018537" CREATED="1415360344575" MODIFIED="1415360344575">
+<attribute NAME="nodeType" VALUE="checkStateAction"/>
+<attribute NAME="validStates" VALUE="asClass,asInterface"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="checkStateAction"/>
+</node>
+<node TEXT="" ID="ID_277135159" CREATED="1415360376485" MODIFIED="1415360376485">
+<attribute NAME="nodeType" VALUE="createNodeAction"/>
+<attribute NAME="newNodeType" VALUE="asSetterOperation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="createNodeAction"/>
+<attribute NAME="properties" VALUE="name,typedElementType,hasBody"/>
+</node>
+<node TEXT="" ID="ID_605024090" CREATED="1415360383884" MODIFIED="1415360383884">
+<attribute NAME="nodeType" VALUE="attachNodeToCurrentStateAction"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="attachNodeToCurrentStateAction"/>
+</node>
+<node TEXT="" ID="ID_830672288" CREATED="1415360398278" MODIFIED="1415360398278">
+<attribute NAME="nodeType" VALUE="attachSpecificInfoAction"/>
+<attribute NAME="isContainment" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="infoKey" VALUE="documentation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="attachSpecificInfoAction"/>
+</node>
+<node TEXT="" ID="ID_1859942117" CREATED="1415360410063" MODIFIED="1415360410063">
+<attribute NAME="nodeType" VALUE="clearSpecificInfoAction"/>
+<attribute NAME="infoKey" VALUE="documentation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="clearSpecificInfoAction"/>
+</node>
+<node TEXT="" ID="ID_669150699" CREATED="1415361044520" MODIFIED="1415361044520">
+<attribute NAME="nodeType" VALUE="enterStateAction"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="enterStateAction"/>
+<attribute NAME="property" VALUE="hasBody"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1385780830" CREATED="1415360645412" MODIFIED="1415360645412">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="%function%%noise%(%identifier%)%params%%typed%%open-bracket-capture-give-back%"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="name" VALUE="operation-function"/>
+<attribute NAME="type" VALUE="regex"/>
+<node TEXT="" ID="ID_1650760962" CREATED="1415360685168" MODIFIED="1415360685168">
+<attribute NAME="nodeType" VALUE="checkStateAction"/>
+<attribute NAME="validStates" VALUE="asClass,asInterface"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="checkStateAction"/>
+</node>
+<node TEXT="" ID="ID_3466935" CREATED="1415360707344" MODIFIED="1415360707344">
+<attribute NAME="nodeType" VALUE="createNodeAction"/>
+<attribute NAME="newNodeType" VALUE="asFunctionOperation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="createNodeAction"/>
+<attribute NAME="properties" VALUE="name,typedElementType,hasBody"/>
+</node>
+<node TEXT="" ID="ID_707073783" CREATED="1415360713522" MODIFIED="1415360713522">
+<attribute NAME="nodeType" VALUE="attachNodeToCurrentStateAction"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="attachNodeToCurrentStateAction"/>
+</node>
+<node TEXT="" ID="ID_1776631871" CREATED="1415360725677" MODIFIED="1415360725677">
+<attribute NAME="nodeType" VALUE="attachSpecificInfoAction"/>
+<attribute NAME="isContainment" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="infoKey" VALUE="documentation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="attachSpecificInfoAction"/>
+</node>
+<node TEXT="" ID="ID_286334005" CREATED="1415360734902" MODIFIED="1415360734902">
+<attribute NAME="nodeType" VALUE="clearSpecificInfoAction"/>
+<attribute NAME="infoKey" VALUE="documentation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="clearSpecificInfoAction"/>
+</node>
+<node TEXT="" ID="ID_1354640458" CREATED="1415361051801" MODIFIED="1415361051801">
+<attribute NAME="nodeType" VALUE="enterStateAction"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="enterStateAction"/>
+<attribute NAME="property" VALUE="hasBody"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_281190110" CREATED="1415289094652" MODIFIED="1415289094652">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="(\w*)%noise%\bclass\b%noise%(%identifier%).%reluctant-zero-or-more%%open-bracket-give-back%"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="type-class"/>
+<attribute NAME="type" VALUE="regex"/>
+<node TEXT="" ID="ID_788832375" CREATED="1415289444930" MODIFIED="1415289444930">
+<attribute NAME="nodeType" VALUE="createNodeAction"/>
+<attribute NAME="newNodeType" VALUE="asClass"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="createNodeAction"/>
+<attribute NAME="properties" VALUE="visibility,name"/>
+</node>
+<node TEXT="" ID="ID_1009215691" CREATED="1415291262362" MODIFIED="1415291262362">
+<attribute NAME="nodeType" VALUE="attachNodeToCurrentStateAction"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="attachNodeToCurrentStateAction"/>
+</node>
+<node TEXT="" ID="ID_928525125" CREATED="1415355375768" MODIFIED="1415355375768">
+<attribute NAME="nodeType" VALUE="attachSpecificInfoAction"/>
+<attribute NAME="isContainment" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="infoKey" VALUE="documentation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="attachSpecificInfoAction"/>
+</node>
+<node TEXT="" ID="ID_882134100" CREATED="1415355386364" MODIFIED="1415355386364">
+<attribute NAME="nodeType" VALUE="clearSpecificInfoAction"/>
+<attribute NAME="infoKey" VALUE="documentation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="clearSpecificInfoAction"/>
+</node>
+<node TEXT="" ID="ID_955750954" CREATED="1415289469076" MODIFIED="1415289469076">
+<attribute NAME="nodeType" VALUE="enterStateAction"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="enterStateAction"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_511340875" CREATED="1415364583804" MODIFIED="1415364583804">
+<attribute NAME="nodeType" VALUE="regex"/>
+<attribute NAME="regex" VALUE="(\w*)%noise%\binterface\b%noise%(%identifier%).%reluctant-zero-or-more%%open-bracket-give-back%"/>
+<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="name" VALUE="type-interface"/>
+<attribute NAME="type" VALUE="regex"/>
+<node TEXT="" ID="ID_57193079" CREATED="1415365669900" MODIFIED="1415365669900">
+<attribute NAME="nodeType" VALUE="createNodeAction"/>
+<attribute NAME="newNodeType" VALUE="asInterface"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="createNodeAction"/>
+<attribute NAME="properties" VALUE="visibility,name"/>
+</node>
+<node TEXT="" ID="ID_1373052856" CREATED="1415365969328" MODIFIED="1415365969328">
+<attribute NAME="nodeType" VALUE="attachNodeToCurrentStateAction"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="attachNodeToCurrentStateAction"/>
+</node>
+<node TEXT="" ID="ID_1614036524" CREATED="1415365983037" MODIFIED="1415365983037">
+<attribute NAME="nodeType" VALUE="attachSpecificInfoAction"/>
+<attribute NAME="isContainment" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="infoKey" VALUE="documentation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="attachSpecificInfoAction"/>
+</node>
+<node TEXT="" ID="ID_291188083" CREATED="1415365992682" MODIFIED="1415365992682">
+<attribute NAME="nodeType" VALUE="clearSpecificInfoAction"/>
+<attribute NAME="infoKey" VALUE="documentation"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="clearSpecificInfoAction"/>
+</node>
+<node TEXT="" ID="ID_1501190482" CREATED="1415365997829" MODIFIED="1415365997829">
+<attribute NAME="nodeType" VALUE="enterStateAction"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="type" VALUE="enterStateAction"/>
+</node>
+</node>
+</node>
+</map>

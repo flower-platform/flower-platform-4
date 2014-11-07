@@ -80,7 +80,7 @@ public class RegexProcessingSession {
 	public void reset(boolean resetMatcher) {
 		currentMatchGroupIndex = -1;
 		currentRegex = null;		
-		currentSubMatchesForCurrentRegex = null;		
+		currentSubMatchesForCurrentRegex = new String[0];		
 		lastMatchCategory = null;
 		context = new HashMap<>();
 		
