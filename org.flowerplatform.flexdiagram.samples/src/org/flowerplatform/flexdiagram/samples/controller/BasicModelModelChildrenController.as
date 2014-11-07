@@ -16,7 +16,7 @@
 package org.flowerplatform.flexdiagram.samples.controller {
 	import org.flowerplatform.flexdiagram.controller.model_children.ParentAwareArrayListModelChildrenController;
 	import org.flowerplatform.flexdiagram.samples.model.BasicModel;
-	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+	import org.flowerplatform.flexutil.list.ParentAwareArrayList;
 	
 	/**
 	 * @author Cristian Spiescu

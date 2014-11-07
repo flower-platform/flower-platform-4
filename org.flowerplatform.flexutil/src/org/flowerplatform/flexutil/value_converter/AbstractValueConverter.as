@@ -13,7 +13,10 @@
  * 
  * license-end
  */
-package org.flowerplatform.flexutil.controller {
+package org.flowerplatform.flexutil.value_converter {
+	import org.flowerplatform.flexutil.FlexUtilConstants;
+	import org.flowerplatform.flexutil.controller.AbstractController;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -25,6 +28,13 @@ package org.flowerplatform.flexutil.controller {
 		
 		public function convertValue(value:Object, extraInfo:Object):Object {
 			throw new Error("This method must be implemented");
+		}
+		
+		public static function registerValueConverters(typeDescriptorRegistry:TypeDescriptorRegistry):void {
+			typeDescriptorRegistry.getOrCreateTypeDescriptor(FlexUtilConstants.NOTYPE_VALUE_CONVERTERS)		
+				.addSingleController(FlexUtilConstants.VALUE_CONVERTER_STRING_HEX_TO_UINT, new StringHexToUintValueConverter())
+				.addSingleController(FlexUtilConstants.VALUE_CONVERTER_CSV_TO_LIST, new CsvToListValueConverter())
+				.addSingleController(FlexUtilConstants.VALUE_CONVERTER_LIST_TO_LIST, new ListToListValueConverter());
 		}
 	}
 }

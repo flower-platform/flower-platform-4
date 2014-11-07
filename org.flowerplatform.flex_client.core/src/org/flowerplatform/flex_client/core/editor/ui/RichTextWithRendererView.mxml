@@ -89,7 +89,7 @@
 				focusManager.setFocus(textEditor);
 			}
 			
-			override protected function okHandler(event:Event = null):void {
+			override public function okHandler(event:Event = null):void {
 				resultHandler(textEditor.text);				
 			}
 									

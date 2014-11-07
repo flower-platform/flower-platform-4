@@ -21,6 +21,7 @@ package org.flowerplatform.flexutil.flexdiagram {
 	import mx.core.IVisualElementContainer;
 	
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
+	import org.flowerplatform.flexutil.list.EmptyList;
 	
 	/**
 	 * The reason for which these classes exist in this project, is that this class is used by the properties
@@ -39,8 +40,6 @@ package org.flowerplatform.flexutil.flexdiagram {
 	 */
 	public class StandAloneSequentialLayoutVisualChildrenController extends VisualChildrenController {
 		
-		protected static const EMPTY_LIST:IList = new ArrayList([]);
-		
 		protected static const CHILDREN_DISABLED:int = 0;
 		protected static const CHILDREN_HIDE:int = 1;
 		protected static const CHILDREN_SHOW:int = 2;
@@ -49,10 +48,13 @@ package org.flowerplatform.flexutil.flexdiagram {
 		
 		protected var requiredContainerClass:Class = null;
 		
-		public function StandAloneSequentialLayoutVisualChildrenController(visualElementsToSkip:int = 0, requiredContainerClass:Class = null, orderIndex:int = 0) {
+		protected var rendererController:RendererController = null;
+		
+		public function StandAloneSequentialLayoutVisualChildrenController(visualElementsToSkip:int = 0, requiredContainerClass:Class = null, rendererController:RendererController = null, orderIndex:int = 0) {
 			super(orderIndex);
 			this.visualElementsToSkip = visualElementsToSkip;
 			this.requiredContainerClass = requiredContainerClass;
+			this.rendererController = rendererController;
 		}
 		
 		protected function showChildren(context:Object, parentRenderer:IVisualElementContainer, parentModel:Object):int {
@@ -87,7 +89,7 @@ package org.flowerplatform.flexutil.flexdiagram {
 		}
 		
 		protected function getRendererController(typeDescriptorRegistry:TypeDescriptorRegistry, childModel:Object):RendererController {
-			throw new Error("This method should be implemented");
+			return rendererController;
 		}
 		
 		protected function delegateToDiagramShell_addInModelMapIfNecesssary(untypedContext:Object, childModel:Object):void {
@@ -125,7 +127,7 @@ package org.flowerplatform.flexutil.flexdiagram {
 			if (parentContainer == null) {
 				if (requiredContainerClass == null) {
 					// run the algorithm until the end; there may be children (but the controller doesn't want to show them, i.e. show = false)
-					children = EMPTY_LIST;
+					children = EmptyList.INSTANCE;
 					parentContainer = parentRenderer;
 				} else {
 					return;
@@ -158,7 +160,7 @@ package org.flowerplatform.flexutil.flexdiagram {
 							// that don't have any model
 							delegateToDiagramShell_unassociateModelFromRenderer(context, modelRendererCandidate, childRendererCandidate, true);
 						}
-						if (Object(childRendererCandidate).constructor != childRendererController.getUniqueKeyForRendererToRecycle(context, modelRendererCandidate)) {
+						if (Object(childRendererCandidate).constructor != childRendererController.getUniqueKeyForRendererToRecycle(context, childModel)) {
 							// the candidate renderer are not compatible => remove it
 							// Remark: we don't have the renderer controller of the renderer candidate, because we don't know it's model.
 							// Hence, the constraint that geUniqueKeyForRendererToRecycle SHOULD return the renderer class as key

@@ -2,7 +2,6 @@ package org.flowerplatform.flexutil.samples.properties {
 	import flash.events.IEventDispatcher;
 	
 	import mx.collections.ArrayList;
-	import mx.collections.IList;
 	import mx.utils.ObjectUtil;
 	
 	import org.flowerplatform.flexutil.FlexUtilConstants;
@@ -14,12 +13,11 @@ package org.flowerplatform.flexutil.samples.properties {
 	 */
 	public class SamplePropertiesHelper extends PropertiesHelper {
 		
-		protected var propertyDescriptors:IList = new ArrayList();
-		
-		protected var groupDescriptors:IList = new ArrayList();
-		
 		public function SamplePropertiesHelper() {
 			super();
+			propertyDescriptors = new ArrayList();
+			groupDescriptors = new ArrayList();
+			
 			var descriptor:PropertyDescriptor;
 			
 //			for (var i:int = 0; i < 10; i++) {
@@ -38,33 +36,33 @@ package org.flowerplatform.flexutil.samples.properties {
 			
 			descriptor = new PropertyDescriptor();
 			descriptor.name = "hasGroupWithoutGroupDescriptor2";
-			descriptor.category = "groupWithNoDescriptor1";
+			descriptor.group = "groupWithNoDescriptor1";
 			propertyDescriptors.addItem(descriptor);
 			
 			descriptor = new PropertyDescriptor();
 			descriptor.name = "hasGroupWithoutGroupDescriptor1";
-			descriptor.category = "groupWithNoDescriptor2";
+			descriptor.group = "groupWithNoDescriptor2";
 			propertyDescriptors.addItem(descriptor);
 			
 			descriptor = new PropertyDescriptor();
 			descriptor.name = "hasGroupWithoutGroupDescriptor3";
-			descriptor.category = "groupWithNoDescriptor2";
+			descriptor.group = "groupWithNoDescriptor2";
 			propertyDescriptors.addItem(descriptor);
 			
 			descriptor = new PropertyDescriptor();
 			descriptor.name = "booleanProperty";
-			descriptor.category = "groupWithDescriptor1";
+			descriptor.group = "groupWithDescriptor1";
 			descriptor.type = FlexUtilConstants.PROPERTY_EDITOR_TYPE_BOOLEAN;
 			propertyDescriptors.addItem(descriptor);
 			
 			descriptor = new PropertyDescriptor();
 			descriptor.name = "hasGroupWithDescriptor2";
-			descriptor.category = "groupWithDescriptor2";
+			descriptor.group = "groupWithDescriptor2";
 			propertyDescriptors.addItem(descriptor);
 			
 			descriptor = new PropertyDescriptor();
 			descriptor.name = "hasGroupWithDescriptor3";
-			descriptor.category = "groupWithDescriptor2";
+			descriptor.group = "groupWithDescriptor2";
 			propertyDescriptors.addItem(descriptor);
 			
 			// groups
@@ -77,19 +75,11 @@ package org.flowerplatform.flexutil.samples.properties {
 			groupDescriptors.addItem(descriptor);
 		}
 		
-		override protected function copyAllModelProperties(model:Object):Object {
+		override protected function copyAllModelProperties(context:Object, model:Object):Object {
 			return ObjectUtil.copy(model.properties);
 		}
 		
-		override protected function getDescriptorsForGroups(model:Object):IList {
-			return groupDescriptors;
-		}
-		
-		override protected function getDescriptorsForProperties(model:Object):IList {
-			return propertyDescriptors;
-		}
-		
-		override protected function getEventDispatcher(model:Object):IEventDispatcher {
+		override protected function getEventDispatcher(context:Object, model:Object):IEventDispatcher {
 			return model.properties;
 		}
 	

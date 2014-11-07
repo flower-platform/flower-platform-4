@@ -18,9 +18,10 @@ package org.flowerplatform.flex_client.properties.controllers {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.properties.PropertiesConstants;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
-	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.properties.PropertyDescriptor;
 
 	/**
 	 * @author Cristina Constantinescu
@@ -48,13 +49,13 @@ package org.flowerplatform.flex_client.properties.controllers {
 				type = PropertiesPlugin.getInstance().propertyValueClassToPropertyDescriptorType[Utils.getClass(propertyValue)];
 			}
 			if (type == null) {
-				type = PropertiesConstants.PROPERTY_DESCRIPTOR_TYPE_STRING;
+				type = FlexUtilConstants.PROPERTY_EDITOR_TYPE_STRING;
 			}						
 			
 			var pd:PropertyDescriptor = new PropertyDescriptor();
 			pd.type = type;
 			pd.name = property;		
-			pd.category = Resources.getMessage("raw.properties");		
+			pd.group = Resources.getMessage("raw.properties");		
 			pd.orderIndex = (property == "nodeUri" ? int.MAX_VALUE - 1 : int.MAX_VALUE);
 			return pd;			
 		}		

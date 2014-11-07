@@ -17,8 +17,16 @@ package org.flowerplatform.flexutil.controller {
 	import flash.events.IEventDispatcher;
 	
 	import org.flowerplatform.flexutil.FlexUtilConstants;
+	import org.flowerplatform.flexutil.value_converter.AbstractValueConverter;
 	
 	/**
+	 * Some Flex logic expect some predefined properties (e.g. <code>BaseRenderer</code>), that may not
+	 * be exactly the same in the model.
+	 * 
+	 * <p>
+	 * This class does this translation, using a "mapping" found in the <code>TypeDescriptorRegistry</code>,
+	 * which usually comes from the server at init. E.g. for "fontFamily" we actually use "font.NAME".  
+	 * 
 	 * @author Cristian Spiescu
 	 */
 	public class ValuesProvider extends AbstractController {
@@ -55,8 +63,8 @@ package org.flowerplatform.flexutil.controller {
 			if (descriptor == null) {
 				return null;
 			}
-			var propertyName:String = getPropertyName(typeDescriptorRegistry, object, key, descriptor);
-			var value:Object = getActualObject(object)[propertyName];
+			var actualPropertyName:String = getPropertyName(typeDescriptorRegistry, object, key, descriptor);
+			var value:Object = getValueFromActualPropertyName(object, actualPropertyName);
 			var converterKey:String = descriptor.getExtraInfoProperty(FlexUtilConstants.EXTRA_INFO_VALUE_CONVERTER) as String;
 			if (converterKey != null) {
 				var converter:AbstractValueConverter = AbstractValueConverter(typeDescriptorRegistry.getExpectedTypeDescriptor(FlexUtilConstants.NOTYPE_VALUE_CONVERTERS).getSingleController(converterKey, null));
@@ -65,6 +73,13 @@ package org.flowerplatform.flexutil.controller {
 			return value;
 		}
 		
+		public function getValueFromActualPropertyName(object:IEventDispatcher, actualPropertyName:String):Object {
+			return getActualObject(object)[actualPropertyName];
+		}
+		
+		/**
+		 * Needed to listen for <code>PropertyChangeEvent</code>s.
+		 */
 		public function getActualObject(object:IEventDispatcher):IEventDispatcher {
 			return object;
 		}

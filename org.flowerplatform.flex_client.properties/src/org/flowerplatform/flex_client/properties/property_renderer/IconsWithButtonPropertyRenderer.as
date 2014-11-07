@@ -20,7 +20,7 @@ package org.flowerplatform.flex_client.properties.property_renderer {
 	import mx.controls.Spacer;
 	
 	import org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer;
-	import org.flowerplatform.flexutil.FlowerArrayList;
+	import org.flowerplatform.flexutil.list.FlowerArrayList;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
 	import org.flowerplatform.flexutil.renderer.IIconsComponentExtensionProvider;

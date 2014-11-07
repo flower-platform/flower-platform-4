@@ -26,7 +26,7 @@
 		@namespace s "library://ns.adobe.com/flex/spark";
 		@namespace mx "library://ns.adobe.com/flex/mx";
 		
-		s|FormItem {
+		.propertyFormItemOld {
 			skinClass: ClassReference("org.flowerplatform.flexutil.form.FlowerFormItemSkin");
 		}
 		
@@ -39,6 +39,16 @@
 			skinClass: ClassReference("org.flowerplatform.flexutil.button.HaloButtonBarSkin");
 		}
 		
+		@namespace popup "com.crispico.flower.util.popup.*";
+		
+		popup|ResizablePopupWindow {
+			borderAlpha: 0.8;
+			modalTransparency: 0.8;
+		}
+		
+		global {
+			modalTransparencyDuration: 200;
+		}		
 	</fx:Style>
 	<s:layout>
 		<s:VerticalLayout/>

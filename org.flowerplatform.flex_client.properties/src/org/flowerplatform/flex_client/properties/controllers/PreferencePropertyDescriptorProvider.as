@@ -19,9 +19,8 @@ package org.flowerplatform.flex_client.properties.controllers {
 	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.properties.PropertiesConstants;
-	import org.flowerplatform.flex_client.properties.controllers.PropertyDescriptorProvider;
-	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.properties.PropertyDescriptor;
 	
 	/**
 	 * @author Cristina Constantinescu

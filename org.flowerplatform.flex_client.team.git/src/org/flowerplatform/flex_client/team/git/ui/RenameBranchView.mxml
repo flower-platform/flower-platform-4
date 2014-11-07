@@ -39,7 +39,7 @@
 				okButton.enabled = true;
 			}
 			
-			override protected function okHandler(event:Event = null):void {
+			override public function okHandler(event:Event = null):void {
 				if(newBranchName.text == "") {
 					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 						.setTitle(Resources.getMessage('flex_client.team.git.ui.renameBranchView.error'))

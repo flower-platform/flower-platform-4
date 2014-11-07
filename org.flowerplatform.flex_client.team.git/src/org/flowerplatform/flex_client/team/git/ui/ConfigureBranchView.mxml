@@ -32,7 +32,7 @@
 			
 			public var node:Node;
 			
-			override protected function okHandler(event:Event = null):void {				
+			override public function okHandler(event:Event = null):void {				
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.configureBranch",
 					[node.nodeUri,
 					remoteTextInput.text,

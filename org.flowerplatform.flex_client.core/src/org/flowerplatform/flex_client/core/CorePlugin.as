@@ -86,6 +86,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.layout.Perspective;
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.spinner.ModalSpinner;
+	import org.flowerplatform.flexutil.value_converter.AbstractValueConverter;
 	import org.flowerplatform.flexutil.value_converter.CsvToListValueConverter;
 	import org.flowerplatform.flexutil.value_converter.StringHexToUintValueConverter;
 	import org.flowerplatform.js_client.common_js_as.node.IHostServiceInvocator;
@@ -259,9 +260,7 @@ package org.flowerplatform.flex_client.core {
 			
 			nodeTypeDescriptorRegistry.typeProvider = nodeTypeProvider;
 
-			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(FlexUtilConstants.NOTYPE_VALUE_CONVERTERS)
-				.addSingleController(FlexUtilConstants.VALUE_CONVERTER_STRING_HEX_TO_UINT, new StringHexToUintValueConverter())
-				.addSingleController(FlexUtilConstants.VALUE_CONVERTER_CSV_TO_LIST, new CsvToListValueConverter());
+			AbstractValueConverter.registerValueConverters(nodeTypeDescriptorRegistry);
 			
 			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(NodeTreeAction.ID))

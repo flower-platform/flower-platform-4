@@ -1,42 +1,36 @@
 package org.flowerplatform.flexutil.properties.editor {
 	import flash.events.Event;
 	
-	import mx.core.IDataRenderer;
 	import mx.events.FlexEvent;
 	
 	import spark.components.TextInput;
-	import spark.events.TextOperationEvent;
 	
 	import org.flowerplatform.flexutil.FlexUtilConstants;
+	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.properties.PropertyEntry;
 	
 	/**
 	 * @author Cristian Spiescu
 	 */
-	public class StringPropertyEditor extends TextInput implements IDataRenderer {
-		
-		private var _data:String;
+	public class StringPropertyEditor extends TextInput implements IPropertyEditor {
 		
 		public function StringPropertyEditor() {
 			super();
-			addEventListener(TextOperationEvent.CHANGE, changeHandler);
 			addEventListener(FlexEvent.ENTER, enterHandler);
 		}
 		
-		protected function changeHandler(event:TextOperationEvent):void {
-			_data = text;
+		public function set propertyEntry(entry:PropertyEntry):void {
+			text = entry.value as String;
+			focusEnabled = !entry.descriptor.isReadOnlyDependingOnMode(Utils.getPropertySafe(entry.context, FlexUtilConstants.PROPERTIES_CONTEXT_IS_CREATE_MODE));
+			Utils.makePseudoDisabled(this, !focusEnabled);
+		}
+		
+		public function get valueToCommit():Object {
+			return text;
 		}
 		
 		protected function enterHandler(event:FlexEvent):void {
 			dispatchEvent(new Event(FlexUtilConstants.EVENT_COMMIT_PROPERTY));
-		}
-
-		public function get data():Object {
-			return _data;
-		}
-
-		public function set data(value:Object):void {
-			_data = value as String;
-			text = _data;
 		}
 
 	}

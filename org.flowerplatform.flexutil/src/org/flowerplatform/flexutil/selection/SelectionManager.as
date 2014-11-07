@@ -20,6 +20,7 @@ package org.flowerplatform.flexutil.selection {
 	
 	import mx.collections.IList;
 	
+	import org.flowerplatform.flexutil.list.EmptyList;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	
@@ -135,6 +136,30 @@ package org.flowerplatform.flexutil.selection {
 				dispatchEvent(event);
 			}			
 		
+		}
+		
+		/**
+		 * Utility function that gets the current selection. This method doesn't return null.
+		 */
+		public function getCurrentSelection():IList {
+			if (activeSelectionProvider == null || activeSelectionProvider.getSelection() == null) {
+				return EmptyList.INSTANCE;
+			} else {
+				return activeSelectionProvider.getSelection();
+			}
+			
+		}
+		
+		/**
+		 * Utility function.
+		 */
+		public function getFirstElementFromCurrentSelection():Object {
+			var selection:IList = getCurrentSelection();
+			if (selection.length <= 0) {
+				return null;
+			} else {
+				return selection.getItemAt(0);
+			}
 		}
 		
 	}

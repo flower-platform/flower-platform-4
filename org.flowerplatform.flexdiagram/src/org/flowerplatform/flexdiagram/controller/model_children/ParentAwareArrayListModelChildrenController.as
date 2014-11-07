@@ -20,7 +20,7 @@ package org.flowerplatform.flexdiagram.controller.model_children {
 	import mx.events.PropertyChangeEvent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+	import org.flowerplatform.flexutil.list.ParentAwareArrayList;
 	
 	/**
 	 * <b>NOTE:</b> The handler for removed elements doesn't work for the following cases: a) <code>list.removeAll()</code> and

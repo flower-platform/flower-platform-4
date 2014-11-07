@@ -36,8 +36,8 @@ import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
-import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
-import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING;
+import static org.flowerplatform.util.UtilConstants.FEATURE_PROPERTY_DESCRIPTORS;
+import static org.flowerplatform.util.UtilConstants.PROPERTY_EDITOR_TYPE_STRING;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 
 import java.util.ArrayList;
@@ -125,18 +125,15 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_TYPE)
 			.addCategory(CATEGORY_REGEX)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/codesync.regex/bricks.png")))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(ACTION).setTypeAs(REGEX_ACTIONS_DESCRIPTOR_TYPE).setContributesToCreationAs(true)
-					.setMandatoryAs(true).setOrderIndexAs(40));
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(ACTION).setTypeAs(REGEX_ACTIONS_DESCRIPTOR_TYPE).setOrderIndexAs(40));
 				
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_REGEX)
 			.addAdditiveController(PROPERTIES_PROVIDER, new RegexController())
 			.addAdditiveController(PROPERTY_SETTER, new RegexController())
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(REGEX_WITH_MACROS).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING)
-					.setMandatoryAs(true).setContributesToCreationAs(true).setOrderIndexAs(20))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FULL_REGEX).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING)
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(REGEX_WITH_MACROS).setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setOrderIndexAs(20))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(FULL_REGEX).setTypeAs(PROPERTY_EDITOR_TYPE_STRING)
 					.setReadOnlyAs(true).setOrderIndexAs(30))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true)
-					.setContributesToCreationAs(true).setOrderIndexAs(10));
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(NAME).setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setOrderIndexAs(10));
 				
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)			
 			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(REGEX_EXTENSION, "fpp", "mindmap", true));
@@ -150,23 +147,23 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 				
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(VIRTUAL_REGEX_TYPE)
 			.addSingleController(CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + CoreConstants.BASE_RENDERER_TEXT, new GenericDescriptor(REGEX_NAME))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING)
-					.setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(10))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FULL_REGEX).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING)
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(NAME).setTypeAs(PROPERTY_EDITOR_TYPE_STRING)
+					.setReadOnlyAs(true).setOrderIndexAs(10))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(FULL_REGEX).setTypeAs(PROPERTY_EDITOR_TYPE_STRING)
 					.setReadOnlyAs(true).setOrderIndexAs(20))
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/codesync.regex/bricks.png")))
 			.addAdditiveController(CHILDREN_PROVIDER, new VirtualRegexChildrenProvider());
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REGEX_MATCH_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/codesync.regex/brick.png")))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING)
-					.setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(10))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FULL_REGEX).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING)
-					.setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(20))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(START).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING)
-					.setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(30))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(END).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true)
-					.setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(40));
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(NAME).setTypeAs(PROPERTY_EDITOR_TYPE_STRING)
+					.setOrderIndexAs(10))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(FULL_REGEX).setTypeAs(PROPERTY_EDITOR_TYPE_STRING)
+					.setReadOnlyAs(true).setOrderIndexAs(20))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(START).setTypeAs(PROPERTY_EDITOR_TYPE_STRING)
+					.setReadOnlyAs(true).setOrderIndexAs(30))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(END).setTypeAs(PROPERTY_EDITOR_TYPE_STRING)
+					.setReadOnlyAs(true).setOrderIndexAs(40));
 			
 		CorePlugin.getInstance().getVirtualNodeResourceHandler().addVirtualNodeType(VIRTUAL_REGEX_TYPE);
 				

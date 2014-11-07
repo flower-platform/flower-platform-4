@@ -25,6 +25,7 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.flexdiagram.RendererController;
 	import org.flowerplatform.flexutil.flexdiagram.StandAloneSequentialLayoutVisualChildrenController;
+	import org.flowerplatform.flexutil.list.EmptyList;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -32,7 +33,7 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 	public class SequentialLayoutVisualChildrenController extends StandAloneSequentialLayoutVisualChildrenController {
 		
 		public function SequentialLayoutVisualChildrenController(visualElementsToSkip:int = 0, requiredContainerClass:Class = null, orderIndex:int = 0) {
-			super(visualElementsToSkip, requiredContainerClass, orderIndex);
+			super(visualElementsToSkip, requiredContainerClass, null, orderIndex);
 		}
 		
 		override public function refreshVisualChildren(untypedContext:Object, parentRenderer:IVisualElementContainer, parentModel:Object):void {
@@ -43,7 +44,7 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 			var context:DiagramShellContext = DiagramShellContext(untypedContext);
 			var children:IList;
 			if (parentModel == null) {
-				children = StandAloneSequentialLayoutVisualChildrenController.EMPTY_LIST;
+				children = EmptyList.INSTANCE;
 			} else {
 				var logTsStart:Number = new Date().time;
 				children = ModelChildrenController(context.diagramShell.registry.getSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, parentModel)).getChildren(context, parentModel);

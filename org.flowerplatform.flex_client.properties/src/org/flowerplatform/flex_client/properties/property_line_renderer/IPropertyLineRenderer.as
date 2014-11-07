@@ -16,7 +16,7 @@
 package org.flowerplatform.flex_client.properties.property_line_renderer {
 	
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
-	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
+	import org.flowerplatform.flexutil.properties.PropertyDescriptor;
 
 	/**
 	 * @author Cristina Constantinescu

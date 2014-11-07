@@ -42,7 +42,7 @@
 				okButton.enabled = false;
 			}
 			
-			override protected function okHandler(event:Event=null):void {
+			override public function okHandler(event:Event=null):void {
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.createTag", [nodeUri, tagName.text, tagMessage.text, associateTag.text, forceReplace.selected]);
 				
 				super.cancelHandler(event);

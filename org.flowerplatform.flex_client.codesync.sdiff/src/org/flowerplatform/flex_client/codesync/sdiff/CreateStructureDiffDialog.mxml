@@ -38,7 +38,7 @@
 			
 			private var fileReference:FileReference;
 			
-			override protected function okHandler(event:Event=null):void {
+			override public function okHandler(event:Event=null):void {
 				okButton.enabled = false;
 				CorePlugin.getInstance().serviceLocator.invoke("structureDiffService.createStructureDiffFromWorkspaceAndPatch", 
 					[patch.text, repo,

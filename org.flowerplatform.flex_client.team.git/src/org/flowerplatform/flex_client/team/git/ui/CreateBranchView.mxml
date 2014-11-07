@@ -81,7 +81,7 @@
 				rebaseCommitsRadioButton.enabled = !rebaseCommitsRadioButton.enabled;
 			}
 					
-			override protected function okHandler(event:Event = null):void {				
+			override public function okHandler(event:Event = null):void {				
 				var commitId:String;
 				var startPoint:String;
 				if (useNodeAsCommitId) {

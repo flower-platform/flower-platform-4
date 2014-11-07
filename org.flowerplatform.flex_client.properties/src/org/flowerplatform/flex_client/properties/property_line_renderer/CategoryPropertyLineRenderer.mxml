@@ -25,8 +25,7 @@
 	<fx:Script>
 		<![CDATA[
 			import org.flowerplatform.flex_client.core.editor.remote.Node;
-			import org.flowerplatform.flex_client.properties.property_renderer.IPropertyRenderer;
-			import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
+			import org.flowerplatform.flexutil.properties.PropertyDescriptor;
 			
 			
 			private var _propertyDescriptor:PropertyDescriptor;			

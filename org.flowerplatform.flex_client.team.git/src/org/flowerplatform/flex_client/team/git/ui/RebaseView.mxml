@@ -54,7 +54,7 @@
 				}
 			}
 						
-			override protected function okHandler(event:Event = null):void {
+			override public function okHandler(event:Event = null):void {
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.validateHash",
 					[textInput.text, CorePlugin.getInstance().getRepository(node.nodeUri)],
 					function(result:Boolean):void {
