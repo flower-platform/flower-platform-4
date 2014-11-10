@@ -10,7 +10,7 @@ import org.flowerplatform.util.regex.RegexProcessingSession;
 
 /**
  * Add the current node to the top of the state stack, with current nesting level,
- * if {@link #property} is set in the node's properties.
+ * if {@link #property} is set and not empty in the node's properties.
  * 
  * @author Elena Posea
  * @author Mariana Gheorghe
@@ -26,7 +26,7 @@ public class EnterStateAction extends RegexAction {
 	@Override
 	public void executeAction(RegexProcessingSession param) {
 		Node currentNode = (Node) param.context.get(CodeSyncRegexConstants.CURRENT_NODE);
-		if (property != null && !currentNode.getProperties().containsKey(property)) {
+		if (property != null && nullOrEmpty(currentNode)) {
 			return;
 		}
 		
@@ -36,4 +36,15 @@ public class EnterStateAction extends RegexAction {
 		stateStack.add(0, new State(currentNestingLevel, currentNode));
 	}
 
+	private boolean nullOrEmpty(Node currentNode) {
+		if (!currentNode.getProperties().containsKey(property)) {
+			return true;
+		}
+		Object value = currentNode.getProperties().get(property);
+		if (value == null || "".equals(value)) {
+			return true;
+		}
+		return false;
+	}
+	
 }

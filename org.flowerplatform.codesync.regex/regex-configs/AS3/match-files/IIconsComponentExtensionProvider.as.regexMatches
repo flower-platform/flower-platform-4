@@ -1,6 +1,6 @@
 <map version="freeplane 1.3.0">
 <!--To view this file, download free mind mapping software Freeplane from http://freeplane.sourceforge.net -->
-<node TEXT="New Mindmap" ID="ID_1329014342" CREATED="1415378025001" MODIFIED="1415378025001"><hook NAME="MapStyle">
+<node TEXT="New Mindmap" ID="ID_525998468" CREATED="1415621434571" MODIFIED="1415621434571"><hook NAME="MapStyle">
 
 <map_styles>
 <stylenode LOCALIZED_TEXT="styles.root_node">
@@ -49,8 +49,6 @@
 </stylenode>
 </map_styles>
 </hook>
-<attribute NAME="nodeType" VALUE="result"/>
-<attribute NAME="resourceUri" VALUE="txt:user1/repo-2|.regex-configs/AS3/test-files/IIconsComponentExtensionProvider.as"/>
-<attribute NAME="showGroupedByRegex" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<attribute NAME="nodeType" VALUE="regexMatches"/>
 </node>
 </map>

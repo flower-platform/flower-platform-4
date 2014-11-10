@@ -53,7 +53,7 @@
 <node TEXT="" POSITION="right" ID="ID_1693407237" CREATED="1415273862322" MODIFIED="1415273862322">
 <attribute NAME="nodeType" VALUE="regex"/>
 <attribute NAME="regex" VALUE="\{"/>
-<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="name" VALUE="open-bracket"/>
 <attribute NAME="type" VALUE="regex"/>
 <node TEXT="" ID="ID_5895686" CREATED="1415292342300" MODIFIED="1415292342300">
@@ -71,7 +71,7 @@
 </node>
 <node TEXT="" POSITION="right" ID="ID_725492507" CREATED="1415374195209" MODIFIED="1415374195209">
 <attribute NAME="nodeType" VALUE="regex"/>
-<attribute NAME="regex" VALUE="(?=(\{))"/>
+<attribute NAME="regex" VALUE="(?=(\{?))"/>
 <attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="name" VALUE="open-bracket-capture-give-back"/>
 <attribute NAME="type" VALUE="regex"/>
@@ -93,7 +93,7 @@
 <node TEXT="" POSITION="right" ID="ID_1561149344" CREATED="1415273885638" MODIFIED="1415273885638">
 <attribute NAME="nodeType" VALUE="regex"/>
 <attribute NAME="regex" VALUE="\}"/>
-<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="name" VALUE="close-bracket"/>
 <attribute NAME="type" VALUE="regex"/>
 <node TEXT="" ID="ID_210340658" CREATED="1415292349999" MODIFIED="1415292349999">
@@ -124,7 +124,7 @@
 <node TEXT="" POSITION="right" ID="ID_1102212387" CREATED="1415277243945" MODIFIED="1415277243945">
 <attribute NAME="nodeType" VALUE="regex"/>
 <attribute NAME="regex" VALUE="/\*\*(.%reluctant-zero-or-more%)\*/"/>
-<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="name" VALUE="asdoc"/>
 <attribute NAME="type" VALUE="regex"/>
 <node TEXT="" ID="ID_1002180292" CREATED="1415355296719" MODIFIED="1415355296719">
@@ -139,14 +139,14 @@
 <node TEXT="" POSITION="right" ID="ID_424005972" CREATED="1415274095721" MODIFIED="1415274095721">
 <attribute NAME="nodeType" VALUE="regex"/>
 <attribute NAME="regex" VALUE="/\*.%reluctant-zero-or-more%\*/"/>
-<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="name" VALUE="multiline-comment"/>
 <attribute NAME="type" VALUE="regex"/>
 </node>
 <node TEXT="" POSITION="right" ID="ID_1006420477" CREATED="1415274376071" MODIFIED="1415274376071">
 <attribute NAME="nodeType" VALUE="regex"/>
 <attribute NAME="regex" VALUE="//[^%CR%^%LF%]*%CR%?%LF%?"/>
-<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="name" VALUE="single-line-comment"/>
 <attribute NAME="type" VALUE="regex"/>
 </node>
@@ -159,22 +159,22 @@
 </node>
 <node TEXT="" POSITION="right" ID="ID_1324073539" CREATED="1415277764912" MODIFIED="1415277764912">
 <attribute NAME="nodeType" VALUE="regex"/>
-<attribute NAME="regex" VALUE="(?:\s*|%multiline-comment%|%single-line-comment%)%reluctant-zero-or-more%"/>
+<attribute NAME="regex" VALUE="(?:\s|%multiline-comment%|%single-line-comment%)*"/>
 <attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="name" VALUE="noise"/>
 <attribute NAME="type" VALUE="regex"/>
 </node>
 <node TEXT="" POSITION="right" ID="ID_491473338" CREATED="1415359646689" MODIFIED="1415359646689">
 <attribute NAME="nodeType" VALUE="regex"/>
-<attribute NAME="regex" VALUE="%noise%(?::%noise%(\*|%identifier%))?%noise%"/>
+<attribute NAME="regex" VALUE="(?::%noise%(\*|%identifier%))?"/>
 <attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
 <attribute NAME="name" VALUE="typed"/>
 <attribute NAME="type" VALUE="regex"/>
 </node>
 <node TEXT="" POSITION="right" ID="ID_628995902" CREATED="1415278194771" MODIFIED="1415278194771">
 <attribute NAME="nodeType" VALUE="regex"/>
-<attribute NAME="regex" VALUE="(\w*)%noise%\bvar\b%noise%(%identifier%)%typed%"/>
-<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="regex" VALUE="(\w*)%noise%\bvar\b%noise%(%identifier%)%noise%%typed%"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="name" VALUE="attribute-var"/>
 <attribute NAME="type" VALUE="regex"/>
 <node TEXT="" ID="ID_1080287705" CREATED="1415292271780" MODIFIED="1415292271780">
@@ -232,8 +232,8 @@
 </node>
 <node TEXT="" POSITION="right" ID="ID_629956600" CREATED="1415359158630" MODIFIED="1415359158630">
 <attribute NAME="nodeType" VALUE="regex"/>
-<attribute NAME="regex" VALUE="%function%%noise%(%get%%noise%%identifier%)%params%%typed%%open-bracket-capture-give-back%"/>
-<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="regex" VALUE="(\w*)%noise%%function%%noise%(%get%%noise%%identifier%)%noise%%params%%noise%%typed%%noise%%open-bracket-capture-give-back%"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="name" VALUE="operation-getter"/>
 <attribute NAME="type" VALUE="regex"/>
 <node TEXT="" ID="ID_1563908416" CREATED="1415359849102" MODIFIED="1415359849102">
@@ -247,7 +247,7 @@
 <attribute NAME="newNodeType" VALUE="asGettterOperation"/>
 <attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="type" VALUE="createNodeAction"/>
-<attribute NAME="properties" VALUE="name,typedElementType,hasBody"/>
+<attribute NAME="properties" VALUE="visibility,name,typedElementType,hasBody"/>
 </node>
 <node TEXT="" ID="ID_368137652" CREATED="1415359861995" MODIFIED="1415359861995">
 <attribute NAME="nodeType" VALUE="attachNodeToCurrentStateAction"/>
@@ -283,8 +283,8 @@
 </node>
 <node TEXT="" POSITION="right" ID="ID_307034222" CREATED="1415360303547" MODIFIED="1415360303547">
 <attribute NAME="nodeType" VALUE="regex"/>
-<attribute NAME="regex" VALUE="%function%%noise%(%set%%noise%%identifier%)%params%%typed%%open-bracket-capture-give-back%"/>
-<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="regex" VALUE="(\w*)%noise%%function%%noise%(%set%%noise%%identifier%)%noise%%params%%noise%%typed%%noise%%open-bracket-capture-give-back%"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="name" VALUE="operation-setter"/>
 <attribute NAME="type" VALUE="regex"/>
 <node TEXT="" ID="ID_1552018537" CREATED="1415360344575" MODIFIED="1415360344575">
@@ -298,7 +298,7 @@
 <attribute NAME="newNodeType" VALUE="asSetterOperation"/>
 <attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="type" VALUE="createNodeAction"/>
-<attribute NAME="properties" VALUE="name,typedElementType,hasBody"/>
+<attribute NAME="properties" VALUE="visibility,name,typedElementType,hasBody"/>
 </node>
 <node TEXT="" ID="ID_605024090" CREATED="1415360383884" MODIFIED="1415360383884">
 <attribute NAME="nodeType" VALUE="attachNodeToCurrentStateAction"/>
@@ -327,7 +327,7 @@
 </node>
 <node TEXT="" POSITION="right" ID="ID_1385780830" CREATED="1415360645412" MODIFIED="1415360645412">
 <attribute NAME="nodeType" VALUE="regex"/>
-<attribute NAME="regex" VALUE="%function%%noise%(%identifier%)%params%%typed%%open-bracket-capture-give-back%"/>
+<attribute NAME="regex" VALUE="(\w*)%noise%%function%%noise%(%identifier%)%noise%%params%%noise%%typed%%noise%%open-bracket-capture-give-back%"/>
 <attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="name" VALUE="operation-function"/>
 <attribute NAME="type" VALUE="regex"/>
@@ -342,7 +342,7 @@
 <attribute NAME="newNodeType" VALUE="asFunctionOperation"/>
 <attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="type" VALUE="createNodeAction"/>
-<attribute NAME="properties" VALUE="name,typedElementType,hasBody"/>
+<attribute NAME="properties" VALUE="visibility,name,typedElementType,hasBody"/>
 </node>
 <node TEXT="" ID="ID_707073783" CREATED="1415360713522" MODIFIED="1415360713522">
 <attribute NAME="nodeType" VALUE="attachNodeToCurrentStateAction"/>
@@ -372,7 +372,7 @@
 <node TEXT="" POSITION="right" ID="ID_281190110" CREATED="1415289094652" MODIFIED="1415289094652">
 <attribute NAME="nodeType" VALUE="regex"/>
 <attribute NAME="regex" VALUE="(\w*)%noise%\bclass\b%noise%(%identifier%).%reluctant-zero-or-more%%open-bracket-give-back%"/>
-<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="name" VALUE="type-class"/>
 <attribute NAME="type" VALUE="regex"/>
 <node TEXT="" ID="ID_788832375" CREATED="1415289444930" MODIFIED="1415289444930">
@@ -409,7 +409,7 @@
 <node TEXT="" POSITION="right" ID="ID_511340875" CREATED="1415364583804" MODIFIED="1415364583804">
 <attribute NAME="nodeType" VALUE="regex"/>
 <attribute NAME="regex" VALUE="(\w*)%noise%\binterface\b%noise%(%identifier%).%reluctant-zero-or-more%%open-bracket-give-back%"/>
-<attribute NAME="configSettingDisabled" VALUE="true" OBJECT="java.lang.Boolean|true"/>
+<attribute NAME="configSettingDisabled" VALUE="false" OBJECT="java.lang.Boolean|false"/>
 <attribute NAME="name" VALUE="type-interface"/>
 <attribute NAME="type" VALUE="regex"/>
 <node TEXT="" ID="ID_57193079" CREATED="1415365669900" MODIFIED="1415365669900">
