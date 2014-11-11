@@ -45,12 +45,12 @@ import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
-import static org.flowerplatform.util.UtilConstants.FEATURE_PROPERTY_DESCRIPTORS;
-import static org.flowerplatform.util.UtilConstants.PROPERTY_EDITOR_TYPE_BOOLEAN;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE;
+import static org.flowerplatform.util.UtilConstants.FEATURE_PROPERTY_DESCRIPTORS;
+import static org.flowerplatform.util.UtilConstants.PROPERTY_EDITOR_TYPE_BOOLEAN;
 
 import java.util.HashMap;
 import java.util.List;
@@ -317,13 +317,16 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 					.setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_MODIFIED_RIGHT)
 					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
-			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_CONFLICT).setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_CONFLICT)
+					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_DIFFS_MODIFIED_LEFT)
 					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor()
 					.setNameAs(MATCH_DIFFS_MODIFIED_RIGHT).setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
-			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_DIFFS_CONFLICT).setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
-			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_BODY_MODIFIED).setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN));
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_DIFFS_CONFLICT)
+					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_BODY_MODIFIED)
+					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN));
 		
 		// TODO test
 		setProjectAccessController(new ProjectAccessController());

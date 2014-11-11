@@ -20,10 +20,12 @@ public final class Indenter {
 		while (matcher.find()) {
 			String line = matcher.group();
 			if (ws == null) {
+				// get the leading whitespace from the first line
 				Matcher wsMatcher = Pattern.compile("(\\s*)").matcher(line);
 				wsMatcher.find();
 				ws = wsMatcher.group();
 			} else {
+				// add leading whitespace to other lines
 				line = ws + line;
 			}
 			out += line;

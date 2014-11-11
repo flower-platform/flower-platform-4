@@ -92,7 +92,7 @@ public class DiffActionRegistry {
 			if (diff.isLeftModified() && !diff.isRightModified()) {
 				defaultAction = ActionType.ACTION_TYPE_COPY_LEFT_RIGHT.ordinal();
 			} else if (!diff.isLeftModified() && diff.isRightModified()) {
-				defaultAction = ActionType.ACTION_TYPE_COPY_LEFT_RIGHT.ordinal();
+				defaultAction = ActionType.ACTION_TYPE_COPY_RIGHT_LEFT.ordinal();
 			}
 			
 			if (!returnOnlyDefaultActions) {
@@ -108,7 +108,7 @@ public class DiffActionRegistry {
 				
 				ae = new DiffActionEntry();
 				ae.setLabel("Copy Left <- Right");
-				ae.setActionType(ActionType.ACTION_TYPE_COPY_LEFT_RIGHT.ordinal());
+				ae.setActionType(ActionType.ACTION_TYPE_COPY_RIGHT_LEFT.ordinal());
 				ae.setDiffIndex(match.getDiffs().indexOf(diff));
 				ae.setEnabled(match.getLeft() != null 
 						&& (!diff.isLeftModified() && diff.isRightModified() 

@@ -70,12 +70,12 @@ public class CodeSyncTemplateTest extends CodeSyncEclipseIndependentTestBase {
 	@Test
 	public void test() throws Exception {
 		String fileName = "employees.codesyncTemplate";
-		String ssp = "|" + PROJECT + "/" + fileName;
+		String ssp = PROJECT + "|" + fileName;
 		
 		// create file
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
 		context.getContext().put(NAME, fileName);
-		Node parent = CorePlugin.getInstance().getResourceService().getNode(Utils.getUri(FILE_SCHEME, "|" + PROJECT));
+		Node parent = CorePlugin.getInstance().getResourceService().getNode(Utils.getUri(FILE_SCHEME, PROJECT));
 		Node file = new Node(Utils.getUri(FILE_SCHEME, ssp), FILE_NODE_TYPE);
 		CorePlugin.getInstance().getNodeService().addChild(parent, file, context);
 		
@@ -109,7 +109,7 @@ public class CodeSyncTemplateTest extends CodeSyncEclipseIndependentTestBase {
 		setProperty(removeBtn, TEMPLATE_GLYPHICON, "remove");
 		
 		// table: job entries
-		Node entries = addNode(resource, INNER_TEMPLATE, TEMPLATE_TABLE, "jobEntryList.html", "jobEntry", "JobEntry");
+		Node entries = addNode(resource, FILE, TEMPLATE_TABLE, "jobEntryList.html", "jobEntry", "JobEntry");
 		setProperty(entries, "actions", "edit,remove");
 		setProperty(setProperty(addNode(entries, INNER_TEMPLATE, TEMPLATE_COLUMN, "date", "date", "Date"), "parent", "jobEntry"), "filter", "date: 'medium'");
 		setProperty(addNode(entries, INNER_TEMPLATE, TEMPLATE_COLUMN, "type", "type", "Type"), "parent", "jobEntry");
@@ -150,9 +150,6 @@ public class CodeSyncTemplateTest extends CodeSyncEclipseIndependentTestBase {
 		
 		// save
 		CorePlugin.getInstance().getResourceService().save(resourceUri, new ServiceContext<ResourceService>());
-		
-		CodeSyncTemplatePlugin.getInstance().getCodeSyncTemplateService()
-				.addMacros("div.vm,button.vm,a.vm,tabset.vm,tab.vm,form.vm,stringField.vm,comboBoxField.vm,table.vm,column.vm");
 		
 		CodeSyncTemplatePlugin.getInstance().getCodeSyncTemplateService().generate(table.getNodeUri());
 		CodeSyncTemplatePlugin.getInstance().getCodeSyncTemplateService().generate(form.getNodeUri());

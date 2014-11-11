@@ -28,6 +28,7 @@ import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_TEXT;
 import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_TEXT_COLOR;
 import static org.flowerplatform.core.CoreConstants.CATEGORY_RESOURCE_PREFIX;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.FILE_CONTAINER_CATEGORY;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_CLOUD_COLOR;
@@ -48,7 +49,6 @@ import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_CONTENT_TYPE;
 import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_CSV_TO_LIST_PREFIX;
 import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_CSV_TO_LIST_SUFFIX;
 import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_VALUE_CONVERTER;
-import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_CSV_TO_LIST;
 import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_STRING_HEX_TO_UINT;
 import static org.freeplane.features.url.UrlManager.FREEPLANE_FILE_EXTENSION;
 
@@ -125,7 +125,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_SYSTEM_NODE_TYPE)
 			.addAdditiveController(ADD_NODE_CONTROLLER, mindMapFileAddNodeController);
 		
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(FILE_CONTAINER_CATEGORY)
 			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(FREEPLANE_FILE_EXTENSION, 
 					FREEPLANE_MINDMAP_RESOURCE_KEY, MINDMAP_CONTENT_TYPE, true))
 			.addAdditiveController(ADD_NODE_CONTROLLER, mindMapFileAddNodeController)

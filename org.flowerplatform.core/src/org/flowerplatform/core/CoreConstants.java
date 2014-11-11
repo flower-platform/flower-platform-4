@@ -50,7 +50,7 @@ public final class CoreConstants {
 
 	// from MindMapConstants
 	public static final String MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX = "mindMap.";
-	public static final String FEATURE_SHOW_PROPERTIES_IN_RENDERER= "showPropertiesInRenderer";
+	public static final String FEATURE_SHOW_PROPERTIES_IN_RENDERER = "showPropertiesInRenderer";
 	
 	////////////////////////////////////////////////////////////////////
 	// Constants only in Java (or before the constants cleaning up)

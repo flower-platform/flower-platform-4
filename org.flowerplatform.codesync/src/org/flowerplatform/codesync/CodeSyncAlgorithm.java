@@ -26,7 +26,9 @@ import org.flowerplatform.codesync.action.ActionResult;
 import org.flowerplatform.codesync.action.ActionSynchronize;
 import org.flowerplatform.codesync.action.DiffAction;
 import org.flowerplatform.codesync.action.MatchActionAddLeftToRight;
+import org.flowerplatform.codesync.action.MatchActionAddRightToLeft;
 import org.flowerplatform.codesync.action.MatchActionRemoveAbstract;
+import org.flowerplatform.codesync.action.MatchActionRemoveLeft;
 import org.flowerplatform.codesync.action.MatchActionRemoveRight;
 import org.flowerplatform.codesync.adapter.ComposedModelAdapterSet;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
@@ -541,11 +543,11 @@ public class CodeSyncAlgorithm {
 		if (Match.MatchType._1MATCH_LEFT.equals(match.getMatchType())) {
 			return new MatchActionAddLeftToRight(false);
 		} else if (Match.MatchType._1MATCH_RIGHT.equals(match.getMatchType())) {
-//			return new MatchActionAddRightToLeft(false);
-			return new MatchActionRemoveRight(); // TODO test
+			return new MatchActionAddRightToLeft(false);
+//			return new MatchActionRemoveRight(); // TODO test
 		} else if (Match.MatchType._2MATCH_ANCESTOR_LEFT.equals(match.getMatchType())) {
-//			return new MatchActionRemoveLeft();
-			return new MatchActionAddLeftToRight(false); // TODO test
+			return new MatchActionRemoveLeft();
+//			return new MatchActionAddLeftToRight(false); // TODO test
 		} else if (Match.MatchType._2MATCH_ANCESTOR_RIGHT.equals(match.getMatchType())) {
 			return new MatchActionRemoveRight();
 		}

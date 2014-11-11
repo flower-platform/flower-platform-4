@@ -6,7 +6,7 @@
 #if($val)#evaluate($format)#else$!default#end
 #end
 
-#macro( callMacro $node $param)
+#macro( callMacro $node $param )
 #set( $callMacro = "#${node.template}(\$node \$param)" )
 #evaluate($callMacro)
 #end
