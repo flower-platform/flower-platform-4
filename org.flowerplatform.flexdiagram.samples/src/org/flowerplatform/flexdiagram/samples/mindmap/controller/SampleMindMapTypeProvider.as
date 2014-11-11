@@ -17,12 +17,18 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 	import org.flowerplatform.flexutil.controller.ITypeProvider;
+	import org.flowerplatform.flexutil.properties.PropertyEntry;
 	
+	/**
+	 * @author Cristian Spiescu
+	 */
 	public class SampleMindMapTypeProvider implements ITypeProvider {
 		
 		public function getType(model:Object):String {
 			if (model is SampleMindMapModel) {
 				return "mindmap";
+			} else if (model is PropertyEntry) {
+				return "propertyEntry";
 			}
 			return null;
 		}

@@ -14,6 +14,9 @@
     <classEntry path="org.flowerplatform.flexutil.samples.spinner.RemoveGlobalSpinnerViewContent"/>
     <classEntry path="org.flowerplatform.flexutil.samples.object_proxy.ObjectProxySample"/>
     <classEntry path="org.flowerplatform.flexutil.samples.object_proxy.INodeChangedListener"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.properties.SamplePropertiesHelper"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.properties.PropertiesStandAloneSample"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.properties.SamplePropertiesModel"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

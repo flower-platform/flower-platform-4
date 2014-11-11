@@ -13,10 +13,9 @@
  * 
  * license-end
  */
-package org.flowerplatform.flexdiagram.controller.renderer {
+package org.flowerplatform.flexutil.flexdiagram {
 	import mx.core.IVisualElement;
 	
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexutil.controller.AbstractController;
 	
 	/**
@@ -32,22 +31,26 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 		/**
 		 * This usually returns the Class of the renderer. MUST return the Class of the renderer as key:
 		 * for Sequential Layout mechanism, or for Absolute Layout, when a model can have multiple types of
-		 * renderers.
+		 * renderers. For the latter case, the controller should listen the model. When its state changes and
+		 * it needs a new renderer => it should inform the system (i.e. "shouldRefresh...").
+		 * 
+		 * <p>
+		 * For AbsoluteLayout, with the same renderer type that has several states: the key should be
+		 * a string composed of the elements that form the state. E.g. "MyRenderer.hasDetails.hasProperties".
+		 * No listening needed by this class; however the renderer should listen the model and change the state.
 		 */
-		public function geUniqueKeyForRendererToRecycle(context:DiagramShellContext, model:Object):Object {
+		public function getUniqueKeyForRendererToRecycle(context:Object, model:Object):Object {
 			throw new Error("This method needs to be implemented.");
 		}
 		
-		public function createRenderer(context:DiagramShellContext, model:Object):IVisualElement {
+		public function createRenderer(context:Object, model:Object):IVisualElement {
 			throw new Error("This method needs to be implemented.");
 		}
 		
-		public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
-			throw new Error("This method needs to be implemented.");
+		public function associatedModelToRenderer(context:Object, model:Object, renderer:IVisualElement):void {
 		}
 		
-		public function unassociatedModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, modelIsDisposed:Boolean):void {
-			throw new Error("This method needs to be implemented.");
+		public function unassociatedModelFromRenderer(context:Object, model:Object, renderer:IVisualElement, modelIsDisposed:Boolean):void {
 		}
 		
 	}

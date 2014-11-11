@@ -3,3 +3,5 @@
 move_cursor.png -> http://www.iconfinder.com/icondetails/80974/64/move_icon
 
 == Icons allowed for commercial use (NO link required) ==
+
+noteIcon.png -> https://www.iconfinder.com/icons/16347/note_icon

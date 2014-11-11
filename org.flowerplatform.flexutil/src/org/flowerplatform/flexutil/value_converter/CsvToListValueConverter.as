@@ -17,7 +17,6 @@ package org.flowerplatform.flexutil.value_converter {
 	import mx.collections.ArrayList;
 	
 	import org.flowerplatform.flexutil.FlexUtilConstants;
-	import org.flowerplatform.flexutil.controller.AbstractValueConverter;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -26,7 +25,7 @@ package org.flowerplatform.flexutil.value_converter {
 		
 		override public function convertValue(value:Object, extraInfo:Object):Object {
 			var result:ArrayList = new ArrayList();
-			if (value == null || value == "") {
+			if (value == null || isEmpty(value)) {
 				return result;
 			}
 			if (extraInfo != null) {
@@ -39,11 +38,19 @@ package org.flowerplatform.flexutil.value_converter {
 			if (suffix == null) {
 				suffix = "";
 			}
-			var spl:Array = String(value).split(",");
+			var spl:Array = split(value);
 			for (var i:int = 0; i < spl.length; i++) {
 				result.addItem(prefix + spl[i] + suffix);
 			}
 			return result;
+		}
+		
+		protected function isEmpty(value:Object):Boolean {
+			return value == "";
+		}
+		
+		protected function split(value:Object):Array {
+			return (value as String).split(",");
 		}
 		
 	}

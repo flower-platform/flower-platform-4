@@ -20,10 +20,10 @@ package org.flowerplatform.flexdiagram.controller.model_children {
 	import mx.events.PropertyChangeEvent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+	import org.flowerplatform.flexutil.list.ParentAwareArrayList;
 	
 	/**
-	 * <b>NOTE:</b> The handler for removed elements doesn't work for the follwing cases: a) <code>list.removeAll()</code> and
+	 * <b>NOTE:</b> The handler for removed elements doesn't work for the following cases: a) <code>list.removeAll()</code> and
 	 * b) <code>list.source = newValue</code> because a CollectionEvent of type RESET is sent which doen not contain information
 	 * about the old elements. This may be solved by adding logic (i.e. event dispatch) to the list in these 2 methods or maybe even better
 	 * in <code>stopTrackUpdates()</code>. 

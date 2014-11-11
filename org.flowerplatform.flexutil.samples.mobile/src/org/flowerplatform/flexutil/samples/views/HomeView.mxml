@@ -28,6 +28,7 @@
 			import org.flowerplatform.flexutil.mobile.view_content_host.split.MobileSplitViewHost;
 			import org.flowerplatform.flexutil.samples.gradient_list.LeftList;
 			import org.flowerplatform.flexutil.samples.gradient_list.RightList;
+			import org.flowerplatform.flexutil.samples.properties.PropertiesStandAloneSample;
 			
 			private function splitViewWrapperClickHandler(event:MouseEvent):void {
 				var leftActiveComponent:Button = new Button();
@@ -69,4 +70,5 @@
 	<s:Button label="Split Mobile View Host" click="splitViewWrapperClickHandler(event)"/>
 	<s:Button label="Gradient List" click="gradientListClickHandler(event)"/>
 	<s:Button label="Validating Text Input" click="navigator.pushView(ValidatingTextInputSkinSampleView)"/>
+	<s:Button label="Properties" click="navigator.pushView(MobileViewHost, { viewContent: new PropertiesStandAloneSample() })"/>
 </s:View>

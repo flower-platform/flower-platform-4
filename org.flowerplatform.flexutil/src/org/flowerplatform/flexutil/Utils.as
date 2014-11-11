@@ -26,7 +26,6 @@ package org.flowerplatform.flexutil {
 	import spark.components.supportClasses.SkinnableTextBase;
 	
 	import flashx.textLayout.conversion.TextConverter;
-	import flashx.textLayout.elements.IConfiguration;
 	import flashx.textLayout.elements.TextFlow;
 	
 	/**
@@ -44,13 +43,20 @@ package org.flowerplatform.flexutil {
 		public static const ICONS_SEPARATOR:String = ",";
 		
 		/**
-		 * Makes the given text input non-editable and applies a grey color as background.
+		 * Makes the given text input non-editable and applies a grey color as background. Interesting to use
+		 * (instead of setting "disabled") so that we can do copy from UI.
 		 */ 
-		public static function makePseudoDisabled(object:Object):void {
+		public static function makePseudoDisabled(object:Object, disabled:Boolean = true):void {
 			if (object is spark.components.TextInput || object is ITextInput || object is SkinnableTextBase) {
-				object.editable = false;
-				object.setStyle("backgroundColor", "#DEDCDC");
-				object.setStyle("color", "#666666");
+				if (disabled) {
+					object.editable = false;
+					object.setStyle("contentBackgroundColor", "#DEDCDC");
+					object.setStyle("color", "#666666");
+				} else {
+					object.editable = true;
+					object.setStyle("contentBackgroundColor", "#FFFFFF");
+					object.setStyle("color", "#000000");
+				}
 			}
 		}
 		
@@ -93,6 +99,14 @@ package org.flowerplatform.flexutil {
 			}
 			
 			return simpleClassName;
+		}
+		
+		public static function getPropertySafe(object:Object, propertyName:String):Object {
+			if (object != null && object.hasOwnProperty(propertyName)) {
+				return object[propertyName];
+			} else {
+				return null;
+			}
 		}
 		
 		public static function getClass(obj:Object):Class {			

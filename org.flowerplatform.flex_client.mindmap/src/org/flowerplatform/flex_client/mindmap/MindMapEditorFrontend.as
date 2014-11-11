@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.flex_client.mindmap {
 	
+	import flash.events.Event;
+	
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	
@@ -32,18 +34,25 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flex_client.mindmap.ui.MindMapIconsBar;
 	import org.flowerplatform.flex_client.properties.action.AddChildActionProvider;
 	import org.flowerplatform.flex_client.properties.action.AddSiblingActionProvider;
+	import org.flowerplatform.flex_client.resources.ActionOrderIndexes;
+	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.DiagramShell;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer;
 	import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
-	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.action.ActionBase;
+	import org.flowerplatform.flexutil.action.ComposedAction;
 	import org.flowerplatform.flexutil.action.VectorActionProvider;
 
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class MindMapEditorFrontend extends DiagramEditorFrontend {
+		
+		protected var showPropertiesInRenderer:int = 1;
+		
+		public var showPropertiesInRendererInternal:Boolean = true;
 			
 		public function MindMapEditorFrontend() {
 			super();
@@ -69,6 +78,18 @@ package org.flowerplatform.flex_client.mindmap {
 			
 			shortcutsActionProvider.addAction(new InplaceEditorAction());
 			
+			shortcutsActionProvider.addAction(new ComposedAction().setId(MindMapConstants.EVENT_SHOW_PROPERTIES_IN_RENDERER).setLabel(Resources.getMessage("mindmap.editor.showPropertiesInRenderer")).setIcon(Resources.tableGear).setOrderIndex(ActionOrderIndexes.SHOW_PROPERTIES_IN_RENDERER));
+			shortcutsActionProvider.addAction(new ActionBase().setOrderIndex(0).setParentId(MindMapConstants.EVENT_SHOW_PROPERTIES_IN_RENDERER).setLabel(Resources.getMessage("mindmap.editor.showPropertiesInRenderer.none")).setIcon(Resources.tableGear)
+				.setFunctionDelegate(function ():void { showPropertiesInRenderer = 0; dispatchEvent(new Event(MindMapConstants.EVENT_SHOW_PROPERTIES_IN_RENDERER)) } ));
+			shortcutsActionProvider.addAction(new ActionBase().setOrderIndex(1).setParentId(MindMapConstants.EVENT_SHOW_PROPERTIES_IN_RENDERER).setLabel(Resources.getMessage("mindmap.editor.showPropertiesInRenderer.descriptor")).setIcon(Resources.tableGear)
+				.setFunctionDelegate(function ():void { showPropertiesInRenderer = 1; showPropertiesInRendererInternal = false; dispatchEvent(new Event(MindMapConstants.EVENT_SHOW_PROPERTIES_IN_RENDERER)) } ));
+			shortcutsActionProvider.addAction(new ActionBase().setOrderIndex(2).setParentId(MindMapConstants.EVENT_SHOW_PROPERTIES_IN_RENDERER).setLabel(Resources.getMessage("mindmap.editor.showPropertiesInRenderer.descriptor.internal")).setIcon(Resources.tableGear)
+				.setFunctionDelegate(function ():void { showPropertiesInRenderer = 1; showPropertiesInRendererInternal = true; dispatchEvent(new Event(MindMapConstants.EVENT_SHOW_PROPERTIES_IN_RENDERER)) } ));
+			shortcutsActionProvider.addAction(new ActionBase().setOrderIndex(3).setParentId(MindMapConstants.EVENT_SHOW_PROPERTIES_IN_RENDERER).setLabel(Resources.getMessage("mindmap.editor.showPropertiesInRenderer.all")).setIcon(Resources.tableGear)
+				.setFunctionDelegate(function ():void { showPropertiesInRenderer = 2; showPropertiesInRendererInternal = false; dispatchEvent(new Event(MindMapConstants.EVENT_SHOW_PROPERTIES_IN_RENDERER)) } ));
+			shortcutsActionProvider.addAction(new ActionBase().setOrderIndex(4).setParentId(MindMapConstants.EVENT_SHOW_PROPERTIES_IN_RENDERER).setLabel(Resources.getMessage("mindmap.editor.showPropertiesInRenderer.all.internal")).setIcon(Resources.tableGear)
+				.setFunctionDelegate(function ():void { showPropertiesInRenderer = 2; showPropertiesInRendererInternal = true; dispatchEvent(new Event(MindMapConstants.EVENT_SHOW_PROPERTIES_IN_RENDERER)) } ));
+			
 			actionProvider.actionProviders.push(shortcutsActionProvider);			
 		}
 		
@@ -79,6 +100,7 @@ package org.flowerplatform.flex_client.mindmap {
 		override protected function createDiagramShell():DiagramShell {
 			var diagramShell:MindMapEditorDiagramShell = new MindMapEditorDiagramShell();			
 			diagramShell.nodeRegistry = nodeRegistry;
+			diagramShell.editorFrontend = this;
 			
 			return diagramShell;
 		}
@@ -129,6 +151,16 @@ package org.flowerplatform.flex_client.mindmap {
 			}
 			
 			return selection;
+		}
+		
+		public function shouldDisplayPropertiesInRenderer(model:Node):Boolean {
+			if (showPropertiesInRenderer == 0) {
+				return false;
+			} else if (showPropertiesInRenderer == 2) {
+				return true;
+			} else {
+				return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getSingleController(MindMapConstants.FEATURE_SHOW_PROPERTIES_IN_RENDERER, model) != null; 
+			}
 		}
 		
 	}

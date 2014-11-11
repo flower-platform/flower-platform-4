@@ -47,7 +47,7 @@
 			import org.flowerplatform.flexdiagram.samples.model.BasicSubModel;
 			import org.flowerplatform.flexdiagram.tool.DragTool;
 			import org.flowerplatform.flexdiagram.tool.Tool;
-			import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+			import org.flowerplatform.flexutil.list.ParentAwareArrayList;
 
 			[Bindable]
 			public var modelHolder:IModelHolder;

@@ -13,19 +13,29 @@
  * 
  * license-end
  */
-package org.flowerplatform.flexutil {
+package org.flowerplatform.flexutil.list {
+	import flash.events.Event;
+	import flash.utils.ByteArray;
 	
 	import mx.collections.ArrayList;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
+	import mx.events.PropertyChangeEvent;
+	import mx.utils.ArrayUtil;
 	
 	/**
+	 * @author Cristian Spiescu
 	 * @author Cristina Constantinescu
-	 */ 
-	public class FlowerArrayList extends ArrayList {
+	 */
+	public class ParentAwareArrayList extends ArrayList {
 		
-		public function FlowerArrayList(source:Array=null) {
+		public var parent:Object;
+		
+		public var eventsCanBeIgnored:Boolean;
+		
+		public function ParentAwareArrayList(parent:Object, source:Array=null) {
 			super(source);
+			this.parent = parent;
 		}
 		
 		/**
@@ -37,12 +47,7 @@ package org.flowerplatform.flexutil {
 			
 			super.source = s;
 			
-			if (oldSource != null)	{
-				var len:int = length;
-				for (var i:int = 0; i < oldSource.length; i++) {
-					dispatchRemoveEvent(oldSource[i], i);
-				}
-			}    
+			dispatchRemoveEventForEachItem(oldSource); 
 		}
 		
 		/**
@@ -50,15 +55,24 @@ package org.flowerplatform.flexutil {
 		 */ 
 		override public function removeAll():void {
 			var oldSource:Array = source != null ? source.concat() : null;
-			
-			super.removeAll();
-			
-			if (oldSource != null)	{
-				var len:int = length;
-				for (var i:int = 0; i < oldSource.length; i++) {
-					dispatchRemoveEvent(oldSource[i], i);					
-				}
-			}    
+						
+			super.removeAll();					
+				
+			dispatchRemoveEventForEachItem(oldSource); 
+		}
+		
+		private function dispatchRemoveEventForEachItem(oldSource:Array):void {
+			try {				
+				eventsCanBeIgnored = true;
+				if (oldSource != null)	{
+					var len:int = length;
+					for (var i:int = 0; i < oldSource.length; i++) {
+						dispatchRemoveEvent(oldSource[i], i);					
+					}
+				}  						
+			} finally {
+				eventsCanBeIgnored = false;
+			}		
 		}
 		
 		private function dispatchRemoveEvent(item:Object, location:int):void {
@@ -67,6 +81,17 @@ package org.flowerplatform.flexutil {
 			event.items.push(item);
 			event.location = location;
 			dispatchEvent(event);
+		}		
+		
+		public function resetSelection():void {
+			try {
+				// Because an addItem is called after, the eventsCanBeIgnored is set to true,
+				// this way listeners can limit the number of unwanted events.
+				eventsCanBeIgnored = true;
+				removeAll();							
+			} finally {
+				eventsCanBeIgnored = false;
+			}
 		}
 	}
 }

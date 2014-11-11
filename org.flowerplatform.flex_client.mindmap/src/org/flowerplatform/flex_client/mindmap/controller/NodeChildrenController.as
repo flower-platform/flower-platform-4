@@ -21,21 +21,19 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
+	import org.flowerplatform.flexutil.list.EmptyList;
 		
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class NodeChildrenController extends ModelChildrenController {
 		
-		private static const EMPTY_LIST:ArrayList = new ArrayList();
-		
-
 		override public function getParent(context:DiagramShellContext, model:Object):Object {
 			return Node(model).parent;
 		}
 		
 		override public function getChildren(context:DiagramShellContext, model:Object):IList	{
-			return EMPTY_LIST;
+			return EmptyList.INSTANCE;
 		}
 		
 	}

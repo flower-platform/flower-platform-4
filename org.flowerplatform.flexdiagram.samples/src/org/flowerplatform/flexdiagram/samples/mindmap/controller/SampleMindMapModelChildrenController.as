@@ -15,27 +15,26 @@
  */
 package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 	
-	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
+	import org.flowerplatform.flexutil.samples.properties.SamplePropertiesHelper;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class SampleMindMapModelChildrenController extends ModelChildrenController {
 		
-		private static const EMPTY_LIST:ArrayList = new ArrayList();
-				
 		override public function getParent(context:DiagramShellContext, model:Object):Object {
 			return SampleMindMapModel(model).parent;
 		}
 		
 		override public function getChildren(context:DiagramShellContext, model:Object):IList	{
 			// no children; this controller is used only to dispatch events
-			return EMPTY_LIST;
+//			return EmptyList.INSTANCE;
+			return new SamplePropertiesHelper().getPropertyEntries(null, context.diagramShell.registry, model);
 		}
 		
 	}

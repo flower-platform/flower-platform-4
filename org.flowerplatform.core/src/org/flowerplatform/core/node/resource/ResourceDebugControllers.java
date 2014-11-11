@@ -318,7 +318,7 @@ public class ResourceDebugControllers extends DebugControllers {
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(SESSION_CATEGORY)
 		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new SessionCategoryDebugController().setOrderIndexAs(-500000))
-		.addAdditiveController(CoreConstants.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs("ip"));
+		.addAdditiveController(UtilConstants.FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs("ip"));
 		
 		// session as child of debug; children are resources
 		
@@ -330,7 +330,7 @@ public class ResourceDebugControllers extends DebugControllers {
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(RESOURCE_CATEGORY)
 		.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new ResourceCategoryDebugController().setOrderIndexAs(-500000))
-		.addAdditiveController(CoreConstants.PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CoreConstants.LAST_UPDATE_TIMESTAMP));
+		.addAdditiveController(UtilConstants.FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(CoreConstants.LAST_UPDATE_TIMESTAMP));
 		
 		// resource as child of session; children are sessions
 		

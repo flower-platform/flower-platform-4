@@ -36,6 +36,8 @@ package org.flowerplatform.flex_client.mindmap {
 		public static const FREEPLANE_MINDMAP_CATEGORY:String = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY;
 		public static const FREEPLANE_PERSISTENCE_CATEGORY:String = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 		
+		public static const FEATURE_SHOW_PROPERTIES_IN_RENDERER:String = "showPropertiesInRenderer";
+		
 		//////////////////////////////////
 		// Node properties
 		//////////////////////////////////
@@ -105,5 +107,7 @@ package org.flowerplatform.flex_client.mindmap {
 		
 		public static const LOAD_CUSTOM_ICONS:int = 1;
 		public static const LOAD_DEFAULT_ICONS:int = 2;
+		
+		public static const EVENT_SHOW_PROPERTIES_IN_RENDERER:String = "showPropertiesInRenderer";
 	}
 }

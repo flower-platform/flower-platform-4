@@ -41,6 +41,8 @@ package org.flowerplatform.flex_client.mindmap {
 	public class MindMapEditorDiagramShell extends MindMapDiagramShell implements INodeChangeListener {
 
 		private var _nodeRegistry:*;
+		
+		public var editorFrontend:MindMapEditorFrontend;
 				
 		public function MindMapEditorDiagramShell() {
 			super();

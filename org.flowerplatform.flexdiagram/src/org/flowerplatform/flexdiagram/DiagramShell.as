@@ -38,7 +38,7 @@ package org.flowerplatform.flexdiagram {
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.ModelExtraInfoController;
-	import org.flowerplatform.flexdiagram.controller.renderer.RendererController;
+	import org.flowerplatform.flexutil.flexdiagram.RendererController;
 	import org.flowerplatform.flexdiagram.controller.selection.SelectionController;
 	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
@@ -46,7 +46,7 @@ package org.flowerplatform.flexdiagram {
 	import org.flowerplatform.flexdiagram.tool.IWakeUpableTool;
 	import org.flowerplatform.flexdiagram.tool.Tool;
 	import org.flowerplatform.flexdiagram.tool.WakeUpTool;
-	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+	import org.flowerplatform.flexutil.list.ParentAwareArrayList;
 	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	import org.flowerplatform.flexutil.controller.ITypeProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
@@ -315,9 +315,11 @@ package org.flowerplatform.flexdiagram {
 		
 		protected function moveResizeHandler(event:Event, model:Object = null):void {
 			if (model == null) {
-				model = IEventDispatcher(event.target.data);
+				model = event.target.data;
 			}
-			model.dispatchEvent(new UpdateConnectionEndsEvent());
+			if (model is IEventDispatcher) {
+				model.dispatchEvent(new UpdateConnectionEndsEvent());
+			}
 			
 			var context:DiagramShellContext = getNewDiagramShellContext();
 			var controller:ModelChildrenController = ControllerUtils.getModelChildrenController(context, model);
@@ -442,7 +444,12 @@ package org.flowerplatform.flexdiagram {
 		}
 		
 		public function getDynamicObject(context:DiagramShellContext, model:Object):Object {
-			return DynamicModelExtraInfoController(ControllerUtils.getModelExtraInfoController(context, model)).getDynamicObject(context, model);
+			var controller:ModelExtraInfoController = ControllerUtils.getModelExtraInfoController(context, model);
+			if (controller is DynamicModelExtraInfoController) {
+				return DynamicModelExtraInfoController(controller).getDynamicObject(context, model);
+			} else {
+				return null;
+			}
 		}
 		
 		public function makeModelRendererVisible(model:Object, context:DiagramShellContext, padding:int = 10):void {

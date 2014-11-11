@@ -40,7 +40,7 @@
 			
 			public var resultHandler:Function;
 			
-			override protected function okHandler(event:Event=null):void {				
+			override public function okHandler(event:Event=null):void {				
 				super.okHandler(event);
 				resultHandler(getViewResult());
 				cancelHandler();

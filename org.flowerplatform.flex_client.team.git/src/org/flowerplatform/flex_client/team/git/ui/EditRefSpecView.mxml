@@ -48,7 +48,7 @@
 				viewHost.setLabel(Resources.getMessage("flex_client.team.git.ui.EditRefSpec.title"));
 			}
 			
-			override protected function okHandler(event:Event = null):void {
+			override public function okHandler(event:Event = null):void {
 				if (Validator.validateAll(validators).length > 0) {
 					return;
 				}

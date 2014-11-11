@@ -29,7 +29,7 @@ package org.flowerplatform.flex_client.properties.action {
 		
 		public function ShowPropertiesAction(){
 			super();
-			label = Resources.getMessage("properties.action.show");
+			label = Resources.getMessage("properties.action.show") + " (old)";
 			icon = Resources.propertiesIcon;
 			orderIndex = 1000;
 		}

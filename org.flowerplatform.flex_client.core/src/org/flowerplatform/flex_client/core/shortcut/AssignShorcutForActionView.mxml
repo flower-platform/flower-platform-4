@@ -81,7 +81,7 @@
 				txtShortcut.text = shortcutLabel;
 			}
 				
-			override protected function okHandler(event:Event = null):void {
+			override public function okHandler(event:Event = null):void {
 				if (shortcut == null || shortcut.toString() == null) {
 					return;
 				}

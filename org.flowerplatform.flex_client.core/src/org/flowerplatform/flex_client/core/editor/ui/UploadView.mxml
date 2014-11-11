@@ -58,7 +58,7 @@
 				fileReference.browse();
 			}
 			
-			override protected function okHandler(event:Event = null):void {
+			override public function okHandler(event:Event = null):void {
 				if (Utils.endsWith(fileReference.name, ZIP_EXTENSION)) {
 					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
 						.setText(Resources.getMessage("upload.make.archive"))

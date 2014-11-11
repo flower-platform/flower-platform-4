@@ -76,6 +76,7 @@ import org.flowerplatform.freeplane.style.controller.MindMapStyleResourceHandler
 import org.flowerplatform.freeplane.style.controller.StyleRootChildrenProvider;
 import org.flowerplatform.freeplane.style.controller.StyleRootPropertiesProvider;
 import org.flowerplatform.resources.ResourcesPlugin;
+import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.controller.GenericDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.freeplane.features.url.UrlManager;
@@ -192,7 +193,7 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_BACKGROUND_COLOR, new GenericDescriptor("BACKGROUND_COLOR")
 				.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_STRING_HEX_TO_UINT))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_ICONS, new GenericDescriptor("icons")
-				.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_CSV_TO_LIST)
+				.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, UtilConstants.VALUE_CONVERTER_LIST_TO_LIST)
 				.addExtraInfoProperty(EXTRA_INFO_CSV_TO_LIST_PREFIX, ResourcesPlugin.getInstance().getResourceUrl("images/mindmap/icons/"))
 				.addExtraInfoProperty(EXTRA_INFO_CSV_TO_LIST_SUFFIX, ".png"))
 			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MIND_MAP_RENDERER_CLOUD_TYPE, new GenericDescriptor("cloud.SHAPE"))

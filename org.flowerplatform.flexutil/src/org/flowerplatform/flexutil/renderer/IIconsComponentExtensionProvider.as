@@ -16,7 +16,7 @@
 package org.flowerplatform.flexutil.renderer {
 	import mx.core.UIComponent;
 	
-	import org.flowerplatform.flexutil.FlowerArrayList;
+	import org.flowerplatform.flexutil.list.FlowerArrayList;
 	
 	import spark.components.Group;
 	

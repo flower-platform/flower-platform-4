@@ -94,6 +94,13 @@ package org.flowerplatform.flexutil.controller {
 			super();
 			addDynamicCategoryProvider(new AllDynamicCategoryProvider());
 		}
+		
+		public function getSingleController(feature:String, model:Object):AbstractController {
+			return getExpectedTypeDescriptor(typeProvider.getType(model)).getSingleController(feature, model);
+		}
 	
+		public function getAdditiveControllers(feature:String, model:Object):IList {
+			return getExpectedTypeDescriptor(typeProvider.getType(model)).getAdditiveControllers(feature, model);
+		}
 	}
 }

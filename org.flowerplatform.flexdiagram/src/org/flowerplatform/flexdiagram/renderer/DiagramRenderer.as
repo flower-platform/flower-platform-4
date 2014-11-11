@@ -24,7 +24,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.IDiagramShellContextAware;
-	import org.flowerplatform.flexdiagram.controller.visual_children.VisualChildrenController;
+	import org.flowerplatform.flexutil.flexdiagram.VisualChildrenController;
 	import org.flowerplatform.flexdiagram.util.RectangularGrid;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteDataRenderer;
 	
@@ -33,7 +33,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	/**
 	 * @author Cristian Spiescu
 	 */
-	public class DiagramRenderer extends InfiniteDataRenderer implements IDiagramShellContextAware, IVisualChildrenRefreshable, IAbsoluteLayoutRenderer, IFocusManagerComponent {
+	public class DiagramRenderer extends InfiniteDataRenderer implements IDiagramShellContextAware, IVisualChildrenRefreshable, IAbsoluteLayoutRenderer {
 
 		protected var _context:DiagramShellContext;
 		protected var visualChildrenController:VisualChildrenController;
@@ -123,7 +123,7 @@ package org.flowerplatform.flexdiagram.renderer {
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 			
 			if (visualChildrenController != null) {
-				visualChildrenController.refreshVisualChildren(diagramShellContext, data);
+				visualChildrenController.refreshVisualChildren(diagramShellContext, this, data);
 			}
 			
 			// resize/move the grid (depending on the viewport dimensions)

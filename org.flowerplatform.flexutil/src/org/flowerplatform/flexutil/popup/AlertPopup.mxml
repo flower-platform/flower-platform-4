@@ -30,16 +30,14 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayList;
+			import mx.events.FlexEvent;
+			
 			import flashx.textLayout.conversion.TextConverter;
 			import flashx.textLayout.formats.LineBreak;
 			
-			import mx.collections.ArrayList;
-			import mx.collections.IList;
-			import mx.events.FlexEvent;
-			
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			private var _title:String;

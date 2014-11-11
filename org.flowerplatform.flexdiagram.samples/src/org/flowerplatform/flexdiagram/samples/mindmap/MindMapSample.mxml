@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
-	license-start
- 
-	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
-	
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation version 3.
-	 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-	
-	license-end
+license-start
+
+Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+license-end
 -->
-<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
-			   xmlns:s="library://ns.adobe.com/flex/spark"
-			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   xmlns:samples="org.flowerplatform.flexdiagram.samples.*"
-			   xmlns:flexdiagram="org.flowerplatform.flexdiagram.*"
-			   xmlns:renderer="org.flowerplatform.flexdiagram.renderer.*"
-			   xmlns:infinitegroup="org.flowerplatform.flexdiagram.util.infinitegroup.*"
-			   xmlns:mindmap="org.flowerplatform.flexdiagram.samples.mindmap.*"
-			   xmlns:mindmap1="org.flowerplatform.flexdiagram.mindmap.*"
-			   creationComplete="creationCompleteHandler(event)"
-			   implements="org.flowerplatform.flexdiagram.samples.IModelHolder">
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:samples="org.flowerplatform.flexdiagram.samples.*"
+		 xmlns:flexdiagram="org.flowerplatform.flexdiagram.*"
+		 xmlns:renderer="org.flowerplatform.flexdiagram.renderer.*"
+		 xmlns:infinitegroup="org.flowerplatform.flexdiagram.util.infinitegroup.*"
+		 xmlns:mindmap="org.flowerplatform.flexdiagram.samples.mindmap.*"
+		 xmlns:mindmap1="org.flowerplatform.flexdiagram.mindmap.*"
+		 xmlns:properties="org.flowerplatform.flexutil.properties.*"
+		 
+		 creationComplete="creationCompleteHandler(event)"
+		 implements="org.flowerplatform.flexdiagram.samples.IModelHolder, org.flowerplatform.flexutil.view_content_host.IViewContent">
 	<fx:Script>
 		<![CDATA[
 			import mx.events.CollectionEvent;
@@ -38,7 +40,6 @@
 			import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 			import org.flowerplatform.flexdiagram.renderer.BaseRenderer;
 			import org.flowerplatform.flexdiagram.samples.IModelHolder;
-			import org.flowerplatform.flexdiagram.samples.mindmap.MindMapPopulator;
 			import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 			import org.flowerplatform.flexdiagram.tool.DragTool;
 			import org.flowerplatform.flexdiagram.tool.InplaceEditorTool;
@@ -46,13 +47,29 @@
 			import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
 			import org.flowerplatform.flexdiagram.tool.ZoomTool;
 			import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
+			import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
+			import org.flowerplatform.flexutil.flexdiagram.StandAloneSequentialLayoutVisualChildrenController;
+			import org.flowerplatform.flexutil.properties.PropertiesHelper;
+			import org.flowerplatform.flexutil.properties.PropertyCommitController;
+			import org.flowerplatform.flexutil.properties.PropertyEntryRendererController;
+			import org.flowerplatform.flexutil.samples.properties.SamplePropertiesHelper;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
-						
+			
+			
+			
 			// the IDE doesn't see these imports during "organize imports"
 			BaseRenderer;
 			FlexDiagramConstants;
 			
 			private var _rootModel:Object;
+			
+			
+			public function additionalCloseHandler():void {
+			}
+			
+			public function set viewHost(viewHost:IViewHost):void {
+			}
 
 			[Bindable]
 			protected var selectedItem:SampleMindMapModel;
@@ -112,28 +129,44 @@
 	<s:layout>
 		<s:HorizontalLayout/>
 	</s:layout>	
-	
 	<s:Scroller width="40%" height="100%">
 		<s:VGroup width="40%" height="100%" clipAndEnableScrolling="true">
-			<s:Panel title="MindMapRootModelWrapper.children (size = {mindMapRootModelWrapper.children.length})" width="100%" height="30%">
-				<s:List width="100%" height="100%" dataProvider="{mindMapRootModelWrapper.children}"/>
+			<s:HGroup gap="0">
+				<s:ToggleButton id="showDiagramChildren" label="Diagr Childr"/>
+				<s:ToggleButton id="showSibblings" label="Sibblings"/>
+				<s:ToggleButton id="showHardcodedProperties" label="Hardcd Props" selected="true"/>
+				<s:ToggleButton id="showProperties" label="Props"/>				
+			</s:HGroup>
+			
+			<s:Panel title="MindMapRootModelWrapper.children (size = {mindMapRootModelWrapper.children.length})" width="100%" height="30%" visible="{showDiagramChildren.selected}" includeInLayout="{showDiagramChildren.selected}">
+				<s:List id="list" width="100%" height="100%" dataProvider="{mindMapRootModelWrapper.children}"/>
 			</s:Panel>
+			
 			<s:Panel id="listofChildrenPanel" width="100%" height="30%"
-					 title="List of children for selected node's parent">
+					 title="Sibblings" visible="{showSibblings.selected}" includeInLayout="{showSibblings.selected}">
 				<s:List id="childrenProviderList" width="100%" height="100%" 
+						doubleClick="selectedItem = childrenProviderList.selectedItem" doubleClickEnabled="true"
 						dataProvider="{selectedItem.parent.children}" 
 						itemRenderer="{new ClassFactoryWithConstructor(BaseRenderer, { 
-							showSelected : true,
-							featureForValuesProvider : 'mindMapValuesProvider',
-							typeDescriptorRegistry : diagramShell.registry
+						showSelected : true,
+						featureForValuesProvider : 'mindMapValuesProvider',
+						typeDescriptorRegistry : diagramShell.registry
 						})}"/>
 			</s:Panel>
 			
-			<s:Panel id="formPanel" width="100%" title="Properties Editor">
-				<s:Form id="propertiesForm" width="100%">
+			<s:Panel id="formPanel" width="100%" title="Hardcoded Properties" visible="{showHardcodedProperties.selected}" includeInLayout="{showHardcodedProperties.selected}">
+				<s:Form width="100%" id="hardcodedProperties">
 					<s:layout>
 						<s:FormLayout id="fromLayout" gap="-7"/>
 					</s:layout>
+					
+					<s:FormItem label="Edit properties in renderer&#13;Must have no icons!&#13;Can only show; not hide.">
+						<s:CheckBox id="showPropertiesInline" selected="@{selectedItem.editProperties}" click="diagramShell.shouldRefreshVisualChildren(diagramShell.getNewDiagramShellContext(), selectedItem)"/>
+					</s:FormItem>
+					
+					<s:FormItem label="Show properties in renderer">
+						<s:CheckBox selected="@{selectedItem.showProperties}"/>
+					</s:FormItem>
 					
 					<s:FormItem label="Text:">
 						<s:TextInput width="100%" text="@{selectedItem.text}"/>
@@ -169,16 +202,6 @@
 						<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontItalic}"/>
 					</s:FormItem>
 					
-					<s:FormItem label="Text Color:">
-						<mx:ColorPicker id="textColorPicker" selectedColor="@{selectedItem.textColor}"
-										showTextField="true"/>
-					</s:FormItem>
-					
-					<s:FormItem label="Background Color:">
-						<mx:ColorPicker id="backgroundColorPicker"
-										selectedColor="@{selectedItem.backgroundColor}" showTextField="true"/>
-					</s:FormItem>
-					
 					<s:FormItem label="Icons:">
 						<s:HGroup width="100%">
 							<s:TextInput id="iconsTextInput" width="100%" text="@{selectedItem.icons}"/>  
@@ -186,11 +209,6 @@
 								<s:BitmapImage source="@Embed('../../org.flowerplatform.flexdiagram.samples/icons/info.png')"/>
 							</s:Graphic> 
 						</s:HGroup>
-					</s:FormItem>
-					
-					<s:FormItem id="cloudColorPickerForm" label="Cloud Color:">
-						<mx:ColorPicker id="cloudColorPicker" selectedColor="@{selectedItem.cloudColor}"
-										showTextField="true"/>
 					</s:FormItem>
 					
 					<s:FormItem id="textInputCloudTypeForm" label="CloudType:">
@@ -209,11 +227,19 @@
 					
 				</s:Form>	
 			</s:Panel>
+			
+			<s:Panel width="100%" title="Properties" visible="{showProperties.selected}" includeInLayout="{showProperties.selected}">
+				<properties:PropertiesForm id="propertiesForm" width="100%" data="{selectedItem}"
+										   visualChildrenController="{new StandAloneSequentialLayoutVisualChildrenController(0, null, new PropertyEntryRendererController(new PropertyCommitController()))}"
+										   typeDescriptorRegistry="{PropertiesHelper.registerPropertyRenderers(new TypeDescriptorRegistry())}"
+										   propertiesHelper="{new SamplePropertiesHelper()}"/>
+			</s:Panel>
+			
 		</s:VGroup>
 	</s:Scroller>
 	<s:Group width="100%" height="100%" >
-		<s:Rect  x="{-diagramRenderer.viewPortRectOffsetTowardOutside}" y="{-diagramRenderer.viewPortRectOffsetTowardOutside}"
-				 width="{scroller.width + 2 * diagramRenderer.viewPortRectOffsetTowardOutside}" height="{scroller.height + 2 * diagramRenderer.viewPortRectOffsetTowardOutside}">
+		<s:Rect x="{-diagramRenderer.viewPortRectOffsetTowardOutside}" y="{-diagramRenderer.viewPortRectOffsetTowardOutside}"
+				width="{scroller.width + 2 * diagramRenderer.viewPortRectOffsetTowardOutside}" height="{scroller.height + 2 * diagramRenderer.viewPortRectOffsetTowardOutside}">
 			<s:stroke>
 				<s:SolidColorStroke color="0x0000FF" weight="2" />					
 			</s:stroke>			
@@ -224,4 +250,4 @@
 		</infinitegroup:InfiniteScroller>	
 	</s:Group>
 	
-</s:Application>
+</s:Group>

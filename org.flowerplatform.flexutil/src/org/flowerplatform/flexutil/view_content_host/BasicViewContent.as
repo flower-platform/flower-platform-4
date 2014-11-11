@@ -17,20 +17,19 @@ package org.flowerplatform.flexutil.view_content_host {
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.net.drm.AddToDeviceGroupSetting;
 	
 	import mx.collections.IList;
 	import mx.events.FlexEvent;
 	import mx.managers.IFocusManagerComponent;
 	
-	import org.flowerplatform.flexutil.FlexUtilAssets;
-	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.action.IAction;
-	
 	import spark.components.Button;
 	import spark.components.Group;
 	import spark.components.HGroup;
 	import spark.layouts.VerticalLayout;
+	
+	import org.flowerplatform.flexutil.FlexUtilAssets;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.action.IAction;
 	
 	/**
 	 * Basic implementation of <code>IViewContent</code>.
@@ -48,10 +47,17 @@ package org.flowerplatform.flexutil.view_content_host {
 		
 		protected var buttonBar:HGroup;
 		
+		public var okFunction:Function;
+		
+		public var closeOnOk:Boolean = false;
+		
+		public var addButtons:Boolean = true;
+		
 		public function BasicViewContent() {
 			super();
 			addEventListener(FlexEvent.CREATION_COMPLETE, creationCompleteHandler);
 			addEventListener(FlexEvent.INITIALIZE, initializeHandler);
+			hasFocusableChildren = true;
 		}
 		
 		public function get viewHost():IViewHost {
@@ -82,10 +88,16 @@ package org.flowerplatform.flexutil.view_content_host {
 		protected function creationCompleteHandler(event:FlexEvent):void {
 		}
 		
-		protected function okHandler(event:Event = null):void {			
+		public function okHandler(event:Event = null):void {			
+			if (okFunction != null) {
+				okFunction.call();
+			}
+			if (closeOnOk) {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
+			}
 		}
 		
-		protected function cancelHandler(event:Event = null):void {			
+		public function cancelHandler(event:Event = null):void {			
 			FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
 		}
 		
@@ -97,6 +109,17 @@ package org.flowerplatform.flexutil.view_content_host {
 			buttonBar.horizontalAlign = "right";
 			buttonBar.verticalAlign = "middle";
 			
+			addComponentsToButtonBar(buttonBar);
+			
+			if (buttonBar.numElements > 0) {
+				viewHost.addToControlBar(buttonBar);
+			}
+		}
+		
+		protected function addComponentsToButtonBar(buttonBar:HGroup):void {
+			if (!addButtons) {
+				return;
+			}
 			okButton = new Button();
 			okButton.label = FlexUtilAssets.INSTANCE.getMessage('dialog.ok');
 			okButton.addEventListener(MouseEvent.CLICK, okHandler);
@@ -106,9 +129,7 @@ package org.flowerplatform.flexutil.view_content_host {
 			cancelButton.addEventListener(MouseEvent.CLICK, cancelHandler);
 			
 			buttonBar.addElement(okButton);
-			buttonBar.addElement(cancelButton);
-			
-			viewHost.addToControlBar(buttonBar);
+			buttonBar.addElement(cancelButton);			
 		}
 				
 	}

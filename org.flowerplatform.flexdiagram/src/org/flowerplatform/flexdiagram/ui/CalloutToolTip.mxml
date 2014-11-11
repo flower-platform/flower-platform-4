@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Callout xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 contentBackgroundAppearance="none"
+		 horizontalPosition="start"
+		 verticalPosition="after"
+		 width="100%" height="100%">
+	<fx:Script>
+		<![CDATA[
+			import org.flowerplatform.flexutil.FlexUtilAssets;
+			import org.flowerplatform.flexutil.Utils;
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<fx:String id="text"/>
+	</fx:Declarations>
+	
+	<s:VGroup>
+		<s:BitmapImage source="{FlexUtilAssets.noteIcon}" />
+		<s:RichText id="richT" textFlow="{Utils.importTextFlowFromHtmlOrPlainText(text)}"/>	
+	</s:VGroup>
+	 
+</s:Callout>

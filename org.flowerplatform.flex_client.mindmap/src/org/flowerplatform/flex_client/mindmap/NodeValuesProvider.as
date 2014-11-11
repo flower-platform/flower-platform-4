@@ -27,6 +27,10 @@ package org.flowerplatform.flex_client.mindmap {
 			super(featurePrefix, orderIndex);
 		}
 		
+		override public function getValueFromActualPropertyName(object:IEventDispatcher, actualPropertyName:String):Object {
+			return Node(object).getPropertyValue(actualPropertyName);
+		}
+		
 		override public function getActualObject(object:IEventDispatcher):IEventDispatcher {
 			return IEventDispatcher(Node(object).properties);
 		}

@@ -19,6 +19,7 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
+	import org.flowerplatform.flexutil.flexdiagram.RendererController;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -35,15 +36,15 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 			this.removeRendererIfModelIsDisposed = removeRendererIfModelIsDisposed;
 		}
 		
-		public function getRendererClass(context:DiagramShellContext, model:Object):Class {
+		public function getRendererClass(context:Object, model:Object):Class {
 			return rendererClassFactory.generator;
 		}
 
-		override public function geUniqueKeyForRendererToRecycle(context:DiagramShellContext, model:Object):Object {
+		override public function getUniqueKeyForRendererToRecycle(context:Object, model:Object):Object {
 			return getRendererClass(context, model);
 		}
 		
-		override public function createRenderer(context:DiagramShellContext, model:Object):IVisualElement {
+		override public function createRenderer(context:Object, model:Object):IVisualElement {
 			var rendererClass:Class = getRendererClass(context, model);
 			if (rendererClass != rendererClassFactory.generator) {
 				// i.e. a different class (than the class from the factory) has been returned; use it to instantiate
@@ -53,13 +54,13 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 			}
 		}
 		
-		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
+		override public function associatedModelToRenderer(context:Object, model:Object, renderer:IVisualElement):void {
 		}
 		
 		/**
 		 * @author Mariana Gheorghe
 		 */
-		override public function unassociatedModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, modelIsDisposed:Boolean):void {
+		override public function unassociatedModelFromRenderer(context:Object, model:Object, renderer:IVisualElement, modelIsDisposed:Boolean):void {
 			if (modelIsDisposed && removeRendererIfModelIsDisposed) {
 				if (renderer != null) {
 					IVisualElementContainer(renderer.parent).removeElement(renderer);

@@ -53,7 +53,7 @@ package org.flowerplatform.flex_client.properties.action {
 				.getExpectedTypeDescriptor(parentType).getAdditiveControllers(CoreConstants.ADD_CHILD_DESCRIPTOR, parent);
 			if (descriptors != null) {
 				for each (var descriptor:AddChildDescriptor in descriptors) {
-					result.push(new AddNodeAction(descriptor, true, child.nodeUri));
+					result.push(new AddNodeAction(descriptor, child.nodeUri));
 				}
 			}
 			return result;

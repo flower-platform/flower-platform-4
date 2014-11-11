@@ -13,7 +13,7 @@
  * 
  * license-end
  */
-package org.flowerplatform.flexutil {
+package org.flowerplatform.flexutil.list {
 	import flash.events.Event;
 	
 	import mx.collections.IList;

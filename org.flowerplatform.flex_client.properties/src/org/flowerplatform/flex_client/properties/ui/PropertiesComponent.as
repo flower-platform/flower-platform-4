@@ -29,8 +29,7 @@ package org.flowerplatform.flex_client.properties.ui {
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.property_line_renderer.IPropertyLineRenderer;
 	import org.flowerplatform.flex_client.properties.property_line_renderer.PropertyLineRenderer;
-	import org.flowerplatform.flex_client.properties.remote.IPropertyDescriptor;
-	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
+	import org.flowerplatform.flexutil.properties.PropertyDescriptor;
 	
 	/**
 	 * Component can be used to display a node's properties.
@@ -86,7 +85,7 @@ package org.flowerplatform.flex_client.properties.ui {
 		private function getPropertiesToDisplay(node:Node, includeRawProperties:Boolean = false):Array {
 			var properties:Array = new Array();
 			var categories:Dictionary = new Dictionary();
-			var propertyDescriptor:IPropertyDescriptor;
+			var propertyDescriptor:PropertyDescriptor;
 			
 			node.properties.nodeUri = node.nodeUri;
 
@@ -98,25 +97,25 @@ package org.flowerplatform.flex_client.properties.ui {
 				}
 				
 				// verify if there is already created a dummy property descriptor for this category
-				if (categories.hasOwnProperty(propertyDescriptor.category)) {
+				if (categories.hasOwnProperty(propertyDescriptor.group)) {
 					// added -> make sure that it has the lowest index 
-					categories[propertyDescriptor.category].orderIndex = Math.min(categories[propertyDescriptor.category].orderIndex, propertyDescriptor.orderIndex - 1);
+					categories[propertyDescriptor.group].orderIndex = Math.min(categories[propertyDescriptor.group].orderIndex, propertyDescriptor.orderIndex - 1);
 				} else {
 					// new category -> create a dummy property descriptor for it
 					var dummyPropertyDescriptor:PropertyDescriptor = new PropertyDescriptor();						
 					dummyPropertyDescriptor.propertyLineRenderer = PropertiesConstants.PROPERTY_LINE_RENDERER_TYPE_CATEGORY;
-					dummyPropertyDescriptor.name = propertyDescriptor.category;
+					dummyPropertyDescriptor.name = propertyDescriptor.group;
 					// category must be displayed first, so it must have the lowest index
 					dummyPropertyDescriptor.orderIndex = propertyDescriptor.orderIndex - 1; 
 					
-					categories[propertyDescriptor.category] = dummyPropertyDescriptor;
+					categories[propertyDescriptor.group] = dummyPropertyDescriptor;
 					properties.push(dummyPropertyDescriptor);
 				}						
 				properties.push(propertyDescriptor);
 			}
 			
 			// sort property descriptors based on their orderIndex -> this will represent the display order for visual renderers
-			properties.sort(function sortOnIndex(a:IPropertyDescriptor, b:IPropertyDescriptor):Number {				
+			properties.sort(function sortOnIndex(a:PropertyDescriptor, b:PropertyDescriptor):Number {				
 				if (a.orderIndex > b.orderIndex) {
 					return 1;
 				} else if (a.orderIndex < b.orderIndex) {

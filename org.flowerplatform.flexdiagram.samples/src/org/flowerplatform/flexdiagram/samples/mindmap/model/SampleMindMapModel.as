@@ -15,19 +15,21 @@
  */
 package org.flowerplatform.flexdiagram.samples.mindmap.model {
 	import mx.collections.ArrayList;
+	import mx.utils.ObjectProxy;
+	
+	import org.flowerplatform.flexutil.samples.properties.SamplePropertiesModel;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 * @author Alexandra Topoloaga
 	 */
 	[Bindable]
-	public class SampleMindMapModel {
+	public class SampleMindMapModel extends SamplePropertiesModel {
 		
 		public var parent:Object;
 		public var children:ArrayList = new ArrayList();
 		public var hasChildren:Boolean;
 		
-		public var text:String;
 		public var side:int;
 		
 		public var expanded:Boolean;
@@ -48,8 +50,9 @@ package org.flowerplatform.flexdiagram.samples.mindmap.model {
 		public var note:String;
 		public var details:String;
 		
-		public function toString():String {
-			return text;
-		}
+		public var showProperties:Boolean;
+		
+		public var editProperties:Boolean;
+		
 	}	
 }
