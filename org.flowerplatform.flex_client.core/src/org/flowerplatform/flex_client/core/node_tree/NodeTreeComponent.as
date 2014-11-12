@@ -52,7 +52,7 @@ package org.flowerplatform.flex_client.core.node_tree {
 		
 		public function initializeTree(nodeUri:String):void {
 			_nodeUri = nodeUri;	
-			CorePlugin.getInstance().nodeRegistryManager.subscribe(nodeUri, nodeRegistry, subscribeResultCallback);
+			CorePlugin.getInstance().nodeRegistryManager.subscribe(nodeUri, nodeRegistry, subscribeResultCallback, null);
 		}
 		
 		public function finalizeTree():void {

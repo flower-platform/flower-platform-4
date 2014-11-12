@@ -6,7 +6,6 @@
     <classEntry path="org.flowerplatform.flex_client.core.mindmap.event.NodeRenderer_HasChildrenChangedEvent"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.action.UploadAction"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.ui.UploadView"/>
-    <classEntry path="org.flowerplatform.flex_client.core.node.remote.ServiceContext"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.action.ActionDescriptor"/>
     <classEntry path="org.flowerplatform.flex_client.core.node.NodeRegistryManager"/>
     <classEntry path="org.flowerplatform.flex_client.core.node_tree.NodeTree"/>
@@ -19,7 +18,6 @@
     <classEntry path="org.flowerplatform.flex_client.core.editor.action.OpenWithEditorActionProvider"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.EditorFrontendAwareProcessor"/>
     <classEntry path="org.flowerplatform.flex_client.core.node.IResourceOperationsHandler"/>
-    <classEntry path="org.flowerplatform.flex_client.core.node.IExternalInvocator"/>
     <classEntry path="org.flowerplatform.flex_client.core.node.INodeRegistryManagerListener"/>
     <classEntry path="org.flowerplatform.flex_client.core.editor.action.NodeTypeActionProvider"/>
   </includeClasses>

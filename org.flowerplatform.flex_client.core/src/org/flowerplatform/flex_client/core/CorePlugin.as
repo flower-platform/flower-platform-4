@@ -89,6 +89,7 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.value_converter.CsvToListValueConverter;
 	import org.flowerplatform.flexutil.value_converter.StringHexToUintValueConverter;
 	import org.flowerplatform.js_client.common_js_as.node.IHostServiceInvocator;
+	import org.flowerplatform.js_client.common_js_as.node.NodeRegistryManagerAdapter;
 
 	/**
 	 * @author Cristian Spiescu
@@ -105,6 +106,8 @@ package org.flowerplatform.flex_client.core {
 		protected static var INSTANCE:CorePlugin;
 		
 		protected var _serverAppVersion:String;
+		
+		protected var nodeRegistryManagerInstance:NodeRegistryManagerAdapter;
 		
 		public var serviceLocator:ServiceLocator;
 		
@@ -135,20 +138,8 @@ package org.flowerplatform.flex_client.core {
 		/**
 		 * The underlying variable is from the global namespace, defined within the js file.
 		 */
-		public function get nodeRegistryManager():* {
-			return _nodeRegistryManager;
-		}
-		
-		// TODO: rename the varible; rename the class: FlexHostResourceOperationsHandler
-		public function get resourceNodesManager():ResourceOperationsHandler {
-			return ResourceOperationsHandler(nodeRegistryManager.resourceOperationsManager.resourceOperationsHandler);
-		}
-
-		/**
-		 * The underlying variable is from the global namespace, defined within the js file.
-		 */
-		public function get nodeRegistryManager():* {
-			return _nodeRegistryManager;
+		public function get nodeRegistryManager():NodeRegistryManagerAdapter {
+			return nodeRegistryManagerInstance;
 		}
 		
 		public function get resourceNodesManager():FlexHostResourceOperationsHandler {
@@ -196,9 +187,10 @@ package org.flowerplatform.flex_client.core {
 			serviceLocator.addService("preferenceService");
 			
 			var resourceOperationsHandler:FlexHostResourceOperationsHandler = new FlexHostResourceOperationsHandler();
-			_nodeRegistryManager = new NodeRegistryManager(resourceOperationsHandler, IHostServiceInvocator(serviceLocator), new FlexHostInvocator());
+			nodeRegistryManagerInstance = new NodeRegistryManagerAdapter(resourceOperationsHandler, IHostServiceInvocator(serviceLocator), new FlexHostInvocator());
 			
- 			updateTimer = new UpdateTimer(5000);
+// 			updateTimer = new UpdateTimer(5000);
+ 			updateTimer = new UpdateTimer(0);
 			
 			FlexUtilGlobals.getInstance().registerAction(RemoveNodeAction);
 			FlexUtilGlobals.getInstance().registerAction(RenameAction);
@@ -623,7 +615,3 @@ package org.flowerplatform.flex_client.core {
 			
 	}
 }
-
-include "../../../../../../org.flowerplatform.js_client.common_js_as/WebContent/js/ResourceOperationsManager.js";	
-include "../../../../../../org.flowerplatform.js_client.common_js_as/WebContent/js/NodeRegistryManager.js";	
-include "../../../../../../org.flowerplatform.js_client.common_js_as/WebContent/js/NodeRegistry.js";

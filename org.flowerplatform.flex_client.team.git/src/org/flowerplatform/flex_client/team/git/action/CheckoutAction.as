@@ -64,20 +64,12 @@ package org.flowerplatform.flex_client.team.git.action
 		public function commitChanges():void {
 			FlexUtilGlobals.getInstance().actionHelper.runAction(FlexUtilGlobals.getInstance().getActionInstanceFromRegistry(ShowGitStagingAction.ID), null, null);		
 		}
-<<<<<<< HEAD
 
-=======
-
->>>>>>> GH346-migrate-noderegistry-js-java-review
 		public function reset(node:Node):void {
 			var commitID:String = node.parent.parent.properties[commitID];
 			CorePlugin.getInstance().serviceLocator.invoke("GitService.reset", [node.nodeUri, GitConstants.RESET_HARD, commitID]);	
 		}		
-<<<<<<< HEAD
 		
-=======
-		
->>>>>>> GH346-migrate-noderegistry-js-java-review
 		public function faultCallback(event:FaultEvent, node:Node):void {				
 			if (event != null) {	
 				var index:Number = event.fault.faultString.search("CheckoutConflictException");
