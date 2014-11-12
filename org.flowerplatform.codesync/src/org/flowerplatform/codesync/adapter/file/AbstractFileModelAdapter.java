@@ -30,74 +30,76 @@ import org.flowerplatform.core.file.IFileAccessController;
 public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
 	protected CodeSyncFile getCodeSyncFile(Object file) {
 		return (CodeSyncFile) file;
 	}
-	
+
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
-	protected Object getOrCreateFileInfo(Object element, IFileAccessController fileAccessController) {
+	protected Object getOrCreateFileInfo(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		CodeSyncFile codeSyncFile = getCodeSyncFile(element);
 		if (codeSyncFile.getFileInfo() == null) {
-			codeSyncFile.setFileInfo(createFileInfo(codeSyncFile.getFile(), fileAccessController));
+			codeSyncFile.setFileInfo(createFileInfo(codeSyncFile.getFile(), codeSyncAlgorithm));
 		}
 		return codeSyncFile.getFileInfo();
 	}
-	
+
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
-	protected abstract Object createFileInfo(Object file, IFileAccessController fileAccessController);
-	
+	protected abstract Object createFileInfo(Object file, CodeSyncAlgorithm codeSyncAlgorithm);
+
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue,
+			CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
 			return getName(element, codeSyncAlgorithm.getFileAccessController());
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
-	
+
 	@Override
 	public void setValueFeatureValue(Object file, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
 			codeSyncAlgorithm.getFilesToRename().put(getCodeSyncFile(file).getFile(), (String) value);
 		}
 	}
-	
+
 	@Override
 	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return getName(element, codeSyncAlgorithm.getFileAccessController());
 	}
 
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
 	protected String getName(Object element, IFileAccessController fileAccessController) {
 		return fileAccessController.getName(getCodeSyncFile(element).getFile());
 	}
-	
+
 	/**
-	 * Creates the file, if it does not exist, and commits all the modifications recorded by the AST.
+	 * Creates the file, if it does not exist, and commits all the modifications
+	 * recorded by the AST.
 	 */
 	@Override
 	public boolean save(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		IFileAccessController fileAccessController = codeSyncAlgorithm.getFileAccessController();
 		Object file = getCodeSyncFile(element).getFile();
-		
+
 		if (!fileAccessController.exists(file)) {
 			fileAccessController.createFile(file, false);
 		}
-		
+
 		if (fileAccessController.exists(file)) {
-			Object fileInfo = getCodeSyncFile(element).getFileInfo();
+			Object fileInfo = getOrCreateFileInfo(element, codeSyncAlgorithm);
 			if (fileInfo != null) {
 				Document document;
 				try {
 					document = new Document(fileAccessController.readFileToString(file));
-					TextEdit edits = rewrite(document, fileInfo);
+					TextEdit edits = rewrite(document, fileInfo, codeSyncAlgorithm);
 					if (edits != null) {
 						edits.apply(document);
 						fileAccessController.writeStringToFile(file, document.get());
@@ -107,22 +109,22 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 				}
 			}
 		}
-		
+
 		String newName = codeSyncAlgorithm.getFilesToRename().get(file);
 		if (newName != null) {
 			Object dest = fileAccessController.getFile(fileAccessController.getParent(file), newName);
 			fileAccessController.rename(file, dest);
 		}
-		
+
 		// no need to call save for the AST
 		return false;
 	}
-	
+
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
-	protected abstract TextEdit rewrite(Document document, Object fileInfo);
-	
+	protected abstract TextEdit rewrite(Document document, Object fileInfo, CodeSyncAlgorithm codeSyncAlgorithm);
+
 	/**
 	 * Discards the AST corresponding to this file.
 	 */
@@ -131,10 +133,10 @@ public abstract class AbstractFileModelAdapter extends AstModelElementAdapter {
 		// no need to call discard for the AST
 		return false;
 	}
-	
+
 	@Override
 	protected void updateUID(Object element, Object correspondingElement) {
 		// nothing to do
 	}
-	
+
 }

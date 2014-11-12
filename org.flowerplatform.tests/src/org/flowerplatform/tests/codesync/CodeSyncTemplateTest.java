@@ -1,6 +1,7 @@
 package org.flowerplatform.tests.codesync;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.FILE;
+import static org.flowerplatform.codesync.CodeSyncConstants.FOLDER;
 import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.ENTITY;
 import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.INNER_TEMPLATE;
 import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.LABEL;
@@ -87,8 +88,12 @@ public class CodeSyncTemplateTest extends CodeSyncEclipseIndependentTestBase {
 		
 		Node resource = CorePlugin.getInstance().getResourceService().getNode(resourceUri);
 		
+		Node srcDir = addNode(resource, FOLDER, "gen", "gen", "gen", "gen");
+		
+		Node employee = addNode(srcDir, FOLDER, "employee", "employee", "employee", "employee");
+		
 		// table: employees
-		Node table = addNode(resource, FILE, TEMPLATE_TABLE, "employeeList.html", "employee", "Employee");
+		Node table = addNode(employee, FILE, TEMPLATE_TABLE, "employeeList.html", "employee", "Employee");
 		setProperty(addNode(table, INNER_TEMPLATE, TEMPLATE_COLUMN, "name", "name", "Name"), "parent", "employee");
 		setProperty(addNode(table, INNER_TEMPLATE, TEMPLATE_COLUMN, "email", "email", "Email"), "parent", "employee");
 		setProperty(addNode(table, INNER_TEMPLATE, TEMPLATE_COLUMN, "phoneNumber", "phoneNumber", "Phone Number"), "parent", "employee");
@@ -108,15 +113,17 @@ public class CodeSyncTemplateTest extends CodeSyncEclipseIndependentTestBase {
 		setProperty(removeBtn, TEMPLATE_BUTTON_CLICK, "remove(employee)");
 		setProperty(removeBtn, TEMPLATE_GLYPHICON, "remove");
 		
+		Node job = addNode(employee, FOLDER, "job", "job", "job", "job");
+		
 		// table: job entries
-		Node entries = addNode(resource, FILE, TEMPLATE_TABLE, "jobEntryList.html", "jobEntry", "JobEntry");
+		Node entries = addNode(job, FILE, TEMPLATE_TABLE, "jobEntryList.html", "jobEntry", "JobEntry");
 		setProperty(entries, "actions", "edit,remove");
 		setProperty(setProperty(addNode(entries, INNER_TEMPLATE, TEMPLATE_COLUMN, "date", "date", "Date"), "parent", "jobEntry"), "filter", "date: 'medium'");
 		setProperty(addNode(entries, INNER_TEMPLATE, TEMPLATE_COLUMN, "type", "type", "Type"), "parent", "jobEntry");
 		setProperty(addNode(entries, INNER_TEMPLATE, TEMPLATE_COLUMN, "details", "details", "Details"), "parent", "jobEntry");
 		
 		// form
-		Node form = addNode(resource, FILE, TEMPLATE_FORM, "employeeForm.html", "employee", "Employee");
+		Node form = addNode(employee, FILE, TEMPLATE_FORM, "employeeForm.html", "employee", "Employee");
 		Node tabset = addNode(form, INNER_TEMPLATE, TEMPLATE_TABSET, "tabset", "tabset", "tabset");
 		
 		Node main = addNode(tabset, INNER_TEMPLATE, TEMPLATE_TAB, "details", "details", "Details");
@@ -124,12 +131,12 @@ public class CodeSyncTemplateTest extends CodeSyncEclipseIndependentTestBase {
 		setProperty(addNode(main, INNER_TEMPLATE, TEMPLATE_FIELD_STRING, "email", "email", "Email"), "parent", "employee");
 		setProperty(addNode(main, INNER_TEMPLATE, TEMPLATE_FIELD_STRING, "phoneNumber", "phoneNumber", "Phone Number"), "parent", "employee");
 		
-		Node job = addNode(main, INNER_TEMPLATE, TEMPLATE_FIELD_COMBO_BOX, "job", "job", "Job");
-		setProperty(job, "parent", "employee");
-		setProperty(job, "id", "id");
-		setProperty(job, "option", "job");
-		setProperty(job, "options", "jobs");
-		setProperty(job, "comboBoxLabelFunction", "jobLabel");
+		Node jobCB = addNode(main, INNER_TEMPLATE, TEMPLATE_FIELD_COMBO_BOX, "job", "job", "Job");
+		setProperty(jobCB, "parent", "employee");
+		setProperty(jobCB, "id", "id");
+		setProperty(jobCB, "option", "job");
+		setProperty(jobCB, "options", "jobs");
+		setProperty(jobCB, "comboBoxLabelFunction", "jobLabel");
 		
 		Node saveBtn = addNode(main, INNER_TEMPLATE, TEMPLATE_BUTTON, "saveBtn", "employee", "Save");
 		setProperty(saveBtn, TEMPLATE_BUTTON_TYPE, "submit");

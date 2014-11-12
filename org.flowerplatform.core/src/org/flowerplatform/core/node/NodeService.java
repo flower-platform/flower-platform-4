@@ -211,11 +211,17 @@ public class NodeService {
 	}
 
 	/**
-	 *
+	 * Create a new map containing the property. Note: we don't use
+	 * singleton map, because a controller might want to add/remove
+	 * properties from the map.
+	 * 
 	 * @author Claudiu Matei
+	 * @author Mariana Gheorghe
 	 */
 	public void setProperty(Node node, String property, Object value, ServiceContext<NodeService> context) {
-		setProperties(node, Collections.singletonMap(property, value), context);
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(property, value);
+		setProperties(node, properties, context);
 	}
 		
 	/**

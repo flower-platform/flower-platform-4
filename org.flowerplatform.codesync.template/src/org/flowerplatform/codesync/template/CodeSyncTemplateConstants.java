@@ -9,7 +9,6 @@ public final class CodeSyncTemplateConstants {
 	// Node types
 	///////////////////////////////////
 	
-	public static final String CODESYNC_TEMPLATE_ROOT = "codesyncTemplateRoot";
 	public static final String INNER_TEMPLATE = "innerTemplate";
 	
 	///////////////////////////////////

@@ -58,6 +58,8 @@ public class CodeSyncAlgorithm {
 	protected Map<Object, String> filesToRename = new HashMap<Object, String>();
 	protected List<Object> filesToDelete = new ArrayList<Object>();
 	
+	protected Map<String, Object> context = new HashMap<String, Object>();
+	
 	public IModelAdapterSet getModelAdapterSetLeft() {
 		return modelAdapterSetLeft;
 	}
@@ -86,8 +88,12 @@ public class CodeSyncAlgorithm {
 		return filesToDelete;
 	}
 	
+	public Map<String, Object> getContext() {
+		return context;
+	}
+	
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public void initializeModelAdapterSets(List<String> leftTechnologies, List<String> rightTechnologies, List<String> ancestorTechnologies) {
 		modelAdapterSetLeft = getModelAdapterSet(leftTechnologies);
@@ -258,14 +264,6 @@ public class CodeSyncAlgorithm {
 		
 		LOGGER.debug("Process containment feature {} for {}", feature, match);
 		
-		// cache the model adapters for children to avoid
-		// a lot of calls to the model adapter factory; we are
-		// assuming that all the children of an object, for a certain
-		// feature, are similar (i.e. same type and same model adapter)
-		IModelAdapter leftChildModelAdapter = null;
-		IModelAdapter rightChildModelAdapter = null;
-		IModelAdapter ancestorChildModelAdapter = null;
-		
 		// FILL_RIGHT_MAP
 		Map<Object, Object> rightMap = new HashMap<Object, Object>();
 		Iterable<?> rightList = null;
@@ -273,7 +271,7 @@ public class CodeSyncAlgorithm {
 			IModelAdapter modelAdapter = getRightModelAdapter(match.getRight());
 			rightList = modelAdapter.getContainmentFeatureIterable(match.getRight(), feature, null, this); 
 			for (Object rightChild : rightList) {
-				rightChildModelAdapter = getRightModelAdapter(rightChild);
+				IModelAdapter rightChildModelAdapter = getRightModelAdapter(rightChild);
 				if (rightChildModelAdapter != null) {
 					rightChildModelAdapter.addToMap(rightChild, rightMap, this);
 				}
@@ -286,7 +284,7 @@ public class CodeSyncAlgorithm {
 			IModelAdapter modelAdapter = getLeftModelAdapter(match.getLeft());
 			Iterable<?> leftList = modelAdapter.getContainmentFeatureIterable(match.getLeft(), feature, rightList, this); 
 			for (Object leftChild : leftList) {
-				leftChildModelAdapter = getLeftModelAdapter(leftChild);
+				IModelAdapter leftChildModelAdapter = getLeftModelAdapter(leftChild);
 				if (leftChildModelAdapter != null) {
 					leftChildModelAdapter.addToMap(leftChild, leftMap, this);
 				}
@@ -302,7 +300,7 @@ public class CodeSyncAlgorithm {
 				// depending on what we find in the maps
 				Match childMatch = new Match();
 				childMatch.setAncestor(ancestorChild);
-				ancestorChildModelAdapter = getAncestorModelAdapter(ancestorChild);
+				IModelAdapter ancestorChildModelAdapter = getAncestorModelAdapter(ancestorChild);
 				if (ancestorChildModelAdapter != null) {
 					childMatch.setMatchKey(ancestorChildModelAdapter.getMatchKey(ancestorChild, this));
 					childMatch.setLeft(ancestorChildModelAdapter.removeFromMap(ancestorChild, leftMap, false, this));
@@ -327,11 +325,7 @@ public class CodeSyncAlgorithm {
 			// depending on what we find in the maps
 			Match childMatch = new Match();
 			childMatch.setLeft(leftChild);
-			if (leftChildModelAdapter == null) {
-				// might be null for CodeSync/code, because the leftMap iteration doesn't happen
-				// or if there are no ancestor children
-				leftChildModelAdapter = getLeftModelAdapter(leftChild);
-			}
+			IModelAdapter leftChildModelAdapter = getLeftModelAdapter(leftChild);
 			childMatch.setMatchKey(leftChildModelAdapter.getMatchKey(leftChild, this));
 			childMatch.setRight(leftChildModelAdapter.removeFromMap(leftChild, rightMap, true, this));
 			childMatch.setFeature(feature);

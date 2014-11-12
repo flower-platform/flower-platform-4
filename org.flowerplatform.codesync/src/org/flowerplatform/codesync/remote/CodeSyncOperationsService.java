@@ -55,7 +55,7 @@ public class CodeSyncOperationsService {
 
 		Object file = CorePlugin.getInstance().getFileAccessController().getFile(CoreUtils.getRepoFromNode(srcDir) + "/" + srcDir.getPropertyValue(NAME));
 
-		return synchronize(srcDir.getNodeUri(), file, "java", true);
+		return synchronize(srcDir.getNodeUri(), file, "gen", true);
 	}
 	
 	/**
@@ -87,7 +87,7 @@ public class CodeSyncOperationsService {
 	
 		// right: source code (file system)
 		Object ast = file;
-		match.setRight(new CodeSyncFile(ast));
+		match.setRight(new CodeSyncFile(ast, true));
 		
 		// initialize the algorithm
 		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm();

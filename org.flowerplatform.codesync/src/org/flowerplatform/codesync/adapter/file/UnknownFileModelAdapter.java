@@ -17,7 +17,7 @@ package org.flowerplatform.codesync.adapter.file;
 
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
-import org.flowerplatform.core.file.IFileAccessController;
+import org.flowerplatform.codesync.CodeSyncAlgorithm;
 
 /**
  * Used to handle files with unknown extensions during synchronization.
@@ -27,12 +27,12 @@ import org.flowerplatform.core.file.IFileAccessController;
 public class UnknownFileModelAdapter extends AbstractFileModelAdapter {
 
 	@Override
-	protected Object createFileInfo(Object file, IFileAccessController fileAccessController) {
+	protected Object createFileInfo(Object file, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return null;
 	}
 
 	@Override
-	protected TextEdit rewrite(Document document, Object fileInfo) {
+	protected TextEdit rewrite(Document document, Object fileInfo, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return null;
 	}
 

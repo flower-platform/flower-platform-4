@@ -517,7 +517,9 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	 */
 	public TypeDescriptor createCodeSyncTypeDescriptor(String type) {
 		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(type);
-		descriptor.addCategory(CATEGORY_CODESYNC);
+		if (!descriptor.getCategories().contains(CATEGORY_CODESYNC)) {
+			descriptor.addCategory(CATEGORY_CODESYNC);
+		}
 		return descriptor;
 	}
 	

@@ -21,14 +21,18 @@ package org.flowerplatform.codesync.adapter.file;
 public class CodeSyncFile {
 
 	private Object file;
-	
+
 	private Object fileInfo;
-	
-	/**
-	 *@author Mariana Gheorghe
-	 **/
+
+	private boolean isFolder;
+
 	public CodeSyncFile(Object file) {
 		this.file = file;
+	}
+
+	public CodeSyncFile(Object file, boolean folder) {
+		this(file);
+		setFolder(folder);
 	}
 
 	public Object getFile() {
@@ -43,9 +47,16 @@ public class CodeSyncFile {
 		this.fileInfo = fileInfo;
 	}
 
+	public boolean isFolder() {
+		return isFolder;
+	}
+
+	public void setFolder(boolean folder) {
+		this.isFolder = folder;
+	}
+
 	@Override
 	public String toString() {
 		return file.toString();
 	}
-	
 }

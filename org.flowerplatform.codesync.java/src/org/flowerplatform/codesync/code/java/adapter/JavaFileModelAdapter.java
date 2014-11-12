@@ -47,7 +47,7 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 	@Override
 	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncJavaConstants.TYPE_MEMBERS.equals(feature)) {
-			return getOrCreateCompilationUnit(element, codeSyncAlgorithm.getFileAccessController()).types();
+			return getOrCreateCompilationUnit(element, codeSyncAlgorithm).types();
 		}
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
@@ -57,18 +57,18 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 		((ASTNode) child).delete();
 	}
 
-	private CompilationUnit getOrCreateCompilationUnit(Object file, IFileAccessController fileAccessController) {
-		return (CompilationUnit) getOrCreateFileInfo(file, fileAccessController);
+	private CompilationUnit getOrCreateCompilationUnit(Object file, CodeSyncAlgorithm codeSyncAlgorithm) {
+		return (CompilationUnit) getOrCreateFileInfo(file, codeSyncAlgorithm);
 	}
 	
 	/**
 	 * Creates a new compilation unit from the file's content.
 	 */
 	@Override
-	protected Object createFileInfo(Object file, IFileAccessController fileAccessController) {
+	protected Object createFileInfo(Object file, CodeSyncAlgorithm codeSyncAlgorithm) {
 		ASTParser parser = ASTParser.newParser(AST.JLS4);
 		parser.setCompilerOptions(getOptions());
-		char[] initialContent = getFileContent(file, fileAccessController);
+		char[] initialContent = getFileContent(file, codeSyncAlgorithm.getFileAccessController());
 		parser.setSource(initialContent);
 		CompilationUnit astRoot = (CompilationUnit) parser.createAST(null);
 		astRoot.recordModifications();
@@ -91,7 +91,7 @@ public class JavaFileModelAdapter extends AbstractFileModelAdapter {
 	}
 
 	@Override
-	protected TextEdit rewrite(Document document, Object fileInfo) {
+	protected TextEdit rewrite(Document document, Object fileInfo, CodeSyncAlgorithm codeSyncAlgorithm) {
 		CompilationUnit cu = (CompilationUnit) fileInfo;
 		return cu.rewrite(document, getOptions());
 	}

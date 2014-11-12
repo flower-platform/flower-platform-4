@@ -63,7 +63,7 @@ public class AsFileModelAdapter extends AbstractFileModelAdapter {
 		if (CodeSyncAsConstants.STATEMENTS.equals(feature)) {
 			@SuppressWarnings("unchecked")
 			Pair<ICompilationUnit, IASNode> pair = (Pair<ICompilationUnit, IASNode>) 
-					getOrCreateFileInfo(element, codeSyncAlgorithm.getFileAccessController());
+					getOrCreateFileInfo(element, codeSyncAlgorithm);
 			if (pair.a == null) {
 				return Collections.emptyList();
 			}
@@ -93,11 +93,12 @@ public class AsFileModelAdapter extends AbstractFileModelAdapter {
 	 * they are referred through {@link WeakReference}s, and will be garbage collected during sync.
 	 */
 	@Override
-	protected Object createFileInfo(Object file, IFileAccessController fileAccessController) {
+	protected Object createFileInfo(Object file, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// prepare the workspace and project
 		Workspace ws = new Workspace();
 		ws.setASDocDelegate(new AsDocDelegate());
 		FlexProject project = new FlexProject(ws);
+		IFileAccessController fileAccessController = codeSyncAlgorithm.getFileAccessController();
 		
 		// add the file spec that will be used during AST build
 		ws.fileAdded(new DelegatingFileSpecification(file, fileAccessController));
@@ -135,7 +136,7 @@ public class AsFileModelAdapter extends AbstractFileModelAdapter {
 	}
 
 	@Override
-	protected TextEdit rewrite(Document document, Object fileInfo) {
+	protected TextEdit rewrite(Document document, Object fileInfo, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// TODO Auto-generated method stub
 		return null;
 	}

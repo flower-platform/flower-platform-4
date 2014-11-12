@@ -29,39 +29,41 @@ import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.node.remote.Node;
 
 /**
- * Mapped to platform-dependent files. Children are files that match the {@link #limitedPath}, if set.
+ * Mapped to platform-dependent files. Children are files that match the
+ * {@link #limitedPath}, if set.
  * 
  * @author Mariana
  */
 public class FolderModelAdapter extends AstModelElementAdapter {
 
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public FolderModelAdapter() {
 		containmentFeatures.add(CodeSyncConstants.CHILDREN);
 	}
-	
+
 	@Override
-	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
+	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue,
+			CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
 			return getName(element, codeSyncAlgorithm.getFileAccessController());
 		}
 		return super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 	}
-	
+
 	@Override
 	public Object getMatchKey(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return getName(element, codeSyncAlgorithm.getFileAccessController());
 	}
 
 	/**
-	 *@author Valentina Bojan
+	 * @author Valentina Bojan
 	 **/
 	protected String getName(Object element, IFileAccessController fileAccessController) {
 		return fileAccessController.getName(getFolder(element));
 	}
-	
+
 	@Override
 	public void setValueFeatureValue(Object folder, Object feature, Object value, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CoreConstants.NAME.equals(feature)) {
@@ -70,17 +72,23 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 	}
 
 	@Override
-	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet modelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild,
+			IModelAdapterSet modelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncConstants.CHILDREN.equals(feature)) {
+			// TODO should not cast to node
 			Node node = (Node) correspondingChild;
-			return codeSyncAlgorithm.getFileAccessController()
-					.getFile(parent, (String) node.getPropertyValue(CoreConstants.NAME));
+			String name = (String) node.getPropertyValue(CoreConstants.NAME);
+			Object newFolder = codeSyncAlgorithm.getFileAccessController().getFile(
+					((CodeSyncFile) parent).getFile(), name);
+			return new CodeSyncFile(newFolder, true);
 		}
-		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, modelAdapterSet, codeSyncAlgorithm);
+		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, modelAdapterSet,
+				codeSyncAlgorithm);
 	}
 
 	@Override
-	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child, CodeSyncAlgorithm codeSyncAlgorithm) {
+	public void removeChildrenOnContainmentFeature(Object parent, Object feature, Object child,
+			CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncConstants.CHILDREN.equals(feature)) {
 			codeSyncAlgorithm.getFilesToDelete().add(child);
 		}
@@ -88,28 +96,39 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 
 	@SuppressWarnings({ "unchecked" })
 	@Override
-	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable, CodeSyncAlgorithm codeSyncAlgorithm) {
+	public Iterable<?> getContainmentFeatureIterable(Object element, Object feature, Iterable<?> correspondingIterable,
+			final CodeSyncAlgorithm codeSyncAlgorithm) {
 		if (CodeSyncConstants.CHILDREN.equals(feature)) {
 			List<?> children = getChildren(element, codeSyncAlgorithm.getFileAccessController());
 			return new FilteredIterable<Object, CodeSyncFile>((Iterator<Object>) children.iterator()) {
-	
+
 				@Override
 				protected boolean isAccepted(Object candidate) {
-					return true;
+					return FolderModelAdapter.this.isFileAccepted(candidate, codeSyncAlgorithm.getFileAccessController());
 				}
 
 				@Override
 				protected CodeSyncFile convert(Object input) {
-					return new CodeSyncFile(input);
+					CodeSyncFile csf = new CodeSyncFile(input);
+					// these are existing files, so isDirectory will work well
+					csf.setFolder(codeSyncAlgorithm.getFileAccessController().isDirectory(input));
+					return csf;
 				}
-				
+
 			};
 		}
 		return super.getContainmentFeatureIterable(element, feature, correspondingIterable, codeSyncAlgorithm);
 	}
 
 	/**
-	 *@author Mariana Gheorghe
+	 * By default, accept all children of this folder.
+	 */
+	protected boolean isFileAccepted(Object file, IFileAccessController fileAccessController) {
+		return true;
+	}
+	
+	/**
+	 * @author Mariana Gheorghe
 	 **/
 	protected List<?> getChildren(Object modelElement, IFileAccessController fileAccessController) {
 		Object[] files = fileAccessController.listFiles(getFolder(modelElement));
@@ -118,7 +137,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 		}
 		return Arrays.asList(files);
 	}
-	
+
 	/**
 	 * @author Sebastian Solomon
 	 */
@@ -129,8 +148,8 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 		if (!fileAccessController.exists(folder)) {
 			fileAccessController.createFile(folder, true);
 		}
-		
-		// remove children that were mark deleted	
+
+		// remove children that were mark deleted
 		Object[] children = fileAccessController.listFiles(folder);
 		if (children != null) {
 			for (Object child : children) {
@@ -140,7 +159,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 				}
 			}
 		}
-		
+
 		// move the folder if it was marked renamed
 		String newName = codeSyncAlgorithm.getFilesToRename().get(folder);
 		if (newName != null) {
@@ -150,7 +169,7 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean discard(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		return true;
@@ -160,12 +179,12 @@ public class FolderModelAdapter extends AstModelElementAdapter {
 	protected void updateUID(Object element, Object correspondingElement) {
 		// folders don't have UUIDs
 	}
-	
+
 	/**
-	 *@author Valentina Bojan
+	 * @author Valentina Bojan
 	 **/
 	protected Object getFolder(Object element) {
 		return ((CodeSyncFile) element).getFile();
 	}
-	
+
 }
