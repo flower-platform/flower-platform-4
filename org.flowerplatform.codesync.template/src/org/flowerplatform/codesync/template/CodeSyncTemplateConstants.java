@@ -5,6 +5,9 @@ package org.flowerplatform.codesync.template;
  */
 public final class CodeSyncTemplateConstants {
 	
+	public static final String GEN = "gen";
+	public static final String TEMPLATES_DIRS = "templatesDirs";
+	
 	///////////////////////////////////
 	// Node types
 	///////////////////////////////////

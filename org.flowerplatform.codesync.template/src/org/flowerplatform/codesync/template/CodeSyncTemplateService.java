@@ -1,6 +1,5 @@
 package org.flowerplatform.codesync.template;
 
-import static org.apache.velocity.runtime.RuntimeConstants.VM_LIBRARY;
 import static org.flowerplatform.core.CoreConstants.NAME;
 
 import java.io.StringWriter;
@@ -8,10 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
@@ -33,7 +32,9 @@ public class CodeSyncTemplateService {
 		String repo = CoreUtils.getRepoFromNode(node);
 
 		// merge
-		VelocityEngine engine = createVelocityEngine(repo);
+		VelocityEngine engine = new VelocityEngine();
+		addTemplatesDirectory(engine, repo);
+		engine.init();
 		VelocityContext context = createVelocityContext(node);
 		String output = generate(engine, context);
 		
@@ -48,29 +49,30 @@ public class CodeSyncTemplateService {
 	}
 
 	/**
-	 * Create and initialize a {@link VelocityEngine} with the templates from the repository.
+	 * Add the templates to this engine.
 	 */
-	public VelocityEngine createVelocityEngine(String repository) {
-		VelocityEngine engine = new VelocityEngine();
-		
-		// get templates library from repository
-		if (repository != null) {
+	public void addTemplatesDirectory(VelocityEngine engine, String templatesDir) {
+		if (templatesDir != null) {
 			Object library = null;
 			try {
-				library = CorePlugin.getInstance().getFileAccessController().getFile(repository + "/tpl/");
+				library = CorePlugin.getInstance().getFileAccessController().getFile(templatesDir);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
+			
+			// set path
 			String path = CorePlugin.getInstance().getFileAccessController().getAbsolutePath(library);
-			engine.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, path);
-			engine.setProperty(VM_LIBRARY, getMacros(library));
+			engine.setProperty(VelocityEngine.FILE_RESOURCE_LOADER_PATH, 
+					addToCsv(engine.getProperty(VelocityEngine.FILE_RESOURCE_LOADER_PATH), path));
+			
+			// add templates
+			String macros = getMacros(library);
+			Object vmLib = engine.getProperty(VelocityEngine.VM_LIBRARY);
+			engine.setProperty(VelocityEngine.VM_LIBRARY, addToCsv(vmLib, macros));
 		}
-		
-		engine.init();
-		return engine;
 	}
 	
-	private Object getMacros(Object location) {
+	private String getMacros(Object location) {
 		IFileAccessController controller = CorePlugin.getInstance().getFileAccessController();
 		String csv = "";
 		Object[] macros = controller.listFiles(location);
@@ -82,6 +84,19 @@ public class CodeSyncTemplateService {
 		return csv;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private String addToCsv(Object existing, String added) {
+		if (existing == null) {
+			// empty
+			return added;
+		}
+		if (existing instanceof String) {
+			// just one => append
+			return existing + "," + added;
+		}
+		return String.join(",", (Vector) existing) + "," + added;
+	}
+	
 	/**
 	 * Create a {@link VelocityContext} containing the full node hierarchy and the {@link Indenter} class.
 	 */

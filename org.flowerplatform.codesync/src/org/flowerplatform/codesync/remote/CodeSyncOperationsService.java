@@ -15,18 +15,23 @@
  */
 package org.flowerplatform.codesync.remote;
 
+import static org.flowerplatform.codesync.CodeSyncConstants.BASE_DIR;
 import static org.flowerplatform.codesync.CodeSyncConstants.NODE_ANCESTOR;
 import static org.flowerplatform.codesync.CodeSyncConstants.NODE_LEFT;
+import static org.flowerplatform.codesync.CodeSyncConstants.SRC_DIR;
 import static org.flowerplatform.core.CoreConstants.NAME;
 
 import java.util.Collections;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.CodeSyncAlgorithm.Side;
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.adapter.file.CodeSyncFile;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
@@ -37,58 +42,54 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 public class CodeSyncOperationsService {
 
 	/**
-	 *@author Valentina Bojan
+	 * @author Valentina Bojan
 	 **/
 	public Match synchronize(String nodeUri) throws Exception {
 		Node srcDir = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		ServiceContext<NodeService> context = new ServiceContext<NodeService>();
 
-		while (true) {
-			Node parent = CorePlugin.getInstance().getNodeService().getParent(srcDir, context);
-			Node grandParent = CorePlugin.getInstance().getNodeService().getParent(parent, context);
-
-			if (grandParent == null) {
-				break;
-			}
-			srcDir = parent;
+		while (!SRC_DIR.equals(srcDir.getType())) {
+			srcDir = CorePlugin.getInstance().getNodeService().getParent(srcDir, context);
 		}
-
-		Object file = CorePlugin.getInstance().getFileAccessController().getFile(CoreUtils.getRepoFromNode(srcDir) + "/" + srcDir.getPropertyValue(NAME));
-
-		return synchronize(srcDir.getNodeUri(), file, "gen", true);
+		
+		Object file = CorePlugin.getInstance().getFileAccessController()
+				.getFile(getPath(srcDir, (String) srcDir.getPropertyValue(NAME)));
+		String technologies = (String) srcDir.getPropertyValue(CodeSyncConstants.SRC_DIR_TECHNOLOGIES);
+		return synchronize(srcDir.getNodeUri(), file, technologies, true);
 	}
-	
+
 	/**
-	 * @param nodeUri The nodeUri corresponding to the given file
+	 * @param nodeUri
+	 *            The nodeUri corresponding to the given file
 	 */
 	public Match synchronize(String nodeUri, Object file, String technology, boolean oneStepSync) {
 		Match match = generateMatch(nodeUri, file, technology, oneStepSync);
 		if (!oneStepSync) {
 			performSync(match);
 		}
-		
+
 		return match;
 	}
-	
+
 	/**
-	 *@author Valentina Bojan
+	 * @author Valentina Bojan
 	 **/
 	public Match generateMatch(String nodeUri, Object file, String technology, boolean oneStepSync) {
 		Node srcDir = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
-		
+
 		// START THE ALGORITHM
-		
+
 		// STEP 1: create a match
 		Match match = new Match();
-		
+
 		// ancestor + left: model (Node structure)
 		match.setAncestor(srcDir);
 		match.setLeft(srcDir);
-	
+
 		// right: source code (file system)
 		Object ast = file;
 		match.setRight(new CodeSyncFile(ast, true));
-		
+
 		// initialize the algorithm
 		CodeSyncAlgorithm algorithm = new CodeSyncAlgorithm();
 		algorithm.initializeModelAdapterSets(
@@ -96,18 +97,18 @@ public class CodeSyncOperationsService {
 				Collections.singletonList(technology),
 				Collections.singletonList(NODE_ANCESTOR));
 		algorithm.initializeFeatureProvider(Side.RIGHT);
-		algorithm.setFileAccessController(CorePlugin.getInstance().getFileAccessController()); 
+		algorithm.setFileAccessController(CorePlugin.getInstance().getFileAccessController());
 		match.setCodeSyncAlgorithm(algorithm);
 		match.setMatchKey(algorithm.getAncestorModelAdapter(srcDir).getMatchKey(srcDir, algorithm));
-		
+
 		// STEP 2: generate the diff, i.e. 3-way compare
 		algorithm.generateDiff(match, oneStepSync);
-		
+
 		return match;
 	}
-		
+
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public Match performSync(Match match) {
 		// STEP 3: sync
@@ -115,4 +116,24 @@ public class CodeSyncOperationsService {
 		return match;
 	}
 	
+	/**
+	 * 
+	 * @param node
+	 * @param relativePath
+	 * @return
+	 */
+	public String getPath(Node node, String relativePath) {
+		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(node.getNodeUri());
+		IPath path = new Path(FileControllerUtils.getFilePathWithRepo(resourceNode));
+		path = path.removeLastSegments(1);
+		String baseDir = (String) resourceNode.getPropertyValue(BASE_DIR);
+		if (baseDir != null) {
+			path = path.append(baseDir);
+		}
+		if (relativePath != null) {
+			path = path.append(relativePath);
+		}
+		return path.toString();
+	}
+
 }

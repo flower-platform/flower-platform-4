@@ -153,7 +153,6 @@ public final class CoreConstants {
 	
 	public static final String ADD_CHILD_DESCRIPTOR = "addChildDescriptor";
 	public static final String MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR = "memberOfChildCategoryDescriptor";
-	public static final String PROPERTY_DESCRIPTOR = "propertyDescriptor";
 	
 	// Property descriptors types
 

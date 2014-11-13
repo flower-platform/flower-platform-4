@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.codesync;
 
+import static org.flowerplatform.codesync.CodeSyncConstants.BASE_DIR;
 import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_CODESYNC;
 import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_MODEL;
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC;
@@ -38,6 +39,9 @@ import static org.flowerplatform.codesync.CodeSyncConstants.MDA_FILE;
 import static org.flowerplatform.codesync.CodeSyncConstants.MDA_ROOT;
 import static org.flowerplatform.codesync.CodeSyncConstants.NODE_ANCESTOR;
 import static org.flowerplatform.codesync.CodeSyncConstants.NODE_LEFT;
+import static org.flowerplatform.codesync.CodeSyncConstants.SRC_DIR;
+import static org.flowerplatform.codesync.CodeSyncConstants.SRC_DIR_TECHNOLOGIES;
+import static org.flowerplatform.core.CoreConstants.ADD_CHILD_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
@@ -74,6 +78,7 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileSubscribableProvider;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
+import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
@@ -213,6 +218,12 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		return useUIDs;
 	}
 	
+	private CodeSyncOperationsService codeSyncOperationsService;
+	
+	public CodeSyncOperationsService getCodeSyncOperationsService() {
+		return codeSyncOperationsService;
+	}
+	
 	private Map<String, ModelAdapterSet> modelAdapterSets = new HashMap<String, ModelAdapterSet>();
 	
 	/**
@@ -255,7 +266,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		super.start(context);
 		instance = this;
 		
-		CorePlugin.getInstance().getServiceRegistry().registerService("codeSyncOperationsService", new CodeSyncOperationsService());
+		codeSyncOperationsService = new CodeSyncOperationsService();
+		CorePlugin.getInstance().getServiceRegistry().registerService("codeSyncOperationsService", codeSyncOperationsService);
 		
 		ITypeProvider nodeTypeProvider = new NodeTypeProvider();
 		addModelAdapterSet(NODE_LEFT, new ModelAdapterSet()
@@ -290,16 +302,26 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(CATEGORY_MODEL);
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
-			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(DIAGRAM_EXTENSION, "fpp", "mindmap", true));
+			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(DIAGRAM_EXTENSION, "fpp", "mindmap", true))
+			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(CODESYNC_FILE, "fpp", "mindmap", true));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CODESYNC_ROOT)
-		.addCategory(CATEGORY_MODEL);
+			.addCategory(CATEGORY_MODEL)
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(BASE_DIR))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(SRC_DIR));
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MDA_ROOT)
 			.addCategory(CATEGORY_MODEL);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(DIAGRAM)
 			.addCategory(CATEGORY_MODEL);
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(SRC_DIR)
+			.addCategory(CATEGORY_CODESYNC)
+			.addCategory(CATEGORY_MODEL)
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, 
+					ResourcesPlugin.getInstance().getResourceUrl("images/codesync/SrcDirPackage.gif")))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(SRC_DIR_TECHNOLOGIES));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CodeSyncConstants.CATEGORY_CODESYNC)
 			.addAdditiveController(ADD_NODE_CONTROLLER, new CodeSyncAddNodeController())

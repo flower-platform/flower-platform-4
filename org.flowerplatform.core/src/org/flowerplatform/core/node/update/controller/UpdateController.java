@@ -129,7 +129,7 @@ public class UpdateController extends AbstractController
 		if (resourceNode == null) {
 			return;
 		}
-		resourceSet = (String) resourceNode.getProperties().get(RESOURCE_SET);
+		resourceSet = (String) resourceNode.getPropertyValue(RESOURCE_SET);
 		if (resourceSet == null) {
 			resourceSet = resourceNode.getNodeUri();
 		}

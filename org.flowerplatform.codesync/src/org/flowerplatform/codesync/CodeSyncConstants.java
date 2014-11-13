@@ -46,6 +46,8 @@ public final class CodeSyncConstants {
 	public static final String DIAGRAM = "diagram";
 	public static final String DIAGRAM_EXTENSION = getFileExtension(DIAGRAM);
 	
+	public static final String SRC_DIR = "srcDir";
+	
 	public static final String MATCH = "match";
 			
 	private static String getFileExtension(String extension) {
@@ -73,6 +75,10 @@ public final class CodeSyncConstants {
 	//////////////////////////////////
 	// Node properties
 	//////////////////////////////////
+	
+	public static final String BASE_DIR = "baseDir";
+	
+	public static final String SRC_DIR_TECHNOLOGIES = "technologies";
 	
 	public static final String REMOVED = "removed";
 	public static final String ADDED = "added";

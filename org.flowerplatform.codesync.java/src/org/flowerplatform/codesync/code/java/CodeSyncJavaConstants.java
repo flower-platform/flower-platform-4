@@ -24,9 +24,6 @@ import org.flowerplatform.resources.ResourcesPlugin;
  */
 public final class CodeSyncJavaConstants {
 	
-	private CodeSyncJavaConstants() {
-		
-	}
 	public static final String JAVA = "java";
 
 	public static final String EXTENSION_JAVA = "java";
@@ -126,6 +123,10 @@ public final class CodeSyncJavaConstants {
 	 **/
 	public static String getImagePathFromPublicResources(String image) {
 		return ResourcesPlugin.getInstance().getResourceUrl("images/codesync.java/" + image);
+	}
+	
+	private CodeSyncJavaConstants() {
+		// utility class
 	}
 
 }

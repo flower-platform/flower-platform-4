@@ -17,6 +17,7 @@ package org.flowerplatform.codesync.adapter.file;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.FILE;
 import static org.flowerplatform.codesync.CodeSyncConstants.FOLDER;
+import static org.flowerplatform.codesync.CodeSyncConstants.SRC_DIR;
 
 import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 
@@ -26,11 +27,12 @@ import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 public class FileModelAdapterSet extends ModelAdapterSet {
 
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
 	public FileModelAdapterSet() {
+		addModelAdapter(SRC_DIR, new FolderModelAdapter());
 		addModelAdapter(FOLDER, new FolderModelAdapter());
 		addModelAdapter(FILE, new FileModelAdapter());
 	}
-	
+
 }

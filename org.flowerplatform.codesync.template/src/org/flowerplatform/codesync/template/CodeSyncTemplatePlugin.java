@@ -1,10 +1,15 @@
 package org.flowerplatform.codesync.template;
 
+import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_ROOT;
 import static org.flowerplatform.codesync.CodeSyncConstants.FILE;
 import static org.flowerplatform.codesync.CodeSyncConstants.FOLDER;
+import static org.flowerplatform.codesync.CodeSyncConstants.SRC_DIR;
+import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.GEN;
 import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.INNER_TEMPLATE;
 import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.INNER_TEMPLATES;
+import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.TEMPLATES_DIRS;
 import static org.flowerplatform.core.CoreConstants.MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR;
+import static org.flowerplatform.util.UtilConstants.FEATURE_PROPERTY_DESCRIPTORS;
 
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.adapter.ModelAdapterSet;
@@ -18,6 +23,7 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
+import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -45,6 +51,9 @@ public class CodeSyncTemplatePlugin extends AbstractFlowerJavaPlugin {
 		
 		CorePlugin.getInstance().getServiceRegistry().registerService("codeSyncTemplateService", codeSyncTemplateService);
 		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CODESYNC_ROOT)
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(TEMPLATES_DIRS));
+		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(INNER_TEMPLATE)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(INNER_TEMPLATES));
 		
@@ -53,7 +62,8 @@ public class CodeSyncTemplatePlugin extends AbstractFlowerJavaPlugin {
 		addSyncPropertiesControllers(FOLDER, provider, setter);
 		addSyncPropertiesControllers(FILE, provider, setter);
 		
-		CodeSyncPlugin.getInstance().addModelAdapterSet("gen", new ModelAdapterSet()
+		CodeSyncPlugin.getInstance().addModelAdapterSet(GEN, new ModelAdapterSet()
+			.addModelAdapter(SRC_DIR, new GeneratedFolderModelAdapter())
 			.addModelAdapter(FOLDER, new GeneratedFolderModelAdapter())
 			.addModelAdapter(FILE, new GeneratedFileModelAdapter())
 			.setTypeProvider(new FileTypeProvider()));
