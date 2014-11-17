@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.freeplane.controller.xml_parser.XmlWritter;
 import org.flowerplatform.js_client.java.node.ClientNode;
@@ -102,8 +103,8 @@ public class FlowerPlatformManager implements IExtension {
 	 * so that the @NodeView knows about this flag.
 	 * @author Valentina Bojan
 	 */
-	public void addChildrenToParent(List<ClientNode> children, NodeModel parent) {
-		for (ClientNode child : children) {
+	public void addChildrenToParent(List<Node> children, NodeModel parent) {
+		for (Node child : children) {
 			if (!child.getType().equalsIgnoreCase(FreeplanePlugin.STYLE_ROOT_NODE)) {
 				// create the child node from the xml content
 				XmlWritter xmlCreator = new XmlWritter(FreeplanePlugin.getInstance().getXmlConfiguration(), child.getProperties());
@@ -117,7 +118,7 @@ public class FlowerPlatformManager implements IExtension {
 
 				// add the extension for memorize the clientNode
 				ClientNodeModel clientNodeModel = new ClientNodeModel();
-				clientNodeModel.setNode(child);
+				clientNodeModel.setNode((ClientNode) child);
 				childNode.addExtension(clientNodeModel);
 
 				// add the child to its parent node

@@ -1,0 +1,27 @@
+package org.flowerplatform.flex_client.codesync.action {
+	
+	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.action.DiagramShellAwareActionBase;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.resources.Resources;
+	
+	/**
+	 * @author Mariana Gheorghe
+	 */
+	public class ReloadConfigurationAction extends DiagramShellAwareActionBase {
+		
+		public static const ID:String = "org.flowerplatform.flex_client.codesync.action.ReloadConfigurationAction";
+		
+		public function ReloadConfigurationAction() {
+			super();
+			label = Resources.getMessage("codesync.action.reloadConfig");
+			icon = Resources.reloadIcon;
+			preferShowOnActionBar = true;
+		}
+		
+		override public function run():void {
+			var node:Node = Node(selection.getItemAt(0));
+			CorePlugin.getInstance().serviceLocator.invoke("codeSyncOperationsService.reloadConfiguration", [node.nodeUri]);
+		}
+	}
+}

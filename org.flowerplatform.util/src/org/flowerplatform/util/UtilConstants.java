@@ -35,7 +35,9 @@ public final class UtilConstants {
 	// TypeDescriptorRegistry
 	public static final String CATEGORY_PREFIX = "category.";
 	public static final String CATEGORY_ALL = CATEGORY_PREFIX + "all";
-
+	public static final String NOTYPE_PREFIX = "noType.";
+	
+	
 	public static final String EXTRA_INFO_VALUE_CONVERTER = "valueConverter";
 	public static final String EXTRA_INFO_CSV_TO_LIST_PREFIX = "csvToListPrefix";
 	public static final String EXTRA_INFO_CSV_TO_LIST_SUFFIX = "csvToListSuffix";

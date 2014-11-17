@@ -16,6 +16,7 @@
 package org.flowerplatform.flex_client.codesync {
 	
 	
+	import org.flowerplatform.flex_client.codesync.action.ReloadConfigurationAction;
 	import org.flowerplatform.flex_client.codesync.action.SynchronizeAction;
 	import org.flowerplatform.flex_client.codesync.node.renderer.CodeSyncNodeRenderer;
 	import org.flowerplatform.flex_client.core.CoreConstants;
@@ -52,10 +53,14 @@ package org.flowerplatform.flex_client.codesync {
 			INSTANCE = this;
 			
 			FlexUtilGlobals.getInstance().registerAction(SynchronizeAction);
+			FlexUtilGlobals.getInstance().registerAction(ReloadConfigurationAction);
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CodeSyncConstants.CATEGORY_CODESYNC)
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, AbstractController(new NodeRendererController(new ClassFactoryWithConstructor(CodeSyncNodeRenderer, -10000))))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(SynchronizeAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncConstants.CODE_SYNC_CONFIG_ROOT)
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ReloadConfigurationAction.ID));
 			
 			CorePlugin.getInstance().serviceLocator.addService("codeSyncOperationsService");
 		}

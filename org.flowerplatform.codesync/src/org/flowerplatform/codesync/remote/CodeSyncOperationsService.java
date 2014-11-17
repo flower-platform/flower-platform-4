@@ -21,7 +21,12 @@ import static org.flowerplatform.codesync.CodeSyncConstants.NODE_LEFT;
 import static org.flowerplatform.codesync.CodeSyncConstants.SRC_DIR;
 import static org.flowerplatform.core.CoreConstants.NAME;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -30,17 +35,80 @@ import org.flowerplatform.codesync.CodeSyncAlgorithm.Side;
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.adapter.file.CodeSyncFile;
+import org.flowerplatform.codesync.config_loader.ICodeSyncConfigLoader;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 
 /**
  * @author Mariana Gheorghe
  */
 public class CodeSyncOperationsService {
 
+	private List<ICodeSyncConfigLoader> codeSyncConfigLoaders = new ArrayList<ICodeSyncConfigLoader>();
+
+	private Map<String, TypeDescriptorRegistry> codeSyncConfigs = new HashMap<String, TypeDescriptorRegistry>();
+	
+	public List<ICodeSyncConfigLoader> getCodeSyncConfigLoaders() {
+		return codeSyncConfigLoaders;
+	}
+
+	/**
+	 * Remote method.
+	 */
+	public void reloadConfiguration(String nodeUri) {
+		Node config = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
+		IPath path = getResourceNodeLocation(config);
+		String codeSyncConfigDirs = getCodeSyncConfigDirsKey(path.toString(), null);
+		loadCodeSyncConfig(codeSyncConfigDirs);
+	}
+	
+	/**
+	 * Return the configuration from the cached map, loading if necessary.
+	 */
+	public TypeDescriptorRegistry getOrLoadCodeSyncConfig(String codeSyncConfigDirs, String baseDir) {
+		codeSyncConfigDirs = getCodeSyncConfigDirsKey(codeSyncConfigDirs, baseDir);
+		TypeDescriptorRegistry config = codeSyncConfigs.get(codeSyncConfigDirs);
+		if (config == null) {
+			config = loadCodeSyncConfig(codeSyncConfigDirs);
+		}
+		return config;
+	}
+	
+	private TypeDescriptorRegistry loadCodeSyncConfig(String codeSyncConfigDirs) {
+		TypeDescriptorRegistry config = new TypeDescriptorRegistry();
+		config.getOrCreateTypeDescriptor(CodeSyncConstants.CODE_SYNC_CONFIG_NOTYPE);
+		for (ICodeSyncConfigLoader loader : codeSyncConfigLoaders) {
+			loader.load(codeSyncConfigDirs.split(","), config);
+		}
+		codeSyncConfigs.put(codeSyncConfigDirs, config);
+		return config;
+	}
+	
+	private String getCodeSyncConfigDirsKey(String codeSyncConfigDirs, String baseDir) {
+		List<String> result = null;
+		String[] dirs = codeSyncConfigDirs.split(",");
+		
+		// relativize to base dir
+		if (baseDir == null) {
+			result = Arrays.asList(dirs);
+		} else {
+			IPath path = new Path(baseDir);
+			result = new ArrayList<String>();
+			for (String dir : dirs) {
+				result.add(path.append(dir).toString());
+			}
+		}
+		
+		// sort
+		Collections.sort(result);
+		
+		return String.join(",", result);
+	}
+	
 	/**
 	 * @author Valentina Bojan
 	 **/
@@ -124,8 +192,7 @@ public class CodeSyncOperationsService {
 	 */
 	public String getPath(Node node, String relativePath) {
 		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(node.getNodeUri());
-		IPath path = new Path(FileControllerUtils.getFilePathWithRepo(resourceNode));
-		path = path.removeLastSegments(1);
+		IPath path = getResourceNodeLocation(resourceNode);
 		String baseDir = (String) resourceNode.getPropertyValue(BASE_DIR);
 		if (baseDir != null) {
 			path = path.append(baseDir);
@@ -134,6 +201,12 @@ public class CodeSyncOperationsService {
 			path = path.append(relativePath);
 		}
 		return path.toString();
+	}
+	
+	private IPath getResourceNodeLocation(Node resourceNode) {
+		IPath path = new Path(FileControllerUtils.getFilePathWithRepo(resourceNode));
+		path = path.removeLastSegments(1);
+		return path;
 	}
 
 }

@@ -1,5 +1,6 @@
 package org.flowerplatform.codesync.template;
 
+
 /**
  * @author Mariana Gheorghe
  */
@@ -9,14 +10,12 @@ public final class CodeSyncTemplateConstants {
 	public static final String TEMPLATES_DIRS = "templatesDirs";
 	
 	///////////////////////////////////
-	// Node types
+	// Node types and properties
 	///////////////////////////////////
+	
+	// Node types
 	
 	public static final String INNER_TEMPLATE = "innerTemplate";
-	
-	///////////////////////////////////
-	// Node properties
-	///////////////////////////////////
 	
 	// Value features
 	
@@ -29,6 +28,18 @@ public final class CodeSyncTemplateConstants {
 	
 	public static final String INNER_TEMPLATES = "innerTemplates";
 
+	///////////////////////////////////
+	// Configuration
+	///////////////////////////////////
+	
+	// Configuration files
+	
+	public static final String CODE_SYNC_CONFIG_TEMPLATES = "templates";
+	
+	// Loaded configurations
+	
+	public static final String CODE_SYNC_CONFIG_VELOCITY_ENGINE = "codeSyncConfigVelocityEngine";
+	
 	private CodeSyncTemplateConstants() {
 		// utility class
 	}

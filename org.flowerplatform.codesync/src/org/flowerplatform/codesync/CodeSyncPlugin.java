@@ -21,6 +21,7 @@ import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_MODEL;
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC;
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_FILE;
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_ROOT;
+import static org.flowerplatform.codesync.CodeSyncConstants.CODE_SYNC_CONFIG_EXTENSION;
 import static org.flowerplatform.codesync.CodeSyncConstants.DIAGRAM;
 import static org.flowerplatform.codesync.CodeSyncConstants.DIAGRAM_EXTENSION;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH;
@@ -41,6 +42,7 @@ import static org.flowerplatform.codesync.CodeSyncConstants.NODE_ANCESTOR;
 import static org.flowerplatform.codesync.CodeSyncConstants.NODE_LEFT;
 import static org.flowerplatform.codesync.CodeSyncConstants.SRC_DIR;
 import static org.flowerplatform.codesync.CodeSyncConstants.SRC_DIR_TECHNOLOGIES;
+import static org.flowerplatform.codesync.CodeSyncConstants.getFileExtension;
 import static org.flowerplatform.core.CoreConstants.ADD_CHILD_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
@@ -68,8 +70,6 @@ import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
 import org.flowerplatform.codesync.controller.CodeSyncRepositoryChildrenProvider;
 import org.flowerplatform.codesync.controller.CodeSyncSubscribableResourceProvider;
 import org.flowerplatform.codesync.controller.ModelResourceSetProvider;
-import org.flowerplatform.codesync.project.IProjectAccessController;
-import org.flowerplatform.codesync.project.ProjectAccessController;
 import org.flowerplatform.codesync.remote.CodeSyncOperationsService;
 import org.flowerplatform.codesync.type_provider.ITypeProvider;
 import org.flowerplatform.codesync.type_provider.NodeTypeProvider;
@@ -128,11 +128,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //	 */
 //	protected List<Runnable> runnablesThatLoadDescriptors;
 	
-	/**
-	 * @see #getProjectAccessController()
-	 */
-	private IProjectAccessController projectAccessController;
-	
 	protected boolean useUIDs = true;
 
 	public static CodeSyncPlugin getInstance() {
@@ -143,19 +138,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //		return codeSyncTypeCriterionDispatcherProcessor;
 //	}
 
-	/**
-	 * Platform-dependent.
-	 * 
-	 * @author Mariana Gheorghe
-	 */
-	public IProjectAccessController getProjectAccessController() {
-		return projectAccessController;
-	}
-
-	public void setProjectAccessController(IProjectAccessController projectAccessController) {
-		this.projectAccessController = projectAccessController;
-	}
-	
 //	/**
 //	 * A list of feature to be deleted in case an object is deleted 
 //	 * (e.g. an edge that starts or ends in a deleted view).
@@ -220,11 +202,13 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 	private CodeSyncOperationsService codeSyncOperationsService;
 	
+	private Map<String, ModelAdapterSet> modelAdapterSets = new HashMap<String, ModelAdapterSet>();
+
+	private Map<String, String> extensionToTechnology = new HashMap<String, String>();
+
 	public CodeSyncOperationsService getCodeSyncOperationsService() {
 		return codeSyncOperationsService;
 	}
-	
-	private Map<String, ModelAdapterSet> modelAdapterSets = new HashMap<String, ModelAdapterSet>();
 	
 	/**
 	 *@author Mariana Gheorghe
@@ -239,8 +223,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	public ModelAdapterSet getModelAdapterSet(String technology) {
 		return modelAdapterSets.get(technology);
 	}
-	
-	protected Map<String, String> extensionToTechnology = new HashMap<String, String>();
 	
 	/**
 	 *@author Mariana Gheorghe
@@ -303,10 +285,12 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(DIAGRAM_EXTENSION, "fpp", "mindmap", true))
-			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(CODESYNC_FILE, "fpp", "mindmap", true));
+			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(CODESYNC_FILE, "fpp", "mindmap", true))
+			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(getFileExtension(CODE_SYNC_CONFIG_EXTENSION), "fpp", "mindmap", true));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CODESYNC_ROOT)
 			.addCategory(CATEGORY_MODEL)
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("codeSyncRoot.label")))
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(BASE_DIR))
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(SRC_DIR));
 	
@@ -349,10 +333,10 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_BODY_MODIFIED)
 					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN));
-		
-		// TODO test
-		setProjectAccessController(new ProjectAccessController());
 
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CodeSyncConstants.CODE_SYNC_CONFIG_ROOT);
+		
+		
 //		// initialize the list of code that will regenerate the descriptors
 //		runnablesThatLoadDescriptors = new ArrayList<>();
 //
@@ -595,32 +579,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 //			}
 //		}
 //	}
-	
-	/**
-	 *@author Mariana Gheorghe
-	 **/
-	public Node getCodeSyncMappingRoot(Object project) {
-		Node root = getResource(project);
-//		if (!EditorPlugin.getInstance().getFileAccessController().exists(codeSyncElementMappingFile)) {
-//			// first clear the resource in case the mapping file was deleted 
-//			// after it has been loaded at a previous moment
-//			cseResource.getContents().clear();
-//			
-//			for (String srcDir : getSrcDirs()) {
-//				CodeSyncRoot cseRoot = (CodeSyncRoot) getRoot(cseResource, srcDir);
-//				if (cseRoot == null) {
-//					// create the CSE for the SrcDir
-//					cseRoot = CodeSyncPackage.eINSTANCE.getCodeSyncFactory().createCodeSyncRoot();
-//					cseRoot.setName(srcDir);
-//					cseRoot.setType(FOLDER);
-//				}
-//				cseResource.getContents().add(cseRoot);
-//			}
-//			
-//			CodeSyncPlugin.getInstance().saveResource(cseResource);
-//		}
-		return root;
-	}
 	
 //	/**
 //	 * @author Mariana

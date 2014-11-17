@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlTransient;
@@ -48,6 +49,8 @@ public class Node implements Externalizable {
 	private boolean propertiesPopulated;
 
 	private Object rawNodeData;
+	
+	private List<Node> children;
 
 	/**
 	 * @author Mariana Gheorghe
@@ -158,6 +161,18 @@ public class Node implements Externalizable {
 		return getOrPopulateProperties(context).get(property);
 	}
 	
+	/**
+	 * Use only as a cache container for children. For the actual list of children,
+	 * use {@link NodeService#getChildren(Node, ServiceContext)}.
+	 */
+	public List<Node> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<Node> children) {
+		this.children = children;
+	}
+
 	@Override
 	public int hashCode() {
 		return getNodeUri().hashCode();

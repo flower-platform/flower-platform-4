@@ -15,6 +15,7 @@ import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 import org.flowerplatform.codesync.template.adapter.GeneratedFileModelAdapter;
 import org.flowerplatform.codesync.template.adapter.GeneratedFolderModelAdapter;
+import org.flowerplatform.codesync.template.config_loader.TemplatesCodeSyncConfigLoader;
 import org.flowerplatform.codesync.template.controller.GeneratedFileSyncPropertiesProvider;
 import org.flowerplatform.codesync.template.controller.GeneratedFileSyncPropertySetter;
 import org.flowerplatform.codesync.type_provider.FileTypeProvider;
@@ -67,6 +68,9 @@ public class CodeSyncTemplatePlugin extends AbstractFlowerJavaPlugin {
 			.addModelAdapter(FOLDER, new GeneratedFolderModelAdapter())
 			.addModelAdapter(FILE, new GeneratedFileModelAdapter())
 			.setTypeProvider(new FileTypeProvider()));
+		
+		// register a config loader
+		CodeSyncPlugin.getInstance().getCodeSyncOperationsService().getCodeSyncConfigLoaders().add(new TemplatesCodeSyncConfigLoader());		
 	}
 	
 	private void addSyncPropertiesControllers(String type, IPropertiesProvider provider, IPropertySetter setter) {

@@ -49,8 +49,13 @@ public final class CodeSyncConstants {
 	public static final String SRC_DIR = "srcDir";
 	
 	public static final String MATCH = "match";
-			
-	private static String getFileExtension(String extension) {
+	
+	/**
+	 * 
+	 * @param extension
+	 * @return
+	 */
+	public static String getFileExtension(String extension) {
 		return "." + extension;
 	}
 	
@@ -129,5 +134,14 @@ public final class CodeSyncConstants {
 	public static final String NODE_LEFT = "nodeLeft";
 	public static final String NODE_RIGHT = "nodeRight";
 	public static final String NODE_ANCESTOR = "nodeAncestor";
+	
+	//////////////////////////////////
+	// Configuration
+	//////////////////////////////////
+	
+	public static final String CODE_SYNC_CONFIG_EXTENSION = "csc";
+	public static final String CODE_SYNC_CONFIG_ROOT = "codeSyncConfigRoot";
+	
+	public static final String CODE_SYNC_CONFIG_NOTYPE = UtilConstants.NOTYPE_PREFIX + "codeSyncConfig";
 	
 }

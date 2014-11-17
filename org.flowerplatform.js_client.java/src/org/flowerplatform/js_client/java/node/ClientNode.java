@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.js_client.java.node;
 
-import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.node.remote.Node;
@@ -27,8 +26,6 @@ import org.mozilla.javascript.NativeObject;
 public class ClientNode extends Node {
 
 	private ClientNode parent;
-	
-	private List<ClientNode> children;
 	
 	/**
 	 * public attribute -> compatible with javascript code
@@ -54,14 +51,6 @@ public class ClientNode extends Node {
 		return properties.get(property);
 	}
 	
-	public List<ClientNode> getChildren() {
-		return children;
-	}
-
-	public void setChildren(List<ClientNode> children) {
-		this.children = children;
-	}
-
 	public ClientNode getParent() {
 		return parent;
 	}

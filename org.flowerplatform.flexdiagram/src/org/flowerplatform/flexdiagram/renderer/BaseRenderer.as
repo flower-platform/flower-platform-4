@@ -324,10 +324,10 @@ package org.flowerplatform.flexdiagram.renderer {
 					var value:SpanElement = new SpanElement();
 					if (entry.isGroup) {
 						name.fontWeight = "bold";
-						name.text = " " + entry.descriptor.name;
+						name.text = " " + (entry.descriptor.label != null ? entry.descriptor.label : entry.descriptor.name);
 					} else {
 						value.text = String(entry.value);
-						name.text = "  " + entry.descriptor.name;
+						name.text = "  " + (entry.descriptor.label != null ? entry.descriptor.label : entry.descriptor.name);
 					}
 					names.addChild(name);
 					values.addChild(value);

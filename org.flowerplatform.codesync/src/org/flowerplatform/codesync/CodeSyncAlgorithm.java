@@ -88,10 +88,6 @@ public class CodeSyncAlgorithm {
 		return filesToDelete;
 	}
 	
-	public Map<String, Object> getContext() {
-		return context;
-	}
-	
 	/**
 	 * @author Mariana Gheorghe
 	 **/

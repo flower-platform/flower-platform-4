@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
 
+import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.freeplane.FreeplanePlugin;
 import org.flowerplatform.freeplane.controller.xml_parser.XmlWritter;
 import org.flowerplatform.js_client.java.JsClientJavaPlugin;
@@ -133,7 +134,7 @@ class FlowerPlatformSubscribe extends AFreeplaneAction {
 
 						// expand root node
 						JsClientJavaUtils.invokeJsFunction(nodeRegistry, "expand", root, null);
-						List<ClientNode> children = root.getChildren();
+						List<Node> children = root.getChildren();
 						flowerManager.addChildrenToParent(children, rootNode);
 						
 						// display the new map
