@@ -50,14 +50,18 @@ EntityRegistryManager.prototype.getEntityRegistriesForNotificationChannel = func
 };
 
 EntityRegistryManager.prototype.addDiffUpdateProcessor = function(diffUpdateType, diffUpdateProcessor) {
-	diffUpdateProcessors[diffUpdateType] = diffUpdateProcessor;
+	this.diffUpdateProcessors[diffUpdateType] = diffUpdateProcessor;
 };
 
 EntityRegistryManager.prototype.processDiffUpdate = function(notificationChannel, diffUpdate) {
-	var diffUpdateProcessor = diffUpdateProcessors[diffUpdate.type];
-	var entityRegistryEntry = entityRegistryEntries[notificationChannel];
-	for (var entityRegistry in entityRegistryEntry.entityRegistries) {
+	var diffUpdateProcessor = this.diffUpdateProcessors[diffUpdate.type];
+	var entityRegistryEntry = this.entityRegistryEntries[notificationChannel];
+	for (var i in entityRegistryEntry.entityRegistries) {
+		var entityRegistry = entityRegistryEntry.entityRegistries[i];
 		diffUpdateProcessor.applyDiffUpdate(entityRegistry, diffUpdate);
+	}
+	if (diffUpdate.id > entityRegistryEntry.lastDiffUpdateId) {
+		entityRegistryEntry.lastDiffUpdateId = diffUpdate.id;
 	}
 	
 };
@@ -76,8 +80,9 @@ EntityRegistryManager.prototype.removeListener = function(listener) {
 
 EntityRegistryEntry = function() {
 	this.entityRegistries = [];
-	this.lastDiffUpdateId = null;
+	this.lastDiffUpdateId = -1;
 }
 
 var _entityRegistryManager;
 
+var Constants = { UPDATED: "UPDATED", ADDED: "ADDED", REMOVED: "REMOVED", REQUEST_REFRESH: "REQUEST_REFRESH"};

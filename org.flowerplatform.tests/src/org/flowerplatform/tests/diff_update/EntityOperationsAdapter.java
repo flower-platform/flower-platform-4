@@ -4,6 +4,8 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 
 
@@ -55,7 +57,6 @@ public class EntityOperationsAdapter {
 		}
 		
 	}
-
 	
 	/**
 	 * 
@@ -130,4 +131,24 @@ public class EntityOperationsAdapter {
 		children.remove(child); 
 	}
 
+	/**
+	 * 
+	 * @param entityType
+	 * @param properties
+	 * @throws ClassNotFoundException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws IntrospectionException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 */
+	public Object createEntity(String entityType, Map<String, Object> properties) throws InstantiationException, IllegalAccessException, 
+			ClassNotFoundException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
+		Object entity = Class.forName(entityType).newInstance();
+		for (Entry<String, Object> entry : properties.entrySet()) {
+			new PropertyDescriptor(entry.getKey(), entity.getClass()).getWriteMethod().invoke(entity, entry.getValue());
+		}
+		return entity;
+	}
+	
 }

@@ -25,7 +25,7 @@ EntityRegistry.prototype.registerEntity = function(entity) {
 	if (!this.registry[entity]) {
 		var uid = this.entityOperationsAdapter.getEntityUid(entity);
 		this.registry[uid] = entity;
-
+		
 		// add children to registry
 		var childrenProperties = this.entityOperationsAdapter.getChildrenProperties(entity);
 		if (childrenProperties) {
@@ -107,6 +107,15 @@ EntityRegistry.prototype.unregister = function(uid) {
 };
 
 
+EntityRegistry.prototype.setProperties = function(uid, properties) {
+	var entity = this.getEntityByUid(uid);
+	java.lang.System.out.println(properties);
+	for (property in properties) {
+		entity[property] = properties[property];
+	}
+};
+
+
 EntityRegistry.prototype.getEntityByUid = function(uid) {
 	if (uid in this.registry) {
 		return this.registry[uid];
@@ -125,23 +134,23 @@ EntityRegistry.prototype.removeChangeListener = function(listener) {
 	}
 };			
 
-EntityRegistry.prototype.setPropertyValue = function(node, property, newValue) {
-	var oldValue = (property in node.properties) ? node.properties[property] : null;	
-	node.properties[property] = newValue;
+EntityRegistry.prototype.setPropertyValue = function(entity, property, newValue) {
+	var oldValue = (property in entity.properties) ? entity.properties[property] : null;	
+	entity.properties[property] = newValue;
 		
-	for (var i = 0; i < this.nodeChangeListeners.length; i++){		
-		this.nodeChangeListeners[i].nodeUpdated(node, property, oldValue, newValue);
+	for (var i = 0; i < this.entityChangeListeners.length; i++){		
+		this.entityChangeListeners[i].entityUpdated(entity, property, oldValue, newValue);
 	}	
 };
 				
-EntityRegistry.prototype.setEntityProperties = function(node, newProperties) {
+EntityRegistry.prototype.resetEntityProperties = function(entity, newProperties) {
 	for (var property in newProperties) {
-		this.setPropertyValue(node, property, newProperties[property]);
+		this.setPropertyValue(entity, property, newProperties[property]);
 	}
 	// remove anything that is not in newProperties
-	for(var property in node.properties){
+	for(var property in entity.properties){
 		if(!(property in newProperties)){
-			delete node.properties[property];
+			delete entity.properties[property];
 		}
 	}
 };

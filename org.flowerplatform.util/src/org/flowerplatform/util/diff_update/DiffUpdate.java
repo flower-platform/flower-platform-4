@@ -9,6 +9,8 @@ public class DiffUpdate {
 
 	private long id;
 
+	private String type;
+	
 	private String entityUid; 
 	
 	public long getId() {
@@ -19,6 +21,14 @@ public class DiffUpdate {
 		this.id = id;
 	}
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public String getEntityUid() {
 		return entityUid;
 	}
@@ -26,7 +36,5 @@ public class DiffUpdate {
 	public void setEntityUid(String entityUid) {
 		this.entityUid = entityUid;
 	}
-	
-	
 	
 }

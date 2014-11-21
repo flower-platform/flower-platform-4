@@ -16,11 +16,12 @@
   
 var AddEntityDiffUpdateProcessor = function() { };
 AddEntityDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegistry, diffUpdate) {
-	var entity = diffUpdate.properties;
-	entityRegistry.registerEntity(entity);
-	if (diffUpdate.parentUid) {
-		var parent = entityRegistry.getEntityByUid(diffUpdate.parentUid);
-		parent[diffUpdate.childrenProperty].push(entity); //TODO CM: adugare la o anumita pozitie
+	var entity = entityRegistry.entityOperationsAdapter.createEntity(diffUpdate.entityType, diffUpdate.properties);
+	if (diffUpdate.parentUid) { // child entity
+//		entityRegistry.addParentUid(parentUid, childrenProperty, child, index);
+	}
+	else {	// root entity
+		entityRegistry.registerEntity(entity);
 	}
 };
 
@@ -31,5 +32,5 @@ RemoveEntityDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegis
 
 var PropertiesDiffUpdateProcessor = function() { };
 PropertiesDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegistry, diffUpdate) {
-
+	entityRegistry.setProperties(diffUpdate.entityUid, diffUpdate.properties);
 };
