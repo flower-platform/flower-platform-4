@@ -330,8 +330,10 @@ package org.flowerplatform.flexdiagram.mindmap {
 			
 			dynamicObject[property] = value;
 			
-			// TODO CS/MM: we should check oldValue != newValue?
-			model.dispatchEvent(PropertyChangeEvent.createUpdateEvent(model, property, oldValue, value));
+			// check oldValue != newValue
+			if (oldValue != value) {
+				model.dispatchEvent(PropertyChangeEvent.createUpdateEvent(model, property, oldValue, value));
+			}
 		}
 		
 		public function getChildrenBasedOnSide(context:DiagramShellContext, model:Object, side:int = 0):Array {

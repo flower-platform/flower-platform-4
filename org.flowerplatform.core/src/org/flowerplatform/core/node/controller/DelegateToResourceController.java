@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
@@ -34,37 +33,37 @@ import org.flowerplatform.util.controller.TypeDescriptor;
 /**
  * @author Mariana Gheorghe
  */
-public class DelegateToResourceController extends AbstractController implements
-	IChildrenProvider, IParentProvider, IAddNodeController, IRemoveNodeController, 
-	IPropertiesProvider, IPropertySetter, IDefaultPropertyValueProvider, IPersistenceController {
+public class DelegateToResourceController extends AbstractController implements 
+		IChildrenProvider, IParentProvider, IAddNodeController, IRemoveNodeController, 
+		IPropertiesProvider, IPropertySetter, IDefaultPropertyValueProvider,
+		IPersistenceController {
 
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	protected String getResource(String scheme) {
 		return CoreConstants.CATEGORY_RESOURCE_PREFIX + scheme;
 	}
-	
+
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	protected TypeDescriptor getDescriptor(Node node) {
-		return CorePlugin.getInstance().getNodeTypeDescriptorRegistry()
-				.getExpectedTypeDescriptor(getResource(node.getScheme()));
+		return getTypeDescriptor().getRegistry().getExpectedTypeDescriptor(getResource(node.getScheme()));
 	}
-	
+
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	protected List<AbstractController> getControllers(Node node, String controllerType) {
 		TypeDescriptor descriptor = getDescriptor(node);
 		if (descriptor == null) {
 			return Collections.emptyList();
 		}
-		
+
 		List<AbstractController> controllers = descriptor.getAdditiveControllers(controllerType, node);
 		controllers.remove(this);
-		
+
 		for (AbstractController controller : controllers) {
 			if (controller instanceof UpdateController) {
 				controllers.remove(controller);
@@ -73,23 +72,23 @@ public class DelegateToResourceController extends AbstractController implements
 		}
 		return controllers;
 	}
-	
+
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	protected AbstractController getController(Node node, String controllerType) {
 		TypeDescriptor descriptor = getDescriptor(node);
 		if (descriptor == null) {
 			return null;
 		}
-		
+
 		AbstractController controller = descriptor.getSingleController(controllerType, node);
 		if (controller == this) {
 			return null;
 		}
 		return controller;
 	}
-	
+
 	@Override
 	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		for (AbstractController controller : getControllers(node, CoreConstants.PROPERTY_SETTER)) {
@@ -158,11 +157,11 @@ public class DelegateToResourceController extends AbstractController implements
 		Object value = null;
 		for (AbstractController controller : getControllers(node, CoreConstants.DEFAULT_PROPERTY_PROVIDER)) {
 			if (context.getBooleanValue(DONT_PROCESS_OTHER_CONTROLLERS)) {
- 				break;
+				break;
 			}
 			value = ((IDefaultPropertyValueProvider) controller).getDefaultValue(node, property, context);
 		}
 		return value;
 	}
-	
+
 }

@@ -11,6 +11,7 @@ package org.flowerplatform.flex_client.properties2 {
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.list.ComposedList;
 	import org.flowerplatform.flexutil.list.SingletonList;
 	import org.flowerplatform.flexutil.properties.PropertiesHelper;
@@ -66,8 +67,8 @@ package org.flowerplatform.flex_client.properties2 {
 			return result;
 		}
 		
-		override protected function getDescriptorsForGroups(context:Object, model:Object):IList {
-			var result:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getAdditiveControllers(FlexUtilConstants.FEATURE_PROPERTY_GROUP_DESCRIPTORS, model);
+		override protected function getDescriptorsForGroups(context:Object, typeDescriptorRegistry:TypeDescriptorRegistry, model:Object):IList {
+			var result:IList = typeDescriptorRegistry.getAdditiveControllers(FlexUtilConstants.FEATURE_PROPERTY_GROUP_DESCRIPTORS, model);
 			if (Utils.getPropertySafe(context, FlexUtilConstants.PROPERTIES_CONTEXT_INCLUDE_PROPERTIES_WITHOUT_DESCRIPTOR)) {
 				return new ComposedList([uriTypeGroupDescriptor, result]);
 			} else {
@@ -75,8 +76,8 @@ package org.flowerplatform.flex_client.properties2 {
 			}
 		}
 		
-		override protected function getDescriptorsForProperties(context:Object, model:Object):IList {
-			var result:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getAdditiveControllers(FlexUtilConstants.FEATURE_PROPERTY_DESCRIPTORS, model);
+		override protected function getDescriptorsForProperties(context:Object, typeDescriptorRegistry:TypeDescriptorRegistry, model:Object):IList {
+			var result:IList = typeDescriptorRegistry.getAdditiveControllers(FlexUtilConstants.FEATURE_PROPERTY_DESCRIPTORS, model);
 			if (Utils.getPropertySafe(context, FlexUtilConstants.PROPERTIES_CONTEXT_INCLUDE_PROPERTIES_WITHOUT_DESCRIPTOR)) {
 				var lists:Array = new Array();
 				if (!Utils.getPropertySafe(context, FlexUtilConstants.PROPERTIES_CONTEXT_IS_CREATE_MODE)) {

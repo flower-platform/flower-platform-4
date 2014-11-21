@@ -66,7 +66,7 @@ package org.flowerplatform.flex_client.mindmap.renderer {
 				context = new Object();
 				context[FlexUtilConstants.PROPERTIES_CONTEXT_INCLUDE_PROPERTIES_WITHOUT_DESCRIPTOR] = true;
 			}
-			propertyEntries = PropertiesPlugin.getInstance().propertiesHelper.getPropertyEntries(context, diagramShellContext.diagramShell.registry, data);
+			propertyEntries = PropertiesPlugin.getInstance().propertiesHelper.getPropertyEntries(context, typeDescriptorRegistry, data);
 		}
 	}
 }

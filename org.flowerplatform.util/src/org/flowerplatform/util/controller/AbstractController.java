@@ -86,6 +86,10 @@ public abstract class AbstractController implements IController {
 		return this;
 	}
 	
+	public TypeDescriptor getTypeDescriptor() {
+		return typeDescriptor;
+	}
+	
 	/**
 	 * @author Claudiu Matei
 	 */

@@ -220,7 +220,8 @@ public class TypeDescriptorRegistryDebugControllers extends DebugControllers {
 		@Override
 		public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 			String type = getVirtualNodeResourceHandler().getTypeSpecificPartFromNodeUri(node.getNodeUri());
-			node.getProperties().put(NAME, type);
+			String key = Utils.getFragment(node.getNodeUri());
+			node.getProperties().put(NAME, key);
 			String icons = ResourcesPlugin.getInstance().getResourceUrl("/images/mindmap/icons/full-1.png");
 			TypeDescriptorDebugWrapper wrapper = new TypeDescriptorDebugWrapper(CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(type));
 			if (wrapper.isCachedSingleController(Utils.getFragment(node.getNodeUri()))) {

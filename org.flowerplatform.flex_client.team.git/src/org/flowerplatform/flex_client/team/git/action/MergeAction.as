@@ -48,7 +48,7 @@ package org.flowerplatform.flex_client.team.git.action {
 					// not a git repository
 					return false;
 				}	
-				var categories:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories;				
+				var categories:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(node.type).categories;				
 				if (categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0 && !node.getPropertyValue(GitConstants.IS_CHECKEDOUT)) {
 					// Merge...
 					label = Resources.getMessage("flex_client.team.git.action.mergeBranch");

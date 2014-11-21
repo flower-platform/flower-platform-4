@@ -34,7 +34,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.controller {
 		override public function getChildren(context:DiagramShellContext, model:Object):IList	{
 			// no children; this controller is used only to dispatch events
 //			return EmptyList.INSTANCE;
-			return new SamplePropertiesHelper().getPropertyEntries(null, context.diagramShell.registry, model);
+			return new SamplePropertiesHelper().getPropertyEntries(null, context.diagramShell.registryProvider.getTypeDescriptorRegistry(model), model);
 		}
 		
 	}

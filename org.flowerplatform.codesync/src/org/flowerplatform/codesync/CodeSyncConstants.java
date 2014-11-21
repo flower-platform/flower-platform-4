@@ -23,12 +23,6 @@ import org.flowerplatform.util.UtilConstants;
  */
 public final class CodeSyncConstants {
 
-	/**
-	 * @author see class
-	 */
-	private CodeSyncConstants() {
-		super();
-	}
 	//////////////////////////////////
 	// Node types and categories
 	//////////////////////////////////
@@ -143,5 +137,15 @@ public final class CodeSyncConstants {
 	public static final String CODE_SYNC_CONFIG_ROOT = "codeSyncConfigRoot";
 	
 	public static final String CODE_SYNC_CONFIG_NOTYPE = UtilConstants.NOTYPE_PREFIX + "codeSyncConfig";
+	
+	public static final String CODE_SYNC_CONFIG_PROPERTY_DIRS = "codeSyncConfigDirs";
+	public static final String CODE_SYNC_CONFIG_PROPERTY_DIRS_KEY = "codeSyncConfigDirsKey";
+	
+	/**
+	 * @author see class
+	 */
+	private CodeSyncConstants() {
+		super();
+	}
 	
 }

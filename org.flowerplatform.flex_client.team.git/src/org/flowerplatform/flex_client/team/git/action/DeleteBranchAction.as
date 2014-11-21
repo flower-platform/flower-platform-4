@@ -44,7 +44,7 @@ package org.flowerplatform.flex_client.team.git.action {
 					return false;
 				}
 					
-				if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0) {
+				if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0) {
 					label = Resources.getMessage(node.type == GitConstants.GIT_TAG_TYPE ? "team.git.action.deleteTag.action" : "team.git.action.deleteBranch.action");
 					return true;
 				}

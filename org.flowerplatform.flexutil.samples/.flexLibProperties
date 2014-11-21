@@ -17,6 +17,7 @@
     <classEntry path="org.flowerplatform.flexutil.samples.properties.SamplePropertiesHelper"/>
     <classEntry path="org.flowerplatform.flexutil.samples.properties.PropertiesStandAloneSample"/>
     <classEntry path="org.flowerplatform.flexutil.samples.properties.SamplePropertiesModel"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.SamplesTypeDescriptorRegistryProvider"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -60,7 +60,8 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 
 			@Override
 			protected boolean isAccepted(Node candidate) {
-				TypeDescriptor candidateDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(candidate.getType());
+				TypeDescriptor candidateDescriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistryProvider()
+						.getTypeDescriptorRegistry(candidate).getExpectedTypeDescriptor(candidate.getType());
 				if (candidateDescriptor == null) {
 					return false;
 				}

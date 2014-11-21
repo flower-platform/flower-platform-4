@@ -40,7 +40,7 @@ package org.flowerplatform.flex_client.codesync.node.renderer {
 		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
 			super.modelChangedHandler(event);
 			
-			if (event == null || SYNC_PROPERTIES.indexOf(event.property)) {
+			if (event == null || (SYNC_PROPERTIES.indexOf(event.property) >= 0)) {
 				// a sync property has changed, redecorate the original icon
 				composeIconWithSyncMarkers();
 			}
@@ -49,8 +49,8 @@ package org.flowerplatform.flex_client.codesync.node.renderer {
 		protected function composeIconWithSyncMarkers():void {
 			var node:Node = Node(data);
 			var icons:IList = 
-					IList(CorePlugin.getInstance().getNodeValuesProviderForMindMap(diagramShellContext.diagramShell.registry, node)
-							.getValue(diagramShellContext.diagramShell.registry, node, FlexDiagramConstants.BASE_RENDERER_ICONS));
+					IList(CorePlugin.getInstance().getNodeValuesProviderForMindMap(typeDescriptorRegistry, node)
+							.getValue(typeDescriptorRegistry, node, FlexDiagramConstants.BASE_RENDERER_ICONS));
 			var initialUrl:String = null, composedUrl:String = null;
 			if (icons.length > 0) {
 				initialUrl = String(icons.getItemAt(0));

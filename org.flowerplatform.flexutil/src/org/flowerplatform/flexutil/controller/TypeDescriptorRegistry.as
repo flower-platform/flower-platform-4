@@ -16,6 +16,7 @@
 package org.flowerplatform.flexutil.controller {
 	import flash.utils.Dictionary;
 	
+	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.mx_internal;
@@ -37,8 +38,19 @@ package org.flowerplatform.flexutil.controller {
 		
 		public var typeProvider:ITypeProvider;
 		
+		private var _masterRegistry:TypeDescriptorRegistry;
+		
 		public function isConfigurable():Boolean {
 			return configurable;
+		}
+
+		public function set masterRegistry(registry:TypeDescriptorRegistry):void {
+			_masterRegistry = registry;
+			typeProvider = _masterRegistry.typeProvider;
+		}
+		
+		public function get masterRegistry():TypeDescriptorRegistry {
+			return _masterRegistry;
 		}
 		
 		mx_internal var typeDescriptors:Dictionary = new Dictionary(); /* Map<String, TypeDescriptor> */
@@ -71,8 +83,13 @@ package org.flowerplatform.flexutil.controller {
 		public function getExpectedTypeDescriptor(type:String):TypeDescriptor {
 			var result:TypeDescriptor = typeDescriptors[type];
 			if (result == null) {
-				trace("Operation invoked for nodeType = {}, but there is no associated descriptor registered! Aborting operation.", type);
-				return null;
+				// no descriptor found => check in master
+				if (masterRegistry != null) {
+					result = masterRegistry.getExpectedTypeDescriptor(type);
+				}
+				if (result == null) {
+					trace("Operation invoked for nodeType = {}, but there is no associated descriptor registered! Aborting operation.", type);
+				}
 			}
 			return result;
 		}
@@ -101,6 +118,42 @@ package org.flowerplatform.flexutil.controller {
 	
 		public function getAdditiveControllers(feature:String, model:Object):IList {
 			return getExpectedTypeDescriptor(typeProvider.getType(model)).getAdditiveControllers(feature, model);
+		}
+		
+		/**
+		 * Add the remote descriptors received from the server.
+		 * 
+		 * @see <code>getTypeDescriptorsRemote()</code> from Java.
+		 */
+		public function addTypeDescriptorsRemote(remotes:ArrayCollection):void {
+			for (var i:int = 0; i < remotes.length; i++) {
+				var remote:TypeDescriptorRemote = TypeDescriptorRemote(remotes.getItemAt(i));
+				
+				// create new type descriptor with remote type
+				var descriptor:TypeDescriptor = null;
+				if (Utils.beginsWith(remote.type, FlexUtilConstants.CATEGORY_PREFIX)) {
+					descriptor = getOrCreateCategoryTypeDescriptor(remote.type);
+				} else {
+					descriptor = getOrCreateTypeDescriptor(remote.type);
+				}
+				
+				// add static categories
+				for each (var category:String in remote.categories) {
+					descriptor.addCategory(category);
+				}
+				
+				// add single controllers
+				for (var singleControllerType:String in remote.singleControllers) {
+					descriptor.addSingleController(singleControllerType, remote.singleControllers[singleControllerType]);
+				}
+				
+				// add additive controllers
+				for (var additiveControllerType:String in remote.additiveControllers) {
+					for each (var additiveController:AbstractController in remote.additiveControllers[additiveControllerType]) {
+						descriptor.addAdditiveController(additiveControllerType, additiveController);
+					}
+				}
+			}
 		}
 	}
 }

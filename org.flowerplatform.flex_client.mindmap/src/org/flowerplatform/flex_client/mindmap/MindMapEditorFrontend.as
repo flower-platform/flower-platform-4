@@ -159,7 +159,8 @@ package org.flowerplatform.flex_client.mindmap {
 			} else if (showPropertiesInRenderer == 2) {
 				return true;
 			} else {
-				return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getSingleController(MindMapConstants.FEATURE_SHOW_PROPERTIES_IN_RENDERER, model) != null; 
+				return diagramShell.getRegistryForModel(model)
+					.getSingleController(MindMapConstants.FEATURE_SHOW_PROPERTIES_IN_RENDERER, model) != null; 
 			}
 		}
 		

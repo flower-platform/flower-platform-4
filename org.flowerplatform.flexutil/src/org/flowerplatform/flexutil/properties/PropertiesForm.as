@@ -11,6 +11,7 @@ package org.flowerplatform.flexutil.properties {
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.controller.ITypeDescriptorRegistryProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.flexdiagram.StandAloneSequentialLayoutVisualChildrenController;
 	import org.flowerplatform.flexutil.view_content_host.BasicViewContent;
@@ -42,12 +43,18 @@ package org.flowerplatform.flexutil.properties {
 		/**
 		 * Needs to be provided if the component is used in stand alone mode. 
 		 */
-		public var typeDescriptorRegistry:TypeDescriptorRegistry;
+		public var typeDescriptorRegistryProvider:ITypeDescriptorRegistryProvider;
 		
 		/**
 		 * Needs to be provided if the component is used in stand alone mode. 
 		 */
 		public var propertiesHelper:PropertiesHelper;
+		
+		/**
+		 * Needed to get the local registry when this form is used
+		 * when adding a new node.
+		 */
+		public var parentNode:Object = null;
 		
 		public function get shouldRefreshVisualChildren():Boolean {
 			return _shouldRefreshVisualChildren;
@@ -91,6 +98,7 @@ package org.flowerplatform.flexutil.properties {
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 			if (visualChildrenController != null && shouldRefreshVisualChildren) {
 				// i.e. used in stand alone mode
+				var typeDescriptorRegistry:TypeDescriptorRegistry = typeDescriptorRegistryProvider.getTypeDescriptorRegistry(parentNode != null ? parentNode : data);
 				visualChildrenController.refreshVisualChildrenDiagramOrStandAlone(null, typeDescriptorRegistry, this, data,
 					propertiesHelper.getPropertyEntries(context, typeDescriptorRegistry, data));
 				// this variable is managed by the controller only for the "normal" mode; i.e. not stand alone
@@ -109,7 +117,7 @@ package org.flowerplatform.flexutil.properties {
 			}
 		}
 		
-		public function createQuickPropertiesForm(okFunction:Function, typeDescriptorRegistry:TypeDescriptorRegistry, model:Object, propertyDescriptors:IList, 
+		public function createQuickPropertiesForm(okFunction:Function, typeDescriptorRegistryProvider:ITypeDescriptorRegistryProvider, model:Object, propertyDescriptors:IList, 
 				groupDescriptors:IList = null, wrapper:IViewContent = null, propertyCommitController:PropertyCommitController = null, 
 				propertiesHelper:PropertiesHelper = null):IViewContent {
 			if (propertyCommitController == null) {
@@ -122,7 +130,7 @@ package org.flowerplatform.flexutil.properties {
 			propertiesHelper.groupDescriptors = groupDescriptors;
 				
 			visualChildrenController = new StandAloneSequentialLayoutVisualChildrenController(0, null, new PropertyEntryRendererController(propertyCommitController));
-			this.typeDescriptorRegistry = typeDescriptorRegistry;
+			this.typeDescriptorRegistryProvider = typeDescriptorRegistryProvider;
 			this.propertiesHelper = propertiesHelper;
 
 			if (wrapper == null) {

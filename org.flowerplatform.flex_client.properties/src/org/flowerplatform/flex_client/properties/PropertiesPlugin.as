@@ -20,7 +20,6 @@ package org.flowerplatform.flex_client.properties {
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
-	import mx.events.CloseEvent;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
@@ -57,16 +56,14 @@ package org.flowerplatform.flex_client.properties {
 	import org.flowerplatform.flex_client.properties2.action.ShowPropertiesAction;
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
-	import org.flowerplatform.flexutil.FlexUtilAssets;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.action.ActionBase;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.properties.PropertiesForm;
 	import org.flowerplatform.flexutil.properties.PropertiesHelper;
 	import org.flowerplatform.flexutil.properties.PropertyDescriptor;
-	import org.flowerplatform.flexutil.properties.PropertyEntry;
-	import org.flowerplatform.flexutil.selection.SelectionManager;
 	import org.flowerplatform.flexutil.shortcut.Shortcut;
 	import org.flowerplatform.flexutil.view_content_host.BasicViewContent;
 
@@ -134,13 +131,14 @@ package org.flowerplatform.flex_client.properties {
 					var result:Object = new Object();
 					result.type = null;
 					
+					var frontend:DiagramEditorFrontend = DiagramEditorFrontend(FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider);
 					var viewContent:BasicViewContent = 
 					new PropertiesForm().createQuickPropertiesForm(function ():void {
 						viewContent.closeOnOk = false;
 						var error:String = null;
 						if (result.type == null || result.type == "") {
 							error = Resources.getMessage("properties.menu.debug.newArbitraryNode.noType");
-						} else if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(result.type) == null) {
+						} else if (frontend.diagramShell.getRegistryForModel(sel).getExpectedTypeDescriptor(result.type) == null) {
 							error = Resources.getMessage("properties.menu.debug.newArbitraryNode.noSuchType");
 						}
 						if (error != null) {
@@ -151,12 +149,12 @@ package org.flowerplatform.flex_client.properties {
 						var action:AddNodeAction = new AddNodeAction(null);
 						action.childType = result.type;
 						action.parentNode = Node(sel);
-						action.diagramShellContext = DiagramEditorFrontend(FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider).diagramShell.getNewDiagramShellContext();
+						action.diagramShellContext = frontend.diagramShell.getNewDiagramShellContext();
 						action.run();
 						
 						viewContent.cancelHandler();
 						
-					}, CorePlugin.getInstance().nodeTypeDescriptorRegistry, result, new ArrayCollection([
+					}, frontend.diagramShell.getRegistryForModel(result), result, new ArrayCollection([
 						new PropertyDescriptor().setName("type").setLabel(Resources.getMessage("properties.type"))]));
 					
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
@@ -237,7 +235,8 @@ package org.flowerplatform.flex_client.properties {
 			var context:Object = new Object();
 			context[PropertiesConstants.INCLUDE_RAW_PROPERTY] = includeRawProperties;
 			
-			var providers:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR_PROVIDER, node);
+			var providers:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistryProvider.getTypeDescriptorRegistry(node)
+				.getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR_PROVIDER, node);
 			
 			var propertyDescriptor:PropertyDescriptor;
 			for (var i:int = 0; i < providers.length; i++) {				

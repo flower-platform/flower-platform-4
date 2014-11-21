@@ -20,6 +20,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	
 	/**
@@ -38,16 +39,17 @@ package org.flowerplatform.flex_client.core.editor.action {
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			
-			var view:RichTextWithRendererView = new RichTextWithRendererView();			
+			var view:RichTextWithRendererView = new RichTextWithRendererView();	
 			view.node = node;
 			view.diagramShellContext = diagramShellContext;
 			
-			var valuesProvider:ValuesProvider = CorePlugin.getInstance().getNodeValuesProviderForMindMap(diagramShellContext.diagramShell.registry, node);
-			view.text = String(valuesProvider.getValue(diagramShellContext.diagramShell.registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT));
+			var registry:TypeDescriptorRegistry = diagramShell.getRegistryForModel(node);
+			var valuesProvider:ValuesProvider = CorePlugin.getInstance().getNodeValuesProviderForMindMap(registry, node);
+			view.text = String(valuesProvider.getValue(registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT));
 			
 			view.resultHandler = function(newValue:String):void {				
 				// invoke service method and wait for result to close the rename popup
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.nodeUri, valuesProvider.getPropertyName(diagramShellContext.diagramShell.registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT), newValue], 
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.nodeUri, valuesProvider.getPropertyName(registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT), newValue], 
 					function(data:Object):void {
 						if (view != null) {
 							FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(view);
@@ -60,10 +62,9 @@ package org.flowerplatform.flex_client.core.editor.action {
 				.setViewContent(view)
 				.setWidth(500)
 				.setHeight(400)
-				.setTitle(label)	
+				.setTitle(label)
 				.setIcon(icon)
-				.show();			
+				.show();
 		}
-				
 	}
 }

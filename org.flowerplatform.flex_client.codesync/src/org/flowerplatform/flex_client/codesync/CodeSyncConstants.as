@@ -36,5 +36,7 @@ package org.flowerplatform.flex_client.codesync {
 		public static const CONFLICT:String = "conflict";
 		public static const CHILDREN_CONFLICT:String = "childrenConflict";
 		
+		public static const CODE_SYNC_CONFIG_PROPERTY_DIRS_KEY:String = "codeSyncConfigDirsKey";
+		
 	}
 }

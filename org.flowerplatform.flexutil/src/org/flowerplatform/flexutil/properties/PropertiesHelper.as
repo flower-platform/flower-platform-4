@@ -17,7 +17,6 @@ package org.flowerplatform.flexutil.properties {
 	import org.flowerplatform.flexutil.list.EmptyList;
 	import org.flowerplatform.flexutil.list.LinkedListWrapper;
 	import org.flowerplatform.flexutil.properties.editor.BooleanPropertyEditor;
-	import org.flowerplatform.flexutil.properties.editor.IPropertyEditor;
 	import org.flowerplatform.flexutil.properties.editor.StringCsvListPropertyEditor;
 	import org.flowerplatform.flexutil.properties.editor.StringPropertyEditor;
 
@@ -67,11 +66,11 @@ package org.flowerplatform.flexutil.properties {
 			return ObjectUtil.copy(model);
 		}
 		
-		protected function getDescriptorsForGroups(context:Object, model:Object):IList {
+		protected function getDescriptorsForGroups(context:Object, typeDescriptorRegistry:TypeDescriptorRegistry, model:Object):IList {
 			return groupDescriptors;
 		}
 		
-		protected function getDescriptorsForProperties(context:Object, model:Object):IList {
+		protected function getDescriptorsForProperties(context:Object, typeDescriptorRegistry:TypeDescriptorRegistry, model:Object):IList {
 			return propertyDescriptors;
 		}
 		
@@ -106,7 +105,7 @@ package org.flowerplatform.flexutil.properties {
 			// add the groups to the result
 			var groupInsertBefore:Dictionary = new Dictionary(); // for a group, gives the LinkedListNode before which we need to insert an item belonging to that group
 			var lastGroup:String = null; // the map above doesn't contain info for the last group; i.e. we should insert elements with push
-			var descriptorsForGroups:IList = getDescriptorsForGroups(newContext, model);
+			var descriptorsForGroups:IList = getDescriptorsForGroups(newContext, typeDescriptorRegistry, model);
 			if (descriptorsForGroups == null) {
 				descriptorsForGroups = EmptyList.INSTANCE;
 			}
@@ -124,7 +123,7 @@ package org.flowerplatform.flexutil.properties {
 			var allModelProperties:Object = copyAllModelProperties(newContext, model);
 			
 			// add the properties to the result, at the right places (i.e. next to the category)
-			var descriptorsForProperties:IList = getDescriptorsForProperties(newContext, model);
+			var descriptorsForProperties:IList = getDescriptorsForProperties(newContext, typeDescriptorRegistry, model);
 			if (descriptorsForProperties == null) {
 				descriptorsForProperties = EmptyList.INSTANCE;
 			}

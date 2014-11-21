@@ -50,9 +50,9 @@ package org.flowerplatform.flex_client.properties.action {
 			this.parentId = siblingNodeUri != null ? NewSiblingComposedAction.ID : NewComposedAction.ID;
 		}
 		
-		override public function get visible():Boolean {			
+		override public function get visible():Boolean {
 			if (siblingNodeUri != null) {
-				parentNode =  Node(selection.getItemAt(0)).parent;
+				parentNode = Node(selection.getItemAt(0)).parent;
 			} else {
 				parentNode = Node(selection.getItemAt(0));
 			}
@@ -67,6 +67,7 @@ package org.flowerplatform.flex_client.properties.action {
 			var nodeToAdd:Node = new Node();
 			nodeToAdd.type = childType;
 			var propertiesView:PropertiesView = new PropertiesView();
+			propertiesView.typeDescriptorRegistryProvider = diagramShell.registryProvider;
 			propertiesView.diagramShellContext = diagramShellContext;
 			propertiesView.nodeToAdd = nodeToAdd;
 			propertiesView.siblingNodeUri = siblingNodeUri;

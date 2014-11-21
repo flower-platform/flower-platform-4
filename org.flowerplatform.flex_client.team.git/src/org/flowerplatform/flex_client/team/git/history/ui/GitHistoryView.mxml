@@ -101,7 +101,7 @@
 					}	
 					var node:Node = Node(selection.getItemAt(0));
 					if (node != null) {
-						if ((CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0) && (node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY)) ||
+						if ((CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0) && (node.getPropertyValue(GitConstants.IS_GIT_REPOSITORY)) ||
 							node.type == CoreConstants.FILE_NODE_TYPE ||
 							node.type == CoreConstants.FILE_SYSTEM_NODE_TYPE) {
 							nodeUri = node.nodeUri;

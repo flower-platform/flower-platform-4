@@ -26,9 +26,9 @@ import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
 import static org.flowerplatform.core.CoreConstants.PARENT_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
-import static org.flowerplatform.util.UtilConstants.FEATURE_PROPERTY_DESCRIPTORS;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
+import static org.flowerplatform.util.UtilConstants.FEATURE_PROPERTY_DESCRIPTORS;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,8 +52,8 @@ import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
 import org.flowerplatform.util.controller.AbstractController;
+import org.flowerplatform.util.controller.ITypeDescriptorRegistryProvider;
 import org.flowerplatform.util.controller.TypeDescriptor;
-import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,28 +72,28 @@ public class NodeService {
 		
 	private static final Logger LOGGER = LoggerFactory.getLogger(NodeService.class);
 	
-	protected TypeDescriptorRegistry registry;
+	private ITypeDescriptorRegistryProvider registryProvider;
 	
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
 	public NodeService() {
 		super();		
 	}
 	
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
-	public NodeService(TypeDescriptorRegistry registry) {
+	public NodeService(ITypeDescriptorRegistryProvider registryProvider) {
 		super();
-		this.registry = registry;
+		this.registryProvider = registryProvider;
 	}
 	
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {		
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = getTypeDescriptor(node);
 		if (descriptor == null) {
 			return null;
 		}
@@ -135,10 +135,10 @@ public class NodeService {
 	}
 		
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = getTypeDescriptor(node);
 		if (descriptor == null) {
 			return false;
 		}
@@ -161,7 +161,7 @@ public class NodeService {
 	 * @author Sebastian Solomon
 	 */
 	public Object getDefaultPropertyValue(Node node, String property, ServiceContext<NodeService> context) {
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = getTypeDescriptor(node);
 		if (descriptor == null) {
 			return null;
 		}
@@ -183,7 +183,7 @@ public class NodeService {
 	 * @author Sebastian Solomon
 	 */
 	public List<AbstractController> getPropertyDescriptors(Node node) {
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = getTypeDescriptor(node);
 		if (descriptor == null) {
 			return null;
 		}
@@ -194,7 +194,7 @@ public class NodeService {
 	 * @author Mariana Gheorghe
 	 */
 	public Node getParent(Node node, ServiceContext<NodeService> context) {
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = getTypeDescriptor(node);
 		if (descriptor == null) {
 			return null;
 		}
@@ -231,7 +231,7 @@ public class NodeService {
 	 * @author Claudiu Matei
 	 */
 	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {		
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = getTypeDescriptor(node);
 		if (descriptor == null) {
 			return;
 		}
@@ -276,7 +276,7 @@ public class NodeService {
 	 * @author Mariana Gheorghe
 	 */
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {	
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = getTypeDescriptor(node);
 		if (descriptor == null) {
 			return;
 		}
@@ -311,12 +311,12 @@ public class NodeService {
 					.add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 		}
 	}
-	
+
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
 	public void addChild(Node node, Node child, ServiceContext<NodeService> context) {		
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = getTypeDescriptor(node);
 		if (descriptor == null) {
 			return;
 		}
@@ -360,13 +360,12 @@ public class NodeService {
 			removeChildDFS(child, grandChild, removedNodes);
 		}
 	}
-	
+
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
 	public void removeChild(Node node, Node child, ServiceContext<NodeService> context) {	
-
-		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = getTypeDescriptor(node);
 		if (descriptor == null) {
 			return;
 		}
@@ -414,7 +413,7 @@ public class NodeService {
 	 * Internal method; shouldn't be called explicitly. It's invoked automatically by the {@link Node}.
 	 */
 	public void populateNodeProperties(Node node, ServiceContext<NodeService> context) {	
-		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getType());
+		TypeDescriptor descriptor = getTypeDescriptor(node);
 		if (descriptor == null) {
 			return;
 		}
@@ -434,6 +433,13 @@ public class NodeService {
 
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		node.getProperties().put(IS_DIRTY, resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService)));
+	}
+	
+	/**
+	 * Delegate to the registry obtained from the {@link #registryProvider} to get the descriptor.
+	 */
+	public TypeDescriptor getTypeDescriptor(Node node) {
+		return registryProvider.getTypeDescriptorRegistry(node).getExpectedTypeDescriptor(node.getType());
 	}
 
 }

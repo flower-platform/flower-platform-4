@@ -112,7 +112,9 @@ public class TypeDescriptor {
 		if (categories == null) {
 			categories = new ArrayList<String>();
 		}
-		categories.add(category);
+		if (!categories.contains(category)) {
+			categories.add(category);
+		}
 		return this;
 	}
 
@@ -169,6 +171,19 @@ public class TypeDescriptor {
 				// keep it if it has a lower order index than the existing one
 				if (controller == null || controller.getOrderIndex() > categoryController.getOrderIndex()) {
 					controller = categoryController;
+				}
+			}
+		}
+		
+		// get controller from master registry
+		TypeDescriptorRegistry masterRegistry = getRegistry().getMasterRegistry();
+		if (masterRegistry != null) {
+			TypeDescriptor masterDescriptor = masterRegistry.getExpectedTypeDescriptor(type);
+			if (masterDescriptor != null) {
+				T masterController = masterDescriptor.getSingleController(controllerType, object);
+				// keep it if it has a lower order index than the existing one
+				if (controller == null || controller.getOrderIndex() > masterController.getOrderIndex()) {
+					controller = masterController;
 				}
 			}
 		}
@@ -275,6 +290,20 @@ public class TypeDescriptor {
 			}
 			
 			controllers.addAll((Collection<? extends T>) categoryDescriptor.getCachedAdditiveControllers(controllerType, object, false, keepCached));
+		}
+		
+		// get controllers from master registry
+		TypeDescriptorRegistry masterRegistry = getRegistry().getMasterRegistry();
+		if (masterRegistry != null) {
+			TypeDescriptor masterDescriptor = masterRegistry.getExpectedTypeDescriptor(type);
+			if (masterDescriptor != null) {
+				List<T> masterControllers = masterDescriptor.getAdditiveControllers(controllerType, object);
+				for (T controller : masterControllers) {
+					if (!controllers.contains(controller)) {
+						controllers.add(controller);
+					}
+				}
+			}
 		}
 		
 		// finished scanning the categories

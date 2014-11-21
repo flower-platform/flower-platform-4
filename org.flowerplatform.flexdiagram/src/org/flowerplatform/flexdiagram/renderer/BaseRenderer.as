@@ -56,6 +56,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	import org.flowerplatform.flexutil.FlexUtilAssets;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.controller.ITypeDescriptorRegistryProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	import org.flowerplatform.flexutil.flexdiagram.VisualChildrenController;
@@ -138,10 +139,9 @@ package org.flowerplatform.flexdiagram.renderer {
 		 */
 		public var featureForValuesProvider:String;
 		
-		/**
-		 * @see Class doc.
-		 */
-		public var typeDescriptorRegistry:TypeDescriptorRegistry;
+		public var typeDescriptorRegistryProvider:ITypeDescriptorRegistryProvider;
+		
+		private var _currentTypeDescriptorRegistry:TypeDescriptorRegistry;
 		
 		public var resetPropertiesOnDataNull:Boolean = false;
 		
@@ -422,9 +422,33 @@ package org.flowerplatform.flexdiagram.renderer {
 		
 		public function set diagramShellContext(value:DiagramShellContext):void {
 			this._context = value;
-			if (typeDescriptorRegistry == null) {
-				typeDescriptorRegistry = value.diagramShell.registry;
+			if (diagramShellContext == null) {
+				typeDescriptorRegistryProvider = null;
+			} else {
+				typeDescriptorRegistryProvider = diagramShellContext.diagramShell.registryProvider;
 			}
+		}
+		
+		/**
+		 * Returns the slave registry for the current data from the registry provider. If the renderer
+		 * is used in a diagram, then the registry provider comes from the diagram shell; otherwise 
+		 * a registry provider must be set.
+		 * 
+		 * <p>
+		 * Note: the current slave registry is cached, so it must be reset every time the data
+		 * is set.
+		 * 
+		 * @author Mariana Gheorghe
+		 */
+		public function get typeDescriptorRegistry():TypeDescriptorRegistry {
+			if (_currentTypeDescriptorRegistry == null) {
+				if (typeDescriptorRegistryProvider != null) {
+					_currentTypeDescriptorRegistry = typeDescriptorRegistryProvider.getTypeDescriptorRegistry(data);
+				} else {
+					throw new Error("No type descriptor registry provider for this renderer");
+				}
+			}
+			return _currentTypeDescriptorRegistry;
 		}
 		
 		public function get shouldRefreshVisualChildren():Boolean {
@@ -443,11 +467,9 @@ package org.flowerplatform.flexdiagram.renderer {
 			super.data = value;
 			if (data != null) {
 				beginModelListen();
-				if (diagramShellContext != null) {
-					visualChildrenController = VisualChildrenController(diagramShellContext.diagramShell.registry.getExpectedTypeDescriptor(					
-						diagramShellContext.diagramShell.registry.typeProvider.getType(value)).getSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, value));
-					// if not null => this element has children
-				}
+				visualChildrenController = VisualChildrenController(typeDescriptorRegistry
+					.getSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, value));
+				// if not null => this element has children
 			} else if (resetPropertiesOnDataNull) {
 				modelChangedHandler(null);
 			}
@@ -477,7 +499,7 @@ package org.flowerplatform.flexdiagram.renderer {
 			if (typeDescriptorRegistry == null) {
 				throw new Error("'typeDescriptorRegistry' should be not null, so that we can get the corresponding 'ValuesProvider'");
 			}
-			var valuesProvider:ValuesProvider = ValuesProvider(typeDescriptorRegistry.getExpectedTypeDescriptor(typeDescriptorRegistry.typeProvider.getType(data)).getSingleController(featureForValuesProvider, data));
+			var valuesProvider:ValuesProvider = ValuesProvider(typeDescriptorRegistry.getSingleController(featureForValuesProvider, data));
 			if (valuesProvider == null) {
 				throw new Error("'ValuesProvider' was not found for featureForValuesProvider = " + featureForValuesProvider);
 			}

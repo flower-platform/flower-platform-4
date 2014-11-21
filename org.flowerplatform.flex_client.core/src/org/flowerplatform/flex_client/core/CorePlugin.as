@@ -74,9 +74,8 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
 	import org.flowerplatform.flexutil.action.ComposedAction;
 	import org.flowerplatform.flexutil.action.VectorActionProvider;
-	import org.flowerplatform.flexutil.controller.AbstractController;
+	import org.flowerplatform.flexutil.controller.ComposedTypeDescriptorRegistryProvider;
 	import org.flowerplatform.flexutil.controller.ITypeProvider;
-	import org.flowerplatform.flexutil.controller.TypeDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
 	import org.flowerplatform.flexutil.controller.ValuesProvider;
@@ -87,8 +86,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.service.ServiceLocator;
 	import org.flowerplatform.flexutil.spinner.ModalSpinner;
 	import org.flowerplatform.flexutil.value_converter.AbstractValueConverter;
-	import org.flowerplatform.flexutil.value_converter.CsvToListValueConverter;
-	import org.flowerplatform.flexutil.value_converter.StringHexToUintValueConverter;
 	import org.flowerplatform.js_client.common_js_as.node.IHostServiceInvocator;
 
 	/**
@@ -121,6 +118,9 @@ package org.flowerplatform.flex_client.core {
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 
 		public var nodeTypeProvider:ITypeProvider = new NodeTypeProvider();
+		
+		public var nodeTypeDescriptorRegistryProvider:ComposedTypeDescriptorRegistryProvider =
+			new ComposedTypeDescriptorRegistryProvider(nodeTypeDescriptorRegistry);
 		
 		public var contentTypeRegistry:ContentTypeRegistry = new ContentTypeRegistry();
 								
@@ -226,40 +226,12 @@ package org.flowerplatform.flex_client.core {
 
 			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null,
 				function(result:Object):void {
-					var list:ArrayCollection = ArrayCollection(result);
-					for (var i:int = 0; i < list.length; i++) {
-						var remote:TypeDescriptorRemote = TypeDescriptorRemote(list.getItemAt(i));
-						
-						// create new type descriptor with remote type
-						var descriptor:TypeDescriptor = null;
-						if (Utils.beginsWith(remote.type, FlexUtilConstants.CATEGORY_PREFIX)) {
-							descriptor = nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(remote.type);
-						} else {
-							descriptor = nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(remote.type);
-						}
-						
-						// add static categories
-						for each (var category:String in remote.categories) {
-							descriptor.addCategory(category);
-						}
-						
-						// add single controllers
-						for (var singleControllerType:String in remote.singleControllers) {
-							descriptor.addSingleController(singleControllerType, remote.singleControllers[singleControllerType]);
-						}
-						
-						// add additive controllers
-						for (var additiveControllerType:String in remote.additiveControllers) {
-							for each (var additiveController:AbstractController in remote.additiveControllers[additiveControllerType]) {
-								descriptor.addAdditiveController(additiveControllerType, additiveController);
-							}
-						}
-					}
+					nodeTypeDescriptorRegistry.addTypeDescriptorsRemote(ArrayCollection(result));
 				}
 			);
 			
 			nodeTypeDescriptorRegistry.typeProvider = nodeTypeProvider;
-
+			
 			AbstractValueConverter.registerValueConverters(nodeTypeDescriptorRegistry);
 			
 			nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_ALL)
@@ -270,19 +242,6 @@ package org.flowerplatform.flex_client.core {
 			nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RenameAction.ID))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RemoveNodeAction.ID));
-			
-			if (!FlexUtilGlobals.getInstance().isMobile) {
-				FlexUtilGlobals.getInstance().registerAction(DownloadAction);
-				FlexUtilGlobals.getInstance().registerAction(UploadAction);
-				
-				nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_SYSTEM_NODE_TYPE)
-					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DownloadAction.ID))
-					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));
-				
-				nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CoreConstants.FILE_NODE_TYPE)
-					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(DownloadAction.ID))
-					.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(UploadAction.ID));				
-			}
 			
 			if (!FlexUtilGlobals.getInstance().isMobile) {
 				FlexUtilGlobals.getInstance().registerAction(DownloadAction);
@@ -405,7 +364,7 @@ package org.flowerplatform.flex_client.core {
 		 * @author Cristian Spiescu
 		 */
 		public function getNodeValuesProviderForMindMap(typeDescriptorRegistry:TypeDescriptorRegistry, node:Node):ValuesProvider {
-			return ValuesProvider(typeDescriptorRegistry.getExpectedTypeDescriptor(node.type).getSingleController(CoreConstants.MIND_MAP_FEATURE_FOR_VALUES_PROVIDER, node));
+			return ValuesProvider(typeDescriptorRegistry.getSingleController(CoreConstants.MIND_MAP_FEATURE_FOR_VALUES_PROVIDER, node));
 		}
 	
 		override protected function registerClassAliases():void {		
@@ -577,10 +536,15 @@ package org.flowerplatform.flex_client.core {
 		public function selectNode(diagramShellContext:DiagramShellContext, fullNodeId:String):void {
 			var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
 			var editor:EditorFrontend = EditorFrontend(workbench.getEditorFromViewComponent(workbench.getActiveView()));
+			if (editor == null) {
+				return;
+			}
 			var childNode:Node = editor.nodeRegistry.getNodeById(fullNodeId);
 			
-			MindMapDiagramShell(diagramShellContext.diagramShell).selectedItems.resetSelection();
-			MindMapDiagramShell(diagramShellContext.diagramShell).selectedItems.addItem(childNode);
+			if (childNode != null) {
+				MindMapDiagramShell(diagramShellContext.diagramShell).selectedItems.resetSelection();
+				MindMapDiagramShell(diagramShellContext.diagramShell).selectedItems.addItem(childNode);
+			}
 		}
 
 		/**
@@ -588,6 +552,11 @@ package org.flowerplatform.flex_client.core {
 		 */
 		public function createNodeUriWithRepo(scheme:String, repoPath:String, schemeSpecificPart:String):String {
 			return scheme + ":"+ repoPath + "|" + schemeSpecificPart;
+		}
+		
+		public function getSchemeSpecificPart(nodeUri:String):String {
+			var index:int = nodeUri.indexOf(":");
+			return nodeUri.substring(index + 1);
 		}
 		
 		/**
@@ -607,7 +576,7 @@ package org.flowerplatform.flex_client.core {
 		public function getSchema(nodeUri:String):String {
 			return nodeUri.substring(0, nodeUri.indexOf(":"));
 		}
-			
+		
 	}
 }
 

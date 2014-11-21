@@ -47,7 +47,7 @@ package org.flowerplatform.flex_client.team.git.action {
 				var node:Node = Node(selection.getItemAt(0));
 
 				if (!useNodeAsCommitId) {
-					return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type)
+					return CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(node.type)
 						.categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0;
 				} else {
 					return true;

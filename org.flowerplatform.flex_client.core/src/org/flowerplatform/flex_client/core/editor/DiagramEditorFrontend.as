@@ -67,7 +67,7 @@ package org.flowerplatform.flex_client.core.editor {
 			editorArea.addElement(scroller);
 			
 			diagramShell = createDiagramShell();
-			diagramShell.registry = CorePlugin.getInstance().nodeTypeDescriptorRegistry;
+			diagramShell.registryProvider = CorePlugin.getInstance().nodeTypeDescriptorRegistryProvider;
 			diagramShell.typeProvider = CorePlugin.getInstance().nodeTypeProvider;
 			diagramShell.diagramRenderer = diagramRenderer;
 			

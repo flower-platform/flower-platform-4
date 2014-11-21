@@ -72,7 +72,7 @@ package org.flowerplatform.flexdiagram.mindmap {
 			var mindMapDiagramShell:MindMapDiagramShell = MindMapDiagramShell(diagramShellContext.diagramShell);
 
 			if (isRight) {
-				x = mindMapDiagramShell.getPropertyValue(diagramShellContext, source, "x") + mindMapDiagramShell.getPropertyValue(diagramShellContext, source, "width") ;					
+				x = mindMapDiagramShell.getPropertyValue(diagramShellContext, source, "x") + mindMapDiagramShell.getPropertyValue(diagramShellContext, source, "width") ;
 			} else {
 				x = mindMapDiagramShell.getPropertyValue(diagramShellContext, source, "x") - width;
 			}
@@ -84,9 +84,11 @@ package org.flowerplatform.flexdiagram.mindmap {
 			
 			var firstChild:Object, lastChild:Object;
 			if (!isForRoot) {
-				// i.e. all children on same side; pick first and last
-				firstChild = children.getItemAt(0);
-				lastChild = children.getItemAt(children.length - 1);
+				if (children != null && children.length > 0) {
+					// i.e. all children on same side; pick first and last
+					firstChild = children.getItemAt(0);
+					lastChild = children.getItemAt(children.length - 1);
+				}
 			} else {
 				// children are on both sides; search for the first and last
 				for (var i:int = 0; i < children.length; i++) {

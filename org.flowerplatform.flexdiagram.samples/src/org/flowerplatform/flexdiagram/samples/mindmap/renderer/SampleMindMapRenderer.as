@@ -54,7 +54,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap.renderer {
 		}	
 
 		protected function propertiesChangedHandler(event:PropertyChangeEvent):void {
-			propertyEntries = new SamplePropertiesHelper().getPropertyEntries(null, diagramShellContext.diagramShell.registry, data);
+			propertyEntries = new SamplePropertiesHelper().getPropertyEntries(null, diagramShellContext.diagramShell.registryProvider.getTypeDescriptorRegistry(data), data);
 		}
 		
 	}

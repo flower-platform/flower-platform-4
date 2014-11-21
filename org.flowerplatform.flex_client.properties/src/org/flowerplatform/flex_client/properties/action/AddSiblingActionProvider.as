@@ -49,8 +49,8 @@ package org.flowerplatform.flex_client.properties.action {
 			var parentType:String = parent.type;
 						
 			// get the descriptors for the selected parent type from the core dictionary
-			var descriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
-				.getExpectedTypeDescriptor(parentType).getAdditiveControllers(CoreConstants.ADD_CHILD_DESCRIPTOR, parent);
+			var descriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistryProvider.getTypeDescriptorRegistry(parent)
+				.getAdditiveControllers(CoreConstants.ADD_CHILD_DESCRIPTOR, parent);
 			if (descriptors != null) {
 				for each (var descriptor:AddChildDescriptor in descriptors) {
 					result.push(new AddNodeAction(descriptor, child.nodeUri));

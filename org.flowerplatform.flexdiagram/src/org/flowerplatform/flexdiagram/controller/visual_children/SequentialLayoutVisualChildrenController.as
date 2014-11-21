@@ -47,10 +47,11 @@ package org.flowerplatform.flexdiagram.controller.visual_children {
 				children = EmptyList.INSTANCE;
 			} else {
 				var logTsStart:Number = new Date().time;
-				children = ModelChildrenController(context.diagramShell.registry.getSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, parentModel)).getChildren(context, parentModel);
+				children = ModelChildrenController(context.diagramShell.getRegistryForModel(parentModel)
+					.getSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, parentModel)).getChildren(context, parentModel);
 //				trace("SeqLayout.refrVC().getChildren(): " + (new Date().time - logTsStart) + " ms");
 			}
-			refreshVisualChildrenDiagramOrStandAlone(context, context.diagramShell.registry, parentRenderer, parentModel, children);
+			refreshVisualChildrenDiagramOrStandAlone(context, context.diagramShell.getRegistryForModel(parentModel), parentRenderer, parentModel, children);
 		
 			IVisualChildrenRefreshable(parentRenderer).shouldRefreshVisualChildren = false;
 		}

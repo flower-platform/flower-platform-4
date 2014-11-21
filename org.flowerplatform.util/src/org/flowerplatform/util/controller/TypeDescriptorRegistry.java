@@ -53,6 +53,16 @@ public class TypeDescriptorRegistry {
 	public boolean isConfigurable() {
 		return configurable;
 	}
+	
+	private TypeDescriptorRegistry masterRegistry;
+	
+	public TypeDescriptorRegistry getMasterRegistry() {
+		return masterRegistry;
+	}
+
+	public void setMasterRegistry(TypeDescriptorRegistry masterRegistry) {
+		this.masterRegistry = masterRegistry;
+	}
 
 	private Map<String, TypeDescriptor> typeDescriptors = new HashMap<String, TypeDescriptor>();
 	/**
@@ -96,8 +106,13 @@ public class TypeDescriptorRegistry {
 	public TypeDescriptor getExpectedTypeDescriptor(String type) {
 		TypeDescriptor result = typeDescriptors.get(type);
 		if (result == null) {
-			LOGGER.warn("Operation invoked for nodeType = {}, but there is no associated descriptor registered! Aborting operation.", type);
-			return null;
+			// no descriptor found => check in master
+			if (masterRegistry != null) {
+				result = masterRegistry.getExpectedTypeDescriptor(type);
+			}
+			if (result == null) {
+				LOGGER.warn("Operation invoked for nodeType = {}, but there is no associated descriptor registered! Aborting operation.", type);
+			}
 		}
 		return result;
 	}

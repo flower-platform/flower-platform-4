@@ -16,6 +16,8 @@
 package org.flowerplatform.flex_client.codesync {
 	
 	
+	import flash.utils.Dictionary;
+	
 	import org.flowerplatform.flex_client.codesync.action.ReloadConfigurationAction;
 	import org.flowerplatform.flex_client.codesync.action.SynchronizeAction;
 	import org.flowerplatform.flex_client.codesync.node.renderer.CodeSyncNodeRenderer;
@@ -36,6 +38,8 @@ package org.flowerplatform.flex_client.codesync {
 	public class CodeSyncPlugin extends AbstractFlowerFlexPlugin {
 		
 		protected static var INSTANCE:CodeSyncPlugin;
+		
+		public var codeSyncConfigs:Dictionary = new Dictionary();
 		
 		public static function getInstance():CodeSyncPlugin {
 			return INSTANCE;
@@ -61,6 +65,8 @@ package org.flowerplatform.flex_client.codesync {
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncConstants.CODE_SYNC_CONFIG_ROOT)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ReloadConfigurationAction.ID));
+			
+			CorePlugin.getInstance().nodeTypeDescriptorRegistryProvider.addProvider(new CodeSyncConfigTypeDescriptorRegistryProvider());
 			
 			CorePlugin.getInstance().serviceLocator.addService("codeSyncOperationsService");
 		}

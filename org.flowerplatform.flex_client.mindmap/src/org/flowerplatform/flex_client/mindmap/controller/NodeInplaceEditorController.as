@@ -29,6 +29,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import org.flowerplatform.flexdiagram.mindmap.IAbstractMindMapModelRenderer;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.tool.controller.InplaceEditorController;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	import org.flowerplatform.flexutil.text.AutoGrowTextArea;
 	
@@ -64,8 +65,9 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			textArea.setStyle("fontStyle", rendererLabelDisplay.getStyle("fontStyle"));
 			textArea.setStyle("color", rendererLabelDisplay.getStyle("color"));
 			
-			textArea.text = CorePlugin.getInstance().getNodeValuesProviderForMindMap(context.diagramShell.registry, Node(model))
-					.getValue(context.diagramShell.registry, Node(model), FlexDiagramConstants.BASE_RENDERER_TEXT) as String;		
+			var registry:TypeDescriptorRegistry = context.diagramShell.getRegistryForModel(model);
+			textArea.text = CorePlugin.getInstance().getNodeValuesProviderForMindMap(registry, Node(model))
+					.getValue(registry, Node(model), FlexDiagramConstants.BASE_RENDERER_TEXT) as String;
 			// set focus on text
 			textArea.callLater(textArea.setFocus);
 			// select all text
@@ -76,13 +78,14 @@ package org.flowerplatform.flex_client.mindmap.controller {
 			context.diagramShell.modelToExtraInfoMap[model].inplaceEditor = textArea;
 		}
 		
-		override public function commit(context:DiagramShellContext, model:Object):void {		
+		override public function commit(context:DiagramShellContext, model:Object):void {
+			var registry:TypeDescriptorRegistry = context.diagramShell.getRegistryForModel(model);
 			var textArea:AutoGrowTextArea = context.diagramShell.modelToExtraInfoMap[model].inplaceEditor;
-			var valuesProvider:ValuesProvider = CorePlugin.getInstance().getNodeValuesProviderForMindMap(context.diagramShell.registry, Node(model));
+			var valuesProvider:ValuesProvider = CorePlugin.getInstance().getNodeValuesProviderForMindMap(registry, Node(model));
 
-			if (valuesProvider.getValue(context.diagramShell.registry, Node(model), FlexDiagramConstants.BASE_RENDERER_TEXT) != textArea.text) {
+			if (valuesProvider.getValue(registry, Node(model), FlexDiagramConstants.BASE_RENDERER_TEXT) != textArea.text) {
 				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [Node(model).nodeUri, 
-					valuesProvider.getPropertyName(context.diagramShell.registry, Node(model), FlexDiagramConstants.BASE_RENDERER_TEXT), textArea.text], function(data:Object):void {
+					valuesProvider.getPropertyName(registry, Node(model), FlexDiagramConstants.BASE_RENDERER_TEXT), textArea.text], function(data:Object):void {
 						context.diagramShell.mainToolFinishedItsJob();
 					});
 			} else {

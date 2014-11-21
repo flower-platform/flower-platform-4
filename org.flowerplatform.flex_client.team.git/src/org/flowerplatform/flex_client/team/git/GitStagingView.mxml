@@ -69,7 +69,7 @@
 					// get new selected node
 					node = Node(activeSelectionProvider.getSelection().getItemAt(0));
 					
-					if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0) {
+					if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(node.type).categories.getItemIndex(GitConstants.GIT_CATEGORY) >= 0) {
 						repo = CorePlugin.getInstance().getRepository(node.nodeUri);
 						refresh();
 					}			

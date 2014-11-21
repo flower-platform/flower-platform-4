@@ -60,7 +60,7 @@
 						selectedNode = Node(HierarchicalModelWrapper(treeList.selectedItem).treeNode);
 					}
 					
-					if (selectedNode && CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(selectedNode.type).categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0) {
+					if (selectedNode && CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(selectedNode.type).categories.getItemIndex(GitConstants.GIT_REF_CATEGORY) >= 0) {
 						CorePlugin.getInstance().serviceLocator.invoke("GitService.mergeBranch", 
 							[selectedNode.nodeUri, 
 							squash.selected,

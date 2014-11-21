@@ -23,6 +23,7 @@ package org.flowerplatform.flex_client.properties.action {
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IActionProvider;
+	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
 	 * @author Mariana Gheorghe
@@ -40,9 +41,11 @@ package org.flowerplatform.flex_client.properties.action {
 			var parent:Node = Node(selection.getItemAt(0));
 			var parentType:String = parent.type;
 			
+			// get the type descriptor registry
+			var typeDescriptorRegistry:TypeDescriptorRegistry = CorePlugin.getInstance().nodeTypeDescriptorRegistryProvider.getTypeDescriptorRegistry(parent);
+			
 			// get the descriptors for the selected parent type from the core dictionary
-			var descriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
-				.getExpectedTypeDescriptor(parentType).getAdditiveControllers(CoreConstants.ADD_CHILD_DESCRIPTOR, parent);
+			var descriptors:IList = typeDescriptorRegistry.getAdditiveControllers(CoreConstants.ADD_CHILD_DESCRIPTOR, parent);
 			if (descriptors != null) {
 				for each (var descriptor:AddChildDescriptor in descriptors) {
 					result.push(new AddNodeAction(descriptor));

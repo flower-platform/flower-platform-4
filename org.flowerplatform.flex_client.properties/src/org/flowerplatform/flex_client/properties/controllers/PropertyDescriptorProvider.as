@@ -42,7 +42,8 @@ package org.flowerplatform.flex_client.properties.controllers {
 		 */ 
 		public function getPropertyDescriptor(context:Object, node:Node, property:String):PropertyDescriptor {
 			var propertyDescriptor:PropertyDescriptor;
-			var descriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(node.type).getAdditiveControllers(FlexUtilConstants.FEATURE_PROPERTY_DESCRIPTORS, node);
+			var descriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistryProvider.getTypeDescriptorRegistry(node)
+				.getAdditiveControllers(FlexUtilConstants.FEATURE_PROPERTY_DESCRIPTORS, node);
 			for (var i:int = 0; i < descriptors.length; i++) {
 				propertyDescriptor = PropertyDescriptor(descriptors.getItemAt(i));
 				if (propertyDescriptor.name == property) {

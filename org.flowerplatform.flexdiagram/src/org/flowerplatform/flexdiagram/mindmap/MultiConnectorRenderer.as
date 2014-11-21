@@ -106,6 +106,11 @@ package org.flowerplatform.flexdiagram.mindmap {
 			}
 			y1 = mindMapDiagramShell.getPropertyValue(diagramShellContext, _data.source, "y") + mindMapDiagramShell.getPropertyValue(diagramShellContext, _data.source, "height") / 2  - y;
 			
+			// node was collapsed
+			if (children == null) {
+				return;
+			}
+			
 			for (var i:int = 0; i < children.length; i++) {
 				var child:Object = children.getItemAt(i);
 				if (_data.isForRoot) {

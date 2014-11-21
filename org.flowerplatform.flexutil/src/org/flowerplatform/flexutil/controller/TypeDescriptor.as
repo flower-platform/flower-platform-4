@@ -124,6 +124,20 @@ package org.flowerplatform.flexutil.controller {
 				}
 			}
 			
+			// get controller from master registry
+			if (registry.masterRegistry != null) {
+				var masterDescriptor:TypeDescriptor = registry.masterRegistry.getExpectedTypeDescriptor(type);
+				if (masterDescriptor != null) {
+					var masterController:AbstractController = masterDescriptor.getSingleController(controllerType, object);
+					if (masterController != null) {
+						// keep it if it has a lower order index than the existing one
+						if (controller == null || controller.orderIndex > masterController.orderIndex) {
+							controller = masterController;
+						}
+					}
+				}
+			}
+			
 			if (controller is NullController) {
 				// means we must ignore all registered controllers
 				controller = null;
@@ -196,6 +210,20 @@ package org.flowerplatform.flexutil.controller {
 				}
 				
 				controllers.addAll(categoryDescriptor.getCachedAdditiveControllers(controllerType, object, false, keepCached));
+			}
+			
+			// get controllers from master registry
+			if (registry.masterRegistry != null) {
+				var masterDescriptor:TypeDescriptor = registry.masterRegistry.getExpectedTypeDescriptor(type);
+				if (masterDescriptor != null) {
+					var masterControllers:IList = masterDescriptor.getAdditiveControllers(controllerType, object);
+					for (var i:int = 0; i < masterControllers.length; i++) {
+						var controller:AbstractController = AbstractController(masterControllers.getItemAt(i));
+						if (!controllers.contains(controller)) {
+							controllers.addItem(controller);
+						}
+					}
+				}
 			}
 			
 			// finished scanning the categories

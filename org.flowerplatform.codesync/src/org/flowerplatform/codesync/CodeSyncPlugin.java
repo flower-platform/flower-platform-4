@@ -22,6 +22,7 @@ import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC;
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_FILE;
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_ROOT;
 import static org.flowerplatform.codesync.CodeSyncConstants.CODE_SYNC_CONFIG_EXTENSION;
+import static org.flowerplatform.codesync.CodeSyncConstants.CODE_SYNC_CONFIG_PROPERTY_DIRS;
 import static org.flowerplatform.codesync.CodeSyncConstants.DIAGRAM;
 import static org.flowerplatform.codesync.CodeSyncConstants.DIAGRAM_EXTENSION;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH;
@@ -66,7 +67,9 @@ import org.flowerplatform.codesync.adapter.ModelAdapterSet;
 import org.flowerplatform.codesync.adapter.NodeModelAdapterAncestor;
 import org.flowerplatform.codesync.adapter.NodeModelAdapterLeft;
 import org.flowerplatform.codesync.controller.CodeSyncAddNodeController;
+import org.flowerplatform.codesync.controller.CodeSyncConfigDirsKeyPropertyProvider;
 import org.flowerplatform.codesync.controller.CodeSyncPropertySetter;
+import org.flowerplatform.codesync.controller.CodeSyncRemoveNodeController;
 import org.flowerplatform.codesync.controller.CodeSyncRepositoryChildrenProvider;
 import org.flowerplatform.codesync.controller.CodeSyncSubscribableResourceProvider;
 import org.flowerplatform.codesync.controller.ModelResourceSetProvider;
@@ -292,6 +295,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(CATEGORY_MODEL)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("codeSyncRoot.label")))
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(BASE_DIR))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(CODE_SYNC_CONFIG_PROPERTY_DIRS))
+			.addAdditiveController(PROPERTIES_PROVIDER, new CodeSyncConfigDirsKeyPropertyProvider())
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(SRC_DIR));
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MDA_ROOT)
@@ -335,6 +340,8 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN));
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CodeSyncConstants.CODE_SYNC_CONFIG_ROOT);
+		
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistryProvider().addProvider(new CodeSyncConfigTypeDescriptorRegistryProvider());
 		
 		
 //		// initialize the list of code that will regenerate the descriptors

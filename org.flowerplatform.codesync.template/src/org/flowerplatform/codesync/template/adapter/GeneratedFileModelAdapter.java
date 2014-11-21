@@ -1,6 +1,7 @@
 package org.flowerplatform.codesync.template.adapter;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.CODE_SYNC_CONFIG_NOTYPE;
+import static org.flowerplatform.codesync.CodeSyncConstants.CODE_SYNC_CONFIG_PROPERTY_DIRS_KEY;
 import static org.flowerplatform.codesync.template.CodeSyncTemplateConstants.CODE_SYNC_CONFIG_VELOCITY_ENGINE;
 import static org.flowerplatform.core.CoreConstants.NAME;
 
@@ -15,7 +16,6 @@ import org.flowerplatform.codesync.adapter.IModelAdapter;
 import org.flowerplatform.codesync.adapter.IModelAdapterSet;
 import org.flowerplatform.codesync.adapter.file.AbstractFileModelAdapter;
 import org.flowerplatform.codesync.adapter.file.CodeSyncFile;
-import org.flowerplatform.codesync.template.CodeSyncTemplateConstants;
 import org.flowerplatform.codesync.template.CodeSyncTemplatePlugin;
 import org.flowerplatform.codesync.template.CodeSyncTemplateService;
 import org.flowerplatform.codesync.template.config_loader.TemplatesEngineController;
@@ -67,9 +67,9 @@ public class GeneratedFileModelAdapter extends AbstractFileModelAdapter {
 
 	private TemplatesEngineController getEngine(Node node) {
 		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(node.getNodeUri());
-		String path = CodeSyncPlugin.getInstance().getCodeSyncOperationsService().getPath(resourceNode, null);
-		String codeSyncConfigDirs = (String) resourceNode.getPropertyValue(CodeSyncTemplateConstants.TEMPLATES_DIRS);
-		TypeDescriptorRegistry config = CodeSyncPlugin.getInstance().getCodeSyncOperationsService().getOrLoadCodeSyncConfig(codeSyncConfigDirs, path);
+		String codeSyncConfigDirsKey = (String) resourceNode.getPropertyValue(CODE_SYNC_CONFIG_PROPERTY_DIRS_KEY);
+		TypeDescriptorRegistry config = CodeSyncPlugin.getInstance().getCodeSyncOperationsService()
+				.getOrLoadCodeSyncConfig(codeSyncConfigDirsKey);
 		TypeDescriptor descriptor = config.getExpectedTypeDescriptor(CODE_SYNC_CONFIG_NOTYPE);
 		return descriptor.getSingleController(CODE_SYNC_CONFIG_VELOCITY_ENGINE, null);
 	}

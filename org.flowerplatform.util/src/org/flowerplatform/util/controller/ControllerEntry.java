@@ -54,5 +54,11 @@ public class ControllerEntry<T> {
 	public void setCached(boolean cached) {
 		this.wasCached = cached;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("ControllerEntry [self = %s, cached = %s, wasCached = %b]", 
+				selfValue, cachedValue, wasCached);
+	}
 	
 }

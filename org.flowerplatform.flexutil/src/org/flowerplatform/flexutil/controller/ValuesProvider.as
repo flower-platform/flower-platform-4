@@ -44,7 +44,7 @@ package org.flowerplatform.flexutil.controller {
 		
 		protected function getDescriptor(typeDescriptorRegistry:TypeDescriptorRegistry, object:IEventDispatcher, key:String):GenericDescriptor {
 			var feature:String = getFeature(typeDescriptorRegistry, object, key);
-			return GenericDescriptor(typeDescriptorRegistry.getExpectedTypeDescriptor(typeDescriptorRegistry.typeProvider.getType(object)).getSingleController(feature, object));
+			return GenericDescriptor(typeDescriptorRegistry.getSingleController(feature, object));
 		}
 		
 		public function getPropertyName(typeDescriptorRegistry:TypeDescriptorRegistry, object:IEventDispatcher, key:String, descriptor:GenericDescriptor = null):String {
@@ -67,7 +67,8 @@ package org.flowerplatform.flexutil.controller {
 			var value:Object = getValueFromActualPropertyName(object, actualPropertyName);
 			var converterKey:String = descriptor.getExtraInfoProperty(FlexUtilConstants.EXTRA_INFO_VALUE_CONVERTER) as String;
 			if (converterKey != null) {
-				var converter:AbstractValueConverter = AbstractValueConverter(typeDescriptorRegistry.getExpectedTypeDescriptor(FlexUtilConstants.NOTYPE_VALUE_CONVERTERS).getSingleController(converterKey, null));
+				var converter:AbstractValueConverter = AbstractValueConverter(typeDescriptorRegistry.getExpectedTypeDescriptor(FlexUtilConstants.NOTYPE_VALUE_CONVERTERS)
+					.getSingleController(converterKey, null));
 				value = converter.convertValue(value, descriptor.extraInfo);
 			}
 			return value;
