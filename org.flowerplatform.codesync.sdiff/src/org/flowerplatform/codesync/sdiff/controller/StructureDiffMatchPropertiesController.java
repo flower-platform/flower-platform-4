@@ -15,7 +15,7 @@
  */
 package org.flowerplatform.codesync.sdiff.controller;
 
-import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_ICONS;
+import static org.flowerplatform.codesync.CodeSyncConstants.CODE_SYNC_ICONS;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_BODY_MODIFIED;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_CHILDREN_MODIFIED_RIGHT;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_DIFFS_MODIFIED_RIGHT;
@@ -48,63 +48,29 @@ import org.flowerplatform.util.controller.AbstractController;
 /**
  * @author Mariana Gheorghe
  */
-public class StructureDiffMatchPropertiesProvider extends AbstractController implements IPropertiesProvider,
-		IPropertySetter {
+public class StructureDiffMatchPropertiesController extends AbstractController implements IPropertySetter,
+		IPropertiesProvider {
 
-	public StructureDiffMatchPropertiesProvider() {
+	public StructureDiffMatchPropertiesController() {
 		// invoke after the persistence providers
-		// so the properties are populated
+		// so the ICONS property is populated
 		setOrderIndex(10000);
 	}
 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		String codeSyncIcons = getCodeSyncIcons(node);
+		String icons = (String) node.getProperties().get(ICONS);
+		if (icons == null) {
+			icons = "";
+		}
+		String elementType = (String) node.getProperties().get(MATCH_MODEL_ELEMENT_TYPE);
+		String codeSyncIcons = getCodeSyncIcons(elementType, icons);
 		if (codeSyncIcons != null) {
-			node.getProperties().put(CoreConstants.ICONS, codeSyncIcons);
+			node.getProperties().put(CODE_SYNC_ICONS, codeSyncIcons);
 		}
 
 		setBackgroundColor(node);
 		setText(node);
-	}
-
-	private String getCodeSyncIcons(Node node) {
-		String icons = (String) node.getProperties().get(ICONS);
-
-		String elementType = (String) node.getProperties().get(MATCH_MODEL_ELEMENT_TYPE);
-		if (icons == null) {
-			icons = "";
-		}
-
-		if (elementType == null) {
-			return icons;
-		}
-		String icon = null;
-		if (elementType.endsWith("File")) {
-			icon = getImagePath("jcu_obj.gif");
-		} else if (elementType.endsWith("Class")) {
-			icon = getImagePath("class_obj.gif");
-		} else if (elementType.endsWith("Interface")) {
-			icon = getImagePath("interface_obj.gif");
-		} else if (elementType.endsWith("Enum")) {
-			icon = getImagePath("enum_obj.gif");
-		} else if (elementType.endsWith("AnnotationType")) {
-			icon = getImagePath("annotation_obj.gif");
-		} else if (elementType.endsWith("Attribute") || elementType.endsWith("EnumConstant")) {
-			icon = getImagePath("field_obj.gif");
-		} else if (elementType.endsWith("Operation")) {
-			icon = getImagePath("method_obj.gif");
-		}
-
-		if (icon == null) {
-			return icons;
-		} else {
-			return (icons.isEmpty()) ? icon : (icons + "," + icon);
-		}
-	}
-
-	private String getImagePath(String img) {
-		return ResourcesPlugin.getInstance().getResourceUrl("/images/codesync.java/" + img);
 	}
 
 	private void setBackgroundColor(Node node) {
@@ -171,17 +137,17 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		for (String property : properties.keySet()) {
 			if (ICONS.equals(property)) {
-				node.getOrPopulateProperties(context);
-
-				String codeSyncIcons = getCodeSyncIcons(node);
+				String icons = (String) node.getPropertyValue(ICONS);
+				String elementType = (String) node.getPropertyValue(MATCH_MODEL_ELEMENT_TYPE);
+				String codeSyncIcons = getCodeSyncIcons(elementType, icons);
 				if (codeSyncIcons == null) {
 					codeSyncIcons = "";
 				}
+				node.getProperties().put(CODE_SYNC_ICONS, codeSyncIcons);
 				ServiceContext<NodeService> newContext = new ServiceContext<NodeService>(context.getService());
-
-				// so that CODESYNC_ICONS don't get persisted / written in the file
+				// so that CODE_SYNC_ICONS don't get persisted / written in the file
 				newContext.add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class));
-				context.getService().setProperty(node, CODESYNC_ICONS, codeSyncIcons, newContext);
+				context.getService().setProperty(node, CODE_SYNC_ICONS, codeSyncIcons, newContext);
 			}
 		}
 	}
@@ -190,6 +156,42 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
 		// At this moment, this method it is not necessary because the "remove..." actions for
 		// the icons are treated by the setProperty(...) method
+	}
+	
+	private String getCodeSyncIcons(String elementType, String icons) {
+		if (elementType == null) {
+			return icons;
+		}
+		
+		if (icons == null) {
+			icons = "";
+		}
+		String icon = null;
+		if (elementType.endsWith("File")) {
+			icon = getImagePath("jcu_obj.gif");
+		} else if (elementType.endsWith("Class")) {
+			icon = getImagePath("class_obj.gif");
+		} else if (elementType.endsWith("Interface")) {
+			icon = getImagePath("interface_obj.gif");
+		} else if (elementType.endsWith("Enum")) {
+			icon = getImagePath("enum_obj.gif");
+		} else if (elementType.endsWith("AnnotationType")) {
+			icon = getImagePath("annotation_obj.gif");
+		} else if (elementType.endsWith("Attribute") || elementType.endsWith("EnumConstant")) {
+			icon = getImagePath("field_obj.gif");
+		} else if (elementType.endsWith("Operation")) {
+			icon = getImagePath("method_obj.gif");
+		}
+
+		if (icon == null) {
+			return icons;
+		} else {
+			return (icons.isEmpty()) ? icon : (icons + "," + icon);
+		}
+	}
+
+	private String getImagePath(String img) {
+		return ResourcesPlugin.getInstance().getResourceUrl("/images/codesync.java/" + img);
 	}
 
 }

@@ -1,8 +1,8 @@
 package org.flowerplatform.codesync.sdiff.controller;
 
-import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_ICONS;
+import static org.flowerplatform.codesync.CodeSyncConstants.CODE_SYNC_ICONS;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.CONTAINS_COMMENT;
-import static org.flowerplatform.core.CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS;
+import static org.flowerplatform.core.CoreConstants.ICONS;
 
 import java.util.Collections;
 import java.util.Map;
@@ -20,80 +20,65 @@ import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * @author Elena Posea
+ * @author Mariana Gheorghe
  */
 public class CanContainCommentPropertyController extends AbstractController implements IPropertySetter, IPropertiesProvider {
 
-	/**
-	 * Order index has to be higher than CanContainCommentAddNodeListener's
-	 * order index. First add the node, then set/provide properties. 
-	 * Order index must also be higher than StructureDiffMatchPropertiesProvider's order index. 
-	 * For nodes of type Match, you should first invoke StructureDifffMatchPropertiesProvider, 
-	 * then this provider. It should also be higher than StructureDiffCommentController.
-	 */
 	public CanContainCommentPropertyController() {
-		setOrderIndex(11000);
+		// must invoke after the match properties controller
+		// so CODE_SYNC_ICONS already 
+		setOrderIndex(20000);
 	}
 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		node.getProperties().put(CODESYNC_ICONS, getCodeSyncIcon(node, context));
+		Boolean containsComment = (Boolean) node.getProperties().get(CONTAINS_COMMENT);
+		String icons = (String) node.getProperties().get(CODE_SYNC_ICONS);
+		node.getProperties().put(CODE_SYNC_ICONS, getCodeSyncIcons(containsComment, icons));
 	}
 
 	@Override
 	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		for (String property : properties.keySet()) {
-			if (property.equals(CONTAINS_COMMENT)) {
-				Object value = properties.get(property);
-				if (value != null && (boolean) value) {
-					continue;
-				}
+			if (property.equals(CONTAINS_COMMENT) || property.equals(ICONS)) {
+				Boolean containsComment = (Boolean) node.getPropertyValue(CONTAINS_COMMENT);
+				String icons = (String) node.getPropertyValue(CODE_SYNC_ICONS);
 				ServiceContext<NodeService> newContext = new ServiceContext<NodeService>(context.getService());
 				newContext.add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class));
-				// here I set only the codesync icons, that are not to be persisted;
-				// in order not to cycle/infinitely recourse in this setProperty
-				// function, I use the ALREADY_BEEN_IN_THIS_SETTER flag, in context
-				context.getService().setProperty(node, CODESYNC_ICONS, getCodeSyncIcon(node, context), newContext);
-			} else if (property.equals(CODESYNC_ICONS)) {
-				ServiceContext<NodeService> newContext = new ServiceContext<NodeService>(context.getService());
-				// otherwise, the next controller for MATCH is
-				// CanContainCommentPropertyProvider + Updater (we don't want this)
-				context.getContext().put(DONT_PROCESS_OTHER_CONTROLLERS, true);
-				context.getService().setProperty(node, CODESYNC_ICONS, getCodeSyncIcon(node, context), newContext);
+				context.getService().setProperty(node, CODE_SYNC_ICONS, getCodeSyncIcons(containsComment, icons), newContext);
 			}
 		}
 	}
 
-	private String getCodeSyncIcon(Node node, ServiceContext<NodeService> context) {
-		Boolean containsCommentFlag = (Boolean) node.getProperties().get(CONTAINS_COMMENT);
-		Object codesyncListOfIcons = node.getProperties().get(CODESYNC_ICONS);
-		String icon = "";
-		if (codesyncListOfIcons != null) {
-			icon = (String) codesyncListOfIcons;
+	private String getCodeSyncIcons(Boolean containsCommentFlag, String icons) {
+		boolean containsComment = containsCommentFlag != null && containsCommentFlag; 
+		if (icons == null) {
+			icons = "";
 		}
-		// icon = current icon list
-		String newIcon = ResourcesPlugin.getInstance().getResourceUrl("/images/codesync.sdiff/comment-marker/comments.png");
-		// newIcon = the icon that I would like to add
-		if (containsCommentFlag != null && containsCommentFlag) {
-			if (icon.indexOf(newIcon) == -1) { // this node doesn't already contain this icon
-				icon = icon + (!icon.isEmpty() ? CoreConstants.ICONS_SEPARATOR : "") + newIcon;
+		
+		String icon = ResourcesPlugin.getInstance().getResourceUrl("/images/codesync.sdiff/comment-marker/comments.png");
+		if (containsComment) {
+			if (icons.indexOf(icon) == -1) { // this node doesn't already contain this icon
+				icons = icons + (icons.isEmpty() ? "" : CoreConstants.ICONS_SEPARATOR) + icon;
 			}
-			return icon;
 		} else {
-			// remove property
-			int index = icon.indexOf(newIcon);
+			// remove icon
+			int index = icons.indexOf(icon);
 			if (index != -1) { // this node contains the icon; remove it
-				icon = icon.replaceAll(",?" + Matcher.quoteReplacement(newIcon), "");
+				icons = icons.replaceAll(",?" + Matcher.quoteReplacement(icon), "");
 			}
-			return icon;
 		}
+		return icons;
 	}
 
 	@Override
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
 		if (property.equals(CONTAINS_COMMENT)) {
+			Boolean containsComment = (Boolean) node.getPropertyValue(CONTAINS_COMMENT);
+			String icons = (String) node.getPropertyValue(CODE_SYNC_ICONS);
 			ServiceContext<NodeService> newContext = new ServiceContext<NodeService>();
 			newContext.add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class));
-			context.getService().setProperty(node, CODESYNC_ICONS, getCodeSyncIcon(node, context), newContext);
+			context.getService().setProperty(node, CODE_SYNC_ICONS, getCodeSyncIcons(containsComment, icons), newContext);
 		}
 	}
 }

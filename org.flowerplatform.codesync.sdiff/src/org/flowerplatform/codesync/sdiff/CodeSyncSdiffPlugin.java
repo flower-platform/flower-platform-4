@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.codesync.sdiff;
 
-import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_CAN_HOLD_CUSTOM_ICON;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.CATEGORY_CAN_CONTAIN_COMMENT;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.COMMENT;
@@ -25,12 +24,20 @@ import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFF_LEGEND_CHILD;
 import static org.flowerplatform.core.CoreConstants.ADD_CHILD_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
+import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_ICONS;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
+import static org.flowerplatform.core.CoreConstants.ICONS;
+import static org.flowerplatform.core.CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
+import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE;
+import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_VALUE_CONVERTER;
+import static org.flowerplatform.util.UtilConstants.FEATURE_PROPERTY_DESCRIPTORS;
+import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_CSV_TO_LIST;
 
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.sdiff.controller.CanContainCommentAddNodeListener;
 import org.flowerplatform.codesync.sdiff.controller.CanContainCommentPropertyController;
 import org.flowerplatform.codesync.sdiff.controller.CanContainCommentRemoveNodeListener;
@@ -38,12 +45,13 @@ import org.flowerplatform.codesync.sdiff.controller.StructureDiffCommentControll
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffLegendChildrenPropertiesProvider;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffLegendController;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffMatchChildrenProvider;
-import org.flowerplatform.codesync.sdiff.controller.StructureDiffMatchPropertiesProvider;
+import org.flowerplatform.codesync.sdiff.controller.StructureDiffMatchPropertiesController;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffNodeLegendController;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileSubscribableProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
+import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.GenericDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -71,7 +79,7 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
 		instance = this;
-
+		
 		CorePlugin.getInstance().getServiceRegistry().registerService("structureDiffService", sDiffService);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(STRUCTURE_DIFF_LEGEND_CHILD)
@@ -91,7 +99,7 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(STRUCTURE_DIFF_EXTENSION, "fpp", "mindmap", true));
 
-		StructureDiffMatchPropertiesProvider structureDiffMatchPropertiesController = new StructureDiffMatchPropertiesProvider();
+		StructureDiffMatchPropertiesController structureDiffMatchPropertiesController = new StructureDiffMatchPropertiesController();
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MATCH)
 			.addAdditiveController(PROPERTIES_PROVIDER, structureDiffMatchPropertiesController)
@@ -101,15 +109,17 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 			.addSingleController(CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + CoreConstants.BASE_RENDERER_TEXT,
 					new GenericDescriptor(CodeSyncSdiffConstants.PROPERTY_NAME_WITH_PATH).setOrderIndexAs(-10000));
 		
-		StructureDiffCommentController commentController = (StructureDiffCommentController) new StructureDiffCommentController().setOrderIndexAs(5000);
+		StructureDiffCommentController commentController = new StructureDiffCommentController();
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(COMMENT)
 			.addAdditiveController(PROPERTIES_PROVIDER, commentController)
 			.addAdditiveController(PROPERTY_SETTER, commentController)
-			.addCategory(CATEGORY_CAN_CONTAIN_COMMENT)
-			.addCategory(CATEGORY_CAN_HOLD_CUSTOM_ICON);
+			.addCategory(CATEGORY_CAN_CONTAIN_COMMENT);
 
 		CanContainCommentPropertyController commentPropertyProvider = new CanContainCommentPropertyController(); 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CAN_CONTAIN_COMMENT)
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(ICONS).setTypeAs(MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE))	
+			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_ICONS, new GenericDescriptor(CodeSyncConstants.CODE_SYNC_ICONS)
+					.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_CSV_TO_LIST).setOrderIndexAs(-1000))
 			.addAdditiveController(PROPERTIES_PROVIDER, commentPropertyProvider)
 			.addAdditiveController(PROPERTY_SETTER, commentPropertyProvider)
 			.addAdditiveController(ADD_NODE_CONTROLLER, new CanContainCommentAddNodeListener().setOrderIndexAs(10000))

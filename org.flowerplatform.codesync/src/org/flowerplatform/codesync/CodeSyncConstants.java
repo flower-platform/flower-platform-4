@@ -57,7 +57,6 @@ public final class CodeSyncConstants {
 	public static final String FILE = "codesyncFile";
 	
 	public static final String CATEGORY_MODEL = UtilConstants.CATEGORY_PREFIX + "model";
-	public static final String CATEGORY_CAN_HOLD_CUSTOM_ICON = UtilConstants.CATEGORY_PREFIX + "canHoldCustomIcons";
 	
 	//////////////////////////////////
 	// Controllers
@@ -75,7 +74,11 @@ public final class CodeSyncConstants {
 	//////////////////////////////////
 	// Node properties
 	//////////////////////////////////
+	
+	public static final String CODE_SYNC_ICONS = "codeSyncIcons";
+	
 	public static final String NODE_URI_TO_BE_IGNORED = "nodeUriToBeIgnored";
+	
 	public static final String BASE_DIR = "baseDir";
 	
 	public static final String SRC_DIR_TECHNOLOGIES = "technologies";
@@ -141,11 +144,7 @@ public final class CodeSyncConstants {
 	
 	public static final String CODE_SYNC_CONFIG_PROPERTY_DIRS = "codeSyncConfigDirs";
 	public static final String CODE_SYNC_CONFIG_PROPERTY_DIRS_KEY = "codeSyncConfigDirsKey";
-	public static final String CODESYNC_ICONS = "codeSyncIcons";
 	
-	/**
-	 * @author see class
-	 */
 	private CodeSyncConstants() {
 		super();
 	}

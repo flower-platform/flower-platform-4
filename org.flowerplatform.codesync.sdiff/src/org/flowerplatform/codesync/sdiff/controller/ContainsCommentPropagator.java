@@ -10,7 +10,8 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 
 /**
- * This class describes the behavior of comment propagation: what does "dirty" mean, the logic/way of propagating clean/dirty 
+ * This class describes the behavior of comment propagation: what does "dirty" mean, the logic/way of propagating clean/dirty.
+ * 
  * @author Elena Posea
  */
 public class ContainsCommentPropagator extends DirtyPropagatorController {

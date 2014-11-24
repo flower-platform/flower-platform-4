@@ -16,7 +16,6 @@
 package org.flowerplatform.codesync;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.BASE_DIR;
-import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_CAN_HOLD_CUSTOM_ICON;
 import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_CODESYNC;
 import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_MODEL;
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC;
@@ -47,11 +46,9 @@ import static org.flowerplatform.codesync.CodeSyncConstants.SRC_DIR_TECHNOLOGIES
 import static org.flowerplatform.codesync.CodeSyncConstants.getFileExtension;
 import static org.flowerplatform.core.CoreConstants.ADD_CHILD_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
-import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_ICONS;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.ICONS;
-import static org.flowerplatform.core.CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX;
 import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
@@ -59,10 +56,8 @@ import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE;
-import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_VALUE_CONVERTER;
 import static org.flowerplatform.util.UtilConstants.FEATURE_PROPERTY_DESCRIPTORS;
 import static org.flowerplatform.util.UtilConstants.PROPERTY_EDITOR_TYPE_BOOLEAN;
-import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_CSV_TO_LIST;
 
 import java.util.HashMap;
 import java.util.List;
@@ -324,12 +319,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(CoreConstants.NAME))
 			.addSingleController(CoreConstants.FEATURE_SHOW_PROPERTIES_IN_RENDERER, new GenericDescriptor(true));
 	
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CAN_HOLD_CUSTOM_ICON)
-			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(ICONS).setTypeAs(MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE))	
-			.addSingleController(MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_ICONS, new GenericDescriptor(CodeSyncConstants.CODESYNC_ICONS)
-					.addExtraInfoProperty(EXTRA_INFO_VALUE_CONVERTER, VALUE_CONVERTER_CSV_TO_LIST).setOrderIndexAs(-1000));
-
-		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MATCH)
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(ICONS).setTypeAs(MINDMAP_ICONS_WITH_BUTTON_DESCRIPTOR_TYPE))	
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_TYPE).setReadOnlyAs(true))
@@ -348,8 +337,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_DIFFS_CONFLICT)
 					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_BODY_MODIFIED)
-					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
-			.addCategory(CATEGORY_CAN_HOLD_CUSTOM_ICON);
+					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN));
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CodeSyncConstants.CODE_SYNC_CONFIG_ROOT);
 		

@@ -15,7 +15,7 @@
  */
 package org.flowerplatform.codesync.sdiff.controller;
 
-import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_ICONS;
+import static org.flowerplatform.codesync.CodeSyncConstants.CODE_SYNC_ICONS;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 
 import java.util.Collections;
@@ -38,29 +38,32 @@ import org.flowerplatform.util.controller.AbstractController;
  */
 public class StructureDiffCommentController extends AbstractController implements IPropertiesProvider, IPropertySetter {
 
+	public StructureDiffCommentController() {
+		// invoke after the persistence providers
+		// so the ICONS property is populated
+		setOrderIndex(10000);
+	}
+
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
 		node.getProperties().put(CorePlugin.getInstance().getPropertyNameForVisualFeatureSupportedByMindMapRenderer(
 				CoreConstants.BASE_RENDERER_BACKGROUND_COLOR), CodeSyncSdiffConstants.MATCH_COLOR_COMMENT);
-		Object obj = node.getProperties().get(ICONS);
-		String icons = "";
-		if (obj != null) {
-			icons = (String) obj;
+		String icons = (String) node.getProperties().get(ICONS);
+		if (icons == null) {
+			icons = "";
 		}
-		node.getProperties().put(ICONS, icons);
-		node.getProperties().put(CODESYNC_ICONS, icons + (icons.isEmpty() ? "" : CoreConstants.ICONS_SEPARATOR) 
-				+ ResourcesPlugin.getInstance().getResourceUrl("/images/codesync.sdiff/comment-marker/comment.png"));
+		node.getProperties().put(CODE_SYNC_ICONS, getCodeSyncIcons(icons));
 	}
 
 	@Override
 	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		ServiceContext<NodeService> newContext = new ServiceContext<NodeService>(context.getService());
-		newContext.add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class));
+		newContext.add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES,
+				Collections.singletonList(UpdateController.class));
 		for (String property : properties.keySet()) {
 			if (property.equals(ICONS)) {
-				String icons = (String) properties.get(ICONS);
-				context.getService().setProperty(node, CODESYNC_ICONS, icons + (icons.isEmpty() ? "" : CoreConstants.ICONS_SEPARATOR) 
-						+ ResourcesPlugin.getInstance().getResourceUrl("/images/codesync.sdiff/comment-marker/comments.png"), newContext);
+				String icons = (String) node.getPropertyValue(ICONS);
+				context.getService().setProperty(node, CODE_SYNC_ICONS, getCodeSyncIcons(icons), newContext);
 			}
 		}
 	}
@@ -68,6 +71,14 @@ public class StructureDiffCommentController extends AbstractController implement
 	@Override
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
 		// nothing to do
+	}
+
+	private String getCodeSyncIcons(String icons) {
+		if (icons == null) {
+			icons = "";
+		}
+		return icons + (icons.isEmpty() ? "" : CoreConstants.ICONS_SEPARATOR)
+				+ ResourcesPlugin.getInstance().getResourceUrl("/images/codesync.sdiff/comment-marker/comment.png");
 	}
 
 }
