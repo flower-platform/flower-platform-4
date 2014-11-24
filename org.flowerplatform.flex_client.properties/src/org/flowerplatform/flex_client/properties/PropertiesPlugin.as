@@ -154,7 +154,7 @@ package org.flowerplatform.flex_client.properties {
 						
 						viewContent.cancelHandler();
 						
-					}, frontend.diagramShell.getRegistryForModel(result), result, new ArrayCollection([
+					}, frontend.diagramShell.registryProvider, result, new ArrayCollection([
 						new PropertyDescriptor().setName("type").setLabel(Resources.getMessage("properties.type"))]));
 					
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()

@@ -58,8 +58,6 @@ public class CodeSyncAlgorithm {
 	protected Map<Object, String> filesToRename = new HashMap<Object, String>();
 	protected List<Object> filesToDelete = new ArrayList<Object>();
 	
-	protected Map<String, Object> context = new HashMap<String, Object>();
-	
 	public IModelAdapterSet getModelAdapterSetLeft() {
 		return modelAdapterSetLeft;
 	}
