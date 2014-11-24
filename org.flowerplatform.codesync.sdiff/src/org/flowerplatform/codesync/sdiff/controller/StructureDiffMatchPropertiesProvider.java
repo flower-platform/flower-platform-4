@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.codesync.sdiff.controller;
 
+import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_ICONS;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_BODY_MODIFIED;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_CHILDREN_MODIFIED_RIGHT;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_DIFFS_MODIFIED_RIGHT;
@@ -25,6 +26,7 @@ import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COL
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COLOR_CHILDREN_MODIFIED;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COLOR_PROP_MODIFIED;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COLOR_REMOVED;
+import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 
 import java.util.Map;
@@ -165,6 +167,9 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 		return b != null && b;
 	}
 
+	/**
+	 * @author Elena Posea
+	 */
 	@Override
 	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		for (String property : properties.keySet()) {
@@ -175,7 +180,11 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 				if (codeSyncIcons == null) {
 					codeSyncIcons = "";
 				}
-				context.getService().setProperty(node, CoreConstants.ICONS, codeSyncIcons, context);
+				ServiceContext<NodeService> newContext = new ServiceContext<NodeService>(context.getService());
+			
+				// so that CODESYNC_ICONS don't get persisted / written in the file
+				newContext.getContext().put(EXECUTE_ONLY_FOR_UPDATER, true);
+				context.getService().setProperty(node, CODESYNC_ICONS, codeSyncIcons, newContext);
 			}
 		}
 	}

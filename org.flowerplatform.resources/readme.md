@@ -19,7 +19,9 @@ Holds images and messages.
 | images/mindmap/arrowUp.png | https://www.iconfinder.com/icons/211620/arrow_b_right_icon#size=16 | http://opensource.org/licenses/MIT | mindmap |
 | images/properties/preferences.png | https://www.iconfinder.com/icons/105256/application_applications_configuration_contact_control_de_desktop_engineering_gear_gears_generator_machine_mime_preferences_reductor_settings_system_tool_tools_work_icon#size=16 | http://www.aha-soft.com/ | properties |
 | images/properties/preference.png | https://www.iconfinder.com/icons/105244/application_applications_configuration_contact_control_desktop_engineering_gear_gears_generator_machine_mime_preferences_reductor_settings_system_tool_tools_work_icon#size=16 | http://www.aha-soft.com/ | properties |
-| images/core/add_sibling.png | https://www.iconfinder.com/icons/27831/add_blue_minus_new_plus_icon#size=128 | - | core |
+| images/core/add_sibling.png | https://www.iconfinder.com/icons/27831/add_blue_minus_new_plus_icon | - | core |
+| images/codesync/comment-marker/comment.png | http://www.famfamfam.com/lab/icons/silk/ | http://www.famfamfam.com/lab/icons/silk/ |codesync.sdiff|
+| images/codesync/comment-marker/comments.png | http://www.famfamfam.com/lab/icons/silk/ | http://www.famfamfam.com/lab/icons/silk/ |codesync.sdiff|
 
 ### Icons allowed for commercial use (NO link required) ==
 

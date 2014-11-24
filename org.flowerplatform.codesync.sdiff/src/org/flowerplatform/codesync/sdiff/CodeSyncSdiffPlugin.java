@@ -15,18 +15,25 @@
  */
 package org.flowerplatform.codesync.sdiff;
 
+import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_CAN_HOLD_CUSTOM_ICON;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH;
+import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.CATEGORY_CAN_CONTAIN_COMMENT;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.COMMENT;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFF;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFF_EXTENSION;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFF_LEGEND;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.STRUCTURE_DIFF_LEGEND_CHILD;
 import static org.flowerplatform.core.CoreConstants.ADD_CHILD_DESCRIPTOR;
+import static org.flowerplatform.core.CoreConstants.ADD_NODE_CONTROLLER;
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
+import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 
+import org.flowerplatform.codesync.sdiff.controller.CanContainCommentAddNodeListener;
+import org.flowerplatform.codesync.sdiff.controller.CanContainCommentPropertyProvider;
+import org.flowerplatform.codesync.sdiff.controller.CanContainCommentRemoveNodeListener;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffCommentController;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffLegendChildrenPropertiesProvider;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffLegendController;
@@ -37,6 +44,7 @@ import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileSubscribableProvider;
 import org.flowerplatform.core.node.remote.AddChildDescriptor;
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.GenericDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
@@ -47,13 +55,13 @@ import org.osgi.framework.BundleContext;
 public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 
 	protected static CodeSyncSdiffPlugin instance;
-	
+
 	private StructureDiffService sDiffService = new StructureDiffService();
 	
 	public static CodeSyncSdiffPlugin getInstance() {
 		return instance;
 	}
-	
+
 	public StructureDiffService getSDiffService() {
 		return sDiffService;
 	}
@@ -63,12 +71,12 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 	public void start(BundleContext bundleContext) throws Exception {
 		super.start(bundleContext);
 		instance = this;
-		
+
 		CorePlugin.getInstance().getServiceRegistry().registerService("structureDiffService", sDiffService);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(STRUCTURE_DIFF_LEGEND_CHILD)
 			.addAdditiveController(PROPERTIES_PROVIDER, new StructureDiffLegendChildrenPropertiesProvider());
-		
+	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(STRUCTURE_DIFF_LEGEND)
 			.addAdditiveController(PROPERTIES_PROVIDER, new StructureDiffLegendController())
 			.addAdditiveController(CHILDREN_PROVIDER, new StructureDiffLegendController());
@@ -77,11 +85,12 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getVirtualNodeResourceHandler().addVirtualNodeType(STRUCTURE_DIFF_LEGEND);
 	
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(STRUCTURE_DIFF)
-			.addAdditiveController(CHILDREN_PROVIDER, new StructureDiffNodeLegendController());
+			.addAdditiveController(CHILDREN_PROVIDER, new StructureDiffNodeLegendController())
+			.addCategory(CATEGORY_CAN_CONTAIN_COMMENT);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(STRUCTURE_DIFF_EXTENSION, "fpp", "mindmap", true));
-	
+
 		StructureDiffMatchPropertiesProvider structureDiffMatchPropertiesController = new StructureDiffMatchPropertiesProvider();
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(MATCH)
@@ -89,13 +98,27 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTY_SETTER, structureDiffMatchPropertiesController)
 			.addAdditiveController(CHILDREN_PROVIDER, new StructureDiffMatchChildrenProvider())
 			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(COMMENT))
+			.addCategory(CATEGORY_CAN_CONTAIN_COMMENT)
 			.addSingleController(CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + CoreConstants.BASE_RENDERER_TEXT,
 					new GenericDescriptor(CodeSyncSdiffConstants.PROPERTY_NAME_WITH_PATH).setOrderIndexAs(-10000));
 		
+		StructureDiffCommentController commentController = (StructureDiffCommentController) new StructureDiffCommentController().setOrderIndexAs(5000);
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(COMMENT)
-			.addAdditiveController(PROPERTIES_PROVIDER, new StructureDiffCommentController());
+			.addAdditiveController(PROPERTIES_PROVIDER, commentController)
+			.addAdditiveController(PROPERTY_SETTER, commentController)
+			.addCategory(CATEGORY_CAN_CONTAIN_COMMENT)
+			.addCategory(CATEGORY_CAN_HOLD_CUSTOM_ICON);
+
+		CanContainCommentPropertyProvider commentPropertyProvider = new CanContainCommentPropertyProvider(); 
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CAN_CONTAIN_COMMENT)
+			.addAdditiveController(PROPERTIES_PROVIDER, commentPropertyProvider)
+			.addAdditiveController(PROPERTY_SETTER, commentPropertyProvider)
+			.addAdditiveController(ADD_NODE_CONTROLLER, new CanContainCommentAddNodeListener().setOrderIndexAs(10000))
+			.addAdditiveController(REMOVE_NODE_CONTROLLER, new CanContainCommentRemoveNodeListener().setOrderIndexAs(-10000))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR,
+				new AddChildDescriptor().setChildTypeAs(COMMENT).setLabelAs(ResourcesPlugin.getInstance().getMessage("codesync.sdiff.comment")));
 	}
-	
+
 	/**
 	 *@author Mariana Gheorghe
 	 **/
@@ -108,5 +131,5 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 	public void registerMessageBundle() throws Exception {
 		// nothing to do yet
 	}
-	
+
 }

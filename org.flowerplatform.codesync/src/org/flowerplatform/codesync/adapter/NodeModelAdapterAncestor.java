@@ -22,7 +22,6 @@ import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.action.ActionResult;
-import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
 
 /**
  * @author Mariana
@@ -53,7 +52,7 @@ public class NodeModelAdapterAncestor extends NodeModelAdapter {
 	 */
 	@Override
 	public Object getValueFeatureValue(Object element, Object feature, Object correspondingValue, CodeSyncAlgorithm codeSyncAlgorithm) {
-		Object originalValue = super.getValueFeatureValue(element, CodeSyncControllerUtils.getOriginalPropertyName(feature.toString()), correspondingValue, codeSyncAlgorithm);
+		Object originalValue = super.getValueFeatureValue(element, feature.toString() + CodeSyncConstants.ORIGINAL_SUFFIX, correspondingValue, codeSyncAlgorithm);
 		if (originalValue == null) {
 			originalValue = super.getValueFeatureValue(element, feature, correspondingValue, codeSyncAlgorithm);
 		}

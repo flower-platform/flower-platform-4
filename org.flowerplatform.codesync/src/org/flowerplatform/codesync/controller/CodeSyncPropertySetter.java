@@ -15,9 +15,14 @@
  */
 package org.flowerplatform.codesync.controller;
 
-import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.getOriginalPropertyName;
-import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncFalseAndPropagateToParents;
-import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncTrueAndPropagateToParents;
+import static org.flowerplatform.codesync.CodeSyncConstants.ADDED;
+import static org.flowerplatform.codesync.CodeSyncConstants.CHILDREN_CONFLICT;
+import static org.flowerplatform.codesync.CodeSyncConstants.CHILDREN_SYNC;
+import static org.flowerplatform.codesync.CodeSyncConstants.CONFLICT;
+import static org.flowerplatform.codesync.CodeSyncConstants.NODE_URI_TO_BE_IGNORED;
+import static org.flowerplatform.codesync.CodeSyncConstants.ORIGINAL_SUFFIX;
+import static org.flowerplatform.codesync.CodeSyncConstants.REMOVED;
+import static org.flowerplatform.codesync.CodeSyncConstants.SYNC;
 
 import java.util.Map;
 
@@ -27,12 +32,11 @@ import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.Utils;
-import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * @author Mariana Gheorghe
  */
-public class CodeSyncPropertySetter extends AbstractController implements IPropertySetter {
+public class CodeSyncPropertySetter extends CodeSyncPropagator implements IPropertySetter {
 
 	/**
 	 *@author see class
@@ -42,20 +46,24 @@ public class CodeSyncPropertySetter extends AbstractController implements IPrope
 		// to cache the current value of the property before it is overwritten
 		setOrderIndex(-100000);
 	}
-	
+
+	/**
+	 * @author Elena Posea
+	 */
 	@Override
 	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		// disable the controllers during the execution of sync algorithm
 		if (context.getBooleanValue(CodeSyncConstants.SYNC_IN_PROGRESS)) {
 			return;
 		}
-		
+
 		for (String property : properties.keySet()) {
 			Object value = properties.get(property);
 			
 			// if the node is newly added or marked removed => propagate sync flag false
 			if (CodeSyncConstants.REMOVED.equals(property) || CodeSyncConstants.ADDED.equals(property)) {
-				setSyncFalseAndPropagateToParents(node, context.getService());
+				context.add(NODE_URI_TO_BE_IGNORED, node.getNodeUri());
+				setDirtyAndPropagateToParents(node, context);
 				return;
 			}
 			
@@ -79,27 +87,46 @@ public class CodeSyncPropertySetter extends AbstractController implements IPrope
 			
 			if (!Utils.safeEquals(originalValue, value)) {
 				if (!isOriginalPropertySet) {
+					setDirtyAndPropagateToParents(node, context);
 					// trying to set a different value; keep the old value in property.original if it does not exist
 					context.getService().setProperty(node, originalProperty, originalValue, new ServiceContext<NodeService>(context.getService()));
-					setSyncFalseAndPropagateToParents(node, context.getService());
 				}
 			} else {
 				if (isOriginalPropertySet) {
 					// trying to set the same value as the original (a revert operation); unset the original value
 					context.getService().unsetProperty(node, originalProperty, new ServiceContext<NodeService>(context.getService()));
-					setSyncTrueAndPropagateToParents(node, context.getService());
+					unsetDirtyAndPropagateToParents(node, context);
 				}
 			}
 		}
+	}
+
+	/**
+	 * Return the property name, with the <code>.original</code> suffix.
+	 */
+	public String getOriginalPropertyName(String property) {
+		return property + ORIGINAL_SUFFIX;
 	}
 
 	@Override
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
 		// nothing to do
 	}
-	
+
 	private boolean isSyncProperty(Node node, String property) {
-		return !CodeSyncControllerUtils.isCodeSyncFlagConstant(property);
+		return !isCodeSyncFlagConstant(property);
 	}
-	
+
+	/**
+	 * Return <code>true</code> if the property is a CodeSync flag.
+	 */
+	public static boolean isCodeSyncFlagConstant(String property) {
+		if (SYNC.equals(property) || CHILDREN_SYNC.equals(property) 
+				|| CONFLICT.equals(property) || CHILDREN_CONFLICT.equals(property)
+				|| ADDED.equals(property) || REMOVED.equals(property)) {
+			return true;
+		}
+		return false;
+	}
+
 }

@@ -25,6 +25,7 @@ import static org.eclipse.jdt.core.dom.Modifier.isStatic;
 import static org.eclipse.jdt.core.dom.Modifier.isSynchronized;
 import static org.eclipse.jdt.core.dom.Modifier.isTransient;
 import static org.eclipse.jdt.core.dom.Modifier.isVolatile;
+import static org.flowerplatform.codesync.CodeSyncConstants.REMOVED;
 import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.DECORATOR_ABSTRACT;
 import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.DECORATOR_FINAL;
 import static org.flowerplatform.codesync.code.java.CodeSyncJavaConstants.DECORATOR_NATIVE;
@@ -43,7 +44,6 @@ import java.util.List;
 import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaPlugin;
-import org.flowerplatform.codesync.controller.CodeSyncControllerUtils;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
@@ -118,12 +118,12 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 	}
 
 	/**
-	 *@author Cristina Constantinescu
+	 * @author Cristina Constantinescu
 	 **/
 	protected int getModifiersFlags(Node node, ServiceContext<NodeService> context) {
 		int flags = 0;
 		for (Node modifier : getModifiers(node, context)) {
-			if (CodeSyncControllerUtils.isRemoved(modifier)) {
+			if (isRemoved(modifier)) {
 				// don't decorate if the modifier was marked removed
 				continue;
 			}
@@ -149,6 +149,15 @@ public class JavaIconPropertyProvider extends ConstantValuePropertyProvider {
 		return modifiers;
 	}
 	
+	private boolean isRemoved(Node node) {
+		return hasFlagTrue(node, REMOVED);
+	}
+
+	private boolean hasFlagTrue(Node node, String flag) {
+		Boolean b = (Boolean) node.getPropertyValue(flag);
+		return b != null && b;
+	}
+
 	protected String getVisibilityPrivate() {
 		return getIconWithVisibility(VISIBILITY_PRIVATE);
 	}
