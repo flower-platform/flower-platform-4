@@ -32,7 +32,7 @@ import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 
 import org.flowerplatform.codesync.sdiff.controller.CanContainCommentAddNodeListener;
-import org.flowerplatform.codesync.sdiff.controller.CanContainCommentPropertyProvider;
+import org.flowerplatform.codesync.sdiff.controller.CanContainCommentPropertyController;
 import org.flowerplatform.codesync.sdiff.controller.CanContainCommentRemoveNodeListener;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffCommentController;
 import org.flowerplatform.codesync.sdiff.controller.StructureDiffLegendChildrenPropertiesProvider;
@@ -97,7 +97,6 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTIES_PROVIDER, structureDiffMatchPropertiesController)
 			.addAdditiveController(PROPERTY_SETTER, structureDiffMatchPropertiesController)
 			.addAdditiveController(CHILDREN_PROVIDER, new StructureDiffMatchChildrenProvider())
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(COMMENT))
 			.addCategory(CATEGORY_CAN_CONTAIN_COMMENT)
 			.addSingleController(CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + CoreConstants.BASE_RENDERER_TEXT,
 					new GenericDescriptor(CodeSyncSdiffConstants.PROPERTY_NAME_WITH_PATH).setOrderIndexAs(-10000));
@@ -109,14 +108,14 @@ public class CodeSyncSdiffPlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(CATEGORY_CAN_CONTAIN_COMMENT)
 			.addCategory(CATEGORY_CAN_HOLD_CUSTOM_ICON);
 
-		CanContainCommentPropertyProvider commentPropertyProvider = new CanContainCommentPropertyProvider(); 
+		CanContainCommentPropertyController commentPropertyProvider = new CanContainCommentPropertyController(); 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CAN_CONTAIN_COMMENT)
 			.addAdditiveController(PROPERTIES_PROVIDER, commentPropertyProvider)
 			.addAdditiveController(PROPERTY_SETTER, commentPropertyProvider)
 			.addAdditiveController(ADD_NODE_CONTROLLER, new CanContainCommentAddNodeListener().setOrderIndexAs(10000))
 			.addAdditiveController(REMOVE_NODE_CONTROLLER, new CanContainCommentRemoveNodeListener().setOrderIndexAs(-10000))
-			.addAdditiveController(ADD_CHILD_DESCRIPTOR,
-				new AddChildDescriptor().setChildTypeAs(COMMENT).setLabelAs(ResourcesPlugin.getInstance().getMessage("codesync.sdiff.comment")));
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(COMMENT)
+					.setIconAs(ResourcesPlugin.getInstance().getResourceUrl("/images/codesync.sdiff/comment-marker/comment.png")));
 	}
 
 	/**

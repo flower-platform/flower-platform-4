@@ -15,12 +15,15 @@
  */
 package org.flowerplatform.tests;
 
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 
@@ -30,9 +33,17 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.RemoteMethodInvocationInfo;
+import org.flowerplatform.core.RemoteMethodInvocationListener;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.remote.NodeServiceRemote;
+import org.flowerplatform.core.node.remote.ResourceServiceRemote;
+import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.node.resource.ResourceSetService;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
+import org.junit.Before;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -48,9 +59,18 @@ public class EclipseIndependentTestBase {
 //CHECKSTYLE:ON
 	
 	protected static String workspaceLocation = "workspace";
-	protected static NodeService nodeService;
 	
+	protected static NodeServiceRemote nodeServiceRemote;
+	protected static ResourceServiceRemote resourceServiceRemote;
+	protected static NodeService nodeService;
+	protected static ResourceService resourceService;
+	protected static ResourceSetService resourceSetService;
+	
+	protected static RemoteMethodInvocationListener remoteMethodInvocationListener;
 	protected static String sessionId = "mockSessionId";
+	
+	protected RemoteMethodInvocationInfo remoteMethodInvocationInfo;
+	protected ServiceContext<NodeService> context;
 	
 	static {
 		// populated from FlowerFrameworkLauncher in the servlet container
@@ -59,12 +79,20 @@ public class EclipseIndependentTestBase {
 		startPlugin(new ResourcesPlugin());
 		startPlugin(new CorePlugin());
 		nodeService = CorePlugin.getInstance().getNodeService();
+		resourceService = CorePlugin.getInstance().getResourceService();
+		resourceSetService = CorePlugin.getInstance().getResourceSetService();
+		
+		resourceServiceRemote = new ResourceServiceRemote();
+		nodeServiceRemote = new NodeServiceRemote();
 		
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		HttpSession session = mock(HttpSession.class);
 		when(req.getSession()).thenReturn(session);
 		when(session.getId()).thenReturn(sessionId);
 		CorePlugin.getInstance().getRequestThreadLocal().set(req);
+		
+		remoteMethodInvocationListener = spy(CorePlugin.getInstance().getRemoteMethodInvocationListener());
+		doReturn(sessionId).when(remoteMethodInvocationListener).getSessionId();
 	}
 	
 	/**
@@ -98,6 +126,19 @@ public class EclipseIndependentTestBase {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * @author Claudiu Matei
+	 **/
+	@Before
+	public void setUp() {
+		context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
+		remoteMethodInvocationInfo = spy(new RemoteMethodInvocationInfo());
+		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceUris();
+		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceSets();
+		doReturn(-1L).when(remoteMethodInvocationInfo).getTimestampOfLastRequest();
+		remoteMethodInvocationInfo.setServiceMethodOrUrl("test");
 	}
 	
 	/**

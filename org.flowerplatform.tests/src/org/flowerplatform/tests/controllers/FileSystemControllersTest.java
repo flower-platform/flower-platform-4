@@ -36,7 +36,6 @@ import java.util.List;
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.RemoteMethodInvocationInfo;
-import org.flowerplatform.core.RemoteMethodInvocationListener;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.node.NodeService;
@@ -61,8 +60,6 @@ public class FileSystemControllersTest extends EclipseIndependentTestBase {
 
 	private RemoteMethodInvocationInfo remoteMethodInvocationInfo;
 
-	private static RemoteMethodInvocationListener remoteMethodInvocationListener;
-	
 	private static IFileAccessController fileAccessController = new PlainFileAccessController();
 	
 	/**
@@ -75,9 +72,6 @@ public class FileSystemControllersTest extends EclipseIndependentTestBase {
 		
 		CorePlugin.getInstance().getResourceService().subscribeToParentResource("", createFileNodeUri(FILE_SYSTEM_CONTROLLERS_DIR, null), 
 				new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
-
-		remoteMethodInvocationListener = spy(CorePlugin.getInstance().getRemoteMethodInvocationListener());
-		doReturn("dummy-session").when(remoteMethodInvocationListener).getSessionId();
 	}
 
 	/**

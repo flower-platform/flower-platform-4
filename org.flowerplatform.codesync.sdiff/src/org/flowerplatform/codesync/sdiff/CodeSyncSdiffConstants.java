@@ -39,6 +39,7 @@ public final class CodeSyncSdiffConstants {
 	public static final String MODIFIED = "modified";
 	public static final String MODIFIED_BODY = "bodyModified";
 	public static final String MODIFIED_CHILDREN = "childrenModified";
+	
 	public static final String ADDED_COMMENT = "comment";
 	public static final String CONTAINS_COMMENT = "containsComment";
 	public static final String CATEGORY_CAN_CONTAIN_COMMENT = UtilConstants.CATEGORY_PREFIX + "canContainComment";
@@ -60,10 +61,6 @@ public final class CodeSyncSdiffConstants {
 		
 	// dirty marker for comments
 	public static final String NODE_URI_TO_BE_IGNORED = "nodeURIToBeIgnored";
-
-	// flag so CanContainCommentPropertyProvider won't loop while trying to set CODESYNC_ICONS property
-	public static final String ALREADY_BEEN_IN_THIS_SETTER = "alreadyBeenInThisSetter";
-	
 
 	//////////////////////////////////
 	// Service context options

@@ -19,24 +19,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
-import org.flowerplatform.core.RemoteMethodInvocationInfo;
-import org.flowerplatform.core.RemoteMethodInvocationListener;
-import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeServiceRemote;
-import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
-import org.flowerplatform.core.node.resource.ResourceSetService;
 import org.flowerplatform.core.node.update.Command;
 import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
 import org.flowerplatform.core.node.update.remote.PropertyUpdate;
@@ -47,7 +38,6 @@ import org.flowerplatform.mindmap.MindMapPlugin;
 import org.flowerplatform.tests.EclipseIndependentTestBase;
 import org.flowerplatform.tests.TestUtil;
 import org.flowerplatform.util.Utils;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -66,16 +56,9 @@ public class CommandStackTest extends EclipseIndependentTestBase {
 	public ExpectedException thrown = ExpectedException.none();
 
 	private static Node rootNode;
-	private static NodeServiceRemote nodeServiceRemote;
-	private static RemoteMethodInvocationListener remoteMethodInvocationListener;
-	private static ResourceService resourceService;
-	private static ResourceServiceRemote resourceServiceRemote;
-	private static ResourceSetService resourceSetService;
-
-	private RemoteMethodInvocationInfo remoteMethodInvocationInfo;
-	private ServiceContext<NodeService> context;
+	
 	/**
-	 *@author Claudiu Matei
+	 * @author Claudiu Matei
 	 **/
 	@BeforeClass
 	public static void beforeClass() throws Exception {
@@ -84,34 +67,14 @@ public class CommandStackTest extends EclipseIndependentTestBase {
 		startPlugin(new MindMapPlugin());
 
 		CorePlugin.getInstance().getResourceService()
-		.subscribeToParentResource("dummy-session", RESOURCE_NODE_URI, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
+		.subscribeToParentResource(sessionId, RESOURCE_NODE_URI, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 		CorePlugin.getInstance().getResourceService()
-		.subscribeToParentResource("dummy-session", COMMAND_STACK_NODE_URI, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
-		resourceService = CorePlugin.getInstance().getResourceService();
-		resourceServiceRemote = new ResourceServiceRemote();
-		resourceSetService = CorePlugin.getInstance().getResourceSetService();
+		.subscribeToParentResource(sessionId, COMMAND_STACK_NODE_URI, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
 		rootNode = resourceService.getNode(RESOURCE_NODE_URI);
-		nodeServiceRemote = new NodeServiceRemote();
-
-		remoteMethodInvocationListener = spy(CorePlugin.getInstance().getRemoteMethodInvocationListener());
-		doReturn("dummy-session").when(remoteMethodInvocationListener).getSessionId();
-
 	}
+	
 	/**
-	 *@author Claudiu Matei
-	 **/
-	@Before
-	public void setUp() {
-		context = new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService());
-		remoteMethodInvocationInfo = spy(new RemoteMethodInvocationInfo());
-		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceUris();
-		doReturn(new ArrayList<String>()).when(remoteMethodInvocationInfo).getResourceSets();
-		doReturn(-1L).when(remoteMethodInvocationInfo).getTimestampOfLastRequest();
-		remoteMethodInvocationInfo.setServiceMethodOrUrl("test");
-	}
-
-	/**
-	 *@author Claudiu Matei
+	 * @author Claudiu Matei
 	 **/
 	@Test
 	public void testNewCommandSetProperty() {

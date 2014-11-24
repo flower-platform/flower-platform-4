@@ -16,9 +16,9 @@
 package org.flowerplatform.codesync.sdiff.controller;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_ICONS;
-import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants;
@@ -29,6 +29,7 @@ import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.AbstractController;
 
@@ -54,7 +55,7 @@ public class StructureDiffCommentController extends AbstractController implement
 	@Override
 	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
 		ServiceContext<NodeService> newContext = new ServiceContext<NodeService>(context.getService());
-		newContext.getContext().put(EXECUTE_ONLY_FOR_UPDATER, true);
+		newContext.add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class));
 		for (String property : properties.keySet()) {
 			if (property.equals(ICONS)) {
 				String icons = (String) properties.get(ICONS);

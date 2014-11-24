@@ -1,11 +1,10 @@
 package org.flowerplatform.codesync.sdiff.controller;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_ICONS;
-import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.ALREADY_BEEN_IN_THIS_SETTER;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.CONTAINS_COMMENT;
 import static org.flowerplatform.core.CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS;
-import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Matcher;
 
@@ -15,13 +14,14 @@ import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * @author Elena Posea
  */
-public class CanContainCommentPropertyProvider extends AbstractController implements IPropertySetter, IPropertiesProvider {
+public class CanContainCommentPropertyController extends AbstractController implements IPropertySetter, IPropertiesProvider {
 
 	/**
 	 * Order index has to be higher than CanContainCommentAddNodeListener's
@@ -30,7 +30,7 @@ public class CanContainCommentPropertyProvider extends AbstractController implem
 	 * For nodes of type Match, you should first invoke StructureDifffMatchPropertiesProvider, 
 	 * then this provider. It should also be higher than StructureDiffCommentController.
 	 */
-	public CanContainCommentPropertyProvider() {
+	public CanContainCommentPropertyController() {
 		setOrderIndex(11000);
 	}
 
@@ -41,9 +41,6 @@ public class CanContainCommentPropertyProvider extends AbstractController implem
 
 	@Override
 	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
-		if (context.get(ALREADY_BEEN_IN_THIS_SETTER) != null) {
-			return;
-		}
 		for (String property : properties.keySet()) {
 			if (property.equals(CONTAINS_COMMENT)) {
 				Object value = properties.get(property);
@@ -51,8 +48,7 @@ public class CanContainCommentPropertyProvider extends AbstractController implem
 					continue;
 				}
 				ServiceContext<NodeService> newContext = new ServiceContext<NodeService>(context.getService());
-				newContext.getContext().put(EXECUTE_ONLY_FOR_UPDATER, true);
-				newContext.getContext().put(ALREADY_BEEN_IN_THIS_SETTER, true);
+				newContext.add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class));
 				// here I set only the codesync icons, that are not to be persisted;
 				// in order not to cycle/infinitely recourse in this setProperty
 				// function, I use the ALREADY_BEEN_IN_THIS_SETTER flag, in context
@@ -62,7 +58,6 @@ public class CanContainCommentPropertyProvider extends AbstractController implem
 				// otherwise, the next controller for MATCH is
 				// CanContainCommentPropertyProvider + Updater (we don't want this)
 				context.getContext().put(DONT_PROCESS_OTHER_CONTROLLERS, true);
-				newContext.getContext().put(ALREADY_BEEN_IN_THIS_SETTER, true);
 				context.getService().setProperty(node, CODESYNC_ICONS, getCodeSyncIcon(node, context), newContext);
 			}
 		}
@@ -97,8 +92,7 @@ public class CanContainCommentPropertyProvider extends AbstractController implem
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
 		if (property.equals(CONTAINS_COMMENT)) {
 			ServiceContext<NodeService> newContext = new ServiceContext<NodeService>();
-			newContext.getContext().put(EXECUTE_ONLY_FOR_UPDATER, true);
-			newContext.getContext().put(ALREADY_BEEN_IN_THIS_SETTER, true);
+			newContext.add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class));
 			context.getService().setProperty(node, CODESYNC_ICONS, getCodeSyncIcon(node, context), newContext);
 		}
 	}

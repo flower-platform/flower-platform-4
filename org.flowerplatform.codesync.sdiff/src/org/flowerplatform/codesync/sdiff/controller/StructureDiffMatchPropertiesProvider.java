@@ -26,9 +26,9 @@ import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COL
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COLOR_CHILDREN_MODIFIED;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COLOR_PROP_MODIFIED;
 import static org.flowerplatform.codesync.sdiff.CodeSyncSdiffConstants.MATCH_COLOR_REMOVED;
-import static org.flowerplatform.core.CoreConstants.EXECUTE_ONLY_FOR_UPDATER;
 import static org.flowerplatform.core.CoreConstants.ICONS;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.flowerplatform.codesync.CodeSyncConstants;
@@ -41,6 +41,7 @@ import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.AbstractController;
 
@@ -50,39 +51,31 @@ import org.flowerplatform.util.controller.AbstractController;
 public class StructureDiffMatchPropertiesProvider extends AbstractController implements IPropertiesProvider,
 		IPropertySetter {
 
-	/**
-	 *@author see class
-	 **/
 	public StructureDiffMatchPropertiesProvider() {
 		// invoke after the persistence providers
-		// so the properties are populate
+		// so the properties are populated
 		setOrderIndex(10000);
 	}
 
 	@Override
 	public void populateWithProperties(Node node, ServiceContext<NodeService> context) {
-		String icons = (String) node.getProperties().get(ICONS);
-		if (icons == null) {
-			node.getProperties().put(ICONS, "");
-		}
-
 		String codeSyncIcons = getCodeSyncIcons(node);
 		if (codeSyncIcons != null) {
 			node.getProperties().put(CoreConstants.ICONS, codeSyncIcons);
 		}
 
-		setBackgroundColor(node); 
-		setText(node); 
+		setBackgroundColor(node);
+		setText(node);
 	}
 
 	private String getCodeSyncIcons(Node node) {
 		String icons = (String) node.getProperties().get(ICONS);
-		
+
 		String elementType = (String) node.getProperties().get(MATCH_MODEL_ELEMENT_TYPE);
 		if (icons == null) {
 			icons = "";
 		}
-		
+
 		if (elementType == null) {
 			return icons;
 		}
@@ -142,25 +135,29 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 
 		// set color
 		if (color != null) {
-			node.getProperties().put(CorePlugin.getInstance().getPropertyNameForVisualFeatureSupportedByMindMapRenderer(CoreConstants.BASE_RENDERER_BACKGROUND_COLOR), color);
+			node.getProperties().put(
+					CorePlugin.getInstance().getPropertyNameForVisualFeatureSupportedByMindMapRenderer(
+							CoreConstants.BASE_RENDERER_BACKGROUND_COLOR), color);
 		}
 	}
-	
+
 	/**
-	*  Adds the property "TEXT" which contains file's name and file's path (if it has one)
-	* 
-	* @author Alexandra Topoloaga
-	*/
-	
+	 * Adds the property "TEXT" which contains file's name and file's path (if
+	 * it has one)
+	 * 
+	 * @author Alexandra Topoloaga
+	 */
+
 	private void setText(Node node) {
 		String name = (String) node.getProperties().get(CoreConstants.NAME);
 		String textPath = (String) node.getProperties().get(CodeSyncConstants.MATCH_PATH);
 		if (textPath != null) {
-			node.getProperties().put(CodeSyncSdiffConstants.PROPERTY_NAME_WITH_PATH, "<html><head>" + name + "</head><br><body><font size=9>" + textPath + "</font></body></html>");
+			node.getProperties().put(CodeSyncSdiffConstants.PROPERTY_NAME_WITH_PATH,
+					"<html><head>" + name + "</head><br><body><font size=9>" + textPath + "</font></body></html>");
 		} else {
 			node.getProperties().put(CodeSyncSdiffConstants.PROPERTY_NAME_WITH_PATH, name);
 		}
-	} 
+	}
 
 	private boolean hasFlagTrue(Node node, String flag) {
 		Boolean b = (Boolean) node.getProperties().get(flag);
@@ -175,15 +172,15 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 		for (String property : properties.keySet()) {
 			if (ICONS.equals(property)) {
 				node.getOrPopulateProperties(context);
-				
+
 				String codeSyncIcons = getCodeSyncIcons(node);
 				if (codeSyncIcons == null) {
 					codeSyncIcons = "";
 				}
 				ServiceContext<NodeService> newContext = new ServiceContext<NodeService>(context.getService());
-			
+
 				// so that CODESYNC_ICONS don't get persisted / written in the file
-				newContext.getContext().put(EXECUTE_ONLY_FOR_UPDATER, true);
+				newContext.add(CoreConstants.INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class));
 				context.getService().setProperty(node, CODESYNC_ICONS, codeSyncIcons, newContext);
 			}
 		}
@@ -191,8 +188,7 @@ public class StructureDiffMatchPropertiesProvider extends AbstractController imp
 
 	@Override
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {
-		// At this moment, this method it is not necessary because the
-		// "remove..." actions for
+		// At this moment, this method it is not necessary because the "remove..." actions for
 		// the icons are treated by the setProperty(...) method
 	}
 

@@ -14,9 +14,10 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -29,8 +30,24 @@ public class CodeSyncCommentPropagationTest extends CodeSyncEclipseIndependentTe
 	public static final String ONE_DIRTY_NODE_INSIDE = "initial_comments_inside/codesyncSdiffTwoDirtyChildrenPatch.sdiff";
 	public static final String TWO_COMMENTS_INSIDE_REMOVE_COMMENT = "initial_comments_inside/codesyncSdiffTwoCommentsPatch.sdiff";
 	public static final String TWO_COMMENTS_INSIDE_REMOVE_DIRTY_CHILD = "initial_comments_inside/codesyncSdiffTwoCommentsDirtyPatch.sdiff";
-	private static NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
 
+	/**
+	 * 
+	 */
+	@Before
+	public void before() {
+		super.before();
+		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
+	}
+	
+	/**
+	 * 
+	 */
+	@After
+	public void after() {
+		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
+	}
+	
 	/**
 	 * Initial:
 	 * 
@@ -64,7 +81,7 @@ public class CodeSyncCommentPropagationTest extends CodeSyncEclipseIndependentTe
 		testNode = CorePlugin.getInstance().getResourceService().getNode(testNodeFullyQualifiedName);
 
 		// checking all the parents for this newly added comment (check propagation method)
-		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>();
+		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>(nodeService);
 		assertTrue("all the parents are supposed to have the CONTAINS_COMMENT set after this new child has been added", isChildrenDirtyForAllParents(comment1Node, serviceContext));
 	}
 
@@ -264,13 +281,12 @@ public class CodeSyncCommentPropagationTest extends CodeSyncEclipseIndependentTe
 			node = parent;
 		}
 		return true;
-
 	}
 
 	private Node subscribeToSdiffFile(String sdiffFileName) {
 		String sdiffNodeUri = CoreUtils.createNodeUriWithRepo("fpp", PROJECT, sdiffFileName);
 		Node root = CodeSyncPlugin.getInstance().getResource(sdiffNodeUri);
-		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId", sdiffNodeUri, new ServiceContext<ResourceService>());
+		CorePlugin.getInstance().getResourceService().subscribeToParentResource(sessionId, sdiffNodeUri, new ServiceContext<ResourceService>());
 		return root;
 	}
 }

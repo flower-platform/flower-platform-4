@@ -16,9 +16,10 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -35,6 +36,23 @@ public class CodeSyncPropagationTest extends CodeSyncEclipseIndependentTestBase 
 	private static final String TEST5 = "ReverToOriginalValueButNotTheLastCodeSync";
 	
 	/**
+	 * 
+	 */
+	@Before
+	public void before() {
+		super.before();
+		remoteMethodInvocationListener.preInvoke(remoteMethodInvocationInfo);
+	}
+	
+	/**
+	 * 
+	 */
+	@After
+	public void after() {
+		remoteMethodInvocationListener.postInvoke(remoteMethodInvocationInfo);
+	}
+	
+	/**
 	 * Initial:
 	 * <pre>
 	 * Node1 (SYNC, CHILDREN_SYNC)
@@ -48,10 +66,9 @@ public class CodeSyncPropagationTest extends CodeSyncEclipseIndependentTestBase 
 	@Test
 	public void testAddNodePropagation() {
 		// subscribe to sdiff file
-		NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
 		String sdiffNodeUri = CoreUtils.createNodeUriWithRepo("fpp", PROJECT, INITIAL_ALL_SYNC + TEST1);
 		Node root = CodeSyncPlugin.getInstance().getResource(sdiffNodeUri);
-		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId", sdiffNodeUri, new ServiceContext<ResourceService>());
+		CorePlugin.getInstance().getResourceService().subscribeToParentResource(sessionId, sdiffNodeUri, new ServiceContext<ResourceService>());
 		
 		// get testNode (the parent of the node I want to add)
 		Node testNode = getChild(root, new String[] {"modified_no_conflicts_perform_sync", "Test.java", "Test", "getTest()"});
@@ -66,7 +83,7 @@ public class CodeSyncPropagationTest extends CodeSyncEclipseIndependentTestBase 
 		
 		// update the value of node (its flag should change after this addition)
 		testNode = CorePlugin.getInstance().getResourceService().getNode(testNodeFullyQualifiedName); 
-		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>();
+		ServiceContext<NodeService> serviceContext = new ServiceContext<NodeService>(nodeService);
 		assertTrue("all the parents are supposed to have the SYNC flag unset/set to false after this new child has been added", 
 				isChildrenDirtyForAllParents(modifierNode, serviceContext, INITIAL_ALL_SYNC + TEST1));
 	}
@@ -85,10 +102,9 @@ public class CodeSyncPropagationTest extends CodeSyncEclipseIndependentTestBase 
 	@Test
 	public void testRemoveNodePropagation() {
 		// subscribe to sdiff file
-		NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
 		String sdiffNodeUri = CoreUtils.createNodeUriWithRepo("fpp", PROJECT, INITIAL_ALL_SYNC + TEST2);
 		Node root = CodeSyncPlugin.getInstance().getResource(sdiffNodeUri);
-		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId", sdiffNodeUri, new ServiceContext<ResourceService>());
+		CorePlugin.getInstance().getResourceService().subscribeToParentResource(sessionId, sdiffNodeUri, new ServiceContext<ResourceService>());
 		
 		// get the testNode
 		Node testNode = getChild(root, new String[] {"initial", "Test.java", "Test", "test(String)", "st"});
@@ -128,10 +144,9 @@ public class CodeSyncPropagationTest extends CodeSyncEclipseIndependentTestBase 
 	@Test
 	public void testChangeOriginalValueNodePropagation() {
 		// subscribe to sdiff file
-		NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
 		String sdiffNodeUri = CoreUtils.createNodeUriWithRepo("fpp", PROJECT, INITIAL_ALL_SYNC + TEST3);
 		Node root = CodeSyncPlugin.getInstance().getResource(sdiffNodeUri);
-		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId", sdiffNodeUri, new ServiceContext<ResourceService>());
+		CorePlugin.getInstance().getResourceService().subscribeToParentResource(sessionId, sdiffNodeUri, new ServiceContext<ResourceService>());
 
 		// get testNode
 		Node testNode = getChild(root, new String[] {"modified_no_conflicts_perform_sync", "Test.java", "Test", "x"});
@@ -161,10 +176,9 @@ public class CodeSyncPropagationTest extends CodeSyncEclipseIndependentTestBase 
 	@Test
 	public void testRevertToOriginalValueButNotTheLastOneNodePropagation() {
 		// subscribe to sdiff file
-		NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
 		String sdiffNodeUri = CoreUtils.createNodeUriWithRepo("fpp", PROJECT, INITIAL_ONE_NOT_SYNC + TEST5);
 		Node root = CodeSyncPlugin.getInstance().getResource(sdiffNodeUri);
-		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId", sdiffNodeUri, new ServiceContext<ResourceService>());
+		CorePlugin.getInstance().getResourceService().subscribeToParentResource(sessionId, sdiffNodeUri, new ServiceContext<ResourceService>());
 
 		// get testNode
 		Node testNodeX = getChild(root, new String[] {"modified_no_conflicts_perform_sync", "Test.java", "Test", "xx"});
@@ -194,10 +208,9 @@ public class CodeSyncPropagationTest extends CodeSyncEclipseIndependentTestBase 
 	@Test
 	public void testRevertToOriginalValueNodePropagation() {
 		// subscribe to sdiff file
-		NodeServiceRemote nodeServiceRemote = new NodeServiceRemote();
 		String sdiffNodeUri = CoreUtils.createNodeUriWithRepo("fpp", PROJECT, INITIAL_ONE_NOT_SYNC + TEST4);
 		Node root = CodeSyncPlugin.getInstance().getResource(sdiffNodeUri);
-		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId", sdiffNodeUri, new ServiceContext<ResourceService>());
+		CorePlugin.getInstance().getResourceService().subscribeToParentResource(sessionId, sdiffNodeUri, new ServiceContext<ResourceService>());
 		
 		// get test node
 		Node testNode = getChild(root, new String[] {"modified_no_conflicts_perform_sync", "Test.java", "Test", "xx"});
@@ -227,16 +240,20 @@ public class CodeSyncPropagationTest extends CodeSyncEclipseIndependentTestBase 
 	}
 
 	private boolean isChildrenDirtyForAllParents(Node node, ServiceContext<NodeService> serviceContext, String stop) {
-			return isChildrenFlagForAllParents(node, serviceContext, stop, false);
+		return isChildrenFlagForAllParents(node, serviceContext, stop, false);
 	}
 
 	private boolean isChildrenFlagForAllParents(Node node, ServiceContext<NodeService> serviceContext, String stop, boolean flag) {
-		while ((node != null && !node.getNodeUri().endsWith(stop))) {
-			if (isChildrenDirty(node) == flag) {
+		Node parent = null;
+		while ((parent = serviceContext.getService().getParent(node, serviceContext)) != null) {
+			if (parent.getNodeUri().endsWith(stop)) {
+				break;
+			}
+			if (isChildrenDirty(parent) == flag) {
 				// the parentSync flag has already been propagated
 				return false;
 			}
-			node = serviceContext.getService().getParent(node, serviceContext);
+			node = parent;
 		}
 		return true;
 	}	

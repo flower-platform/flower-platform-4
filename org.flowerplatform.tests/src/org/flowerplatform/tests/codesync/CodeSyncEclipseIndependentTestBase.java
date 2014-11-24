@@ -72,7 +72,7 @@ public class CodeSyncEclipseIndependentTestBase extends EclipseIndependentTestBa
 		deleteFiles(PROJECT);
 		copyFiles(DIR + TestUtil.INITIAL_TO_BE_COPIED, PROJECT);
 		
-		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId",  resourceNodeId,  new ServiceContext<ResourceService>());
+		CorePlugin.getInstance().getResourceService().subscribeToParentResource(sessionId,  resourceNodeId,  new ServiceContext<ResourceService>());
 		CorePlugin.getInstance().getResourceService().reload(resourceNodeId, new ServiceContext<ResourceService>());
 	}
 	

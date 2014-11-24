@@ -82,7 +82,7 @@ public class CodeSyncTemplateTest extends CodeSyncEclipseIndependentTestBase {
 		
 		// subscribe
 		String resourceUri = Utils.getUri(FREEPLANE_PERSISTENCE_RESOURCE_KEY, ssp);
-		CorePlugin.getInstance().getResourceService().subscribeToParentResource("dummySessionId", resourceUri, new ServiceContext<ResourceService>());
+		CorePlugin.getInstance().getResourceService().subscribeToParentResource(sessionId, resourceUri, new ServiceContext<ResourceService>());
 		
 		// add nodes
 		
