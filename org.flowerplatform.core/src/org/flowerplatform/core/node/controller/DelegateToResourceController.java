@@ -49,7 +49,7 @@ public class DelegateToResourceController extends AbstractController implements
 	 * @author Mariana Gheorghe
 	 **/
 	protected TypeDescriptor getDescriptor(Node node) {
-		return getTypeDescriptor().getRegistry().getExpectedTypeDescriptor(getResource(node.getScheme()));
+		return typeDescriptor.getRegistry().getExpectedTypeDescriptor(getResource(node.getScheme()));
 	}
 
 	/**

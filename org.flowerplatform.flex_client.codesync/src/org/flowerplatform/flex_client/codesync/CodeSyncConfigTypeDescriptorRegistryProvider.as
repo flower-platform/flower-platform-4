@@ -19,7 +19,7 @@ package org.flowerplatform.flex_client.codesync {
 				var resourceUri:String = index < 0 ? node.nodeUri : node.nodeUri.substr(0, index);
 				
 				// get resource node
-				var resourceSet:String = CorePlugin.getInstance().nodeRegistryManager.getResourceSetsForResourceUris([resourceUri])[0];
+				var resourceSet:String = CorePlugin.getInstance().nodeRegistryManager.resourceUriToResourceSet[resourceUri];
 				var nodeRegistry:* = CorePlugin.getInstance().nodeRegistryManager.getNodeRegistriesForResourceSet(resourceSet)[0];
 				if (nodeRegistry == null) {
 					return null;

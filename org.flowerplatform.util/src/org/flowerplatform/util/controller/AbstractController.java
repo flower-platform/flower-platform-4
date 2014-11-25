@@ -61,7 +61,7 @@ public abstract class AbstractController implements IController {
 	/**
 	 * @author Claudiu Matei
 	 */
-	private TypeDescriptor typeDescriptor; 
+	protected TypeDescriptor typeDescriptor; 
 	
 	/* (non-Javadoc)
 	 * @see org.flowerplatform.util.controller.IOrderedController#getOrderIndex()
@@ -86,10 +86,6 @@ public abstract class AbstractController implements IController {
 		return this;
 	}
 	
-	public TypeDescriptor getTypeDescriptor() {
-		return typeDescriptor;
-	}
-	
 	/**
 	 * @author Claudiu Matei
 	 */
@@ -102,10 +98,6 @@ public abstract class AbstractController implements IController {
 		this.typeDescriptor = typeDescriptor;
 	}
 	
-	public boolean isSharedControllerAllowed() {
-		return sharedControllerAllowed;
-	}
-
 	public void setSharedControllerAllowed(boolean sharedControllerAllowed) {
 		this.sharedControllerAllowed = sharedControllerAllowed;
 	}

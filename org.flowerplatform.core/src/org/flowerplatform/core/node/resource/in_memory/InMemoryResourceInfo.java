@@ -24,10 +24,12 @@ import java.util.List;
 public class InMemoryResourceInfo {
 
 	private Object resourceData;
-	
+
 	private List<String> sessionIds = new ArrayList<String>();
-	
+
 	private long lastPing;
+
+	private String configDirsKey;
 
 	public Object getResourceData() {
 		return resourceData;
@@ -52,5 +54,13 @@ public class InMemoryResourceInfo {
 	public void setLastPing(long lastPing) {
 		this.lastPing = lastPing;
 	}
-	
+
+	public String getConfigDirsKey() {
+		return configDirsKey;
+	}
+
+	public void setConfigDirsKey(String configDirsKey) {
+		this.configDirsKey = configDirsKey;
+	}
+
 }

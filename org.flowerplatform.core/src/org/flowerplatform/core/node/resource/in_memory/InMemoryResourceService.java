@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.resource.IResourceHandler;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.util.Utils;
@@ -104,6 +106,12 @@ public class InMemoryResourceService extends ResourceService {
 			resourceInfos.put(resourceUri, resourceInfo);
 		}
 		resourceInfo.setResourceData(resourceData);
+		// get resource node
+		Node resourceNode = CorePlugin.getInstance().getResourceService().getNode(resourceUri);
+
+		// get config dirs property
+		String configDirsKey = (String) resourceNode.getPropertyValue("codeSyncConfigDirsKey");
+		resourceInfo.setConfigDirsKey(configDirsKey);
 	}
 
 	@Override
@@ -130,4 +138,12 @@ public class InMemoryResourceService extends ResourceService {
 		resourceInfos.get(resourceUri).setLastPing(timestamp);
 	}
 
+	/**
+	 * Temporary.
+	 */
+	public String getConfigDirsKey(String resourceUri) {
+		InMemoryResourceInfo info = resourceInfos.get(resourceUri);
+		return info == null ? null : info.getConfigDirsKey();
+	}
+	
 }
