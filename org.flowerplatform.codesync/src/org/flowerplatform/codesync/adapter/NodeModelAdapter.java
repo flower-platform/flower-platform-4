@@ -144,7 +144,7 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	@Override
 	public boolean save(Object element, CodeSyncAlgorithm codeSyncAlgorithm) {
 		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(getNode(element).getNodeUri());
-		String resourceSet = (String) resourceNode.getProperties().get(CoreConstants.RESOURCE_SET);
+		String resourceSet = (String) resourceNode.getPropertyValue(CoreConstants.RESOURCE_SET);
 		if (resourceSet == null) {
 			resourceSet = resourceNode.getNodeUri();
 		}
