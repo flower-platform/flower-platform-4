@@ -31,6 +31,7 @@ import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 import static org.flowerplatform.util.UtilConstants.FEATURE_PROPERTY_DESCRIPTORS;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +49,7 @@ import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.controller.IRemoveNodeController;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.core.node.resource.IResourceSetProvider;
 import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
@@ -262,14 +264,7 @@ public class NodeService {
 			}
 		}
 		
-		// get dirty state after executing controllers
-		boolean newDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
-		if (oldDirty != newDirty) {			
-			// dirty state changed -> change resourceNode isDirty property
-			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService())
-					.add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
-		}
+		updateDirtyState(node, oldDirty, context);
 	}
 
 	/**
@@ -302,14 +297,7 @@ public class NodeService {
 			}
 		}
 		
-		// get dirty state after executing controllers
-		boolean newDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
-		if (oldDirty != newDirty) {			
-			// dirty state changed -> change resourceNode isDirty property
-			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService())
-					.add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
-		}
+		updateDirtyState(node, oldDirty, context);
 	}
 
 	/**
@@ -336,14 +324,7 @@ public class NodeService {
 			}
 		}
 		
-		// get dirty state after executing controllers
-		boolean newDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
-		if (oldDirty != newDirty) {
-			// dirty state changed -> change resourceNode isDirty property
-			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService())
-					.add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
-		}
+		updateDirtyState(node, oldDirty, context);
 		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService())
 				.add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 	}
@@ -397,14 +378,7 @@ public class NodeService {
 			}
 		}
 		
-		// get dirty state after executing controllers
-		boolean newDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
-		if (oldDirty != newDirty) {
-			// dirty state changed -> change resourceNode isDirty property
-			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
-			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService())
-					.add(NODE_IS_RESOURCE_NODE, true).add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
-		}
+		updateDirtyState(node, oldDirty, context);
 		setProperty(node, HAS_CHILDREN, hasChildren(node, new ServiceContext<NodeService>(context.getService())), new ServiceContext<NodeService>(context.getService())
 				.add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
 	}
@@ -440,6 +414,19 @@ public class NodeService {
 	 */
 	public TypeDescriptor getTypeDescriptor(Node node) {
 		return registryProvider.getTypeDescriptorRegistry(node).getExpectedTypeDescriptor(node.getType());
+	}
+	
+	private void updateDirtyState(Node node, boolean oldDirty, ServiceContext<NodeService> context) {
+		// get dirty state after executing controllers
+		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
+		boolean newDirty = resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService));
+		if (oldDirty != newDirty) {
+			// dirty state changed -> change resourceNode isDirty property
+			Node resourceNode = resourceService.getResourceNode(node.getNodeUri());
+			setProperty(resourceNode, IS_DIRTY, newDirty, new ServiceContext<NodeService>(context.getService())
+					.add(NODE_IS_RESOURCE_NODE, true)
+					.add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Arrays.asList(IResourceSetProvider.class, UpdateController.class)));
+		}
 	}
 
 }

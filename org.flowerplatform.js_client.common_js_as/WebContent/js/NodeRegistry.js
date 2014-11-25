@@ -273,9 +273,14 @@ NodeRegistry.prototype.refreshHandler = function(node, nodeWithVisibleChildren) 
 	}
 	
 	if (node.children != null) { // node has children -> merge current list with new list
-		// serch for children that doesn't exist in new list
-		var currentChildren = node.children;			
-		for (i = 0; i < this.nodeRegistryManager.hostInvocator.getLength(currentChildren); i++) {	
+		// first make a copy of the existing children, because this list will be altered during merging
+		var currentChildren = this.nodeRegistryManager.hostInvocator.createListInstance();
+		for (i = 0; i < this.nodeRegistryManager.hostInvocator.getLength(node.children); i++) {
+			this.nodeRegistryManager.hostInvocator.addItem(currentChildren, 
+					this.nodeRegistryManager.hostInvocator.getItemAt(node.children, i));
+		}
+		// search for children that don't exist in new list
+		for (i = 0; i < this.nodeRegistryManager.hostInvocator.getLength(currentChildren); i++) {
 			var exists = false;
 			currentChildNode = this.nodeRegistryManager.hostInvocator.getItemAt(currentChildren, i);
 			for (j = 0; j < this.nodeRegistryManager.hostInvocator.getLength(nodeWithVisibleChildren.children); j++) {

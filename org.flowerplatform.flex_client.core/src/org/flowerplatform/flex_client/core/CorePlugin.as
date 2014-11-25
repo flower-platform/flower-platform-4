@@ -534,8 +534,8 @@ package org.flowerplatform.flex_client.core {
 		 * @author Sebastian Solomon
 		 */
 		public function selectNode(diagramShellContext:DiagramShellContext, fullNodeId:String):void {
-			var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;			
-			var editor:EditorFrontend = EditorFrontend(workbench.getEditorFromViewComponent(workbench.getActiveView()));
+			var workbench:IWorkbench = FlexUtilGlobals.getInstance().workbench;	
+			var editor:EditorFrontend = workbench.getEditorFromViewComponent(workbench.getActiveView()) as EditorFrontend;
 			if (editor == null) {
 				return;
 			}

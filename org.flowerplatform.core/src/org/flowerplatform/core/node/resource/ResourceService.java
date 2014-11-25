@@ -20,6 +20,7 @@ import static org.flowerplatform.core.CoreConstants.IS_DIRTY;
 import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -128,7 +129,7 @@ public abstract class ResourceService implements IResourceHolder {
 		
 		// get resource node
 		Node resourceNode = getNode(resourceUri, resourceHandler, new ServiceContext<ResourceService>().add(POPULATE_WITH_PROPERTIES, true));
-		String resourceSet = (String) resourceNode.getProperties().get(CoreConstants.RESOURCE_SET);
+		String resourceSet = (String) resourceNode.getPropertyValue(CoreConstants.RESOURCE_SET);
 		if (resourceSet == null) {
 			resourceSet = resourceUri;
 		}
@@ -164,7 +165,7 @@ public abstract class ResourceService implements IResourceHolder {
 	public void sessionUnsubscribedFromResource(String sessionId, String resourceUri, ServiceContext<ResourceService> context) {
 		LOGGER.debug("Unsubscribe session {} from resource {}", sessionId, resourceUri);
 		Node resourceNode = getNode(resourceUri);
-		String resourceSet = (String) resourceNode.getProperties().get(CoreConstants.RESOURCE_SET);
+		String resourceSet = (String) resourceNode.getPropertyValue(CoreConstants.RESOURCE_SET);
 		if (resourceSet == null) {
 			resourceSet = resourceUri;
 		}
@@ -203,7 +204,7 @@ public abstract class ResourceService implements IResourceHolder {
 				IS_DIRTY, 
 				resourceHandler.isDirty(resourceData),
 				new ServiceContext<NodeService>(CorePlugin.getInstance().getNodeService()).add(NODE_IS_RESOURCE_NODE, true)
-				.add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Collections.singletonList(UpdateController.class)));
+				.add(INVOKE_ONLY_CONTROLLERS_WITH_CLASSES, Arrays.asList(IResourceSetProvider.class, UpdateController.class)));
 	}
 
 	/**

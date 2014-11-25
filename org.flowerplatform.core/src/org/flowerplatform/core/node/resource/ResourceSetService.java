@@ -116,7 +116,7 @@ public abstract class ResourceSetService {
 		if (resourceNode == null) {
 			return;
 		}
-		resourceSet = (String) resourceNode.getProperties().get(RESOURCE_SET);
+		resourceSet = (String) resourceNode.getPropertyValue(RESOURCE_SET);
 		if (resourceSet == null) {
 			resourceSet = resourceNode.getNodeUri();
 		}		

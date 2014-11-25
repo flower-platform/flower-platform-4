@@ -43,9 +43,6 @@ import org.flowerplatform.util.controller.AbstractController;
 public class UpdateController extends AbstractController
 		implements IAddNodeController, IRemoveNodeController, IPropertySetter {
 	
-	/**
-	 *@author Mariana Gheorghe
-	 **/
 	public UpdateController() {
 		// must be invoked last; otherwise the modification may not be fully/correctly recorded
 		setOrderIndex(100000);
@@ -56,7 +53,7 @@ public class UpdateController extends AbstractController
 		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(node.getNodeUri());
 		String insertBeforeFullNodeId = (String) context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID);
 		if (resourceNode != null) {
-			String resourceSet = (String) resourceNode.getProperties().get(RESOURCE_SET);
+			String resourceSet = (String) resourceNode.getPropertyValue(RESOURCE_SET);
 			if (resourceSet == null) {
 				resourceSet = resourceNode.getNodeUri();
 			}
@@ -80,7 +77,7 @@ public class UpdateController extends AbstractController
 		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(node.getNodeUri());
 		String insertBeforeFullNodeId = (String) context.get(CoreConstants.INSERT_BEFORE_FULL_NODE_ID);
 		if (resourceNode != null) {
-			String resourceSet = (String) resourceNode.getProperties().get(RESOURCE_SET);
+			String resourceSet = (String) resourceNode.getPropertyValue(RESOURCE_SET);
 			if (resourceSet == null) {
 				resourceSet = resourceNode.getNodeUri();
 			}
