@@ -88,6 +88,7 @@ import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.remote.SubscriptionInfo;
 import org.flowerplatform.resources.ResourcesPlugin;
+import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.controller.GenericDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
@@ -308,6 +309,7 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(SRC_DIR)
 			.addCategory(CATEGORY_CODESYNC)
 			.addCategory(CATEGORY_MODEL)
+			.addCategory(UtilConstants.CATEGORY_HAS_LOCAL_TYPE_DESCRIPTOR_REGISTRY)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, 
 					ResourcesPlugin.getInstance().getResourceUrl("images/codesync/SrcDirPackage.gif")))
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(SRC_DIR_TECHNOLOGIES));
@@ -340,8 +342,6 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN));
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(CodeSyncConstants.CODE_SYNC_CONFIG_ROOT);
-		
-		CorePlugin.getInstance().getNodeTypeDescriptorRegistryProvider().addProvider(new CodeSyncConfigTypeDescriptorRegistryProvider());
 		
 		
 //		// initialize the list of code that will regenerate the descriptors

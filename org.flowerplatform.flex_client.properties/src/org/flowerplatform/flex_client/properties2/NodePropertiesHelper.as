@@ -26,6 +26,7 @@ package org.flowerplatform.flex_client.properties2 {
 	import org.flowerplatform.flex_client.resources.Resources;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.Utils;
+	import org.flowerplatform.flexutil.controller.ITypeDescriptorRegistryProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.list.ComposedList;
 	import org.flowerplatform.flexutil.list.SingletonList;
@@ -83,7 +84,7 @@ package org.flowerplatform.flex_client.properties2 {
 		}
 		
 		override protected function getDescriptorsForGroups(context:Object, typeDescriptorRegistry:TypeDescriptorRegistry, model:Object):IList {
-			var result:IList = typeDescriptorRegistry.getAdditiveControllers(FlexUtilConstants.FEATURE_PROPERTY_GROUP_DESCRIPTORS, model);
+			var result:IList = getDescriptorsFromRegistry(context, typeDescriptorRegistry, FlexUtilConstants.FEATURE_PROPERTY_GROUP_DESCRIPTORS, model);
 			if (Utils.getPropertySafe(context, FlexUtilConstants.PROPERTIES_CONTEXT_INCLUDE_PROPERTIES_WITHOUT_DESCRIPTOR)) {
 				return new ComposedList([uriTypeGroupDescriptor, result]);
 			} else {
@@ -92,7 +93,7 @@ package org.flowerplatform.flex_client.properties2 {
 		}
 		
 		override protected function getDescriptorsForProperties(context:Object, typeDescriptorRegistry:TypeDescriptorRegistry, model:Object):IList {
-			var result:IList = typeDescriptorRegistry.getAdditiveControllers(FlexUtilConstants.FEATURE_PROPERTY_DESCRIPTORS, model);
+			var result:IList = getDescriptorsFromRegistry(context, typeDescriptorRegistry, FlexUtilConstants.FEATURE_PROPERTY_DESCRIPTORS, model);
 			if (Utils.getPropertySafe(context, FlexUtilConstants.PROPERTIES_CONTEXT_INCLUDE_PROPERTIES_WITHOUT_DESCRIPTOR)) {
 				var lists:Array = new Array();
 				if (!Utils.getPropertySafe(context, FlexUtilConstants.PROPERTIES_CONTEXT_IS_CREATE_MODE)) {
@@ -110,5 +111,32 @@ package org.flowerplatform.flex_client.properties2 {
 			return IEventDispatcher(Node(model).properties);
 		}
 	
+		/**
+		 * @author Mariana Gheorghe
+		 */
+		private function getDescriptorsFromRegistry(context:Object, typeDescriptorRegistry:TypeDescriptorRegistry, feature:String, model:Object):IList {
+			var result:ArrayList = new ArrayList();
+			
+			// get the descriptors from the global registry
+			result.addAll(typeDescriptorRegistry.getAdditiveControllers(feature, model));
+			
+			// get local registries for this model
+			var providers:IList = typeDescriptorRegistry.getAdditiveControllers(FlexUtilConstants.TYPE_DESCRIPTOR_REGISTRY_PROVIDER, model);
+			
+			// if the model is new (i.e. empty model), get the registry from the parent
+			var parent:Object = Utils.getPropertySafe(context, FlexUtilConstants.PROPERTIES_CONTEXT_PARENT_NODE);
+			if (parent == null) {
+				parent = model;
+			}
+			
+			// get the descriptors from each local registry
+			for each (var provider:ITypeDescriptorRegistryProvider in providers) {
+				var registry:TypeDescriptorRegistry = provider.getTypeDescriptorRegistry(parent);
+				result.addAll(registry.getAdditiveControllers(feature, model));
+			}
+			
+			return result;
+		}
+		
 	}
 }

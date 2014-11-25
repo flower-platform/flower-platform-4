@@ -85,8 +85,8 @@ public class CodeSyncOperationsService {
 		
 		// TODO test; remove
 		TypeDescriptor srcDir = registry.getOrCreateTypeDescriptor(CodeSyncConstants.SRC_DIR);
-		srcDir.addAdditiveController(CoreConstants.ADD_CHILD_DESCRIPTOR, new AddChildDescriptor()
-		.setChildTypeAs("form").setLabelAs("Form @" + new Date()));
+		srcDir.addAdditiveController(CoreConstants.ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs("innerTemplate")
+		.setDynamicChildTypeAs("form").setLabelAs("Form @" + new Date()));
 		TypeDescriptor form = registry.getOrCreateTypeDescriptor("form");
 		form.addAdditiveController(UtilConstants.FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(CoreConstants.NAME));
 		registry.getOrCreateTypeDescriptor("tab");

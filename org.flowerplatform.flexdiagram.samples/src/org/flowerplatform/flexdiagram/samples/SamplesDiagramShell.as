@@ -39,7 +39,6 @@ package org.flowerplatform.flexdiagram.samples {
 	import org.flowerplatform.flexdiagram.tool.controller.SelectOrDragToCreateElementController;
 	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
-	import org.flowerplatform.flexutil.samples.SamplesTypeDescriptorRegistryProvider;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -50,9 +49,8 @@ package org.flowerplatform.flexdiagram.samples {
 			super();
 			
 			typeProvider = new BasicTypeProvider();
-			var registry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
+			registry = new TypeDescriptorRegistry();
 			registry.typeProvider = typeProvider;
-			registryProvider = new SamplesTypeDescriptorRegistryProvider(registry);
 
 			registry.getOrCreateTypeDescriptor("basicModel")
 				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new BasicModelAbsoluteLayoutRectangleController())

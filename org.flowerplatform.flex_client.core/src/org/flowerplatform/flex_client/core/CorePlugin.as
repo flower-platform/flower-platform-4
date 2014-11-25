@@ -74,7 +74,6 @@ package org.flowerplatform.flex_client.core {
 	import org.flowerplatform.flexutil.action.ClassFactoryActionProvider;
 	import org.flowerplatform.flexutil.action.ComposedAction;
 	import org.flowerplatform.flexutil.action.VectorActionProvider;
-	import org.flowerplatform.flexutil.controller.ComposedTypeDescriptorRegistryProvider;
 	import org.flowerplatform.flexutil.controller.ITypeProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRemote;
@@ -118,9 +117,6 @@ package org.flowerplatform.flex_client.core {
 		public var nodeTypeDescriptorRegistry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 
 		public var nodeTypeProvider:ITypeProvider = new NodeTypeProvider();
-		
-		public var nodeTypeDescriptorRegistryProvider:ComposedTypeDescriptorRegistryProvider =
-			new ComposedTypeDescriptorRegistryProvider(nodeTypeDescriptorRegistry);
 		
 		public var contentTypeRegistry:ContentTypeRegistry = new ContentTypeRegistry();
 								

@@ -32,7 +32,6 @@ package org.flowerplatform.flex_client.mindmap {
 	import org.flowerplatform.flexdiagram.tool.WakeUpTool;
 	import org.flowerplatform.flexdiagram.tool.ZoomTool;
 	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
-	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	import org.flowerplatform.js_client.common_js_as.node.INodeChangeListener;
 	
@@ -91,7 +90,6 @@ package org.flowerplatform.flex_client.mindmap {
 		 */
 		override public function getRootNodeX(context:DiagramShellContext, rootNode:Object):Number {
 			var rootModel:Node = Node(MindMapRootModelWrapper(rootModel).model);
-			var registry:TypeDescriptorRegistry = context.diagramShell.getRegistryForModel(rootModel);
 			var valuesProvider:ValuesProvider = CorePlugin.getInstance().getNodeValuesProviderForMindMap(registry, rootModel);
 			var sideProperty:String = valuesProvider.getPropertyName(registry, rootModel, FlexDiagramConstants.MIND_MAP_RENDERER_SIDE); 
 

@@ -138,7 +138,7 @@ package org.flowerplatform.flex_client.properties {
 						var error:String = null;
 						if (result.type == null || result.type == "") {
 							error = Resources.getMessage("properties.menu.debug.newArbitraryNode.noType");
-						} else if (frontend.diagramShell.getRegistryForModel(sel).getExpectedTypeDescriptor(result.type) == null) {
+						} else if (CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(result.type) == null) {
 							error = Resources.getMessage("properties.menu.debug.newArbitraryNode.noSuchType");
 						}
 						if (error != null) {
@@ -154,7 +154,7 @@ package org.flowerplatform.flex_client.properties {
 						
 						viewContent.cancelHandler();
 						
-					}, frontend.diagramShell.registryProvider, result, new ArrayCollection([
+					}, CorePlugin.getInstance().nodeTypeDescriptorRegistry, result, new ArrayCollection([
 						new PropertyDescriptor().setName("type").setLabel(Resources.getMessage("properties.type"))]));
 					
 					FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
@@ -235,8 +235,7 @@ package org.flowerplatform.flex_client.properties {
 			var context:Object = new Object();
 			context[PropertiesConstants.INCLUDE_RAW_PROPERTY] = includeRawProperties;
 			
-			var providers:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistryProvider.getTypeDescriptorRegistry(node)
-				.getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR_PROVIDER, node);
+			var providers:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getExpectedTypeDescriptor(node.type).getAdditiveControllers(PropertiesConstants.PROPERTY_DESCRIPTOR_PROVIDER, node);
 			
 			var propertyDescriptor:PropertyDescriptor;
 			for (var i:int = 0; i < providers.length; i++) {				

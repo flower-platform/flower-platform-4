@@ -84,7 +84,6 @@ import org.flowerplatform.core.session.SessionService;
 import org.flowerplatform.core.users.UserService;
 import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.Utils;
-import org.flowerplatform.util.controller.ComposedTypeDescriptorRegistryProvider;
 import org.flowerplatform.util.controller.GenericDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
@@ -122,10 +121,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 
 	protected ServiceRegistry serviceRegistry = new ServiceRegistry();
 	protected TypeDescriptorRegistry nodeTypeDescriptorRegistry = new TypeDescriptorRegistry();
-	protected ComposedTypeDescriptorRegistryProvider nodeTypeDescriptorRegistryProvider = 
-			new ComposedTypeDescriptorRegistryProvider(nodeTypeDescriptorRegistry);
-	
-	protected NodeService nodeService = new NodeService(nodeTypeDescriptorRegistryProvider);
+	protected NodeService nodeService = new NodeService(nodeTypeDescriptorRegistry);
 	protected ResourceService resourceService;
 	protected ResourceSetService resourceSetService;
 	protected SessionService sessionService;
@@ -177,10 +173,6 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		return nodeTypeDescriptorRegistry;
 	}
 
-	public ComposedTypeDescriptorRegistryProvider getNodeTypeDescriptorRegistryProvider() {
-		return nodeTypeDescriptorRegistryProvider;
-	}
-	
 	public NodeService getNodeService() {
 		return nodeService;
 	}

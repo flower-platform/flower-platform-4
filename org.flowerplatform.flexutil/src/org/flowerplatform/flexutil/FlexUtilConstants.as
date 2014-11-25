@@ -32,12 +32,17 @@ package org.flowerplatform.flexutil {
 		public static const VALUE_CONVERTER_CSV_TO_LIST:String = "csvToList";
 		public static const VALUE_CONVERTER_LIST_TO_LIST:String = "listToList";
 		
+		// TypeDescriptorRegistry Provider
+		public static const CATEGORY_HAS_LOCAL_TYPE_DESCRIPTOR_REGISTRY:String = CATEGORY_PREFIX + "hasLocalTypeDescriptorRegistry";
+		public static const TYPE_DESCRIPTOR_REGISTRY_PROVIDER:String = "typeDescriptorRegistryProvider";
+		
 		// Properties
 		public static const EVENT_COMMIT_PROPERTY:String = "CommitProperty";
 		public static const PROPERTIES_CONTEXT_INCLUDE_PROPERTIES_WITHOUT_DESCRIPTOR:String = "includePropertiesWithoutDescriptor";
 		public static const PROPERTIES_CONTEXT_SHOW_REMOVE_PROPERTY:String = "removeProperty";
 		public static const PROPERTIES_CONTEXT_SHOW_ADD_PROPERTY:String = "addProperty";
 		public static const PROPERTIES_CONTEXT_IS_CREATE_MODE:String = "createMode";
+		public static const PROPERTIES_CONTEXT_PARENT_NODE:String = "parentNode";
 		
 		public static const FEATURE_PROPERTY_COMMIT_CONTROLLER:String = "PropertyCommitController";
 		public static const FEATURE_PROPERTY_DESCRIPTORS:String = "PropertyDescriptors";

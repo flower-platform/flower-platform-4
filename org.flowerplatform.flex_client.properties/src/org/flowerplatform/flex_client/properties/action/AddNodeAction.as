@@ -32,6 +32,8 @@ package org.flowerplatform.flex_client.properties.action {
 		
 		public var childType:String;
 		
+		public var dynamicChildType:String;
+		
 		public var siblingNodeUri:String;
 		
 		public var parentNode:Node;
@@ -41,6 +43,7 @@ package org.flowerplatform.flex_client.properties.action {
 			
 			if (descriptor != null) {
 				childType = descriptor.childType;
+				dynamicChildType = descriptor.dynamicChildType;
 				label = descriptor.label;
 				icon = descriptor.icon;
 				orderIndex = descriptor.orderIndex;
@@ -66,8 +69,10 @@ package org.flowerplatform.flex_client.properties.action {
 		override public function run():void {
 			var nodeToAdd:Node = new Node();
 			nodeToAdd.type = childType;
+			if (dynamicChildType != null) {
+				nodeToAdd.properties.template = dynamicChildType; // TODO rename this property?
+			}
 			var propertiesView:PropertiesView = new PropertiesView();
-			propertiesView.typeDescriptorRegistryProvider = diagramShell.registryProvider;
 			propertiesView.diagramShellContext = diagramShellContext;
 			propertiesView.nodeToAdd = nodeToAdd;
 			propertiesView.siblingNodeUri = siblingNodeUri;

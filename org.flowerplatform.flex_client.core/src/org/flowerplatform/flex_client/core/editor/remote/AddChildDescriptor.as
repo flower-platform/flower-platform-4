@@ -26,6 +26,8 @@ package org.flowerplatform.flex_client.core.editor.remote {
 		
 		public var childType:String;
 		
+		public var dynamicChildType:String;
+		
 		public var label:String;
 		
 		public var icon:String;
@@ -34,7 +36,5 @@ package org.flowerplatform.flex_client.core.editor.remote {
 			return StringUtil.substitute("AddChildDescriptor [childType = {0}, label = {1}, orderIndex = {2}]", 
 				childType, label, orderIndex)
 		}
-		
-		
 	}
 }

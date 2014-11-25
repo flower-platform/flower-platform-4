@@ -21,8 +21,10 @@ package org.flowerplatform.flex_client.properties.action {
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.AddChildDescriptor;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IActionProvider;
+	import org.flowerplatform.flexutil.controller.ITypeDescriptorRegistryProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
@@ -36,16 +38,27 @@ package org.flowerplatform.flex_client.properties.action {
 			}
 			
 			var result:Vector.<IAction> = new Vector.<IAction>();
-				
-			// get the type of the selected parent
+			
+			// get the selected parent
 			var parent:Node = Node(selection.getItemAt(0));
-			var parentType:String = parent.type;
 			
-			// get the type descriptor registry
-			var typeDescriptorRegistry:TypeDescriptorRegistry = CorePlugin.getInstance().nodeTypeDescriptorRegistryProvider.getTypeDescriptorRegistry(parent);
+			// get the descriptors for the selected parent from the core registry
+			result = result.concat(getActionsFromRegistry(CorePlugin.getInstance().nodeTypeDescriptorRegistry, parent));
 			
-			// get the descriptors for the selected parent type from the core dictionary
-			var descriptors:IList = typeDescriptorRegistry.getAdditiveControllers(CoreConstants.ADD_CHILD_DESCRIPTOR, parent);
+			// get local registries for the selected parent
+			var providers:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry
+				.getAdditiveControllers(FlexUtilConstants.TYPE_DESCRIPTOR_REGISTRY_PROVIDER, parent);
+			for each (var provider:ITypeDescriptorRegistryProvider in providers) {
+				// get the descriptors from a local registry
+				var registry:TypeDescriptorRegistry = provider.getTypeDescriptorRegistry(parent);
+				result = result.concat(getActionsFromRegistry(registry, parent));
+			}
+			return result;
+		}
+		
+		private function getActionsFromRegistry(registry:TypeDescriptorRegistry, parent:Node):Vector.<IAction> {
+			var result:Vector.<IAction> = new Vector.<IAction>();
+			var descriptors:IList = registry.getAdditiveControllers(CoreConstants.ADD_CHILD_DESCRIPTOR, parent);
 			if (descriptors != null) {
 				for each (var descriptor:AddChildDescriptor in descriptors) {
 					result.push(new AddNodeAction(descriptor));

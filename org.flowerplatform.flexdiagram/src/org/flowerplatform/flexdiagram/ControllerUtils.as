@@ -130,7 +130,7 @@ package org.flowerplatform.flexdiagram {
 		}
 		
 		private static function getTypeDescriptor(context:DiagramShellContext, model:Object):TypeDescriptor {
-			return context.diagramShell.getRegistryForModel(model).getExpectedTypeDescriptor(context.diagramShell.getType(context, model));
+			return context.diagramShell.registry.getExpectedTypeDescriptor(context.diagramShell.getType(context, model));
 		}
 		
 	}

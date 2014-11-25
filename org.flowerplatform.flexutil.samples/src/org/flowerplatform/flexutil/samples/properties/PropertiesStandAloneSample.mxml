@@ -40,7 +40,6 @@
 			import org.flowerplatform.flexutil.properties.PropertyCommitController;
 			import org.flowerplatform.flexutil.properties.PropertyDescriptor;
 			import org.flowerplatform.flexutil.properties.PropertyEntryRendererController;
-			import org.flowerplatform.flexutil.samples.SamplesTypeDescriptorRegistryProvider;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			
@@ -95,7 +94,7 @@
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 					.setTitle("Quick Form")
 					.setViewContent(
-						new PropertiesForm().createQuickPropertiesForm(null, propertiesForm.typeDescriptorRegistryProvider, new Object(), new ArrayCollection([
+						new PropertiesForm().createQuickPropertiesForm(null, propertiesForm.typeDescriptorRegistry, new Object(), new ArrayCollection([
 							new PropertyDescriptor().setName("field1"),
 							new PropertyDescriptor().setName("field2").setLabel("Field 2"),
 							new PropertyDescriptor().setName("field3").setLabel("Field 3").setType(FlexUtilConstants.PROPERTY_EDITOR_TYPE_BOOLEAN)])))
@@ -125,7 +124,7 @@
 			<s:HGroup width="100%">
 				<properties:PropertiesForm id="propertiesForm" width="100%" 
 					visualChildrenController="{new StandAloneSequentialLayoutVisualChildrenController(0, null, new PropertyEntryRendererController(new PropertyCommitController()))}"
-					typeDescriptorRegistryProvider="{new SamplesTypeDescriptorRegistryProvider(PropertiesHelper.registerPropertyRenderers(new TypeDescriptorRegistry()))}"
+					typeDescriptorRegistry="{PropertiesHelper.registerPropertyRenderers(new TypeDescriptorRegistry())}"
 					propertiesHelper="{new SamplePropertiesHelper()}"
 					/>
 			</s:HGroup>

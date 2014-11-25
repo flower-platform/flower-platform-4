@@ -43,13 +43,12 @@ package org.flowerplatform.flex_client.core.editor.action {
 			view.node = node;
 			view.diagramShellContext = diagramShellContext;
 			
-			var registry:TypeDescriptorRegistry = diagramShell.getRegistryForModel(node);
-			var valuesProvider:ValuesProvider = CorePlugin.getInstance().getNodeValuesProviderForMindMap(registry, node);
-			view.text = String(valuesProvider.getValue(registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT));
+			var valuesProvider:ValuesProvider = CorePlugin.getInstance().getNodeValuesProviderForMindMap(diagramShellContext.diagramShell.registry, node);
+			view.text = String(valuesProvider.getValue(diagramShellContext.diagramShell.registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT));
 			
 			view.resultHandler = function(newValue:String):void {				
 				// invoke service method and wait for result to close the rename popup
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.nodeUri, valuesProvider.getPropertyName(registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT), newValue], 
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.nodeUri, valuesProvider.getPropertyName(diagramShellContext.diagramShell.registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT), newValue], 
 					function(data:Object):void {
 						if (view != null) {
 							FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(view);

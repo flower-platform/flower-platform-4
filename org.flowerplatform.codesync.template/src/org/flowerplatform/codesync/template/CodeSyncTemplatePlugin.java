@@ -36,6 +36,7 @@ import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.controller.IPropertiesProvider;
 import org.flowerplatform.core.node.controller.IPropertySetter;
 import org.flowerplatform.core.node.remote.MemberOfChildCategoryDescriptor;
+import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -64,6 +65,7 @@ public class CodeSyncTemplatePlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getServiceRegistry().registerService("codeSyncTemplateService", codeSyncTemplateService);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(INNER_TEMPLATE)
+			.addCategory(UtilConstants.CATEGORY_HAS_LOCAL_TYPE_DESCRIPTOR_REGISTRY)
 			.addSingleController(MEMBER_OF_CHILD_CATEGORY_DESCRIPTOR, new MemberOfChildCategoryDescriptor(INNER_TEMPLATES));
 		
 		GeneratedFileSyncPropertiesProvider provider = new GeneratedFileSyncPropertiesProvider();

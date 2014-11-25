@@ -43,7 +43,6 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	import org.flowerplatform.flexutil.properties.PropertiesHelper;
 	import org.flowerplatform.flexutil.properties.PropertyCommitController;
 	import org.flowerplatform.flexutil.properties.PropertyEntryRendererController;
-	import org.flowerplatform.flexutil.samples.SamplesTypeDescriptorRegistryProvider;
 	import org.flowerplatform.flexutil.value_converter.AbstractValueConverter;
 	
 	/**
@@ -56,9 +55,8 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			super();
 			
 			typeProvider = new SampleMindMapTypeProvider();
-			var registry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
+			registry = new TypeDescriptorRegistry();
 			registry.typeProvider = typeProvider;
-			registryProvider = new SamplesTypeDescriptorRegistryProvider(registry);
 			PropertiesHelper.registerPropertyRenderers(registry);
 			AbstractValueConverter.registerValueConverters(registry);
 

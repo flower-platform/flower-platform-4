@@ -70,10 +70,6 @@
 				// nothing to do
 			}
 			
-			private function getTypeDescriptorRegistryForNode(object:Object):TypeDescriptorRegistry {
-				return CorePlugin.getInstance().nodeTypeDescriptorRegistryProvider.getTypeDescriptorRegistry(object);
-			}
-			
 			private function selectionChangedHandler(event:SelectionChangedEvent):void {
 				var i:int;
 											
@@ -89,11 +85,10 @@
 				// get new selected node
 				var node:Node = Node(event.selection.getItemAt(0));
 				PropertiesPlugin.getInstance().currentSelectedNode = node;
-				var registry:TypeDescriptorRegistry = getTypeDescriptorRegistryForNode(node);
 				
 				// update label
-				label.text = String(CorePlugin.getInstance().getNodeValuesProviderForMindMap(registry, node)
-						.getValue(registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT));
+				label.text = String(CorePlugin.getInstance().getNodeValuesProviderForMindMap(CorePlugin.getInstance().nodeTypeDescriptorRegistry, node)
+						.getValue(CorePlugin.getInstance().nodeTypeDescriptorRegistry, node, FlexDiagramConstants.BASE_RENDERER_TEXT));
 				label.maxWidth = this.width;
 								
 				// update form

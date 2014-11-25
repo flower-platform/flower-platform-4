@@ -54,8 +54,8 @@ import org.flowerplatform.core.node.resource.ResourceService;
 import org.flowerplatform.core.node.update.controller.UpdateController;
 import org.flowerplatform.core.node.update.remote.ChildrenUpdate;
 import org.flowerplatform.util.controller.AbstractController;
-import org.flowerplatform.util.controller.ITypeDescriptorRegistryProvider;
 import org.flowerplatform.util.controller.TypeDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,28 +74,22 @@ public class NodeService {
 		
 	private static final Logger LOGGER = LoggerFactory.getLogger(NodeService.class);
 	
-	private ITypeDescriptorRegistryProvider registryProvider;
+	protected TypeDescriptorRegistry registry;
 	
-	/**
-	 * @author see class
-	 **/
 	public NodeService() {
 		super();		
 	}
 	
-	/**
-	 * @author see class
-	 **/
-	public NodeService(ITypeDescriptorRegistryProvider registryProvider) {
+	public NodeService(TypeDescriptorRegistry registry) {
 		super();
-		this.registryProvider = registryProvider;
+		this.registry = registry;
 	}
 	
 	/**
 	 * @author see class
 	 **/
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {		
-		TypeDescriptor descriptor = getTypeDescriptor(node);
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return null;
 		}
@@ -140,7 +134,7 @@ public class NodeService {
 	 * @author see class
 	 **/
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-		TypeDescriptor descriptor = getTypeDescriptor(node);
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return false;
 		}
@@ -163,7 +157,7 @@ public class NodeService {
 	 * @author Sebastian Solomon
 	 */
 	public Object getDefaultPropertyValue(Node node, String property, ServiceContext<NodeService> context) {
-		TypeDescriptor descriptor = getTypeDescriptor(node);
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return null;
 		}
@@ -185,7 +179,7 @@ public class NodeService {
 	 * @author Sebastian Solomon
 	 */
 	public List<AbstractController> getPropertyDescriptors(Node node) {
-		TypeDescriptor descriptor = getTypeDescriptor(node);
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return null;
 		}
@@ -196,7 +190,7 @@ public class NodeService {
 	 * @author Mariana Gheorghe
 	 */
 	public Node getParent(Node node, ServiceContext<NodeService> context) {
-		TypeDescriptor descriptor = getTypeDescriptor(node);
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return null;
 		}
@@ -233,7 +227,7 @@ public class NodeService {
 	 * @author Claudiu Matei
 	 */
 	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {		
-		TypeDescriptor descriptor = getTypeDescriptor(node);
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
@@ -271,7 +265,7 @@ public class NodeService {
 	 * @author Mariana Gheorghe
 	 */
 	public void unsetProperty(Node node, String property, ServiceContext<NodeService> context) {	
-		TypeDescriptor descriptor = getTypeDescriptor(node);
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
@@ -304,7 +298,7 @@ public class NodeService {
 	 * @author see class
 	 **/
 	public void addChild(Node node, Node child, ServiceContext<NodeService> context) {		
-		TypeDescriptor descriptor = getTypeDescriptor(node);
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
@@ -345,8 +339,8 @@ public class NodeService {
 	/**
 	 * @author see class
 	 **/
-	public void removeChild(Node node, Node child, ServiceContext<NodeService> context) {	
-		TypeDescriptor descriptor = getTypeDescriptor(node);
+	public void removeChild(Node node, Node child, ServiceContext<NodeService> context) {
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
@@ -387,7 +381,7 @@ public class NodeService {
 	 * Internal method; shouldn't be called explicitly. It's invoked automatically by the {@link Node}.
 	 */
 	public void populateNodeProperties(Node node, ServiceContext<NodeService> context) {	
-		TypeDescriptor descriptor = getTypeDescriptor(node);
+		TypeDescriptor descriptor = registry.getExpectedTypeDescriptor(node.getType());
 		if (descriptor == null) {
 			return;
 		}
@@ -407,13 +401,6 @@ public class NodeService {
 
 		ResourceService resourceService = CorePlugin.getInstance().getResourceService();
 		node.getProperties().put(IS_DIRTY, resourceService.isDirty(node.getNodeUri(), new ServiceContext<ResourceService>(resourceService)));
-	}
-	
-	/**
-	 * Delegate to the registry obtained from the {@link #registryProvider} to get the descriptor.
-	 */
-	public TypeDescriptor getTypeDescriptor(Node node) {
-		return registryProvider.getTypeDescriptorRegistry(node).getExpectedTypeDescriptor(node.getType());
 	}
 	
 	private void updateDirtyState(Node node, boolean oldDirty, ServiceContext<NodeService> context) {

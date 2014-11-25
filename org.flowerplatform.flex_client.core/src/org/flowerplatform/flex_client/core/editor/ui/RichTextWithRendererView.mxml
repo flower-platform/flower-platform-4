@@ -40,7 +40,6 @@
 			import org.flowerplatform.flexdiagram.renderer.BaseRenderer;
 			import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 			import org.flowerplatform.flexutil.Utils;
-			import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 										
 			public var node:Node;
 			public var text:String;
@@ -99,10 +98,9 @@
 					return;
 				}
 				// set new text
-				var registry:TypeDescriptorRegistry = diagramShellContext.diagramShell.getRegistryForModel(node);
 				var titleProperty:String = 
-						CorePlugin.getInstance().getNodeValuesProviderForMindMap(registry, node)
-							.getPropertyName(registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT);
+						CorePlugin.getInstance().getNodeValuesProviderForMindMap(diagramShellContext.diagramShell.registry, node)
+							.getPropertyName(diagramShellContext.diagramShell.registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT);
 				renderer.data.properties[titleProperty] = textEditor.text;		
 			}
 			

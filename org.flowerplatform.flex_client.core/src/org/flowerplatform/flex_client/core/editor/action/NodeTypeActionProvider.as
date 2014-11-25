@@ -70,7 +70,7 @@ package org.flowerplatform.flex_client.core.editor.action {
 					}
 				}
 				
-				var descriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistryProvider.getTypeDescriptorRegistry(obj)
+				var descriptors:IList = CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(nodeType)
 					.getAdditiveControllers(CoreConstants.ACTION_DESCRIPTOR, obj);
 				
 				for each (var a:ActionDescriptor in descriptors) {

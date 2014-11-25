@@ -17,6 +17,7 @@ package org.flowerplatform.flex_client.codesync.action {
 	
 	import mx.collections.ArrayCollection;
 	
+	import org.flowerplatform.flex_client.codesync.CodeSyncConfigTypeProvider;
 	import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.action.DiagramShellAwareActionBase;
@@ -45,6 +46,7 @@ package org.flowerplatform.flex_client.codesync.action {
 				CorePlugin.getInstance().serviceLocator.invoke("codeSyncOperationsService.getCodeSyncConfigurationRemote", [node.nodeUri], function(result:Object):void {
 					var registry:TypeDescriptorRegistry = new TypeDescriptorRegistry();
 					registry.addTypeDescriptorsRemote(ArrayCollection(result));
+					registry.typeProvider = new CodeSyncConfigTypeProvider();
 					var path:String = CorePlugin.getInstance().getSchemeSpecificPart(node.nodeUri);
 					path = path.replace("|", "/");
 					path = path.substring(0, path.lastIndexOf("/"));

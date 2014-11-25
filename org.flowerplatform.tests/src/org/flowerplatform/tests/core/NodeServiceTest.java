@@ -35,7 +35,6 @@ import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.tests.EclipseIndependentTestBase;
 import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
-import org.flowerplatform.util.controller.ITypeDescriptorRegistryProvider;
 import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.junit.BeforeClass;
@@ -54,8 +53,6 @@ public class NodeServiceTest extends EclipseIndependentTestBase {
 	private static final String TYPE_C = "c";
 	private static final String TYPE_ROOT = "r";
 	
-	private static TypeDescriptorRegistry descriptorRegistry = new TypeDescriptorRegistry();
-
 	/**
 	 * 
 	 * @throws Exception
@@ -98,13 +95,8 @@ public class NodeServiceTest extends EclipseIndependentTestBase {
 		spyProviderForTypeFileSystem.setOrderIndex(200);
 		spyProviderAll.setOrderIndex(Integer.MAX_VALUE);
 		
-		nodeService = new NodeService(new ITypeDescriptorRegistryProvider() {
-			
-			@Override
-			public TypeDescriptorRegistry getTypeDescriptorRegistry(Object model) {
-				return NodeServiceTest.descriptorRegistry;
-			}
-		});
+		TypeDescriptorRegistry descriptorRegistry = new TypeDescriptorRegistry();
+		nodeService = new NodeService(descriptorRegistry);
 		
 		// A
 		TypeDescriptor nodeTypeDescriptorA = descriptorRegistry.getOrCreateTypeDescriptor(TYPE_A);

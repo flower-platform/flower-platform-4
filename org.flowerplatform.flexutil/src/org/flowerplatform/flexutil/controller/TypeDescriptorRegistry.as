@@ -38,19 +38,8 @@ package org.flowerplatform.flexutil.controller {
 		
 		public var typeProvider:ITypeProvider;
 		
-		private var _masterRegistry:TypeDescriptorRegistry;
-		
 		public function isConfigurable():Boolean {
 			return configurable;
-		}
-
-		public function set masterRegistry(registry:TypeDescriptorRegistry):void {
-			_masterRegistry = registry;
-			typeProvider = _masterRegistry.typeProvider;
-		}
-		
-		public function get masterRegistry():TypeDescriptorRegistry {
-			return _masterRegistry;
 		}
 		
 		mx_internal var typeDescriptors:Dictionary = new Dictionary(); /* Map<String, TypeDescriptor> */
@@ -83,13 +72,7 @@ package org.flowerplatform.flexutil.controller {
 		public function getExpectedTypeDescriptor(type:String):TypeDescriptor {
 			var result:TypeDescriptor = typeDescriptors[type];
 			if (result == null) {
-				// no descriptor found => check in master
-				if (masterRegistry != null) {
-					result = masterRegistry.getExpectedTypeDescriptor(type);
-				}
-				if (result == null) {
-					trace("Operation invoked for nodeType = {}, but there is no associated descriptor registered! Aborting operation.", type);
-				}
+				trace("Operation invoked for nodeType = {}, but there is no associated descriptor registered! Aborting operation.", type);
 			}
 			return result;
 		}

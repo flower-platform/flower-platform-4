@@ -40,7 +40,6 @@
 			import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
 			import org.flowerplatform.flexdiagram.renderer.BaseRenderer;
 			import org.flowerplatform.flexdiagram.samples.IModelHolder;
-			import org.flowerplatform.flexutil.samples.SamplesTypeDescriptorRegistryProvider;
 			import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
 			import org.flowerplatform.flexdiagram.tool.DragTool;
 			import org.flowerplatform.flexdiagram.tool.InplaceEditorTool;
@@ -151,7 +150,7 @@
 						itemRenderer="{new ClassFactoryWithConstructor(BaseRenderer, { 
 						showSelected : true,
 						featureForValuesProvider : 'mindMapValuesProvider',
-						typeDescriptorRegistryProvider : diagramShell.registryProvider
+						typeDescriptorRegistry : diagramShell.registry
 						})}"/>
 			</s:Panel>
 			
@@ -232,7 +231,7 @@
 			<s:Panel width="100%" title="Properties" visible="{showProperties.selected}" includeInLayout="{showProperties.selected}">
 				<properties:PropertiesForm id="propertiesForm" width="100%" data="{selectedItem}"
 										   visualChildrenController="{new StandAloneSequentialLayoutVisualChildrenController(0, null, new PropertyEntryRendererController(new PropertyCommitController()))}"
-										   typeDescriptorRegistryProvider="{new SamplesTypeDescriptorRegistryProvider(PropertiesHelper.registerPropertyRenderers(new TypeDescriptorRegistry()))}"
+										   typeDescriptorRegistry="{PropertiesHelper.registerPropertyRenderers(new TypeDescriptorRegistry())}"
 										   propertiesHelper="{new SamplePropertiesHelper()}"/>
 			</s:Panel>
 			

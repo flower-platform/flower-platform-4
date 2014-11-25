@@ -2,6 +2,7 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="org.flowerplatform.flex_client.codesync.action.SynchronizeAction"/>
+    <classEntry path="org.flowerplatform.flex_client.codesync.CodeSyncConfigTypeProvider"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

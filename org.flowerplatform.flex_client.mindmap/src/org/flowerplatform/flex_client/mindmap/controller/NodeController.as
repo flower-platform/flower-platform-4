@@ -19,6 +19,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.mindmap.MindMapConstants;
 	import org.flowerplatform.flex_client.mindmap.MindMapEditorDiagramShell;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
@@ -85,7 +86,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		 */
 		override public function getSide(context:DiagramShellContext, model:Object):int {			
 			var node:Node = Node(model);
-			var typeDescriptorRegistry:TypeDescriptorRegistry = MindMapEditorDiagramShell(context.diagramShell).getRegistryForModel(node);
+			var typeDescriptorRegistry:TypeDescriptorRegistry = MindMapEditorDiagramShell(context.diagramShell).registry;
 			var valuesProvider:ValuesProvider = CorePlugin.getInstance().getNodeValuesProviderForMindMap(typeDescriptorRegistry, node);
 			var sideProperty:String = valuesProvider.getPropertyName(typeDescriptorRegistry, node, FlexDiagramConstants.MIND_MAP_RENDERER_SIDE); 
 			

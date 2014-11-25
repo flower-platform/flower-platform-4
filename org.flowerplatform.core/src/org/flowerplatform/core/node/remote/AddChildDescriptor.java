@@ -29,6 +29,8 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 
 	private String childType;
 	
+	private String dynamicChildType;
+	
 	private String label;
 	
 	private String icon;
@@ -39,6 +41,14 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 
 	public void setChildType(String childType) {
 		this.childType = childType;
+	}
+
+	public String getDynamicChildType() {
+		return dynamicChildType;
+	}
+
+	public void setDynamicChildType(String dynamicChildType) {
+		this.dynamicChildType = dynamicChildType;
 	}
 
 	public String getLabel() {
@@ -63,6 +73,11 @@ public class AddChildDescriptor extends AbstractController implements IDescripto
 		return this;
 	}
 
+	public AddChildDescriptor setDynamicChildTypeAs(String dynamicChildTypeValue) {
+		this.dynamicChildType = dynamicChildTypeValue;
+		return this;
+	}
+	
 	public AddChildDescriptor setLabelAs(String label) {
 		this.label = label;
 		return this;

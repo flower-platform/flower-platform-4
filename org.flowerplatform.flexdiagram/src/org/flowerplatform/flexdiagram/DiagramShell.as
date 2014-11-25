@@ -38,6 +38,7 @@ package org.flowerplatform.flexdiagram {
 	import org.flowerplatform.flexdiagram.controller.model_children.ModelChildrenController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.DynamicModelExtraInfoController;
 	import org.flowerplatform.flexdiagram.controller.model_extra_info.ModelExtraInfoController;
+	import org.flowerplatform.flexutil.flexdiagram.RendererController;
 	import org.flowerplatform.flexdiagram.controller.selection.SelectionController;
 	import org.flowerplatform.flexdiagram.event.UpdateConnectionEndsEvent;
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
@@ -45,12 +46,10 @@ package org.flowerplatform.flexdiagram {
 	import org.flowerplatform.flexdiagram.tool.IWakeUpableTool;
 	import org.flowerplatform.flexdiagram.tool.Tool;
 	import org.flowerplatform.flexdiagram.tool.WakeUpTool;
+	import org.flowerplatform.flexutil.list.ParentAwareArrayList;
 	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
-	import org.flowerplatform.flexutil.controller.ITypeDescriptorRegistryProvider;
 	import org.flowerplatform.flexutil.controller.ITypeProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
-	import org.flowerplatform.flexutil.flexdiagram.RendererController;
-	import org.flowerplatform.flexutil.list.ParentAwareArrayList;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -72,17 +71,10 @@ package org.flowerplatform.flexdiagram {
 		private var _tools:Dictionary = new Dictionary();
 		private var _toolsActivated:Boolean = false;
 		
-		public var registryProvider:ITypeDescriptorRegistryProvider;
+		public var registry:TypeDescriptorRegistry;
 		
 		public var typeProvider:ITypeProvider;
-		
-		/**
-		 * @author Mariana Gheorghe
-		 */
-		public function getRegistryForModel(model:Object):TypeDescriptorRegistry {
-			return registryProvider.getTypeDescriptorRegistry(model);
-		}
-		
+			
 		/**
 		 * @see ControllerUtils
 		 */ 

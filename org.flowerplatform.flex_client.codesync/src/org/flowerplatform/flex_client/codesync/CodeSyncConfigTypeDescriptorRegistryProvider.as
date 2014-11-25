@@ -17,13 +17,14 @@ package org.flowerplatform.flex_client.codesync {
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flexutil.controller.AbstractController;
 	import org.flowerplatform.flexutil.controller.ITypeDescriptorRegistryProvider;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
 	 * @author Mariana Gheorghe
 	 */
-	public class CodeSyncConfigTypeDescriptorRegistryProvider implements ITypeDescriptorRegistryProvider {
+	public class CodeSyncConfigTypeDescriptorRegistryProvider extends AbstractController implements ITypeDescriptorRegistryProvider {
 		
 		public function getTypeDescriptorRegistry(model:Object):TypeDescriptorRegistry {
 			if (model is Node) {
