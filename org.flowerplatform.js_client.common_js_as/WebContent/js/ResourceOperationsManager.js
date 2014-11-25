@@ -76,7 +76,8 @@ ResourceOperationsManager.prototype.saveAll = function() {
 };
 
 ResourceOperationsManager.prototype.reload = function(nodeRegistry) {
-	var resourceSets = this.nodeRegistryManager.getDirtyResourceSetsFromNodeRegistries([nodeRegistry]);
+	var resourceUris = this.nodeRegistryManager.getResourceUrisForNodeRegistry(nodeRegistry);
+	var resourceSets = this.nodeRegistryManager.getResourceSetsForResourceUris(resourceUris);
 	if (resourceSets.length == 1) {
 		// single resourceNode to reload -> reload without asking
 		this.nodeRegistryManager.hostServiceInvocator.invoke("resourceService.reload", [resourceSets[0]]);

@@ -17,6 +17,7 @@ package org.flowerplatform.freeplane.controller;
 
 import static org.flowerplatform.mindmap.MindMapConstants.FREEPLANE_PERSISTENCE_NODE_TYPE_KEY;
 
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPersistenceController;
 import org.flowerplatform.core.node.remote.Node;
@@ -44,6 +45,9 @@ public class PersistenceAddNodeProvider extends MindMapAddNodeController impleme
 		attributeTable.getAttributes().add(new Attribute(FREEPLANE_PERSISTENCE_NODE_TYPE_KEY, child.getType()));
 		
 		for (String attr : context.getContext().keySet()) {
+			if (attr.equals(CoreConstants.INSERT_BEFORE_FULL_NODE_ID)) { // TODO fix this
+				continue;
+			}
 			Object value = context.get(attr);
 			attributeTable.getAttributes().add(new Attribute(attr, value));						
 		}

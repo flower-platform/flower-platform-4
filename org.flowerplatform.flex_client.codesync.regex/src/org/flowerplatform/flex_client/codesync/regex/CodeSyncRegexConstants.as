@@ -24,8 +24,10 @@ package org.flowerplatform.flex_client.codesync.regex {
 		
 		public static const REGEX_CONFIG_TYPE:String = "regexConfig";
 		public static const REGEX_TYPE:String = "regex";
-		public static const REGEX_MACRO_TYPE:String = "regexMacro";
-		
+		public static const REGEX_TECHNOLOGY_NODE_TYPE:String = "regexTechnology";
+		public static const REGEX_TEST_FILES_NODE_TYPE:String = "testFiles";
+		public static const REGEX_TEST_FILE_NODE_TYPE:String = "testFile";
+
 		public static const REGEX_MATCHES_TYPE:String = "regexMatches";
 		public static const REGEX_MATCH_TYPE:String = "regexMatch";
 		

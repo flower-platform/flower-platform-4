@@ -1,5 +1,5 @@
 /* license-start
- * 
+ *
  * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -11,6 +11,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
+ * Contributors:
+ *   Crispico - Initial API and implementation
+ *
  * license-end
  */
 package org.flowerplatform.util.regex;
@@ -30,13 +33,13 @@ public class RegexConfiguration {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RegexConfiguration.class); 
 
-	protected List<AbstractRegexWithAction> regexes = new ArrayList<AbstractRegexWithAction>();
+	protected List<AbstractRegexWithActions> regexes = new ArrayList<AbstractRegexWithActions>();
 	
-	protected AbstractRegexWithAction[] captureGroupToRegexMapping;
+	protected AbstractRegexWithActions[] captureGroupToRegexMapping;
 	
 	protected Pattern pattern;
 	
-	protected int targetNestingForMatches;
+	public int targetNestingForMatches;
 	
 	protected boolean useUntilFoundThisIgnoreAll = true;
 	
@@ -65,12 +68,12 @@ public class RegexConfiguration {
 	/**
 	 *@author Cristina Constantinescu
 	 **/
-	public RegexConfiguration add(AbstractRegexWithAction regex) {
+	public RegexConfiguration add(AbstractRegexWithActions regex) {
 		regexes.add(regex);
 		return this;
 	}
 		
-	public List<AbstractRegexWithAction> getRegexes() {
+	public List<AbstractRegexWithActions> getRegexes() {
 		return regexes;
 	}
 
@@ -80,10 +83,10 @@ public class RegexConfiguration {
 	 */
 	protected void createCaptureGroupToRegexMappingArray() {
 		int nextCaptureGroupIndex = 1;
-		for (AbstractRegexWithAction regex : regexes) {
+		for (AbstractRegexWithActions regex : regexes) {
 			nextCaptureGroupIndex += 1 + regex.getNumberOfCaptureGroups();
 		}
-		captureGroupToRegexMapping = new AbstractRegexWithAction[nextCaptureGroupIndex];
+		captureGroupToRegexMapping = new AbstractRegexWithActions[nextCaptureGroupIndex];
 	}
 	
 	/**
@@ -101,7 +104,7 @@ public class RegexConfiguration {
 		for (int i = 0; i < regexes.size(); i++) {
 			composedRegex.append('(');
 		
-			AbstractRegexWithAction regex = regexes.get(i);
+			AbstractRegexWithActions regex = regexes.get(i);
 			
 			if (LOGGER.isTraceEnabled()) {
 				LOGGER.trace("Adding to capture group = {} regex = {} having {} capture groups", new Object[] { nextCaptureGroupIndex, regex.getRegex(), 
@@ -137,8 +140,7 @@ public class RegexConfiguration {
 		return session;
 	}
 
-	public AbstractRegexWithAction[] getCaptureGroupToRegexMapping() {
+	public AbstractRegexWithActions[] getCaptureGroupToRegexMapping() {
 		return captureGroupToRegexMapping;
 	}
-	
 }

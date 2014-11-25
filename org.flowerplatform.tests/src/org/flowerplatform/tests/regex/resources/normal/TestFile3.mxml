@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	Contributors:
+	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
+ 
+	license-end
+-->
+<!--
+
+-->
+<mp:BaseFlowerDiagramEditor 
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:diagram="com.crispico.flower.mp.diagram.*" 
+	xmlns:navigator="com.crispico.flower.mp.web.navigator.*" 
+	xmlns:common="com.crispico.flower.flexdiagram.util.common.*" 
+	xmlns:components="com.crispico.flower.mp.web.components.*" 
+	xmlns:propeditor="com.crispico.flower.mp.propeditor.*" 
+	xmlns:documentation="com.crispico.flower.mp.web.documentation.*" 
+	xmlns:layout="com.crispico.flower.util.layout.*" 
+	xmlns:menubar="com.crispico.flower.mp.web.menubar.*" 
+	xmlns:tabNavigator="com.crispico.flower.flexdiagram.util.tabNavigator.*" 
+	xmlns:texteditor="com.crispico.flower.mp.web.texteditor.*" 
+	xmlns:view="com.crispico.flower.util.layout.view.*" 
+	xmlns:communication="com.crispico.flower.mp.web.communication.*"
+	xmlns:mp="com.crispico.flower.mp.*"	
+	preloader="com.crispico.flower.mp.web.WebPreloader"
+	backgroundColor="#FFFFFF" layout="absolute" showPopupWhenLoadingApplication="false" isWebMode="true" applicationComplete="applicationCompleteHandle2()" xmlns:s="library://ns.adobe.com/flex/spark">
+	
+	<mx:Style source="/web_style.css"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import com.crispico.flower.flexdiagram.action.BaseAction;
+			import com.crispico.flower.mp.web.communication.AuthenticationManager;
+			import com.crispico.flower.mp.web.communication.AuthenticationPopup;
+			import com.crispico.flower.mp.web.communication.channel_observer.ChannelObserverStatefulClient;
+			import com.crispico.flower.mp.web.communication.command.client.InitializeNewClientCommand;
+			import com.crispico.flower.mp.web.communication.events.BridgeEvent;
+			import com.crispico.flower.mp.web.communication.sequential.WebSequentialExecutionQueueExtension;
+			import com.crispico.flower.mp.web.diagramviewer.WebViewer;
+			import com.crispico.flower.mp.web.dialogs.openresource.action.OpenResourceDialogAction;
+			import com.crispico.flower.mp.web.eclipse.buildpath.JavaBuildPathNode;
+			import com.crispico.flower.mp.web.eclipse.projconfig.command.client.OpenPropertiesDialogClientCommand;
+			import com.crispico.flower.mp.web.eclipse.project.actions.NewJavaProjectAction;
+			import com.crispico.flower.mp.web.editor.EditorDescriptor;
+			import com.crispico.flower.mp.web.editor.GlobalEditorOperationsManager;
+			import com.crispico.flower.mp.web.editor.action.SaveActionNew;
+			import com.crispico.flower.mp.web.editor.action.SaveAllActionNew;
+			import com.crispico.flower.mp.web.editor.communication.CreateEditorStatefulClientCommand;
+			import com.crispico.flower.mp.web.editor.model.DiagramEditorDescriptorNew;
+			import com.crispico.flower.mp.web.editor.text.TextEditorDescriptor;
+			import com.crispico.flower.mp.web.editorsupport.EditableResource;
+			import com.crispico.flower.mp.web.editorsupport.EditorSupport;
+			import com.crispico.flower.mp.web.editorsupport.command.client.InitializeEditorSupportClientCommand;
+			import com.crispico.flower.mp.web.editorsupport.openresourcesview.OpenResourcesViewProvider;
+			import com.crispico.flower.mp.web.entity.PerspectiveUserEntry;
+			import com.crispico.flower.mp.web.external_link.URLGenerateNavigateAction;
+			import com.crispico.flower.mp.web.external_link.URLGenerateNavigateDialog;
+			import com.crispico.flower.mp.web.layout.LayoutRegistry;
+			import com.crispico.flower.mp.web.layout.Perspective;
+			import com.crispico.flower.mp.web.layout.ResetPerspectiveAction;
+			import com.crispico.flower.mp.web.layout.ShowViewAction;
+			import com.crispico.flower.mp.web.layout.SwitchPerspectiveAction;
+			import com.crispico.flower.mp.web.layout.command.client.SwitchPerspectiveClientCommand;
+			import com.crispico.flower.mp.web.layout.command.server.RequestSwitchPerspectiveServerCommand;
+			import com.crispico.flower.mp.web.layout.command.server.UpdatePerspectiveUserEntryServerCommand;
+			import com.crispico.flower.mp.web.layout.flowermodeling.FlowerModelingPerspective;
+			import com.crispico.flower.mp.web.menubar.MenuBarRegistry;
+			import com.crispico.flower.mp.web.modeleditor.LegacyDiagramPane;
+			import com.crispico.flower.mp.web.modeleditor.ModelEditorDescriptor;
+			import com.crispico.flower.mp.web.modeleditor.command.client.WebOpenDiagramClientCommand;
+			import com.crispico.flower.mp.web.modeleditor.command.client.WebTransferObjectsClientCommand;
+			import com.crispico.flower.mp.web.modeleditor.communication.ModelEditableResourceStatus;
+			import com.crispico.flower.mp.web.modeleditor.communication.ModelEditorStatefulClient;
+			import com.crispico.flower.mp.web.modeleditor.documentation.WebDocumentationViewProvider;
+			import com.crispico.flower.mp.web.modeleditor.navigation.SelectInTreeAction;
+			import com.crispico.flower.mp.web.modeleditor.navigation.model_source.GoToSourceOpenInEditorAction;
+			import com.crispico.flower.mp.web.modeleditor.properties.WebPropertiesEditorViewProvider;
+			import com.crispico.flower.mp.web.modeleditor.properties.command.client.ShowWebPropertiesEditorViewClientCommand;
+			import com.crispico.flower.mp.web.progress_monitor.ProgressMonitorStatefulClient;
+			import com.crispico.flower.mp.web.projectexplorer.ProjectExplorerViewProvider;
+			import com.crispico.flower.mp.web.projectexplorer.action.NewActionScriptClassAction;
+			import com.crispico.flower.mp.web.projectexplorer.action.NewFileAction;
+			import com.crispico.flower.mp.web.projectexplorer.action.NewFlowerModelAction;
+			import com.crispico.flower.mp.web.projectexplorer.action.NewFolderAction;
+			import com.crispico.flower.mp.web.projectexplorer.action.NewJavaClassAction;
+			import com.crispico.flower.mp.web.projectexplorer.action.RefreshAction;
+			import com.crispico.flower.mp.web.security.action.OpenGroupsScreenAction;
+			import com.crispico.flower.mp.web.security.action.OpenOrganizationsScreenAction;
+			import com.crispico.flower.mp.web.security.action.OpenPermissionsScreenAction;
+			import com.crispico.flower.mp.web.security.action.OpenUsersScreenAction;
+			import com.crispico.flower.mp.web.security.dto.User_CurrentUserLoggedInDto;
+			import com.crispico.flower.mp.web.security.ui.UserForm;
+			import com.crispico.flower.mp.web.selection.SelectionManager;
+			import com.crispico.flower.mp.web.shortcuts.WebKeyBindings;
+			import com.crispico.flower.mp.web.svn.action.SVNAction;
+			import com.crispico.flower.mp.web.svn.command.client.DeleteRemoteResourceClientCommand;
+			import com.crispico.flower.mp.web.svn.command.client.OpenBranchTagWindowClientCommand;
+			import com.crispico.flower.mp.web.svn.command.client.OpenCheckoutWindowClientCommand;
+			import com.crispico.flower.mp.web.svn.command.client.OpenCommitRevertWindowClientCommand;
+			import com.crispico.flower.mp.web.svn.command.client.OpenIgnoreWindowClientCommand;
+			import com.crispico.flower.mp.web.svn.command.client.OpenMergeWindowClientCommand;
+			import com.crispico.flower.mp.web.svn.command.client.OpenShareProjectWindowClientCommand;
+			import com.crispico.flower.mp.web.svn.command.client.OpenSwitchWindowClientCommand;
+			import com.crispico.flower.mp.web.svn.command.client.OpenUpdateWindowClientCommand;
+			import com.crispico.flower.mp.web.svn.command.client.RenameMoveRemoteResourceClientCommand;
+			import com.crispico.flower.mp.web.svn.command.client.SVNRepositoryLoginClientCommand;
+			import com.crispico.flower.mp.web.svn.command.client.ShowSVNViewClientCommand;
+			import com.crispico.flower.mp.web.svn.console.SVNConsoleViewProvider;
+			import com.crispico.flower.mp.web.svn.perspective.SVNPerspective;
+			import com.crispico.flower.mp.web.svn.ui.history.SVNHistoryViewProvider;
+			import com.crispico.flower.mp.web.svn.ui.repository.BranchResource;
+			import com.crispico.flower.mp.web.svn.ui.repository.RepositoriesViewProvider;
+			import com.crispico.flower.mp.web.svn.ui.tree.CommitTreeNode;
+			import com.crispico.flower.mp.web.texteditor.actionscripttexteditor.ActionScriptTextEditorDescriptor;
+			import com.crispico.flower.mp.web.texteditor.javatexteditor.JavaTextEditorDescriptor;
+			import com.crispico.flower.mp.web.texteditor.mxmltexteditor.MXMLTextEditorDescriptor;
+			import com.crispico.flower.mp.web.tree.ResourceTreeNode;
+			import com.crispico.flower.mp.web.utils.ActionDelegatingToFunction;
+			import com.crispico.flower.mp.web.utils.MiscDebugWindow;
+			import com.crispico.flower.mp.web.utils.ShowPopupWindowAction;
+			import com.crispico.flower.mp.web.utils.TransferableRegistryDebugWindow;
+			import com.crispico.flower.util.layout.ArrangeTool;
+			import com.crispico.flower.util.layout.event.ActiveViewChangedEvent;
+			import com.crispico.flower.util.layout.event.LayoutDataChangedEvent;
+			import com.crispico.flower.util.layout.view.IViewProvider;
+			import com.crispico.flower.util.shortcuts.KeyBindings;
+			import com.crispico.flower.util.shortcuts.Shortcut;
+			import com.crispico.flower.util.spinner.ModalSpinner;
+			import com.crispico.flower.flexdiagram.contextmenu.IMenuEntryModel;
+			import com.crispico.flower.mp.command.flextojava.SetVisibleCompartmentElementsCommand;
+			import com.crispico.flower.mp.command.javatoflex.FilterCompartments_SetData;
+			import com.crispico.flower.mp.command.javatoflex.InvokeFlexCallbackCommand;
+			import com.crispico.flower.mp.command.javatoflex.SetBasicRectangularLayoutCommand;
+			import com.crispico.flower.mp.command.javatoflex.SetRightClickContextMenuEnabledCommand;
+			import com.crispico.flower.mp.command.javatoflex.SetUseFullMarqueeForSelectionCommand;
+			import com.crispico.flower.mp.command.service.InvokeServiceMethodServerCommand;
+			import com.crispico.flower.mp.communication.command.server.HelloServerCommand;
+			import com.crispico.flower.mp.communication.command.server.SendCustomSerializationDescriptorsServerCommand;
+			import com.crispico.flower.mp.communication.stateful_service.InvokeStatefulClientMethodClientCommand;
+			import com.crispico.flower.mp.communication.stateful_service.StatefulClient;
+			import com.crispico.flower.mp.communication.stateful_service.StatefulClientRegistry;
+			import com.crispico.flower.mp.communication.stateful_service.StatefulClientRegistryDebugWindow;
+			import com.crispico.flower.mp.diagram.figure.GlowEffectHelper;
+			import com.crispico.flower.mp.util.FilterCompartmentElementsWindow;
+			import com.crispico.flower.mp.util.MoveItemsPanel;
+			import com.crispico.flower.mp.web.AboutDialog;
+			import com.crispico.flower.mp.web.LogoSpinner;
+			import com.crispico.flower.mp.web.WebAssets;
+			import com.crispico.flower.mp.web.administration.ApplicationParametersProvider;
+			
+			import flash.net.navigateToURL;
+			
+			import migration.EclipseDNDSupport;
+			
+			import mx.binding.utils.BindingUtils;
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.core.FlexGlobals;
+			import mx.events.MenuEvent;
+			
+			/////////////////////////////////////		
+			// Classes needed to be explicitly referenced, in order to be compiled; the majority are
+			// *ClientCommand
+			/////////////////////////////////////
+			
+			InvokeFlexCallbackCommand;			
+			InitializeEditorSupportClientCommand;
+			SwitchPerspectiveClientCommand;
+			PerspectiveUserEntry;			
+			RenameMoveRemoteResourceClientCommand;
+			DeleteRemoteResourceClientCommand;
+			OpenCheckoutWindowClientCommand;
+			OpenBranchTagWindowClientCommand;
+			BranchResource;
+			OpenSwitchWindowClientCommand;
+			OpenMergeWindowClientCommand;
+			OpenUpdateWindowClientCommand;
+			OpenCommitRevertWindowClientCommand;
+			ShowSVNViewClientCommand;
+			SVNRepositoryLoginClientCommand;
+			OpenShareProjectWindowClientCommand;
+			WebTransferObjectsClientCommand;
+			WebOpenDiagramClientCommand;
+			CommitTreeNode;
+			OpenPropertiesDialogClientCommand;
+			JavaBuildPathNode;
+			ResourceTreeNode;
+			InitializeNewClientCommand;
+			ShowWebPropertiesEditorViewClientCommand;
+			OpenIgnoreWindowClientCommand;
+			InvokeStatefulClientMethodClientCommand;
+			CreateEditorStatefulClientCommand;
+			ProgressMonitorStatefulClient;
+			com.crispico.flower.mp.web.svn.action.SVNAction;
+			com.crispico.flower.mp.web.editorsupport.EditableResource;
+			com.crispico.flower.mp.web.editorsupport.EditableResourceClient;
+			com.crispico.flower.mp.web.modeleditor.communication.ModelEditableResourceStatus;
+			com.crispico.flower.mp.web.modeleditor.navigation.model_source.GoToSourceOpenInEditorAction;
+			com.crispico.flower.mp.web.modeleditor.navigation.SelectInTreeAction;
+			com.crispico.flower.flexdiagram.action.BaseAction;
+			com.crispico.flower.flexdiagram.contextmenu.IMenuEntryModel;
+			
+			
+			/////////////////////////////////////
+			// For release compile
+			/////////////////////////////////////
+			
+			// Classes that need to be explicitely linked to, because in dev mode
+			// they are included expliciely in the flex libraries. Without these
+			// the compiler won't complain, but we have runtime errors (e.g. cannot convert from Object to ...)
+			SetVisibleCompartmentElementsCommand;
+			FilterCompartments_SetData;
+			SetBasicRectangularLayoutCommand;
+			SetRightClickContextMenuEnabledCommand;
+			SetUseFullMarqueeForSelectionCommand;
+			GlowEffectHelper;
+			FilterCompartmentElementsWindow;
+			MoveItemsPanel;
+			EclipseDNDSupport;
+			
+			// We have this here, to force the compiler to look at it quickly, i.e. before Workbench;
+			// otherwise, the compiler throws an error that it cannot find the class when parsing:
+			// 		public function addNormalView(view:Object, setFocusOnView:Boolean = false, workbenchSide:Number = ArrangeTool.RIGHT, addInFirstNormalStack:Boolean = false, parentStackLayoutData:StackLayoutData = null):UIComponent {
+			
+			ArrangeTool;
+			
+			/////////////////////////////////////
+			// Initializations and code related to the legacy structure
+			/////////////////////////////////////
+			
+			/**
+			 * The purpose of this initialization is to know about web embeded images.
+			 * @author Cristina
+			 */ 
+			WebAssets.INSTANCE;
+			
+			private var keyBindings:KeyBindings;
+			
+			public override function get viewerClass():Class {
+				return WebViewer;
+			}
+			
+			private const MODULES_LOCATION : String = "modules/"; 
+			
+			override protected function getModulesToLoad():Object {
+				return 	MODULES_LOCATION + "ClassMetamodelModule.swf," +
+					MODULES_LOCATION + "ClassMetamodelModuleAssets.swf," +
+					MODULES_LOCATION + "CodeSyncMetamodelModule.swf," +
+					MODULES_LOCATION + "CodeSyncMetamodelModuleAssets.swf," +
+					MODULES_LOCATION + "CodeSyncASMetamodel.swf," +
+					MODULES_LOCATION + "CodeSyncASMetamodelAssets.swf," +
+					MODULES_LOCATION + "CodeSyncJavaMetamodel.swf," +
+					MODULES_LOCATION + "CodeSyncJavaMetamodelAssets.swf";
+			} 
+			
+			public var showDebugMenu:Boolean;
+			
+			/**
+			 * Always use a try/finally block when temporarily changing this attribute
+			 * to false.
+			 * 
+			 * @author Cristi
+			 */
+			public var shouldUpdatePerspectiveUserEntryOnLayoutChange:Boolean = true;
+			
+			/**
+			 * All objects that are send to the server side using BaseFlowerDiagramEditor
+			 * are relayed to the bridge from the AuthenticationManager.
+			 * 
+			 * 
+			 */ 
+			override public function sendObject(object:Object, sendWithCallLater:Boolean=false):void {
+				super.sendObject(object);
+				
+				if (sendWithCallLater) {
+					this.callLater(sendObject, new Array(object));
+				} else {
+					AuthenticationManager.INSTANCE.bridge.sendObject(object);
+				}
+			}
+			
+			/////////////////////////////////////
+			// Init, connect, disconnect, init menu
+			/////////////////////////////////////
+			
+			/**
+			 * 
+			 */
+			private function applicationCompleteHandler():void {
+				workbench.viewProvider = LayoutRegistry.INSTANCE;
+				
+				workbench.addEventListener(LayoutDataChangedEvent.LAYOUT_DATA_CHANGED, layoutDataChangedHandler);
+				
+				LayoutRegistry.INSTANCE.addPerspective(new FlowerModelingPerspective());
+				LayoutRegistry.INSTANCE.addViewProvider(new WebDocumentationViewProvider());
+				LayoutRegistry.INSTANCE.addViewProvider(new WebPropertiesEditorViewProvider());	
+				LayoutRegistry.INSTANCE.addViewProvider(new ProjectExplorerViewProvider());
+				
+				LayoutRegistry.INSTANCE.addPerspective(new SVNPerspective());
+				LayoutRegistry.INSTANCE.addViewProvider(new RepositoriesViewProvider());
+				LayoutRegistry.INSTANCE.addViewProvider(new SVNHistoryViewProvider());
+				LayoutRegistry.INSTANCE.addViewProvider(new SVNConsoleViewProvider());
+				
+				// Initializes the authentication manager.
+				AuthenticationManager.INSTANCE.initialize();
+				WebSequentialExecutionQueueExtension.activate();
+				
+				ChannelObserverStatefulClient.INSTANCE;
+				
+				keyBindings = new WebKeyBindings(stage);
+				
+				AuthenticationManager.INSTANCE.bridge.addEventListener(BridgeEvent.CONNECTED, connectedHandler);
+				AuthenticationManager.INSTANCE.bridge.addEventListener(BridgeEvent.DISCONNECTED_BECAUSE_USER_LOGGED_OUT, disconnectedBecauseUserLoggedOutHandler);
+				AuthenticationPopup.activationNeeded = (ApplicationParametersProvider.INSTANCE.getActivationCode() != null); 
+				
+				// Init for EditorSupport & related
+				LayoutRegistry.INSTANCE.addViewProvider(new OpenResourcesViewProvider());
+				
+				GlobalEditorOperationsManager.INSTANCE = new GlobalEditorOperationsManager(workbench);
+				
+				if (ExternalInterface.available) { 
+					ExternalInterface.addCallback("invokeSaveResourcesDialog", invokeSaveResourcesDialog); 
+				} 
+				
+				// Register text editors
+				EditorSupport.INSTANCE.addEditorDescriptor(new TextEditorDescriptor());
+				EditorSupport.INSTANCE.addEditorDescriptor(new JavaTextEditorDescriptor());
+				EditorSupport.INSTANCE.addEditorDescriptor(new ActionScriptTextEditorDescriptor());
+				EditorSupport.INSTANCE.addEditorDescriptor(new MXMLTextEditorDescriptor());
+				
+				// init for (WP-ME)
+				EditorSupport.INSTANCE.addEditorDescriptor(new ModelEditorDescriptor());
+				EditorSupport.INSTANCE.addEditorDescriptor(new DiagramEditorDescriptorNew());
+				diagramPane = new LegacyDiagramPane();
+				
+				// Client Selection Manager mechanism.
+				workbench.addEventListener(
+					ActiveViewChangedEvent.ACTIVE_VIEW_CHANGED, 
+					SelectionManager.INSTANCE.notifyViewChanged);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:HBox width="100%" horizontalGap="0">
+		
+		<menubar:WebMenuBar id="menuBar" labelField="@label" iconField="@icon" width="100%" itemClick="itemClickHandler(event)" />
+		
+		<mx:Button label="Flower Dev Center - {APP_VERSION}" cornerRadius="0" fontWeight="normal"/>
+		
+		<communication:AuthenticationMenuBar id="authenticationMenuBar" cornerRadius="0"/>
+	</mx:HBox>
+	
+	<layout:Workbench id="workbench" y="20" width="100%" height="100%" />
+	
+</mp:BaseFlowerDiagramEditor>

@@ -30,7 +30,7 @@
 		<link>
 			<name>src_flex_common_js_as</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/org.flowerplatform.js_client.common_js_as/src_flex</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/org.flowerplatform.js_client.common_js_as/src_flex_include</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

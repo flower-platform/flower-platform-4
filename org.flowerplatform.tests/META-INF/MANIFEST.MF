@@ -28,5 +28,6 @@ Bundle-ClassPath: lib-from-maven/mockito-all-1.9.5.jar,
  .
 Export-Package: org.flowerplatform.tests
 Import-Package: javax.servlet,
- javax.servlet.http
+ javax.servlet.http,
+ org.flowerplatform.core.node
 

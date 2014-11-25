@@ -15,36 +15,38 @@
  */
 package org.flowerplatform.codesync.regex.remote;
 
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END_C;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END_L;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.FULL_REGEX;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_TYPE;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_NAME;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TYPE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_CONFIGS_FOLDER;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_CONFIG_FILE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_EXPECTED_MATCHES_NODE_TYPE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_EXPECTED_MODEL_TREE_NODE_TYPE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCHES_NODE_TYPE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MATCH_FILES_FOLDER;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_MODEL_TREE_NODE_TYPE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_RESULT_FILES_FOLDER;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TEST_FILES_FOLDER;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TEST_FILES_NODE_TYPE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TEST_FILE_NODE_TYPE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.RESOURCE_URI;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.SHOW_GROUPED_BY_REGEX;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START_C;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.START_L;
-import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
-import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_SCHEME;
 import static org.flowerplatform.core.CoreConstants.NAME;
-import static org.flowerplatform.core.CoreConstants.OVERRIDE;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.flowerplatform.codesync.regex.CodeSyncRegexConstants;
 import org.flowerplatform.codesync.regex.CodeSyncRegexPlugin;
-import org.flowerplatform.codesync.regex.action.CodeSyncRegexAction;
-import org.flowerplatform.codesync.regex.action.DelegatingRegexWithAction;
+import org.flowerplatform.codesync.regex.State;
+import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
+import org.flowerplatform.core.config_processor.ConfigProcessor;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.node.NodeService;
@@ -52,6 +54,9 @@ import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.core.node.resource.ResourceService;
+import org.flowerplatform.core.node.resource.ResourceSetService;
+import org.flowerplatform.core.node.resource.VirtualNodeResourceHandler;
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.Pair;
 import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.regex.RegexAction;
@@ -60,159 +65,261 @@ import org.flowerplatform.util.regex.RegexProcessingSession;
 
 /**
  * @author Cristina Constantinescu
+ * @author Elena Posea
+ * @author Mariana Gheorghe
  */
 public class CodeSyncRegexService {
 
-	private final Pattern newLinePattern = Pattern.compile("(\r\n)|(\n)|(\r)");
-		
 	/**
-	 *@author see class
+	 * @author see class
 	 **/
-	public List<Pair<String, String>> getRegexActions() {	
+	 public List<Pair<String, String>> getRegexActions() {
 		List<Pair<String, String>> list = new ArrayList<Pair<String, String>>();
-		
+
 		for (RegexAction regexAction : CodeSyncRegexPlugin.getInstance().getActions().values()) {
 			list.add(new Pair<String, String>(regexAction.getName(), regexAction.getDescription()));
-		}		
+		}
 		return list;
+	}
+
+	/**
+	 * @param nodeUri
+	 * @throws Exception
+	 * @author Elena Posea
+	 * @author Mariana Gheorghe
+	 */
+	public void generateMatches(String nodeUri, boolean all) throws Exception {
+		IFileAccessController fileController = FileControllerUtils.getFileAccessController();
+	
+		// get repo and technology from node
+		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
+		String repo = Utils.getRepo(nodeUri);
+		String[] typeSpecificPart = virtualNodeHandler.getTypeSpecificPartFromNodeUri(nodeUri).split("\\$");
+		String technology = typeSpecificPart[0];
+		String regexUri = FileControllerUtils.createFileNodeUri(
+				repo, REGEX_CONFIGS_FOLDER + "/" + technology + "/" + REGEX_CONFIG_FILE);
+		regexUri = regexUri.replaceFirst(CoreConstants.FILE_SCHEME, "fpp");
+		
+		// get regex configuration file
+		new ResourceServiceRemote().subscribeToParentResource(regexUri);
+		Node regex = CorePlugin.getInstance().getResourceService().getResourceNode(regexUri);
+		
+		// create regEx configuration
+		RegexConfiguration regexConfig = new RegexConfiguration();
+		new ConfigProcessor().processConfigHierarchy(regex, regexConfig);
+	
+		regexConfig.compile(Pattern.DOTALL);
+		
+		String technologyPath = REGEX_CONFIGS_FOLDER + "/" + technology;
+		Node technologyNode = CorePlugin.getInstance().getResourceService().getNode(
+				FileControllerUtils.createFileNodeUri(repo, technologyPath));
+		if (all) {
+			// parse files contained in the test files directory
+			Object file = fileController.getFile(FileControllerUtils.getFilePathWithRepo(regex));
+			Object parentFile = fileController.getParentFile(file);
+			Object testFilesFolder = fileController.getFile(parentFile, REGEX_TEST_FILES_FOLDER);
+			List<Object> testFiles = getTestFiles(testFilesFolder);
+			for (Object testFile : testFiles) {
+				String relativePath = fileController.getPathRelativeToFile(testFile, testFilesFolder);
+				parseFile(technologyNode, testFile, relativePath, regex, regexConfig);
+			}
+		} else {
+			// parse only selected file
+			String relativePath = typeSpecificPart[1];
+			Object testFile = fileController.getFile(repo + "/" + technologyPath + "/" + REGEX_TEST_FILES_FOLDER + "/" + relativePath);
+			parseFile(technologyNode, testFile, relativePath, regex, regexConfig);
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void parseFile(Node technology, Object testFile, String testFilePath, Node regex, RegexConfiguration regexConfig) throws Exception {
+		NodeService nodeService = CorePlugin.getInstance().getNodeService();
+		IFileAccessController fileController = FileControllerUtils.getFileAccessController();
+
+		// get test file node and test file resource uri
+		Node testNode = CorePlugin.getInstance().getResourceService().getNode(
+				FileControllerUtils.createFileNodeUri(Utils.getRepo(technology.getNodeUri()), fileController.getPath(testFile)));
+		List subscribableResources = (List) testNode.getPropertyValue(CoreConstants.SUBSCRIBABLE_RESOURCES);
+		String testResourceUri = (String) ((Pair) subscribableResources.get(0)).a;
+		
+		// start session
+		String testFileContent = IOUtils.toString((InputStream) fileController.getContent(testFile));
+		RegexProcessingSession session = regexConfig.startSession(testFileContent);
+
+		// prepare to collect model tree
+		Node resultRoot = createResourceRoot(technology, String.format(
+				REGEX_RESULT_FILES_FOLDER + "/%s.result", testFilePath), testResourceUri);
+		ArrayList<Object> stateStack = new ArrayList<Object>();
+		stateStack.add(0, new State(0, resultRoot));
+		session.context.put(CodeSyncRegexConstants.STATE_STACK, stateStack);
+		
+		// prepare to collect match tree
+		Node matchRoot = createResourceRoot(technology, String.format(
+				REGEX_MATCH_FILES_FOLDER + "/%s.regexMatches", testFilePath), testResourceUri);
+		session.find(new CodeSyncRegexMatcher(nodeService, session, testFileContent, matchRoot));
+
+		// everything worked ok => save matches and result
+		CorePlugin.getInstance().getResourceService().save(matchRoot.getNodeUri(), new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
+		CorePlugin.getInstance().getResourceService().save(resultRoot.getNodeUri(), new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
+	}
+
+	private Node createResourceRoot(Node technology, String resourceName, String testResourceUri) {
+		NodeService nodeService = CorePlugin.getInstance().getNodeService();
+		
+		// create resource file
+		ServiceContext<NodeService> context  = new ServiceContext<NodeService>(nodeService);
+		context.getContext().put(NAME, resourceName);
+		context.getContext().put(CoreConstants.FILE_IS_DIRECTORY, false);
+		context.getContext().put(CoreConstants.OVERWRITE_IF_NECESSARY, true);
+		Node resourceNode = new Node(null, CoreConstants.FILE_NODE_TYPE);
+		nodeService.addChild(technology, resourceNode, context);
+		
+		// subscribe to resource
+		String matchUri = resourceNode.getNodeUri().replaceFirst(FILE_SCHEME, "fpp");
+		new ResourceServiceRemote().subscribeToParentResource(matchUri);
+		
+		CorePlugin.getInstance().getResourceSetService().reload(matchUri, new ServiceContext<ResourceSetService>());
+		Node root = CorePlugin.getInstance().getResourceService().getNode(matchUri);
+		nodeService.setProperty(root, RESOURCE_URI, testResourceUri, new ServiceContext<NodeService>(nodeService));
+		nodeService.setProperty(root, SHOW_GROUPED_BY_REGEX, false, new ServiceContext<NodeService>(nodeService));
+		return root;
 	}
 	
 	/**
-	 *@author see class
-	 **/
-	public String generateMatches(String nodeUri, String textNodeUri, String newPath, boolean override) throws Exception {
-		final NodeService nodeService = CorePlugin.getInstance().getNodeService();
-		ServiceContext<NodeService> context;	
-		IFileAccessController fileController = FileControllerUtils.getFileAccessController();
-		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(nodeUri);
+	 * @param nodeUri
+	 * @return compare results
+	 * @throws Exception
+	 * @author Elena Posea
+	 */
+	public String testMatchesForAll(String nodeUri) {
+		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
+		String technology = virtualNodeHandler.getTypeSpecificPartFromNodeUri(nodeUri);
+		String repo = CoreUtils.getRepoFromNodeUri(nodeUri);
+		String compareResult = "";
 		
-		// get text file & content
-		Object textFile = fileController.getFile(FileControllerUtils.getFilePathWithRepo(textNodeUri));		
-		final String textFileContent = IOUtils.toString((InputStream) fileController.getContent(textFile));
+		String testFilesNodeUri = virtualNodeHandler.createVirtualNodeUri(repo, REGEX_TEST_FILES_NODE_TYPE, technology); 
+		Node testFilesNode = CorePlugin.getInstance().getResourceService().getNode(testFilesNodeUri);
+		List<Node> testFilesNodeChildren = CorePlugin.getInstance().getNodeService().getChildren(testFilesNode, new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
 
-		Object fileToGenerate = FileControllerUtils.getFileAccessController().getFile(newPath);
-		Object parentFile = fileController.getParentFile(fileToGenerate);
-		
-		if (!fileController.exists(parentFile)) {
-			fileController.createFile(parentFile, true);
+		for (Node testFileNode : testFilesNodeChildren) {
+			compareResult += compareForTestFile(testFileNode);
 		}
-		String parentFilePath = fileController.getPath(parentFile);		
-		String parentNodeUri = FileControllerUtils.createFileNodeUri(CoreUtils.getRepoFromNode(resourceNode), parentFilePath);
-		
-		Node parent = CorePlugin.getInstance().getResourceService().getNode(parentNodeUri);
-		
-		String name = null;
-		if (FileControllerUtils.getFileAccessController().exists(fileToGenerate) && !override) {
-			name = FileControllerUtils.getNextAvailableName(newPath);			
-		} else {
-			name = fileController.getName(fileToGenerate);
-		}
-		
-		String matchUri;
-		if (name != null) {
-			// create matches file
-			Node matchFile = new Node(null, FILE_NODE_TYPE);			
-			context = new ServiceContext<NodeService>(nodeService);
-			context.getContext().put(NAME, name);
-			context.getContext().put(FILE_IS_DIRECTORY, false);
-			context.getContext().put(OVERRIDE, override);
-			nodeService.addChild(parent, matchFile, context);
-			
-			matchUri = matchFile.getNodeUri();
-		} else {
-			matchUri = FileControllerUtils.createFileNodeUri(Utils.getRepo(nodeUri), newPath);
-		}
-		
-		matchUri = matchUri.replace(FILE_SCHEME, "fpp");
-		// TODO CC: unsubscribe resource if needed (to discuss with MG)
-		
-		// subscribe file using fpp schema	
-		new ResourceServiceRemote().subscribeToParentResource(matchUri);
-		
-		// get matches root node & save the textNodeUri as property
-		final Node matchRoot = CorePlugin.getInstance().getResourceService().getNode(matchUri);
-		nodeService.setProperty(matchRoot, RESOURCE_URI, textNodeUri, new ServiceContext<NodeService>(nodeService));
-		nodeService.setProperty(matchRoot, SHOW_GROUPED_BY_REGEX, false, new ServiceContext<NodeService>(nodeService));
-				
-		// create regEx configuration
-		RegexConfiguration regexConfig = new RegexConfiguration();		
-		for (Node regex : CodeSyncRegexPlugin.getInstance().getChildren(resourceNode, REGEX_TYPE)) {
-			regexConfig.add(new DelegatingRegexWithAction().setNode(regex).setRegexAction(new CodeSyncRegexAction.IfFindThisSkip()));
-		}
-		regexConfig.compile(Pattern.DOTALL);
-		
-		// start session
-		final RegexProcessingSession session = regexConfig.startSession(textFileContent);
-				
-		// find matches
-		session.find(new Runnable() {
-			int currentIndex = 1;			
-			
-			@Override
-			public void run() {	
-				// match found => create node
-				Node match = new Node(null, REGEX_MATCH_TYPE);
-				DelegatingRegexWithAction regex = (DelegatingRegexWithAction) session.getCurrentRegex();
-				
-				ServiceContext<NodeService> context = new ServiceContext<NodeService>();
-				context.getContext().put(NAME, String.format("%s) %s", String.valueOf(currentIndex++), session.getCurrentRegex().getName()));
-				context.getContext().put(FULL_REGEX, regex.getRegex());
-				context.getContext().put(REGEX_NAME, regex.getName());
-				
-				int[] start = formatIndex(textFileContent, session.getMatcher().start());
-				context.getContext().put(START, String.format("L%d C%d", start[0], start[1]));
-				context.getContext().put(START_L, start[0]);
-				context.getContext().put(START_C, start[1]);
-				
-				int[] end = formatIndex(textFileContent, session.getMatcher().end());
-				context.getContext().put(END, String.format("L%d C%d", end[0], end[1]));
-				context.getContext().put(END_L, end[0]);
-				context.getContext().put(END_C, end[1]);
-				
-				nodeService.addChild(matchRoot, match, context);
-																				
-				if (session.getCurrentSubMatchesForCurrentRegex() != null) { // has subMatches -> add them too as children
-					for (int i = 0; i < session.getCurrentSubMatchesForCurrentRegex().length; i++) {
-						int index = session.getCurrentMatchGroupIndex() + i + 1;
-												
-						context = new ServiceContext<NodeService>();
-						context.getContext().put(NAME, session.getCurrentSubMatchesForCurrentRegex()[i]);
-						
-						start = formatIndex(textFileContent, session.getMatcher().start(index));
-						context.getContext().put(START, String.format("L%d C%d", start[0], start[1]));
-						context.getContext().put(START_L, start[0]);
-						context.getContext().put(START_C, start[1]);
-						
-						end = formatIndex(textFileContent, session.getMatcher().end(index));
-						context.getContext().put(END, String.format("L%d C%d", end[0], end[1]));
-						context.getContext().put(END_L, end[0]);
-						context.getContext().put(END_C, end[1]);
-						
-						context.getContext().put(END, String.format("L%d C%d", end[0], end[1]));
-						nodeService.addChild(match, new Node(null, REGEX_MATCH_TYPE), context);
-					}
-				}
-			}
-		});
-			
-		// everything worked ok => save file
-		CorePlugin.getInstance().getResourceService().save(matchUri, new ServiceContext<ResourceService>(CorePlugin.getInstance().getResourceService()));
-		
-		// matchUri is returned to be open on client
-		return matchUri;		
+		return compareResult;
+	}
+
+	/**
+	 * @param nodeUri
+	 * @return compare results
+	 * @throws Exception
+	 * @author Elena Posea
+	 */
+	public String testMatchesForSelection(String testFileUri) {
+		return compareForTestFile(CorePlugin.getInstance().getResourceService().getNode(testFileUri));
 	}
 	
-	private int[] formatIndex(String str, int index) {		
-		String prefix = str.substring(0, index);
+	private String compareForTestFile(Node testFile) {
+		String matches = compareForTestFile(testFile.getNodeUri(), REGEX_MATCHES_NODE_TYPE, REGEX_EXPECTED_MATCHES_NODE_TYPE);
+		String model = compareForTestFile(testFile.getNodeUri(), REGEX_MODEL_TREE_NODE_TYPE, REGEX_EXPECTED_MODEL_TREE_NODE_TYPE);
+		return ResourcesPlugin.getInstance().getMessage("regex.test.compare.result", testFile.getPropertyValue(NAME), matches, model);
+	}
+
+	private String compareForTestFile(String testFileUri, String actual, String expected) {
+		String actualNodeUri = testFileUri.replaceFirst(REGEX_TEST_FILE_NODE_TYPE, actual);
+		String expectedNodeUri = testFileUri.replaceFirst(REGEX_TEST_FILE_NODE_TYPE, expected);
 		
-		Matcher m = newLinePattern.matcher(prefix); // search for new line separator
-		int lines = 0;
-		int lineEndIndex = -1;
-		while (m.find()) {			
-		    lines++;
-		    lineEndIndex = m.end();
-		}	
-		return new int[] {lines, (lineEndIndex == -1 ? index : index - lineEndIndex)};		
-	}		
+		ResourceServiceRemote rsr = new ResourceServiceRemote(); 
+		rsr.subscribeToParentResource(actualNodeUri);
+		rsr.subscribeToParentResource(expectedNodeUri);
+		
+		Node actualNode = CorePlugin.getInstance().getResourceService().getNode(actualNodeUri);
+		Node expectedNode = CorePlugin.getInstance().getResourceService().getNode(expectedNodeUri);
+		String result = compare(actualNode, expectedNode);
+		return result != null ? result : ResourcesPlugin.getInstance().getMessage("regex.test.compare.result.ok");
+	}
 	
+	private String compare(Node actual, Node expected) {
+		List<Node> actualChildren = CorePlugin.getInstance().getNodeService().getChildren(actual, 
+				new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
+		List<Node> expectedChildren = CorePlugin.getInstance().getNodeService().getChildren(expected, 
+				new ServiceContext<>(CorePlugin.getInstance().getNodeService()));
+		
+		// check number of children
+		if (actualChildren.size() != expectedChildren.size()) {
+			return ResourcesPlugin.getInstance().getMessage("regex.test.compare.result.error.childrenCount", actual.getPropertyValue(NAME));
+		}
+		
+		for (int i = 0; i < actualChildren.size(); i++) {
+			Node actualChild = actualChildren.get(i);
+			Node expectedChild = expectedChildren.get(i);
+			// compare child properties
+			String propertiesCompare = compareProperties(actualChild, expectedChild);
+			if (propertiesCompare != null) {
+				return propertiesCompare;
+			}
+			// recurse
+			String childrenCompare = compare(actualChild, expectedChild);
+			if (childrenCompare != null) {
+				return childrenCompare;
+			}
+		}
+		return null;
+	}
+	
+	private String compareProperties(Node actual, Node expected) {
+		// check type
+		if (!actual.getType().equals(expected.getType())) {
+			return ResourcesPlugin.getInstance().getMessage("regex.test.compare.result.eror.type", actual.getPropertyValue(NAME));
+		}
+		
+		// check properties
+		ServiceContext<NodeService> context = new ServiceContext<>(CorePlugin.getInstance().getNodeService());
+		Map<String, Object> expectedProperties = expected.getOrPopulateProperties(context);
+		Map<String, Object> actualProperties = actual.getOrPopulateProperties(context);
+		
+		// check properties size
+		if (actualProperties.size() != expectedProperties.size()) {
+			return ResourcesPlugin.getInstance().getMessage("regex.test.compare.result.error.propertiesCount", actual.getPropertyValue(NAME));
+		}
+		
+		// iterate properties
+		for (Entry<String, Object> entry : expectedProperties.entrySet()) {
+			if (!actualProperties.containsKey(entry.getKey())) {
+				return ResourcesPlugin.getInstance().getMessage("regex.test.compare.result.propertyNotFound", 
+						entry.getKey(), actual.getPropertyValue(NAME));
+			}
+			Object expectedPropertyValue = entry.getValue();
+			Object actualPropertyValue = actualProperties.get(entry.getKey());
+			if (!Utils.safeEquals(actualPropertyValue, expectedPropertyValue)) {
+				return ResourcesPlugin.getInstance().getMessage("regex.test.compare.result.error.propertyValue",
+						entry.getKey(), actual.getPropertyValue(NAME),
+						expectedPropertyValue, actualPropertyValue);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param folder
+	 * @return a list of all files in that folder
+	 */
+	public List<Object> getTestFiles(Object folder) {
+		IFileAccessController controller = CorePlugin.getInstance().getFileAccessController();
+		Object[] files = controller.listFiles(folder);
+		if (files == null) {
+			return Collections.emptyList();
+		}
+		
+		List<Object> result = new ArrayList<Object>();
+		for (Object file : files) {
+			if (controller.isDirectory(file)) {
+				// recurse for directories
+				result.addAll(getTestFiles(file));
+			} else {
+				// keep child file
+				result.add(file);
+			}
+		}
+		return result;
+	}
 }

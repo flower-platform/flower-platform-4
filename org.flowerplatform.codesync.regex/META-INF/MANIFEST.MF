@@ -7,6 +7,8 @@ Bundle-Version: 0.1.1.qualifier
 Require-Bundle: org.eclipse.osgi,
  org.flowerplatform.core,
  org.flowerplatform.resources,
- org.flowerplatform.util
+ org.flowerplatform.util,
+ org.flowerplatform.codesync
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.flowerplatform.codesync.regex.CodeSyncRegexPlugin
+Export-Package: org.flowerplatform.codesync.regex
