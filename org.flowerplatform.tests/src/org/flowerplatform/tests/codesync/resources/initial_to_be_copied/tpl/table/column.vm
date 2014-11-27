@@ -1,6 +1,6 @@
 #macro( column $node $param)
 #if( $param == 'header' )
-<th>$node.label</th>
+<th>$node.properties.label</th>
 #elseif( $node.children )
 <td>
 #foreach( $child in $node.children )
@@ -10,6 +10,6 @@
 #end
 </td>
 #else
-<td>{{${node.parent}.${node.entity}#altFormat($node.filter ' | $node.filter')}}</td>
+<td>{{${node.properties.parent}.${node.properties.entity}#altFormat($node.properties.filter ' | $node.properties.filter')}}</td>
 #end
 #end

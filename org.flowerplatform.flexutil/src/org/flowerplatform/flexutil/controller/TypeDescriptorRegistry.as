@@ -96,11 +96,19 @@ package org.flowerplatform.flexutil.controller {
 		}
 		
 		public function getSingleController(feature:String, model:Object):AbstractController {
-			return getExpectedTypeDescriptor(typeProvider.getType(model)).getSingleController(feature, model);
+			var descriptor:TypeDescriptor = getExpectedTypeDescriptor(typeProvider.getType(model));
+			if (descriptor != null) {
+				return descriptor.getSingleController(feature, model);
+			}
+			return null;
 		}
 	
 		public function getAdditiveControllers(feature:String, model:Object):IList {
-			return getExpectedTypeDescriptor(typeProvider.getType(model)).getAdditiveControllers(feature, model);
+			var descriptor:TypeDescriptor = getExpectedTypeDescriptor(typeProvider.getType(model));
+			if (descriptor != null) {
+				return descriptor.getAdditiveControllers(feature, model);
+			}
+			return new ArrayList();
 		}
 		
 		/**

@@ -1,5 +1,5 @@
 #macro( form $node )
-<form role="form" ng-controller="${node.label}FormCtrl">
+<form role="form" ng-controller="${node.properties.label}FormCtrl">
 #foreach( $child in $node.children )
 #@indent()
 	#callMacro( $child )

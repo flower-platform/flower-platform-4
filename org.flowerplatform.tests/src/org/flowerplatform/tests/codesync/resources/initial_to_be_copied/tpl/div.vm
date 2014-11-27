@@ -1,4 +1,9 @@
 #macro( div $node )
-<div#foreach($attr in $node.attrs.entrySet()) $attr.key="$attr.value"#end>
+<div#foreach($attr in $node.properties.attrs.entrySet()) $attr.key="$attr.value"#end>
+#foreach( $child in $node.children )
+#@indent()
+	#callMacro( $child )
+#end
+#end
 </div>
 #end

@@ -41,7 +41,7 @@ public class CodeSyncTemplateService {
 
 		// merge
 		TemplatesEngineController engine = new TemplatesEngineController();
-		engine.addTemplatesDirectory(repo);
+		engine.addTemplatesDirectory(repo + "/tpl/");
 		engine.init();
 		VelocityContext context = createVelocityContext(node);
 		String output = engine.merge(context);
@@ -75,7 +75,7 @@ public class CodeSyncTemplateService {
 		
 		// populate children
 		List<Node> children = CorePlugin.getInstance().getNodeService().getChildren(node, new ServiceContext<NodeService>());
-		node.setChildren(children);
+		node.setChildren(children.size() == 0 ? null : children);
 		for (Node child : children) {
 			populateSubTree(child);
 		}

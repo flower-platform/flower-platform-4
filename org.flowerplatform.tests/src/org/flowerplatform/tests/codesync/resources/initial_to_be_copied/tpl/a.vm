@@ -1,5 +1,5 @@
 #macro( a $node )
-<a#foreach($attr in $node.attrs.entrySet()) $attr.key="$attr.value"#end>
-	#altFormat( $node.glyphicon '<span class="glyphicon glyphicon-$node.glyphicon"></span>' ) $!node.label
+<a#foreach($attr in $node.properties.attrs.entrySet()) $attr.key="$attr.value"#end>
+	#altFormat( $node.properties.glyphicon '<span class="glyphicon glyphicon-$node.properties.glyphicon"></span>' ) $!node.properties.name
 </a>
 #end

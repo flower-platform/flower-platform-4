@@ -1,0 +1,7 @@
+#macro( stringField $node )
+<div class="form-group">
+	<label>${node.properties.label}</label>
+	<input class="form-control" type="text" ng-model="${node.properties.parent}.${node.properties.entity}">
+</div>
+
+#end

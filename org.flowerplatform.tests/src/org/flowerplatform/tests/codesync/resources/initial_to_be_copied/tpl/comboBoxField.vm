@@ -1,9 +1,0 @@
-#macro( comboBoxField $node)
-<div class="form-group">
-	<label>${node.label}</label>
-	<select class="form-control" ng-model="${node.parent}.${node.entity}.${node.id}"
-		ng-options="${node.option}.${node.id} as ${node.comboBoxLabelFunction}(${node.option}) for ${node.option} in ${node.options}">
-	</select>
-</div>
-
-#end

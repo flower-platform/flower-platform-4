@@ -138,6 +138,31 @@ public final class CoreConstants {
 	public static final String FILE_LAST_ACCESS_TIME = "lastAccessTime";
 	
 	//////////////////////////////////
+	// Meta descriptors
+	//////////////////////////////////
+	
+	public static final String META_TYPE_CATEGORY_ROOT = UtilConstants.CATEGORY_PREFIX + "metaTypesRoot";
+	public static final String META_TYPE_TYPE_DESCRIPTOR = "typeDescriptor";
+	public static final String META_TYPE_CATEGORY_DESCRIPTOR = "categoryDescriptor";
+	public static final String META_TYPE_CONTAINING_CATEGORY = "containingCategory";
+	public static final String META_TYPE_PROPERTY_DESCRIPTOR = "propertyDescriptor";
+	public static final String META_TYPE_PROPERTY_POSSIBLE_VALUE = "propertyPossibleValue";
+	public static final String META_TYPE_ADD_CHILD_DESCRIPTOR = "addChildDescriptor";
+	
+	public static final String META_TYPE_FEATURE_LABEL = "label";
+	public static final String META_TYPE_FEATURE_ICON = "icon";
+	
+	public static final String META_TYPE_FEATURE_CHILD_TYPE = "childType";
+	public static final String META_TYPE_FEATURE_DYNAMIC_CHILD_TYPE = "dynamicChildType";
+	
+	public static final String META_TYPE_FEATURE_PROPERTY_TYPE = "propertyType";
+	public static final String META_TYPE_FEATURE_PROPERTY_GROUP = "propertyGroup";
+	public static final String META_TYPE_FEATURE_PROPERTY_LINE_RENDERER = "propertyLineRenderer";
+	public static final String META_TYPE_FEATURE_PROPERTY_WRITEABLE_ON_CREATE = "propertyWriteableOnCreate";
+	public static final String META_TYPE_FEATURE_PROPERTY_READ_ONLY = "propertyReadOnly";
+	public static final String META_TYPE_FEATURE_PROPERTY_DEFAULT_VALUE = "propertyDefaultValue";
+	
+	//////////////////////////////////
 	// Controllers
 	//////////////////////////////////
 	

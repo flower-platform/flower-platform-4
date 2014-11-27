@@ -61,15 +61,13 @@ package org.flowerplatform.flex_client.codesync {
 			FlexUtilGlobals.getInstance().registerAction(ReloadConfigurationAction);
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CodeSyncConstants.CATEGORY_CODESYNC)
+				.addAdditiveController(FlexUtilConstants.TYPE_DESCRIPTOR_REGISTRY_PROVIDER, new CodeSyncConfigTypeDescriptorRegistryProvider())
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, AbstractController(new NodeRendererController(new ClassFactoryWithConstructor(CodeSyncNodeRenderer, -10000))))
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(SynchronizeAction.ID));
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncConstants.CODE_SYNC_CONFIG_ROOT)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ReloadConfigurationAction.ID));
 
-			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(FlexUtilConstants.CATEGORY_HAS_LOCAL_TYPE_DESCRIPTOR_REGISTRY)
-				.addAdditiveController(FlexUtilConstants.TYPE_DESCRIPTOR_REGISTRY_PROVIDER, new CodeSyncConfigTypeDescriptorRegistryProvider());
-			
 			CorePlugin.getInstance().serviceLocator.addService("codeSyncOperationsService");
 		}
 		

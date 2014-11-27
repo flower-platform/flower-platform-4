@@ -23,10 +23,8 @@ import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 public interface ICodeSyncConfigLoader {
 
 	/**
-	 * 
-	 * @param codeSyncConfigDirs
-	 * @param codeSyncConfig
+	 * Load the configuration from each of the config directories into the registry.
 	 */
-	void load(String[] codeSyncConfigDirs, TypeDescriptorRegistry codeSyncConfig);
+	void load(String[] codeSyncConfigDirs, TypeDescriptorRegistry registry);
 
 }

@@ -132,7 +132,9 @@ package org.flowerplatform.flex_client.properties2 {
 			// get the descriptors from each local registry
 			for each (var provider:ITypeDescriptorRegistryProvider in providers) {
 				var registry:TypeDescriptorRegistry = provider.getTypeDescriptorRegistry(parent);
-				result.addAll(registry.getAdditiveControllers(feature, model));
+				if (registry != null) {
+					result.addAll(registry.getAdditiveControllers(feature, model));
+				}
 			}
 			
 			return result;

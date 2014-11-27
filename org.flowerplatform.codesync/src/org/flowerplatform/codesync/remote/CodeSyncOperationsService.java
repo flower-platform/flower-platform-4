@@ -24,7 +24,6 @@ import static org.flowerplatform.core.CoreConstants.NAME;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,16 +36,11 @@ import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.Match;
 import org.flowerplatform.codesync.adapter.file.CodeSyncFile;
 import org.flowerplatform.codesync.config_loader.ICodeSyncConfigLoader;
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.Node;
-import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ServiceContext;
-import org.flowerplatform.util.UtilConstants;
-import org.flowerplatform.util.controller.TypeDescriptor;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.controller.TypeDescriptorRemote;
 
@@ -82,18 +76,7 @@ public class CodeSyncOperationsService {
 	public List<TypeDescriptorRemote> getCodeSyncConfigurationRemote(String nodeUri) {
 		String codeSyncConfigDirs = getCodeSyncConfigDirsKeyFromNodeUri(nodeUri);
 		TypeDescriptorRegistry registry = getOrLoadCodeSyncConfig(codeSyncConfigDirs);
-		
-		// TODO test; remove
-		TypeDescriptor srcDir = registry.getOrCreateTypeDescriptor(CodeSyncConstants.SRC_DIR);
-		srcDir.addAdditiveController(CoreConstants.ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs("innerTemplate")
-		.setDynamicChildTypeAs("form").setLabelAs("Form @" + new Date()));
-		TypeDescriptor form = registry.getOrCreateTypeDescriptor("form");
-		form.addAdditiveController(UtilConstants.FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(CoreConstants.NAME));
-		registry.getOrCreateTypeDescriptor("tab");
-		// end test
-		
-		List<TypeDescriptorRemote> desc = registry.getTypeDescriptorsRemote();
-		return desc;
+		return registry.getTypeDescriptorsRemote();
 	}
 	
 	private String getCodeSyncConfigDirsKeyFromNodeUri(String nodeUri) {

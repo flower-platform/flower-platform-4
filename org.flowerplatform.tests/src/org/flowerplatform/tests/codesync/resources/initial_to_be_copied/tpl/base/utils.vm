@@ -7,7 +7,7 @@
 #end
 
 #macro( callMacro $node $param )
-#set( $callMacro = "#${node.template}(\$node \$param)" )
+#set( $callMacro = "#${node.properties.template}(\$node \$param)" )
 #evaluate($callMacro)
 #end
 

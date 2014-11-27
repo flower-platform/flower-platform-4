@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.Path;
 import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.config_loader.ICodeSyncConfigLoader;
 import org.flowerplatform.core.CorePlugin;
+import org.flowerplatform.core.config_processor.ConfigProcessor;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
@@ -37,14 +38,13 @@ import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 public class TemplatesCodeSyncConfigLoader implements ICodeSyncConfigLoader {
 
 	@Override
-	public void load(String[] codeSyncConfigDirs, TypeDescriptorRegistry codeSyncConfig) {
-		TemplatesEngineController engine = getVelocityEngineController(codeSyncConfig);
+	public void load(String[] codeSyncConfigDirs, TypeDescriptorRegistry registry) {
+		TemplatesEngineController engine = getVelocityEngineController(registry);
 		
 		for (String dir : codeSyncConfigDirs) {
 			// get the templates config from each dir
 			Node templatesConfig = getTemplatesConfig(dir);
-			
-			// TODO read descriptors
+			new ConfigProcessor().processConfigHierarchy(templatesConfig, registry);
 			
 			// get the templates folders
 			String path = getPath(dir, CODE_SYNC_CONFIG_TEMPLATES);
@@ -70,7 +70,9 @@ public class TemplatesCodeSyncConfigLoader implements ICodeSyncConfigLoader {
 			throw new RuntimeException(e);
 		}
 		if (controller.exists(file)) {
-			String nodeUri = "fpp:|" + path; // TODO how do I know the repo?
+			// TODO temp code; need a better way to find the repo
+			int index = path.indexOf("/", path.indexOf("/") + 1);
+			String nodeUri = "fpp:" + path.substring(0, index) + "|" + path.substring(index + 1);
 			new ResourceServiceRemote().subscribeToParentResource(nodeUri);
 			return CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 		}

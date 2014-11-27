@@ -85,7 +85,7 @@ public class CodeSyncTemplateTest extends CodeSyncEclipseIndependentTestBase {
 	 */
 	@Test
 	public void test() throws Exception {
-		String fileName = "employees.codesyncTemplate";
+		String fileName = "employees.codesync";
 		String ssp = PROJECT + "|" + fileName;
 		
 		// create file

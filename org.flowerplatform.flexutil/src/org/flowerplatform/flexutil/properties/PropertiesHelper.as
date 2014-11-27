@@ -149,6 +149,9 @@ package org.flowerplatform.flexutil.properties {
 					entry.value = allModelProperties[entry.descriptor.name];
 					// and remove it from this map (needed later, to know which properties don't have a descriptor)
 					delete allModelProperties[entry.descriptor.name];
+				} else {
+					// not in the model, get the default value from the descriptor
+					entry.value = entry.descriptor.defaultValue;
 				}
 				
 				var groupForCurrentEntry:String = entry.descriptor.group;

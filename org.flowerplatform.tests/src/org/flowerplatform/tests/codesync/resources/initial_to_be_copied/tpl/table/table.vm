@@ -1,0 +1,40 @@
+#macro( table $node )
+<table class="#alt( $node.properties.table-class 'table table-condensed table-striped table-hover' )" ng-controller="${node.properties.label}ListCtrl">
+	<thead>
+		<tr>
+#foreach( $child in $node.children )
+#@indent()
+			#callMacro( $child 'header' )
+#end
+#end
+#if( $node.properties.actions )
+			<th>Actions</th>
+#end
+		</tr>
+	</thead>
+
+	<tbody>
+		<tr ng-repeat="${node.properties.entity} in ${node.properties.entity}List">
+#foreach( $child in $node.children )
+#@indent()
+			#callMacro( $child )
+#end
+#end
+#if( $node.properties.actions )
+			<td>
+#if( $node.properties.actions.contains('edit') )
+				<a role="button" class="btn btn-primary btn-xs" ng-href="#${node.properties.entity}/{{${node.properties.entity}.id}}">
+					<span class="glyphicon glyphicon-edit"></span>
+				</a>
+#end
+#if( $node.properties.actions.contains('remove') )
+				<button type="button" class="btn btn-danger btn-xs" ng-click="remove(${node.properties.entity})">
+					<span class="glyphicon glyphicon-remove"></span>
+				</button>
+#end
+			</td>
+#end
+		</tr>
+	</tbody>
+</table>
+#end

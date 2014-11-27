@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.core;
 
+import static org.flowerplatform.core.CoreConstants.ADD_CHILD_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_BACKGROUND_COLOR;
 import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_FONT_BOLD;
 import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_FONT_FAMILY;
@@ -25,15 +26,36 @@ import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_MAX_WIDTH;
 import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_MIN_WIDTH;
 import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_TEXT;
 import static org.flowerplatform.core.CoreConstants.BASE_RENDERER_TEXT_COLOR;
+import static org.flowerplatform.core.CoreConstants.CONFIG_NODE_PROCESSOR;
 import static org.flowerplatform.core.CoreConstants.DEFAULT_LOG_PATH;
 import static org.flowerplatform.core.CoreConstants.DEFAULT_PROPERTY_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.LOGBACK_CONFIG_FILE;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_ADD_CHILD_DESCRIPTOR;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_CATEGORY_DESCRIPTOR;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_CONTAINING_CATEGORY;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_FEATURE_CHILD_TYPE;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_FEATURE_DYNAMIC_CHILD_TYPE;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_FEATURE_ICON;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_FEATURE_LABEL;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_FEATURE_PROPERTY_DEFAULT_VALUE;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_FEATURE_PROPERTY_GROUP;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_FEATURE_PROPERTY_LINE_RENDERER;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_FEATURE_PROPERTY_READ_ONLY;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_FEATURE_PROPERTY_TYPE;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_FEATURE_PROPERTY_WRITEABLE_ON_CREATE;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_PROPERTY_DESCRIPTOR;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_PROPERTY_POSSIBLE_VALUE;
+import static org.flowerplatform.core.CoreConstants.META_TYPE_TYPE_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_CLOUD_COLOR;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_CLOUD_TYPE;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_HAS_CHILDREN;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_SIDE;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX;
+import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_DEFAULT;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE;
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.core.CoreConstants.ROOT_TYPE;
@@ -41,6 +63,7 @@ import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
 import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_VALUE_CONVERTER;
 import static org.flowerplatform.util.UtilConstants.FEATURE_PROPERTY_DESCRIPTORS;
 import static org.flowerplatform.util.UtilConstants.PROPERTY_EDITOR_TYPE_BOOLEAN;
+import static org.flowerplatform.util.UtilConstants.PROPERTY_EDITOR_TYPE_STRING;
 import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_CSV_TO_LIST;
 import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_STRING_HEX_TO_UINT;
 
@@ -49,16 +72,24 @@ import java.io.File;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
+import org.flowerplatform.core.config_processor.AddChildDescriptorConfigNodeProcessor;
 import org.flowerplatform.core.config_processor.ConfigSettingsPropertiesController;
+import org.flowerplatform.core.config_processor.ContainingCategoryConfigNodeProcessor;
+import org.flowerplatform.core.config_processor.IConfigNodeProcessor;
+import org.flowerplatform.core.config_processor.PropertyDescriptorConfigNodeProcessor;
+import org.flowerplatform.core.config_processor.RootConfigNodeProcessor;
+import org.flowerplatform.core.config_processor.TypeDescriptorConfigNodeProcessor;
 import org.flowerplatform.core.file.FileSystemControllers;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
 import org.flowerplatform.core.file.download.remote.DownloadService;
 import org.flowerplatform.core.file.upload.remote.UploadService;
 import org.flowerplatform.core.node.NodeService;
+import org.flowerplatform.core.node.controller.ConstantValuePropertyProvider;
 import org.flowerplatform.core.node.controller.DelegateToResourceController;
 import org.flowerplatform.core.node.controller.PropertyDescriptorDefaultPropertyValueProvider;
 import org.flowerplatform.core.node.controller.TypeDescriptorRegistryDebugControllers;
+import org.flowerplatform.core.node.remote.AddChildDescriptor;
 import org.flowerplatform.core.node.remote.NodeServiceRemote;
 import org.flowerplatform.core.node.remote.PropertyDescriptor;
 import org.flowerplatform.core.node.remote.ResourceServiceRemote;
@@ -85,6 +116,7 @@ import org.flowerplatform.core.session.ComposedSessionListener;
 import org.flowerplatform.core.session.ISessionListener;
 import org.flowerplatform.core.session.SessionService;
 import org.flowerplatform.core.users.UserService;
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.UtilConstants;
 import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.GenericDescriptor;
@@ -404,6 +436,72 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_MIN_WIDTH);
 				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + BASE_RENDERER_MAX_WIDTH);
 				addGenericDescriptorWithSimilarNameAsFeature(descriptor, MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + MIND_MAP_RENDERER_SIDE);
+
+
+		// define meta-types: nodes of these types will be processed at runtime and become descriptors 
+		// i.e. type descriptors, category descriptors, property descriptors, and add child descriptors
+		String iconDescriptor = ResourcesPlugin.getInstance().getResourceUrl("images/core/puzzle.png");
+		String iconContainingCategory = ResourcesPlugin.getInstance().getResourceUrl("images/core/puzzle--arrow.png");
+		String iconPropDescriptor = ResourcesPlugin.getInstance().getResourceUrl("images/core/puzzle--pencil.png");
+		String iconAddChildDescriptor = ResourcesPlugin.getInstance().getResourceUrl("images/core/puzzle--plus.png");
+		
+		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CoreConstants.META_TYPE_CATEGORY_ROOT)
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(META_TYPE_TYPE_DESCRIPTOR).setIconAs(iconDescriptor))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(META_TYPE_CATEGORY_DESCRIPTOR).setIconAs(iconDescriptor))
+			.addSingleController(CONFIG_NODE_PROCESSOR, new RootConfigNodeProcessor());
+		
+		IConfigNodeProcessor<TypeDescriptor, TypeDescriptorRegistry> typeDescriptorNodeProcessor = new TypeDescriptorConfigNodeProcessor();
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(META_TYPE_TYPE_DESCRIPTOR)
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(NAME))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(META_TYPE_PROPERTY_DESCRIPTOR).setIconAs(iconPropDescriptor))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(META_TYPE_ADD_CHILD_DESCRIPTOR).setIconAs(iconAddChildDescriptor))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(META_TYPE_CONTAINING_CATEGORY).setIconAs(iconContainingCategory))
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, iconDescriptor))
+			.addSingleController(CONFIG_NODE_PROCESSOR, typeDescriptorNodeProcessor);
+		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(META_TYPE_CATEGORY_DESCRIPTOR)
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(NAME))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(META_TYPE_PROPERTY_DESCRIPTOR).setIconAs(iconPropDescriptor))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(META_TYPE_ADD_CHILD_DESCRIPTOR).setIconAs(iconAddChildDescriptor))
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, iconDescriptor))
+			.addSingleController(CONFIG_NODE_PROCESSOR, typeDescriptorNodeProcessor);
+		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(META_TYPE_CONTAINING_CATEGORY)
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(NAME))
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, iconContainingCategory))
+			.addSingleController(CONFIG_NODE_PROCESSOR, new ContainingCategoryConfigNodeProcessor());
+		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(META_TYPE_PROPERTY_DESCRIPTOR)
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(NAME).setOrderIndexAs(10))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(META_TYPE_FEATURE_LABEL).setOrderIndexAs(20))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(META_TYPE_FEATURE_PROPERTY_TYPE)
+					.setDefaultValueAs(PROPERTY_EDITOR_TYPE_STRING).setOrderIndexAs(30))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(META_TYPE_FEATURE_PROPERTY_GROUP)
+					.setDefaultValueAs(PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY).setOrderIndexAs(40))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(META_TYPE_FEATURE_PROPERTY_READ_ONLY)
+					.setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN).setOrderIndexAs(50))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(META_TYPE_FEATURE_PROPERTY_DEFAULT_VALUE)
+					.setOrderIndexAs(60))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(META_TYPE_FEATURE_PROPERTY_LINE_RENDERER)
+					.setDefaultValueAs(PROPERTY_LINE_RENDERER_TYPE_DEFAULT).setOrderIndexAs(70))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(META_TYPE_FEATURE_PROPERTY_WRITEABLE_ON_CREATE)
+					.setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN).setOrderIndexAs(80))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(META_TYPE_PROPERTY_POSSIBLE_VALUE))
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, iconPropDescriptor))
+			.addSingleController(CONFIG_NODE_PROCESSOR, new PropertyDescriptorConfigNodeProcessor());
+		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(META_TYPE_PROPERTY_POSSIBLE_VALUE)
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(NAME));
+		
+		getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(META_TYPE_ADD_CHILD_DESCRIPTOR)
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(META_TYPE_FEATURE_CHILD_TYPE).setOrderIndexAs(10))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(META_TYPE_FEATURE_DYNAMIC_CHILD_TYPE).setOrderIndexAs(20))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(META_TYPE_FEATURE_LABEL).setOrderIndexAs(30))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(META_TYPE_FEATURE_ICON).setOrderIndexAs(40))
+			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, iconAddChildDescriptor))
+			.addSingleController(CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + CoreConstants.BASE_RENDERER_TEXT,
+					new GenericDescriptor(META_TYPE_FEATURE_DYNAMIC_CHILD_TYPE))
+			.addSingleController(CONFIG_NODE_PROCESSOR, new AddChildDescriptorConfigNodeProcessor());
 	}	
 	
 	/**

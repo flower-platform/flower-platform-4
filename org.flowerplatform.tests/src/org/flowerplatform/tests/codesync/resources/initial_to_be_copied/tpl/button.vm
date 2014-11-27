@@ -1,5 +1,5 @@
 #macro( button $node )
-<button type="#alt( $node.btn-type 'button' )" class="#alt( $node.btn-cls 'btn btn-primary' )" #altFormat( $node.btn-click 'ng-click="$node.btn-click"' )>
-	#altFormat( $node.glyphicon '<span class="glyphicon glyphicon-$node.glyphicon"></span>' ) $!node.label
+<button type="#alt( $node.properties.btn-type 'button' )" class="#alt( $node.properties.btn-cls 'btn btn-primary' )" #altFormat( $node.properties.btn-click 'ng-click="$node.properties.btn-click"' )>
+	#altFormat( $node.properties.glyphicon '<span class="glyphicon glyphicon-$node.properties.glyphicon"></span>' ) $!node.properties.name
 </button>
 #end

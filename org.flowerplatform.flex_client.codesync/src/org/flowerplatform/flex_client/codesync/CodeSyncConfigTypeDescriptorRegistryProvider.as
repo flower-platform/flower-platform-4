@@ -27,6 +27,7 @@ package org.flowerplatform.flex_client.codesync {
 	public class CodeSyncConfigTypeDescriptorRegistryProvider extends AbstractController implements ITypeDescriptorRegistryProvider {
 		
 		public function getTypeDescriptorRegistry(model:Object):TypeDescriptorRegistry {
+			trace ("get registry from provider");
 			if (model is Node) {
 				var node:Node = Node(model);
 				

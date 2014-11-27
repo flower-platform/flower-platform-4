@@ -1,7 +1,7 @@
 #macro( tab $node )
 <tab>
 	<tab-heading>
-		${node.label}
+		${node.properties.name}
 	</tab-heading>
 
 #foreach( $child in $node.children )

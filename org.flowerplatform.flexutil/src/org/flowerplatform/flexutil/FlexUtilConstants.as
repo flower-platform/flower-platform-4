@@ -33,7 +33,6 @@ package org.flowerplatform.flexutil {
 		public static const VALUE_CONVERTER_LIST_TO_LIST:String = "listToList";
 		
 		// TypeDescriptorRegistry Provider
-		public static const CATEGORY_HAS_LOCAL_TYPE_DESCRIPTOR_REGISTRY:String = CATEGORY_PREFIX + "hasLocalTypeDescriptorRegistry";
 		public static const TYPE_DESCRIPTOR_REGISTRY_PROVIDER:String = "typeDescriptorRegistryProvider";
 		
 		// Properties

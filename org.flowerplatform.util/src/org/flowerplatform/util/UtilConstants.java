@@ -46,9 +46,6 @@ public final class UtilConstants {
 	public static final String VALUE_CONVERTER_CSV_TO_LIST = "csvToList";
 	public static final String VALUE_CONVERTER_LIST_TO_LIST = "listToList";
 	
-	// TypeDescriptorRegistry Provider
-	public static final String CATEGORY_HAS_LOCAL_TYPE_DESCRIPTOR_REGISTRY = CATEGORY_PREFIX + "hasLocalTypeDescriptorRegistry";
-	
 	// Properties
 	public static final String FEATURE_PROPERTY_DESCRIPTORS = "PropertyDescriptors";
 	public static final String FEATURE_PROPERTY_GROUP_DESCRIPTORS = "PropertyGroupsDescriptors";
