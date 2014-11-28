@@ -17,7 +17,7 @@ public class PropertiesDiffUpdate extends DiffUpdate {
 	}
 
 	public PropertiesDiffUpdate() {
-		setType("UPDATED");
+		setType("updated");
 	}
 	
 	public void setProperties(Map<String, Object> properties) {
@@ -26,8 +26,8 @@ public class PropertiesDiffUpdate extends DiffUpdate {
 	
 	/**
 	 * 
-	 * @param key
-	 * @param value
+	 * @author see class
+	 *
 	 */
 	public void addProperty(String key, Object value) {
 		properties.put(key, value);

@@ -16,7 +16,9 @@
 
 var EntityRegistryManager = function(entityOperationsAdapter) {
 	this.entityOperationsAdapter = entityOperationsAdapter;
+	// key = notificationChannel; value = EntityRegistryEntry
 	this.entityRegistryEntries = {};
+	// key = update type; value = UpdateProcessor
 	this.diffUpdateProcessors = {};
 	this.listeners = [];
 };
@@ -25,7 +27,7 @@ EntityRegistryManager.prototype.createEntityRegistry = function(notificationChan
 	var entityRegistry = new EntityRegistry(this);
 	var entityRegistryEntry = this.entityRegistryEntries[notificationChannel];
 	if (!entityRegistryEntry) {
-		entityRegistryEntry = new EntityRegistryEntry;
+		entityRegistryEntry = new EntityRegistryEntry();
 		this.entityRegistryEntries[notificationChannel] = entityRegistryEntry;
 	}
 	entityRegistryEntry.entityRegistries.push(entityRegistry);
@@ -33,6 +35,7 @@ EntityRegistryManager.prototype.createEntityRegistry = function(notificationChan
 	return entityRegistry;
 };
 
+// TODO CS: de sters la sfarsit
 EntityRegistryManager.prototype.getNotificationChannels = function() {
 	var notificationChannels = [];
 	for (var notificationChannel in this.entityRegistryEntries) {
@@ -54,6 +57,7 @@ EntityRegistryManager.prototype.addDiffUpdateProcessor = function(diffUpdateType
 };
 
 EntityRegistryManager.prototype.processDiffUpdate = function(notificationChannel, diffUpdate) {
+	// TODO CS: throw 1) dc nu gasim updProc; 2) dc id > lastId
 	var diffUpdateProcessor = this.diffUpdateProcessors[diffUpdate.type];
 	var entityRegistryEntry = this.entityRegistryEntries[notificationChannel];
 	for (var i in entityRegistryEntry.entityRegistries) {
@@ -63,7 +67,6 @@ EntityRegistryManager.prototype.processDiffUpdate = function(notificationChannel
 	if (diffUpdate.id > entityRegistryEntry.lastDiffUpdateId) {
 		entityRegistryEntry.lastDiffUpdateId = diffUpdate.id;
 	}
-	
 };
 
 EntityRegistryManager.prototype.addListener = function(listener) {
@@ -77,7 +80,6 @@ EntityRegistryManager.prototype.removeListener = function(listener) {
 	}
 };
 
-
 EntityRegistryEntry = function() {
 	this.entityRegistries = [];
 	this.lastDiffUpdateId = -1;
@@ -85,4 +87,5 @@ EntityRegistryEntry = function() {
 
 var _entityRegistryManager;
 
-var Constants = { UPDATED: "UPDATED", ADDED: "ADDED", REMOVED: "REMOVED", REQUEST_REFRESH: "REQUEST_REFRESH"};
+// TODO CS: de folosit camelCase
+var Constants = { UPDATED: "updated", ADDED: "added", REMOVED: "removed", REQUEST_REFRESH: "requestRefresh" };

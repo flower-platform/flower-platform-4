@@ -8,7 +8,7 @@ package org.flowerplatform.util.diff_update;
 public class RemoveEntityDiffUpdate extends PropertiesDiffUpdate {
 	
 	public RemoveEntityDiffUpdate() {
-		setType("REMOVED");
+		setType("removed");
 	}
 	
 }

@@ -51,7 +51,7 @@ public class DetailEntity extends AbstractEntity {
 	 * 
 	 */
 	public String toString() {
-		return String.format("%s[id:%s parentUid:%s parentChildrenProperty:%s]", getClass().getSimpleName(), getId(), parentUid, parentChildrenProperty, value);
+		return String.format("%s[id:%s value:%s parentUid:%s parentChildrenProperty:%s]", getClass().getSimpleName(), getId(), value, parentUid, parentChildrenProperty, value);
 	}
 	
 }

@@ -39,5 +39,14 @@ public class MasterEntity extends AbstractEntity {
 	public void setDetails(List<Object> children) {
 		this.details = children;
 	}
+
+	/**
+	 * 
+	 * @author see class
+	 *
+	 */
+	public String toString() {
+		return String.format("MasterEntity[id:%s name:%s details:%s]", id, name, details);
+	}
 	
 }

@@ -1,25 +1,23 @@
+//CHECKSTYLE:OFF
 package org.flowerplatform.tests.diff_update;
 
+import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
+import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-
+import java.util.Set;
 
 /**
- * 
  * @author Claudiu Matei
- *
  */
 public class EntityOperationsAdapter {
 	
 	/**
-	 * 
-	 * @param entity
-	 * @return
+	 * @author See class.
 	 */
 	public String getEntityUid(Object entity) {
 		String uid = entity.getClass().getSimpleName() + ":" + ((AbstractEntity) entity).getId();
@@ -27,42 +25,16 @@ public class EntityOperationsAdapter {
 	}
 	
 	/**
-	 * 
-	 * @param entity
-	 * @param childrenProperty
-	 * @param children
+	 * @author See class.
 	 */
 	public void setChildren(Object entity, String childrenProperty, List<Object> children) {
-		((MasterEntity) entity).setDetails(children);
-	}
-
-	/**
-	 * 
-	 * @param entity
-	 * @param childrenProperty
-	 * @param children
-	 * @throws IntrospectionException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 */
-	public void addChild(Object parent, String childrenProperty, Object child, int index) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
-			IntrospectionException {
-		@SuppressWarnings("unchecked")
-		List<Object> children = (List<Object>) new PropertyDescriptor(childrenProperty, parent.getClass()).getReadMethod().invoke(parent);
-		if (index == -1) {
-			children.add(child);
-		} else {
-			children.add(index, child);
+		if (entity instanceof MasterEntity) {
+			((MasterEntity) entity).setDetails(children);
 		}
-		
 	}
 	
 	/**
-	 * 
-	 * @param entity
-	 * @param parentUid
-	 * @param parentChildrenProperty
+	 * @author See class.
 	 */
 	public void setParent(Object entity, String parentUid, String parentChildrenProperty) {
 		DetailEntity childEntity = (DetailEntity) entity;
@@ -71,9 +43,7 @@ public class EntityOperationsAdapter {
 	}
 
 	/**
-	 * 
-	 * @param entity
-	 * @return
+	 * @author See class.
 	 */
 	public String[] getChildrenProperties(Object entity) {
 		if (entity instanceof MasterEntity) {
@@ -83,64 +53,7 @@ public class EntityOperationsAdapter {
 	}
 	
 	/**
-	 * 
-	 * @param entity
-	 * @param childrenProperty
-	 * @return
-	 * @throws IntrospectionException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 */
-	public Object[] getChildren(Object entity, String childrenProperty) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
-		@SuppressWarnings("unchecked")
-		List<Object> children = (List<Object>) new PropertyDescriptor(childrenProperty, entity.getClass()).getReadMethod().invoke(entity);
-		return children.toArray(); 
-	}
-
-	/**
-	 * 
-	 * @param parent
-	 * @param childrenProperty
-	 * @return
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
-	 * @throws IntrospectionException
-	 */
-	public void removeChildren(Object parent, String childrenProperty) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
-		@SuppressWarnings("unchecked")
-		List<Object> children = (List<Object>) new PropertyDescriptor(childrenProperty, parent.getClass()).getReadMethod().invoke(parent);
-		children.clear(); 
-	}
-
-	/**
-	 * 
-	 * @param parent
-	 * @param childrenProperty
-	 * @param child
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
-	 * @throws IntrospectionException
-	 */
-	public void removeChild(Object parent, String childrenProperty, Object child) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
-			IntrospectionException {
-		@SuppressWarnings("unchecked")
-		List<Object> children = (List<Object>) new PropertyDescriptor(childrenProperty, parent.getClass()).getReadMethod().invoke(parent);
-		children.remove(child); 
-	}
-
-	/**
-	 * 
-	 * @param entityType
-	 * @param properties
-	 * @throws ClassNotFoundException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws IntrospectionException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
+	 * @author See class.
 	 */
 	public Object createEntity(String entityType, Map<String, Object> properties) throws InstantiationException, IllegalAccessException, 
 			ClassNotFoundException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
@@ -151,4 +64,114 @@ public class EntityOperationsAdapter {
 		return entity;
 	}
 	
+	/**
+	 * @author See class.
+	 */
+	public List<?>[] getChildrenLists(Object entity) {
+		List<?>[] lists;
+		if (entity instanceof MasterEntity) {
+			lists = new List<?>[1];
+			lists[0] = ((MasterEntity) entity).getDetails();
+		}
+		return new List<?>[0];
+	}
+
+	/**
+	 * @author See class.
+	 */
+	public List<?> getChildrenList(Object entity, String property) {
+		if (entity instanceof MasterEntity) {
+			return ((MasterEntity) entity).getDetails();
+		}
+		return null;
+	}
+
+	
+	/**
+	 * @author See class.
+	 */
+	public void list_addItem(List<Object> list, Object element, int index) {
+		if (index == -1) {
+			list.add(element);
+		} else {
+			list.add(index, element);
+		}
+	}
+
+	/**
+	 * @author See class.
+	 */
+	public void list_setItemAt(List<Object> list, Object element, int index) {
+		list.set(index, element);
+	}
+
+	/**
+	 * @author See class.
+	 */
+	public Object list_removeItemAt(List<Object> list, int index) {
+		return list.remove(index);
+	}
+	
+	/**
+	 * @author See class.
+	 */
+	public void list_removeItem(List<Object> list, Object element) {
+		list.remove(element);
+	}
+
+	/**
+	 * @author See class.
+	 */
+	public int list_getLength(List<Object> list) {
+		return list.size();
+	}
+
+	/**
+	 * @author See class.
+	 */
+	public Object list_getItemAt(List<Object> list, int index) {
+		return list.get(index);
+	}
+
+	/**
+	 * @author See class.
+	 */
+	public String[] map_getKeys(Map<String, Object> map) {
+		Set<String> keySet = map.keySet();
+		String[] keys = new String[keySet.size()];
+		for (String key : keySet) {
+			keySet.add(key); 
+		}
+		return keys;
+	}
+
+	/**
+	 * @author See class.
+	 */
+	public Object map_getValue(Map<String, Object> map, String key) {
+		return map.get(key);
+	}
+
+	public Object object_getPropertiesHolder(Object entity) {
+		return entity;
+	}
+
+	public boolean object_hasDynamicProperties(Object entity) {
+		return false;
+	}
+	
+	public void object_iterateProperties(Object propertiesHolder, IteratePropertiesCallback ipc) throws ReflectiveOperationException, IllegalArgumentException, IntrospectionException {
+		BeanInfo beanInfo = Introspector.getBeanInfo(propertiesHolder.getClass());
+        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+        for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+        	if (propertyDescriptor.getWriteMethod() != null && !propertyDescriptor.getName().equals("details")) {
+            	ipc.callback(propertyDescriptor.getName(), propertyDescriptor.getReadMethod().invoke(propertiesHolder));
+        	}
+        }
+	}
+
+}
+
+interface IteratePropertiesCallback {
+    public void callback(String key, Object value);
 }

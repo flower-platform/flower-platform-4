@@ -12,7 +12,7 @@ public class AddEntityDiffUpdate extends PropertiesDiffUpdate {
 	private String parentUid;
 
 	public AddEntityDiffUpdate() {
-		setType("ADDED");
+		setType("added");
 	}
 	
 	public String getEntityType() {

@@ -17,112 +17,194 @@
 var EntityRegistry = function(entityRegistryManager) { 
 	this.entityRegistryManager = entityRegistryManager; 
 	this.entityChangeListeners = [];
+	// key = uid; value = entity
 	this.registry = {};
 	this.entityOperationsAdapter = this.entityRegistryManager.entityOperationsAdapter;
 };
 
-EntityRegistry.prototype.registerEntity = function(entity) {
-	if (!this.registry[entity]) {
-		var uid = this.entityOperationsAdapter.getEntityUid(entity);
+EntityRegistry.prototype.registerEntity = function(entity, parentUid, childrenProperty, index) {
+	if (parentUid) {
+		var parent = this.registry[parentUid];
+		var parentChildren = this.entityOperationsAdapter.getChildren(parent, childrenProperty);
+		this.entityOperationsAdapter.list_addItem(parentChildren, entity, index);
+	}
+	this.registerEntityInternal(entity, parentUid, childrenProperty);
+};
+
+EntityRegistry.prototype.registerChildren = function(parentUid, childrenProperty, children) {
+	this.registerChildrenInternal(parentUid, childrenProperty, children);
+};
+
+// TODO CS: 
+/*
+registerEntity:
+Cand vine o entitate care deja exista: trebuie bagate prop noi, si scoase cele vechi care nu sunt in ent noua.
+Eu faceam: faceam un set/map care contine cheile din ob vechi; iteram pe ob nou si bagam in cel vechi (in ac. timp scoteam din set); iteram pe set: astea sunt prop care tr. scoase
+
+//Atentie: adaptorul trebuie sa ne dea obiectul care tine proprietati. By default = this.
+oldPropertiesHolder = adapter.object_getPropertiesHolder(entity);
+
+if (adapter.object_hasDynamicProperties(object)) {
+	adapter.object_iterateProperties(object, function (key, value) {
+		oldPropertiesSet[key] = true;
+	});
+}
+
+adapter.object_iterateProperties(object, function (key, value) {
+	oldPropertiesHolder[key] = value;
+});
+
+// iterare pe set
+
+ */
+
+EntityRegistry.prototype.registerEntityInternal = function(entity, parentUid, childrenProperty) {
+	var uid = this.entityOperationsAdapter.getEntityUid(entity);
+
+	var oldEntity = this.registry[uid];
+	java.lang.System.out.println("** "+entity+" **"+oldEntity);
+	if (!oldEntity) {
 		this.registry[uid] = entity;
+	} else { // merge entity
 		
-		// add children to registry
-		var childrenProperties = this.entityOperationsAdapter.getChildrenProperties(entity);
-		if (childrenProperties) {
-			for (var i in childrenProperties) {
-				var childrenProperty = childrenProperties[i];
-				var children = this.entityOperationsAdapter.getChildren(entity, childrenProperty); 
-				for (var j in children) {
-					var child = children[j];
-					var childUid = this.entityOperationsAdapter.getEntityUid(child);
-					this.registry[childUid] = child;
-					this.entityOperationsAdapter.setParent(child, uid, childrenProperty);
+		var oldPropertiesHolder = this.entityOperationsAdapter.object_getPropertiesHolder(this.registry[uid]);
+		
+		var oldPropertiesSet = null;
+		if (this.entityOperationsAdapter.object_hasDynamicProperties(entity)) {
+			oldPropertiesSet = {};
+			adapter.object_iterateProperties(oldPropertiesHolder, function (key, value) {
+				oldPropertiesSet[key] = true;
+			});
+		}
+		
+		var propertiesHolder = this.entityOperationsAdapter.object_getPropertiesHolder(entity);
+		this.entityOperationsAdapter.object_iterateProperties(propertiesHolder, function (key, value) {
+			oldPropertiesHolder[key] = value;
+			if (oldPropertiesSet) {
+				oldPropertiesSet[key] = false;
+			}
+		});
+
+		if (oldPropertiesSet) {
+			for (var property in oldPropertiesSet) {
+				if (oldPropertiesSet[property]) {
+					delete oldPropertiesHolder[property];
 				}
 			}
 		}
-	} else {
-		// merge
-	}
-};
-
-EntityRegistry.prototype.registerChildEntities = function(parentUid, childrenProperty, children) {
-	var parent = this.registry[parentUid];
-	this.entityOperationsAdapter.setChildren(parent, childrenProperty, children);
+		
+	} // end merge
 	
-	var childEntities = this.entityOperationsAdapter.getChildren(parent, childrenProperty); 
-	for (var i in childEntities) {
-		var child = childEntities[i];
-		var childUid = this.entityOperationsAdapter.getEntityUid(child);
-		this.registry[childUid] = child;
-		this.entityOperationsAdapter.setParent(child, parentUid, childrenProperty);
+	if (parentUid) {
+		var parent = this.registry[parentUid];
+		this.entityOperationsAdapter.setParent(this.registry[uid], parentUid, childrenProperty);
+	}
+
+	var childrenProperties = this.entityOperationsAdapter.getChildrenProperties(entity);
+	if (childrenProperties) {
+		for (var i in childrenProperties) {
+			var childrenProperty = childrenProperties[i];
+			var children = this.entityOperationsAdapter.getChildrenList(entity, childrenProperty); 
+			this.registerChildrenInternal(uid, childrenProperty, children);
+		}
+	}
+	for (var i = 0; i < this.entityChangeListeners.length; i++) {
+		this.entityChangeListeners[i].entityRegistered(entity);
 	}
 };
 
-EntityRegistry.prototype.registerChildEntity = function(parentUid, childrenProperty, child, index) {
-	var parent = this.registry[parentUid];
-	this.entityOperationsAdapter.addChild(parent, childrenProperty, child, index);
-
-	var childUid = this.entityOperationsAdapter.getEntityUid(child);
-	this.registry[childUid] = child;
-	this.entityOperationsAdapter.setParent(child, parentUid, childrenProperty);
+/*
+pentru copii:
+parcurg lista de copii si o bag in map (ca mai sus)
+lista copii = lista noua de copii
+parcurg lista copii, si scot din map
+parcurg ce a mai ramas in map: ca sa scot din registru
+ */
+EntityRegistry.prototype.registerChildrenInternal = function(parentUid, childrenProperty, children) {
+	var parent = this.getEntityByUid(parentUid);
+	var oldChildrenList = this.entityOperationsAdapter.getChildrenList(parent, childrenProperty);
+	var oldChildrenSet;
+	if (oldChildrenList != children) {
+		oldChildrenSet = { };
+		var n = this.entityOperationsAdapter.list_getLength(oldChildrenList);
+		for (var i = 0; i < n; i++) {
+			var child = this.entityOperationsAdapter.list_getItemAt(oldChildrenList, i);
+			var childUid = this.entityOperationsAdapter.getEntityUid(child);
+			oldChildrenSet[childUid] = true;
+		}
+	}
+	
+	var n = this.entityOperationsAdapter.list_getLength(children);
+	for (var i = 0; i < n; i++) {
+		var child = this.entityOperationsAdapter.list_getItemAt(children, i);
+		this.registerEntityInternal(child, parentUid, childrenProperty);
+		if (oldChildrenSet) {
+			var childUid = this.entityOperationsAdapter.getEntityUid(child);
+			oldChildrenSet[childUid] = false;
+			this.entityOperationsAdapter.list_setItemAt(children, this.getEntityByUid(childUid), i);
+		}
+	}
+	if (oldChildrenSet) {
+		for (var uid in oldChildrenSet) {
+			if (oldChildrenSet[uid]) {
+				delete this.registry[uid];
+			}
+		}
+		this.entityOperationsAdapter.setChildren(parent, childrenProperty, children);
+	}
 };
 
-
+// TODO CS: la fel ca mai sus: in anumite cazuri nu am nevoie sa sterg din lista de parinte
 EntityRegistry.prototype.unregisterEntity = function(uid) {
-	this.unregister(uid);
+	var entity = this.getEntityByUid(uid);
+	
+	var childrenProperties = this.entityOperationsAdapter.getChildrenProperties(entity);
+	for (var i in childrenProperties) {
+		var childrenProperty = childrenProperties[i];
+		this.unregisterChildren(uid, childrenProperty);
+	}
+	if (entity.parentUid) {
+		// remove from parent
+		var parent = this.getEntityByUid(entity.parentUid);
+		var parentChildrenList = this.entityOperationsAdapter.getChildrenList(parent, entity.parentChildrenProperty);
+		this.entityOperationsAdapter.list_removeItem(parentChildrenList, entity);
+	}
+	delete this.registry[uid];
+	for (var i = 0; i < this.entityChangeListeners.length; i++) {
+		this.entityChangeListeners[i].entityUnregistered(node);
+	}
 };
 
 EntityRegistry.prototype.unregisterChildren = function(parentUid, childrenProperty) {
 	var entity = this.getEntityByUid(parentUid);
 	var children = this.entityOperationsAdapter.getChildren(entity, childrenProperty); 
-	for (var j in children) {
-		var child = children[j];
+	for (var i = 0; i < this.entityOperationsAdapter.list_getLength(children); i++) {
+		var child = this.entityOperationsAdapter.list_getItemAt(children, i);
 		var childUid = this.entityOperationsAdapter.getEntityUid(child);
-		this.unregister(childUid);
+		this.unregisterEntity(childUid);
 	}
 };
 
-EntityRegistry.prototype.unregisterChild = function(parentUid, childUid) {
-	var parent = this.getEntityByUid(parentUid);
-	var child = this.getEntityByUid(childUid);
-	this.entityOperationsAdapter.removeChild(parent, child.parentChildrenProperty, child);
-	this.unregister(childUid);
-};
-
-EntityRegistry.prototype.unregister = function(uid) {
-	var entity = this.getEntityByUid(uid);
-	var childrenProperties = this.entityOperationsAdapter.getChildrenProperties(entity);
-	if (childrenProperties) {
-		for (var i in childrenProperties) {
-			var childrenProperty = childrenProperties[i];
-			var children = this.entityOperationsAdapter.getChildren(entity, childrenProperty); 
-			for (var j in children) {
-				var child = children[j];
-				var childUid = this.entityOperationsAdapter.getEntityUid(child);
-				this.unregister(childUid);
-			}
-		}
-	}
-	delete this.registry[uid];
-};
-
-
+/*
+similar ca mai sus: adapter.propertiesMap_iterateProperties(propertiesMap, handler)
+ */
 EntityRegistry.prototype.setProperties = function(uid, properties) {
 	var entity = this.getEntityByUid(uid);
-	java.lang.System.out.println(properties);
+	var keys = this.entityOperationsAdapter(properties);
 	for (property in properties) {
 		entity[property] = properties[property];
 	}
 };
 
-
 EntityRegistry.prototype.getEntityByUid = function(uid) {
-	if (uid in this.registry) {
-		return this.registry[uid];
+	var entity = this.registry[uid];
+	if (entity) {
+		return entity;
 	}
 	return null;
 };
 
+// TODO CS: de invocat listenerii la operatiuni
 EntityRegistry.prototype.addChangeListener = function(listener) {
 	this.entityChangeListeners.push(listener);
 };
@@ -134,15 +216,16 @@ EntityRegistry.prototype.removeChangeListener = function(listener) {
 	}
 };			
 
-EntityRegistry.prototype.setPropertyValue = function(entity, property, newValue) {
-	var oldValue = (property in entity.properties) ? entity.properties[property] : null;	
-	entity.properties[property] = newValue;
-		
-	for (var i = 0; i < this.entityChangeListeners.length; i++){		
-		this.entityChangeListeners[i].entityUpdated(entity, property, oldValue, newValue);
-	}	
-};
-				
+EntityRegistry.prototype.printDebugInfo = function() {
+	java.lang.System.out.println("*** registry ***");
+	for (var prop in this.registry) {
+		java.lang.System.out.println(prop + " : " + this.registry[prop]);
+	}
+};			
+
+/*
+De intrebat Cristina
+
 EntityRegistry.prototype.resetEntityProperties = function(entity, newProperties) {
 	for (var property in newProperties) {
 		this.setPropertyValue(entity, property, newProperties[property]);
@@ -155,3 +238,4 @@ EntityRegistry.prototype.resetEntityProperties = function(entity, newProperties)
 	}
 };
 
+*/
