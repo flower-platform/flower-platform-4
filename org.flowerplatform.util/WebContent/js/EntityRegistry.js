@@ -25,7 +25,7 @@ var EntityRegistry = function(entityRegistryManager) {
 EntityRegistry.prototype.registerEntity = function(entity, parentUid, childrenProperty, index) {
 	if (parentUid) {
 		var parent = this.registry[parentUid];
-		var parentChildren = this.entityOperationsAdapter.getChildren(parent, childrenProperty);
+		var parentChildren = this.entityOperationsAdapter.getChildrenList(parent, childrenProperty);
 		this.entityOperationsAdapter.list_addItem(parentChildren, entity, index);
 	}
 	this.registerEntityInternal(entity, parentUid, childrenProperty);
@@ -62,7 +62,6 @@ EntityRegistry.prototype.registerEntityInternal = function(entity, parentUid, ch
 	var uid = this.entityOperationsAdapter.getEntityUid(entity);
 
 	var oldEntity = this.registry[uid];
-	java.lang.System.out.println("** "+entity+" **"+oldEntity);
 	if (!oldEntity) {
 		this.registry[uid] = entity;
 	} else { // merge entity
@@ -157,6 +156,20 @@ EntityRegistry.prototype.registerChildrenInternal = function(parentUid, children
 // TODO CS: la fel ca mai sus: in anumite cazuri nu am nevoie sa sterg din lista de parinte
 EntityRegistry.prototype.unregisterEntity = function(uid) {
 	var entity = this.getEntityByUid(uid);
+
+	if (entity.parentUid) {
+		// remove from parent
+		var parent = this.getEntityByUid(entity.parentUid);
+		var parentChildrenList = this.entityOperationsAdapter.getChildrenList(parent, entity.parentChildrenProperty);
+		this.entityOperationsAdapter.list_removeItem(parentChildrenList, entity);
+	}
+	
+	this.unregisterEntityInternal(uid);
+	
+};
+
+EntityRegistry.prototype.unregisterEntityInternal = function(uid) {
+	var entity = this.getEntityByUid(uid);
 	
 	var childrenProperties = this.entityOperationsAdapter.getChildrenProperties(entity);
 	for (var i in childrenProperties) {
@@ -171,13 +184,13 @@ EntityRegistry.prototype.unregisterEntity = function(uid) {
 	}
 	delete this.registry[uid];
 	for (var i = 0; i < this.entityChangeListeners.length; i++) {
-		this.entityChangeListeners[i].entityUnregistered(node);
+		this.entityChangeListeners[i].entityUnregistered(entity);
 	}
 };
 
 EntityRegistry.prototype.unregisterChildren = function(parentUid, childrenProperty) {
 	var entity = this.getEntityByUid(parentUid);
-	var children = this.entityOperationsAdapter.getChildren(entity, childrenProperty); 
+	var children = this.entityOperationsAdapter.getChildrenList(entity, childrenProperty); 
 	for (var i = 0; i < this.entityOperationsAdapter.list_getLength(children); i++) {
 		var child = this.entityOperationsAdapter.list_getItemAt(children, i);
 		var childUid = this.entityOperationsAdapter.getEntityUid(child);
@@ -190,10 +203,17 @@ similar ca mai sus: adapter.propertiesMap_iterateProperties(propertiesMap, handl
  */
 EntityRegistry.prototype.setProperties = function(uid, properties) {
 	var entity = this.getEntityByUid(uid);
-	var keys = this.entityOperationsAdapter(properties);
-	for (property in properties) {
-		entity[property] = properties[property];
+
+	var propertiesHolder = this.entityOperationsAdapter.object_getPropertiesHolder(entity);
+
+	this.entityOperationsAdapter.propertiesMap_iterateProperties(properties, function (key, value) {
+		propertiesHolder[key] = value;
+	});
+	
+	for (var i = 0; i < this.entityChangeListeners.length; i++) {
+		this.entityChangeListeners[i].entityUpdated(entity);
 	}
+
 };
 
 EntityRegistry.prototype.getEntityByUid = function(uid) {
@@ -205,11 +225,11 @@ EntityRegistry.prototype.getEntityByUid = function(uid) {
 };
 
 // TODO CS: de invocat listenerii la operatiuni
-EntityRegistry.prototype.addChangeListener = function(listener) {
+EntityRegistry.prototype.addEntityChangeListener = function(listener) {
 	this.entityChangeListeners.push(listener);
 };
 		
-EntityRegistry.prototype.removeChangeListener = function(listener) {
+EntityRegistry.prototype.removeEntityChangeListener = function(listener) {
 	var i = this.entityChangeListeners.indexOf(listener);	
 	if(i != -1) {		
 		this.entityChangeListeners.splice(i, 1);		

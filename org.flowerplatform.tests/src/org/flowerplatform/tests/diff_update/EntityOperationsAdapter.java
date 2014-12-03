@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * @author Claudiu Matei
@@ -30,16 +29,26 @@ public class EntityOperationsAdapter {
 	public void setChildren(Object entity, String childrenProperty, List<Object> children) {
 		if (entity instanceof MasterEntity) {
 			((MasterEntity) entity).setDetails(children);
+		} else if (entity instanceof DetailEntity) {
+			((DetailEntity) entity).setSubdetails(children);
 		}
+
+		
 	}
 	
 	/**
 	 * @author See class.
 	 */
 	public void setParent(Object entity, String parentUid, String parentChildrenProperty) {
-		DetailEntity childEntity = (DetailEntity) entity;
-		childEntity.setParentUid(parentUid);
-		childEntity.setParentChildrenProperty(parentChildrenProperty);
+		if (entity instanceof DetailEntity) {
+			DetailEntity detailEntity = (DetailEntity) entity;
+			detailEntity.setParentUid(parentUid);
+			detailEntity.setParentChildrenProperty(parentChildrenProperty);
+		} else if (entity instanceof SubdetailEntity) {
+			SubdetailEntity subdetailEntity = (SubdetailEntity) entity;
+			subdetailEntity.setParentUid(parentUid);
+			subdetailEntity.setParentChildrenProperty(parentChildrenProperty);
+		}
 	}
 
 	/**
@@ -48,6 +57,8 @@ public class EntityOperationsAdapter {
 	public String[] getChildrenProperties(Object entity) {
 		if (entity instanceof MasterEntity) {
 			return new String[] { "details" };
+		} else if (entity instanceof DetailEntity) {
+			return new String[] { "subdetails" };
 		}
 		return null;
 	}
@@ -72,7 +83,11 @@ public class EntityOperationsAdapter {
 		if (entity instanceof MasterEntity) {
 			lists = new List<?>[1];
 			lists[0] = ((MasterEntity) entity).getDetails();
+		}else if (entity instanceof DetailEntity) {
+			lists = new List<?>[1];
+			lists[0] = ((DetailEntity) entity).getSubdetails();
 		}
+
 		return new List<?>[0];
 	}
 
@@ -82,6 +97,8 @@ public class EntityOperationsAdapter {
 	public List<?> getChildrenList(Object entity, String property) {
 		if (entity instanceof MasterEntity) {
 			return ((MasterEntity) entity).getDetails();
+		} else if (entity instanceof DetailEntity) {
+			return ((DetailEntity) entity).getSubdetails();
 		}
 		return null;
 	}
@@ -133,25 +150,7 @@ public class EntityOperationsAdapter {
 		return list.get(index);
 	}
 
-	/**
-	 * @author See class.
-	 */
-	public String[] map_getKeys(Map<String, Object> map) {
-		Set<String> keySet = map.keySet();
-		String[] keys = new String[keySet.size()];
-		for (String key : keySet) {
-			keySet.add(key); 
-		}
-		return keys;
-	}
-
-	/**
-	 * @author See class.
-	 */
-	public Object map_getValue(Map<String, Object> map, String key) {
-		return map.get(key);
-	}
-
+	
 	public Object object_getPropertiesHolder(Object entity) {
 		return entity;
 	}
@@ -164,10 +163,17 @@ public class EntityOperationsAdapter {
 		BeanInfo beanInfo = Introspector.getBeanInfo(propertiesHolder.getClass());
         PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-        	if (propertyDescriptor.getWriteMethod() != null && !propertyDescriptor.getName().equals("details")) {
+        	if (propertyDescriptor.getWriteMethod() != null && !propertyDescriptor.getName().equals("details") && !propertyDescriptor.getName().equals("subdetails")) {
             	ipc.callback(propertyDescriptor.getName(), propertyDescriptor.getReadMethod().invoke(propertiesHolder));
         	}
         }
+	}
+
+	
+	public void propertiesMap_iterateProperties(Map<String, Object> properties, IteratePropertiesCallback ipc) throws ReflectiveOperationException, IllegalArgumentException, IntrospectionException {
+		for (Entry<String, Object> entry : properties.entrySet()) {
+        	ipc.callback(entry.getKey(), entry.getValue());
+		}
 	}
 
 }

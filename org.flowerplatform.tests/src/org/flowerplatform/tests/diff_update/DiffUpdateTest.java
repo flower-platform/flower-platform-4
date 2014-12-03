@@ -18,6 +18,8 @@ package org.flowerplatform.tests.diff_update;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -123,12 +125,17 @@ public class DiffUpdateTest extends EclipseIndependentTestBase {
 		masterEntity.setName("entity");
 		
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "registerEntity", masterEntity);
-		
+
+		EntityChangeListener listener = mock(EntityChangeListener.class);					
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "addEntityChangeListener", listener);
+
 		PropertiesDiffUpdate update = new PropertiesDiffUpdate();
 		update.setId(1);
 		update.setEntityUid(entityOperationsAdapter.getEntityUid(masterEntity));
 		update.addProperty("name", "entity3");
 		JsClientJavaUtils.invokeJsFunction(entityRegistryManager, "processDiffUpdate", "testChannel3", update);
+		verify(listener).entityUpdated(masterEntity);
+
 		
 		MasterEntity jsMasterEntity = (MasterEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.getEntityUid(masterEntity));
 		assertEquals("Entity name was changed to \"entity3\"", "entity3", jsMasterEntity.getName());

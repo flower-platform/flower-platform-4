@@ -1,14 +1,11 @@
 package org.flowerplatform.tests.diff_update;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 
  * @author Claudiu Matei
  *
  */
-public class DetailEntity extends AbstractEntity {
+public class SubdetailEntity extends AbstractEntity {
 
 	private long id;
 	
@@ -16,8 +13,6 @@ public class DetailEntity extends AbstractEntity {
 	
 	private String parentChildrenProperty;
 	
-	private List<Object> subdetails = new ArrayList<>();
-
 	private int value;
 
 	public String getParentUid() {
@@ -52,20 +47,11 @@ public class DetailEntity extends AbstractEntity {
 		this.value = value;
 	}
 
-	public List<Object> getSubdetails() {
-		return subdetails;
-	}
-
-	public void setSubdetails(List<Object> subdetails) {
-		this.subdetails = subdetails;
-	}
-
 	/**
-	 * @author see class
+	 * 
 	 */
 	public String toString() {
-		return String.format("%s[id:%s value:%s parentUid:%s parentChildrenProperty:%s value:%s subdetails:%s ]", 
-				getClass().getSimpleName(), getId(), value, parentUid, parentChildrenProperty, value, subdetails);
+		return String.format("%s[id:%s value:%s parentUid:%s parentChildrenProperty:%s]", getClass().getSimpleName(), getId(), value, parentUid, parentChildrenProperty, value);
 	}
 	
 }
