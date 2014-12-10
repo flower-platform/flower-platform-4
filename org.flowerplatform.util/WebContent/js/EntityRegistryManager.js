@@ -59,14 +59,18 @@ EntityRegistryManager.prototype.addDiffUpdateProcessor = function(diffUpdateType
 EntityRegistryManager.prototype.processDiffUpdate = function(notificationChannel, diffUpdate) {
 	// TODO CS: throw 1) dc nu gasim updProc; 2) dc id > lastId
 	var diffUpdateProcessor = this.diffUpdateProcessors[diffUpdate.type];
+	if (!diffUpdateProcessor) {
+		throw "Update processor for type " + diffUpdate.type + " is not registered.";
+	}
 	var entityRegistryEntry = this.entityRegistryEntries[notificationChannel];
+	if (diffUpdate.id <= entityRegistryEntry.lastDiffUpdateId) {
+		throw "Update id is less than last processed update id. ";
+	}
 	for (var i in entityRegistryEntry.entityRegistries) {
 		var entityRegistry = entityRegistryEntry.entityRegistries[i];
 		diffUpdateProcessor.applyDiffUpdate(entityRegistry, diffUpdate);
 	}
-	if (diffUpdate.id > entityRegistryEntry.lastDiffUpdateId) {
-		entityRegistryEntry.lastDiffUpdateId = diffUpdate.id;
-	}
+	entityRegistryEntry.lastDiffUpdateId = diffUpdate.id;
 };
 
 EntityRegistryManager.prototype.addListener = function(listener) {
@@ -87,5 +91,6 @@ EntityRegistryEntry = function() {
 
 var _entityRegistryManager;
 
-// TODO CS: de folosit camelCase
 var Constants = { UPDATED: "updated", ADDED: "added", REMOVED: "removed", REQUEST_REFRESH: "requestRefresh" };
+
+var _entityRegistryManager = new EntityRegistryManager();
