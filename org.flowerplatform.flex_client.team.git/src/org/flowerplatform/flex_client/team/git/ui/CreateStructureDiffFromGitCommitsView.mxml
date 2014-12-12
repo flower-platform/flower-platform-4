@@ -146,7 +146,7 @@
 				}
 			}
 			
-			override protected function okHandler(event:Event=null):void {
+			override public function okHandler(event:Event=null):void {
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.createStructureDiffFromGitCommits", 
 					[startHash.text, endHash.text, repo, 
 					StringUtil.substitute(Resources.getMessage('codesync.sdiff.outputSdiffPath'), [outputFileComponent.text])],

@@ -15,7 +15,6 @@
  */
 package org.flowerplatform.flexutil.action {
 	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
 	
 	import mx.collections.IList;
 	import mx.events.PropertyChangeEvent;

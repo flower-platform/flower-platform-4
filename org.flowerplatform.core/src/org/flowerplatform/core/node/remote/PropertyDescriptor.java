@@ -16,7 +16,7 @@
 package org.flowerplatform.core.node.remote;
 
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
-import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING;
+import static org.flowerplatform.util.UtilConstants.PROPERTY_EDITOR_TYPE_STRING;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_DEFAULT;
 
 import java.util.List;
@@ -35,13 +35,12 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	private String name;
 	private String label;
 	
-	private String type = PROPERTY_DESCRIPTOR_TYPE_STRING;
-	private String category = PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
+	private String type = PROPERTY_EDITOR_TYPE_STRING;
+	private String group = PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
 	
 	private String propertyLineRenderer = PROPERTY_LINE_RENDERER_TYPE_DEFAULT;
 	
-	private boolean contributesToCreation;
-	private boolean mandatory;
+	private boolean writeableOnCreate;
 	
 	private boolean readOnly;
 	
@@ -96,18 +95,18 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	}
 	//CHECKSTYLE:ON
 
-	public String getCategory() {
-		return category;
+	public String getGroup() {
+		return group;
 	}
 	
-	public void setCategory(String category) {
-		this.category = category;
+	public void setGroup(String category) {
+		this.group = category;
 	}
 	
 	//CHECKSTYLE:OFF
 
-	public PropertyDescriptor setCategoryAs(String categoryName) {
-		this.category = categoryName;
+	public PropertyDescriptor setGroupAs(String group) {
+		this.group = group;
 		return this;
 	}
 	//CHECKSTYLE:ON
@@ -145,38 +144,22 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		return this;
 	}
 	
-	public boolean getContributesToCreation() {
-		return contributesToCreation;
+	public boolean getWriteableOnCreate() {
+		return writeableOnCreate;
 	}
 
-	public void setContributesToCreation(boolean contributeToCreation) {
-		this.contributesToCreation = contributeToCreation;
+	public void setWriteableOnCreate(boolean contributeToCreation) {
+		this.writeableOnCreate = contributeToCreation;
 	}
 	
 	/**
 	 *@author see class
 	 **/
 	public PropertyDescriptor setContributesToCreationAs(boolean contributeToCreation) {
-		this.contributesToCreation = contributeToCreation;
+		this.writeableOnCreate = contributeToCreation;
 		return this;
 	}
 
-	public boolean getMandatory() {
-		return mandatory;
-	}
-
-	public void setMandatory(boolean mandatory) {
-		this.mandatory = mandatory;
-	}
-	
-	/**
-	 *@author see class
-	 **/
-	public PropertyDescriptor setMandatoryAs(boolean isMandatory) {
-		this.mandatory = isMandatory;
-		return this;
-	}
-	
 	public Object getDefaultValue() {
 		return defaultValue;
 	}
@@ -222,10 +205,10 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 	@Override
 	public String toString() {
 		return "PropertyDescriptor [name=" + name + ", title=" + label
-				+ ", type=" + type + ", category=" + category
+				+ ", type=" + type + ", category=" + group
 				+ ", propertyLineRenderer=" + propertyLineRenderer
-				+ ", contributesToCreation=" + contributesToCreation
-				+ ", mandatory=" + mandatory + ", readOnly=" + readOnly
+				+ ", writeableOnCreate=" + writeableOnCreate
+				+ ", readOnly=" + readOnly
 				+ ", possibleValues=" + possibleValues + ", defaultValue="
 				+ defaultValue + "]";
 	}	

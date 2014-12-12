@@ -15,17 +15,16 @@
  */
 package org.flowerplatform.flex_client.properties.property_line_renderer {
 	import mx.core.UIComponent;
-	import mx.managers.IFocusManagerComponent;
+	
+	import spark.components.FormItem;
+	import spark.components.HGroup;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.remote.PropertyWrapper;
 	import org.flowerplatform.flex_client.properties.PropertiesPlugin;
 	import org.flowerplatform.flex_client.properties.property_renderer.IPropertyRenderer;
-	import org.flowerplatform.flex_client.properties.remote.PropertyDescriptor;
-	
-	import spark.components.FormItem;
-	import spark.components.HGroup;
+	import org.flowerplatform.flexutil.properties.PropertyDescriptor;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -81,7 +80,7 @@ package org.flowerplatform.flex_client.properties.property_line_renderer {
 		
 		override protected function createChildren():void {				
 			super.createChildren();
-			
+			styleName = "propertyFormItemOld";
 			UIComponent(labelDisplay).setStyle("fontWeight", "normal");	
 			
 			rendererArea = new HGroup();

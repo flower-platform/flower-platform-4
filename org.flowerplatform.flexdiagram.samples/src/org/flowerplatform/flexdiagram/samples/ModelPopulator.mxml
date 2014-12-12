@@ -30,7 +30,7 @@
 			import mx.events.FlexEvent;
 			
 			import org.flowerplatform.flexdiagram.DiagramShell;
-			import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+			import org.flowerplatform.flexutil.list.ParentAwareArrayList;
 			import org.flowerplatform.flexdiagram.samples.model.BasicConnection;
 			import org.flowerplatform.flexdiagram.samples.model.BasicModel;
 			import org.flowerplatform.flexdiagram.samples.model.BasicSubModel;

@@ -14,6 +14,8 @@
  * license-end
  */
 package org.flowerplatform.flexutil.properties {
+	import mx.collections.IList;
+	
 	import org.flowerplatform.flexutil.controller.AbstractController;
 
 	/**
@@ -21,35 +23,85 @@ package org.flowerplatform.flexutil.properties {
 	 * @author Cristian Spiescu
 	 */
 	[Bindable]
-//	[RemoteClass(alias="org.flowerplatform.core.node.remote.PropertyDescriptor")]	
 	public class PropertyDescriptor extends AbstractController {
 		
 		public var name:String;		
 		public var label:String;
 								
 		public var type:String;		
-		public var category:String;
-//				
-//		public var propertyLineRenderer:String;
-//		
-//		public var contributesToCreation:Boolean;		
-//		public var mandatory:Boolean;
-//		
-//		public var defaultValue:Object;
-//		
-//		public var possibleValues:ArrayCollection;
-//		
-//		public var readOnly:Boolean;	
-//					
-//		override public function toString():String {
-//			return "PropertyDescriptor [name=" + name + ", title=" + label
-//				+ ", type=" + type + ", category=" + category
-//				+ ", propertyLineRenderer=" + propertyLineRenderer
-//				+ ", contributesToCreation=" + contributesToCreation
-//				+ ", mandatory=" + mandatory + ", readOnly=" + readOnly
-//				+ ", possibleValues=" + possibleValues + ", defaultValue="
-//				+ defaultValue + "]";
-//		}
+		public var group:String;
+		
+		public var readOnly:Boolean;	
+		
+		public var writeableOnCreate:Boolean;
+		
+		// not yet used by properties2
+		public var propertyLineRenderer:String;
+		
+		// not yet used by properties2
+		public var defaultValue:Object;
+		
+		// not yet used by properties2
+		public var possibleValues:IList;
+		
+		public function setName(value:String):PropertyDescriptor {		
+			name = value;
+			return this;
+		}
+		
+		public function setLabel(value:String):PropertyDescriptor {
+			label = value;
+			return this;
+		}
+		
+		public function setType(value:String):PropertyDescriptor {
+			type = value;
+			return this;
+		}
+		
+		public function setGroup(value:String):PropertyDescriptor {
+			group = value;
+			return this;
+		}
+		
+		public function setReadOnly(value:Boolean):PropertyDescriptor {
+			readOnly = value;
+			return this;
+		}
+		
+		public function setWriteableOnCreate(value:Boolean):PropertyDescriptor {
+			writeableOnCreate = value;
+			return this;
+		}
+		
+		public function setPropertyLineRenderer(value:String):PropertyDescriptor {
+			propertyLineRenderer = value;
+			return this;
+		}
+		
+		public function setDefaultValue(value:Object):PropertyDescriptor {
+			defaultValue = value;
+			return this;
+		}
+		
+		public function setPossibleValues(value:IList):PropertyDescriptor {
+			possibleValues = value;
+			return this;
+		}
+		
+		public function isReadOnlyDependingOnMode(createMode:Boolean):Boolean {
+			return createMode && readOnly && !writeableOnCreate || !createMode && readOnly;
+		}
+					
+		override public function toString():String {
+			return "PropertyDescriptor [name=" + name + ", title=" + label
+				+ ", type=" + type + ", category=" + group
+				+ ", propertyLineRenderer=" + propertyLineRenderer
+				+ ", writeableOnCreate=" + writeableOnCreate
+				+ ", readOnly=" + readOnly
+				+ ", possibleValues=" + possibleValues + ", defaultValue="
+				+ defaultValue + "]";
+		}
 		
 	}
 }

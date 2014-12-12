@@ -27,7 +27,7 @@ package org.flowerplatform.flex_client.properties {
 	 */
 	public class PropertiesViewProvider extends AbstractViewProvider {
 		
-		public static const ID:String = "properties";
+		public static const ID:String = "propertiesOld";
 		
 		override public function getId():String {
 			return ID;
@@ -38,7 +38,7 @@ package org.flowerplatform.flex_client.properties {
 		}
 		
 		override public function getTitle(viewLayoutData:ViewLayoutData=null):String	{
-			return Resources.getMessage("properties.view");
+			return Resources.getMessage("properties.view") + " (old)";
 		}
 		
 		override public function getIcon(viewLayoutData:ViewLayoutData=null):Object {

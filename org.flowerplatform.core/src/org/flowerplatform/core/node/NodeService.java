@@ -26,7 +26,7 @@ import static org.flowerplatform.core.CoreConstants.NODE_IS_RESOURCE_NODE;
 import static org.flowerplatform.core.CoreConstants.PARENT_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.POPULATE_WITH_PROPERTIES;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
-import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
+import static org.flowerplatform.util.UtilConstants.FEATURE_PROPERTY_DESCRIPTORS;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REMOVE_NODE_CONTROLLER;
 
@@ -187,7 +187,7 @@ public class NodeService {
 		if (descriptor == null) {
 			return null;
 		}
-		return descriptor.getAdditiveControllers(PROPERTY_DESCRIPTOR, node);
+		return descriptor.getAdditiveControllers(FEATURE_PROPERTY_DESCRIPTORS, node);
 	}
 		
 	/**

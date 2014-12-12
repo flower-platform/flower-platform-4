@@ -12,7 +12,6 @@
     <classEntry path="org.flowerplatform.flexdiagram.tool.IWakeUpableTool"/>
     <classEntry path="org.flowerplatform.flexdiagram.tool.ScrollTool"/>
     <classEntry path="org.flowerplatform.flexdiagram.tool.WakeUpTool"/>
-    <classEntry path="org.flowerplatform.flexdiagram.util.ParentAwareArrayList"/>
     <classEntry path="org.flowerplatform.flexdiagram.tool.SelectOnClickTool"/>
     <classEntry path="org.flowerplatform.flexdiagram.tool.InplaceEditorTool"/>
     <classEntry path="org.flowerplatform.flexdiagram.controller.IInplaceEditorController"/>

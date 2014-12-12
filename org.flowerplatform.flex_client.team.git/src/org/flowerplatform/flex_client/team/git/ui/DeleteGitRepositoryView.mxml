@@ -33,7 +33,7 @@
 			
 			public var repoNode:Node;
 			
-			override protected function okHandler(event:Event = null):void {			
+			override public function okHandler(event:Event = null):void {			
 				CorePlugin.getInstance().serviceLocator.invoke("GitService.deleteGitRepository", [repoNode.nodeUri, keepWorkingDirectoryContent.selected]);
 				cancelHandler(event);
 			}

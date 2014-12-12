@@ -31,13 +31,15 @@ Renderer for a properties group header.
 				super.data = value;
 				if (data != null) {
 					label.text = PropertyEntry(data).descriptor.label != null ? PropertyEntry(data).descriptor.label : PropertyEntry(data).descriptor.name; 
+					label.visible = label.text != null && label.text != "";
+					label.includeInLayout = label.visible;
 				}
 			}
 			
 		]]>
 	</fx:Script>
 	<s:layout>
-		<s:HorizontalLayout verticalAlign="middle" paddingTop="5" paddingBottom="5"/>
+		<s:HorizontalLayout verticalAlign="middle" paddingTop="10" paddingBottom="10"/>
 	</s:layout>
 	
 	<s:Label id="label" fontWeight="bold"/>

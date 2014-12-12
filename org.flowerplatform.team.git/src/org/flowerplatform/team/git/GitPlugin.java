@@ -17,8 +17,8 @@ package org.flowerplatform.team.git;
 
 import static org.flowerplatform.core.CoreConstants.CHILDREN_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
-import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
-import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN;
+import static org.flowerplatform.util.UtilConstants.FEATURE_PROPERTY_DESCRIPTORS;
+import static org.flowerplatform.util.UtilConstants.PROPERTY_EDITOR_TYPE_BOOLEAN;
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.team.git.GitConstants.COMMIT_ID;
 import static org.flowerplatform.team.git.GitConstants.COMMIT_MESSAGE;
@@ -86,49 +86,49 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(GIT_REF)
 			.addAdditiveController(PROPERTIES_PROVIDER, new GitRefPropertiesProvider())
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setOrderIndexAs(0))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FULL_NAME).setReadOnlyAs(true).setOrderIndexAs(1))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(COMMIT_ID).setReadOnlyAs(true).setOrderIndexAs(2))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(COMMIT_MESSAGE).setReadOnlyAs(true).setOrderIndexAs(3))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(IS_CHECKEDOUT)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(4))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_UPSTREAM_BRANCH).setReadOnlyAs(true).setOrderIndexAs(5))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CONFIG_REMOTE).setReadOnlyAs(true).setOrderIndexAs(6))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor()
-					.setNameAs(CONFIG_REBASE).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(7));
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(NAME).setOrderIndexAs(0))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(FULL_NAME).setReadOnlyAs(true).setOrderIndexAs(1))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(COMMIT_ID).setReadOnlyAs(true).setOrderIndexAs(2))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(COMMIT_MESSAGE).setReadOnlyAs(true).setOrderIndexAs(3))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(IS_CHECKEDOUT)
+					.setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(4))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(CONFIG_UPSTREAM_BRANCH).setReadOnlyAs(true).setOrderIndexAs(5))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(CONFIG_REMOTE).setReadOnlyAs(true).setOrderIndexAs(6))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor()
+					.setNameAs(CONFIG_REBASE).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN).setReadOnlyAs(true).setOrderIndexAs(7));
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(REPOSITORY_TYPE)
 			.addAdditiveController(CHILDREN_PROVIDER, new RepoChildrenProvider());
 			
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REPO_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new GitPropertiesProvider())
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setOrderIndexAs(0))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CURRENT_BRANCH).setReadOnlyAs(true).setOrderIndexAs(1))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(CURRENT_COMMIT).setReadOnlyAs(true).setOrderIndexAs(2))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(NAME).setOrderIndexAs(0))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(CURRENT_BRANCH).setReadOnlyAs(true).setOrderIndexAs(1))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(CURRENT_COMMIT).setReadOnlyAs(true).setOrderIndexAs(2))
 			.addAdditiveController(CHILDREN_PROVIDER, new GitChildrenProvider())
 			.addCategory(GIT_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_LOCAL_BRANCHES_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new GitVirtualChildPropertiesProvider())
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setOrderIndexAs(0))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(NAME).setOrderIndexAs(0))
 			.addAdditiveController(CHILDREN_PROVIDER, new GitRefsChildrenProvider())
 			.addCategory(GIT_CATEGORY);
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REMOTE_BRANCHES_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new GitVirtualChildPropertiesProvider())
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setOrderIndexAs(0))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(NAME).setOrderIndexAs(0))
 			.addAdditiveController(CHILDREN_PROVIDER, new GitRefsChildrenProvider())
 			.addCategory(GIT_CATEGORY);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_TAGS_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new GitVirtualChildPropertiesProvider())
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setOrderIndexAs(0))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(NAME).setOrderIndexAs(0))
 			.addAdditiveController(CHILDREN_PROVIDER, new GitRefsChildrenProvider())
 			.addCategory(GIT_CATEGORY);
 			
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REMOTES_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new GitVirtualChildPropertiesProvider())
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setOrderIndexAs(0))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(NAME).setOrderIndexAs(0))
 			.addAdditiveController(CHILDREN_PROVIDER, new GitRemotesChildrenProvider())
 			.addCategory(GIT_CATEGORY);
 
@@ -146,10 +146,10 @@ public class GitPlugin extends AbstractFlowerJavaPlugin {
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(GIT_REMOTE_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new GitRemotePropertiesProvider())
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(NAME).setOrderIndexAs(0))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(FETCH_REF_SPECS).setReadOnlyAs(true).setOrderIndexAs(1))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(PUSH_REF_SPECS).setReadOnlyAs(true).setOrderIndexAs(2))
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setNameAs(REMOTE_URIS).setReadOnlyAs(true).setOrderIndexAs(3));
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(NAME).setOrderIndexAs(0))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(FETCH_REF_SPECS).setReadOnlyAs(true).setOrderIndexAs(1))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(PUSH_REF_SPECS).setReadOnlyAs(true).setOrderIndexAs(2))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(REMOTE_URIS).setReadOnlyAs(true).setOrderIndexAs(3));
 
 		CorePlugin.getInstance().getResourceService().addResourceHandler(GIT_SCHEME, new GitResourceHandler());
 	}

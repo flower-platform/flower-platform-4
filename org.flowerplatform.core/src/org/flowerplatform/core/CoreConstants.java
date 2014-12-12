@@ -50,7 +50,8 @@ public final class CoreConstants {
 
 	// from MindMapConstants
 	public static final String MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX = "mindMap.";
-
+	public static final String FEATURE_SHOW_PROPERTIES_IN_RENDERER = "showPropertiesInRenderer";
+	
 	////////////////////////////////////////////////////////////////////
 	// Constants only in Java (or before the constants cleaning up)
 	////////////////////////////////////////////////////////////////////
@@ -162,8 +163,6 @@ public final class CoreConstants {
 	
 	// Property descriptors types
 
-	public static final String PROPERTY_DESCRIPTOR_TYPE_STRING = "String";
-	public static final String PROPERTY_DESCRIPTOR_TYPE_BOOLEAN = "Boolean";
 	public static final String PROPERTY_DESCRIPTOR_TYPE_NUMBER = "Number";
 	public static final String PROPERTY_DESCRIPTOR_TYPE_NUMBER_STEPPER = "NumberStepper";
 	public static final String PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST = "DropDownList";

@@ -96,7 +96,9 @@ package com.crispico.flower.util.popup {
 					workbench.closeView(component, false, false);
 				}			
 				var popup:ViewPopupWindowViewHost = new ViewPopupWindowViewHost();
-				popup.addEventListener(MouseEvent.CLICK, gainFocusHandler);
+				if (workbench != null) {
+					popup.addEventListener(MouseEvent.CLICK, gainFocusHandler);
+				}
 				workbench.addViewInPopupWindow(_viewIdInWorkbench, NaN, NaN, _width, _height, false, component, popup);					
 			} else {				
 				var resizablePopup:ResizablePopupWindowViewHost = new ResizablePopupWindowViewHost(_viewContent);
@@ -110,7 +112,9 @@ package com.crispico.flower.util.popup {
 					resizablePopup.width = _width;
 				}						
 				resizablePopup.showPopup(NaN, NaN, null, modal);
-				resizablePopup.addEventListener(MouseEvent.CLICK, gainFocusHandler);
+				if (workbench != null) {
+					resizablePopup.addEventListener(MouseEvent.CLICK, gainFocusHandler);
+				}
 			}	
 		}
 		

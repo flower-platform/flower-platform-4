@@ -22,7 +22,7 @@ package org.flowerplatform.flexutil.renderer {
 	import spark.primitives.BitmapImage;
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.FlowerArrayList;
+	import org.flowerplatform.flexutil.list.FlowerArrayList;
 	
 	/**
 	 * An extension for components that adds multiple icons as children.

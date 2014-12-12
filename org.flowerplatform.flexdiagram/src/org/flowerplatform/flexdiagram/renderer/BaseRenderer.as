@@ -32,6 +32,7 @@ package org.flowerplatform.flexdiagram.renderer {
 	import spark.components.DataGroup;
 	import spark.components.DataRenderer;
 	import spark.components.Group;
+	import spark.components.HGroup;
 	import spark.components.IItemRenderer;
 	import spark.components.RichText;
 	import spark.components.supportClasses.InteractionState;
@@ -40,6 +41,12 @@ package org.flowerplatform.flexdiagram.renderer {
 	import spark.layouts.VerticalLayout;
 	import spark.primitives.BitmapImage;
 	import spark.primitives.Graphic;
+	
+	import flashx.textLayout.conversion.TextConverter;
+	import flashx.textLayout.elements.BreakElement;
+	import flashx.textLayout.elements.ParagraphElement;
+	import flashx.textLayout.elements.SpanElement;
+	import flashx.textLayout.elements.TextFlow;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
@@ -53,6 +60,8 @@ package org.flowerplatform.flexdiagram.renderer {
 	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	import org.flowerplatform.flexutil.flexdiagram.VisualChildrenController;
 	import org.flowerplatform.flexutil.focusable_component.FocusableRichText;
+	import org.flowerplatform.flexutil.list.EmptyList;
+	import org.flowerplatform.flexutil.properties.PropertyEntry;
 
 	/**
 	 * Base renderer for diagram elements. It was initially used for mind map nodes, but it has
@@ -101,20 +110,24 @@ package org.flowerplatform.flexdiagram.renderer {
 		 * Attributes.
 		 *************************************************************************/
 		
+		// graphical components 
 		protected var _label:FocusableRichText;
-		
-		protected var _backgroundColor:uint = BACKGROUND_COLOR_DEFAULT;
-		
-		protected var _context:DiagramShellContext;
-		
-		protected var _icons:IList;
-		
-		protected var _maxWidthAdvanced:Number;
-		
-		protected var _noteText:String;
 		
 		protected var _noteIconContainer:Graphic;
 		
+		protected var detailsLabel:RichText;
+		
+		protected var propertiesGroup:Group;
+		
+		protected var propertiesNames:RichText;
+		
+		protected var propertiesValues:RichText;
+		
+		protected var iconsAndLabelArea:Group;
+		
+		protected var noteToolTip:CalloutToolTip;
+		
+		// other attributes
 		/**
 		 * Inspired from the Freeplane renderer, that increases the font a little bit.
 		 */
@@ -130,11 +143,19 @@ package org.flowerplatform.flexdiagram.renderer {
 		 */
 		public var typeDescriptorRegistry:TypeDescriptorRegistry;
 		
-		protected var _canHaveChildren:Boolean;
+		public var resetPropertiesOnDataNull:Boolean = false;
 		
-		protected var iconsAndLabelArea:Group;
-	
-		protected var noteToolTip:CalloutToolTip;
+		protected var _backgroundColor:uint = BACKGROUND_COLOR_DEFAULT;
+		
+		protected var _context:DiagramShellContext;
+		
+		protected var _icons:IList;
+		
+		protected var _maxWidthAdvanced:Number;
+		
+		protected var _noteText:String;
+		
+		protected var _canHaveChildren:Boolean;
 		
 		protected var _shouldRefreshVisualChildren:Boolean;
 		
@@ -180,12 +201,14 @@ package org.flowerplatform.flexdiagram.renderer {
 			if (value == _icons) {
 				return;
 			}
-			if (_icons != null) {
+			if (_icons != null && _icons != EmptyList.INSTANCE) {
 				_icons.removeEventListener(CollectionEvent.COLLECTION_CHANGE, handleIconsChanged);
 			}
 			_icons = value;
 			if (_icons != null) {
 				_icons.addEventListener(CollectionEvent.COLLECTION_CHANGE, handleIconsChanged);				
+			} else {
+				_icons = EmptyList.INSTANCE;
 			}
 			handleIconsChanged(null);
 		}
@@ -197,6 +220,20 @@ package org.flowerplatform.flexdiagram.renderer {
 				_label.maxWidth = NaN;
 			}
 			invalidateSize();
+		}
+
+		protected override function measure():void {
+			super.measure();
+			if (isNaN(_maxWidthAdvanced) || iconsAndLabelArea == null || _label == null) {
+				return;
+			}
+			// inspired from the way this seems to work in Freeplane: maxWidth is for icons + label;
+			// but if there are a lot of icons, then they have priority. In this case, the maxWidth condition
+			// won't be met any more. The label is being shrank as much as possible to try to meet the condition
+			// as close as possible. However, we impose a threshold of 20 px, under which the label cannot be shrank
+			// any more
+			var widthWithoutLabel:Number = iconsAndLabelArea.measuredWidth - _label.measuredWidth;
+			_label.maxWidth = Math.max(_maxWidthAdvanced - widthWithoutLabel, 20);
 		}
 		
 		public function set noteText(value:String):void {	
@@ -240,21 +277,110 @@ package org.flowerplatform.flexdiagram.renderer {
 			}
 			
 		}
-
-		protected override function measure():void {
-			super.measure();
-			if (isNaN(_maxWidthAdvanced) || iconsAndLabelArea == null || _label == null) {
-				return;
-			}
-			// inspired from the way this seems to work in Freeplane: maxWidth is for icons + label;
-			// but if there are a lot of icons, then they have priority. In this case, the maxWidth condition
-			// won't be met any more. The label is being shrank as much as possible to try to meet the condition
-			// as close as possible. However, we impose a threshold of 20 px, under which the label cannot be shrank
-			// any more
-			var widthWithoutLabel:Number = iconsAndLabelArea.measuredWidth - _label.measuredWidth;
-			_label.maxWidth = Math.max(_maxWidthAdvanced - widthWithoutLabel, 20);
+		
+		public function set detailsText(value:String):void {
+			if (value != null && value != "") {
+				if (detailsLabel == null) {
+					canHaveChildren = true;
+					detailsLabel = new RichText();
+					insertNewChild(detailsLabel);
+				}
+				detailsLabel.textFlow = TextConverter.importToFlow(value , Utils.isHTMLText(value) ? TextConverter.TEXT_FIELD_HTML_FORMAT : TextConverter.PLAIN_TEXT_FORMAT);	
+			} else {
+				if (detailsLabel != null) {
+					removeElement(detailsLabel);
+					detailsLabel = null;
+					if (!hasChildren()) {
+						canHaveChildren = false;
+					}
+				}
+			}			
 		}
 		
+		public function set propertyEntries(entries:IList):void {
+			if (entries != null) {
+				if (propertiesGroup == null) {
+					canHaveChildren = true;
+					propertiesGroup = new HGroup();
+					propertiesGroup.percentWidth = 100;
+					insertNewChild(propertiesGroup);
+					propertiesNames = new RichText();
+					propertiesGroup.addElement(propertiesNames);
+					propertiesValues = new RichText();
+					propertiesValues.percentWidth = 100;
+					propertiesGroup.addElement(propertiesValues);
+				}
+				var namesTextFlow:TextFlow = new TextFlow();
+				var names:ParagraphElement = new ParagraphElement();
+				namesTextFlow.addChild(names);
+				
+				var valuesTextFlow:TextFlow = new TextFlow();
+				var values:ParagraphElement = new ParagraphElement();
+				valuesTextFlow.addChild(values);
+				
+				for (var i:int = 0; i < entries.length; i++) {
+					var entry:PropertyEntry = PropertyEntry(entries.getItemAt(i));
+					var name:SpanElement = new SpanElement();
+					var value:SpanElement = new SpanElement();
+					if (entry.isGroup) {
+						name.fontWeight = "bold";
+						name.text = " " + entry.descriptor.name;
+					} else {
+						value.text = String(entry.value);
+						name.text = "  " + entry.descriptor.name;
+					}
+					names.addChild(name);
+					values.addChild(value);
+					
+					
+					if (i < entries.length - 1) {
+						names.addChild(new BreakElement());
+						values.addChild(new BreakElement());
+					}
+				}
+				propertiesNames.textFlow = namesTextFlow;
+				propertiesValues.textFlow = valuesTextFlow;
+			} else {
+				if (propertiesGroup != null) {
+					removeElement(propertiesGroup);
+					propertiesGroup = null;
+					propertiesNames = null;
+					propertiesValues = null;
+					if (!hasChildren()) {
+						canHaveChildren = false;
+					}
+				}
+			}
+		}
+		
+		protected function getLogicalIndexForChild(element:IVisualElement):int {
+			if (detailsLabel == element) {
+				return 0;
+			} else if (propertiesGroup == element) {
+				return 1;
+			} else {
+				return -1;
+			}
+		}
+		
+		protected function hasChildren():Boolean {
+			return detailsLabel != null || propertiesGroup != null;
+		}
+		
+		protected function insertNewChild(newlyAddedElement:IVisualElement):void {
+			var elementIndex:int = getLogicalIndexForChild(newlyAddedElement);
+			for (var i:int = 0; i < numElements; i++) {
+				if (elementIndex <= getLogicalIndexForChild(getElementAt(i))) {
+					// e.g. look for element 3; currentResult = 4
+					// equality shouldn't happen, as it's newly added element
+					break;
+				}
+			}
+			// not found, i.e. all elements have lower index; e.g. look for element 3, found 0 and 2
+			// i.e. numElements; i.e. insert at the end
+			addElementAt(newlyAddedElement, i);
+		}
+
 		/**************************************************************************
 		 * Other functions.
 		 *************************************************************************/
@@ -322,6 +448,8 @@ package org.flowerplatform.flexdiagram.renderer {
 						diagramShellContext.diagramShell.registry.typeProvider.getType(value)).getSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, value));
 					// if not null => this element has children
 				}
+			} else if (resetPropertiesOnDataNull) {
+				modelChangedHandler(null);
 			}
 		}
 		
@@ -361,7 +489,10 @@ package org.flowerplatform.flexdiagram.renderer {
 		 * then that object is listened for changes too; i.e. this method is invoked also when it changes.
 		 */
 		protected function modelChangedHandler(event:PropertyChangeEvent):void {
-			var valuesProvider:ValuesProvider = getRequiredValuesProvider();
+			var valuesProvider:ValuesProvider = null;
+			if (data != null) {
+				valuesProvider = getRequiredValuesProvider();
+			}
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "fontFamily", FlexDiagramConstants.BASE_RENDERER_FONT_FAMILY, FONT_FAMILY_DEFAULT);
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "fontSize", FlexDiagramConstants.BASE_RENDERER_FONT_SIZE, FONT_SIZE_DEFAULT);
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "fontBold", FlexDiagramConstants.BASE_RENDERER_FONT_BOLD, false);
@@ -371,12 +502,15 @@ package org.flowerplatform.flexdiagram.renderer {
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "backgroundColor", FlexDiagramConstants.BASE_RENDERER_BACKGROUND_COLOR, BACKGROUND_COLOR_DEFAULT);
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "icons", FlexDiagramConstants.BASE_RENDERER_ICONS, null);
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "minWidth", FlexDiagramConstants.BASE_RENDERER_MIN_WIDTH, NaN);
-			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "maxWidthAdvanced", FlexDiagramConstants.BASE_RENDERER_MAX_WIDTH, NaN);
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "maxWidthAdvanced", FlexDiagramConstants.BASE_RENDERER_MAX_WIDTH, 600);
 			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "noteText", FlexDiagramConstants.BASE_RENDERER_NOTE, "");
+			setFieldIfNeeded(valuesProvider, typeDescriptorRegistry, event, "detailsText", FlexDiagramConstants.BASE_RENDERER_DETAILS_TEXT, null);
 		}
 		
 		protected function setFieldIfNeeded(valuesProvider:ValuesProvider, registry:TypeDescriptorRegistry, event:PropertyChangeEvent, field:String, featureForField:String, defaultValue:Object):void {
-			if (event == null || event.property == valuesProvider.getPropertyName(registry, IEventDispatcher(data), featureForField)) {
+			if (data == null) {
+				this[field] = defaultValue;
+			} else if (event == null || event.property == valuesProvider.getPropertyName(registry, IEventDispatcher(data), featureForField)) {
 				var value:Object = valuesProvider.getValue(registry, IEventDispatcher(data), featureForField);
 				if (value != null) {
 					this[field] = value;
@@ -388,10 +522,6 @@ package org.flowerplatform.flexdiagram.renderer {
 		}
 		
 		protected function handleIconsChanged(event:CollectionEvent):void {			
-			if (_icons == null) {
-				return;
-			}
-			
 			var iconDisplay:BitmapImage;
 			var offsetBecauseOfNoteIcon:int = 0;
 			

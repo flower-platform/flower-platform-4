@@ -35,7 +35,6 @@ import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_SIDE;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
-import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE;
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.core.CoreConstants.ROOT_TYPE;
@@ -350,9 +349,9 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 		ConfigSettingsPropertiesController configSettingsPropertiesController = new ConfigSettingsPropertiesController();
 		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CoreConstants.CATEGORY_CONFIG_SETTINGS)
-			.addAdditiveController(PROPERTY_DESCRIPTOR, 
+			.addAdditiveController(UtilConstants.FEATURE_PROPERTY_DESCRIPTORS, 
 					new PropertyDescriptor().setNameAs(CoreConstants.CONFIG_SETTING_DISABLED)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(false).setContributesToCreationAs(true))
+					.setTypeAs(UtilConstants.PROPERTY_EDITOR_TYPE_BOOLEAN).setContributesToCreationAs(true))
 			.addAdditiveController(PROPERTIES_PROVIDER, configSettingsPropertiesController)
 			.addAdditiveController(CoreConstants.PROPERTY_SETTER, configSettingsPropertiesController);
 		
@@ -363,7 +362,7 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(CoreConstants.PREFERENCE_CATEGORY_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTY_SETTER, new PreferencePropertySetter())
 			// TODO CC: to remove when working at preferences persistence
-			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING)
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(UtilConstants.PROPERTY_EDITOR_TYPE_STRING)
 					.setNameAs("value").setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_PREFERENCE).setReadOnlyAs(true));
 			
 		new FileSystemControllers().registerControllers();

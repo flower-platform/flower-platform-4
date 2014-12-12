@@ -16,23 +16,23 @@
 package org.flowerplatform.codesync.regex;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_MODEL;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_PROPERTY_CREATE_NODE_NEW_NODE_TYPE;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_PROPERTY_CREATE_NODE_PROPERTIES;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_PROPERTY_ENTER_STATE_IF_PROPERTY_SET;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_PROPERTY_INFO_IS_CONTAINMENT;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_PROPERTY_INFO_IS_LIST;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_PROPERTY_INFO_KEY;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_PROPERTY_VALID_STATES_PROPERTY;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_ATTACH_NODE_TO_CURRENT_STATE_ACTION;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_ATTACH_SPECIFIC_INFO;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_CHECK_STATE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_CLEAR_SPECIFIC_INFO;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_CREATE_NODE;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_PROPERTY_CREATE_NODE_NEW_NODE_TYPE;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_PROPERTY_CREATE_NODE_PROPERTIES;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_DECREASE_NESTING_LEVEL;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_ENTER_STATE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_EXIT_STATE;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_INCREASE_NESTING_LEVEL;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_KEEP_SPECIFIC_INFO;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_PROPERTY_VALID_STATES_PROPERTY;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.CATEGORY_REGEX;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.CATEGORY_REGEX_ACTION;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.END;
@@ -68,10 +68,10 @@ import static org.flowerplatform.core.CoreConstants.ICONS;
 import static org.flowerplatform.core.CoreConstants.NAME;
 import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
-import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN;
-import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_SETTER;
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
+import static org.flowerplatform.util.UtilConstants.PROPERTY_EDITOR_TYPE_BOOLEAN;
+import static org.flowerplatform.util.UtilConstants.PROPERTY_EDITOR_TYPE_STRING;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -206,7 +206,7 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_CHECK_STATE)
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
 					new PropertyDescriptor().setNameAs(ACTION_PROPERTY_VALID_STATES_PROPERTY)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
+					.setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setContributesToCreationAs(true))
 			.addSingleController(CONFIG_NODE_PROCESSOR, new CheckStateNodeConfigurationProcessor())
 			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
@@ -214,10 +214,10 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_CREATE_NODE)
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
 					new PropertyDescriptor().setNameAs(ACTION_PROPERTY_CREATE_NODE_PROPERTIES)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
+					.setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setContributesToCreationAs(true))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
 					new PropertyDescriptor().setNameAs(ACTION_PROPERTY_CREATE_NODE_NEW_NODE_TYPE)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true))
+					.setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setContributesToCreationAs(true))
 			.addSingleController(CONFIG_NODE_PROCESSOR, new CreateNodeConfigurationProcessor())
 			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
@@ -230,11 +230,11 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_ATTACH_SPECIFIC_INFO)
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
 					new PropertyDescriptor().setNameAs(ACTION_PROPERTY_INFO_KEY)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true)
+					.setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setContributesToCreationAs(true)
 					.setLabelAs(ResourcesPlugin.getInstance().getLabelForProperty(REGEX_ACTION_TYPE + "." + ACTION_PROPERTY_INFO_KEY)))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
 					new PropertyDescriptor().setNameAs(ACTION_PROPERTY_INFO_IS_CONTAINMENT)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(true).setContributesToCreationAs(true)
+					.setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN).setContributesToCreationAs(true)
 					.setLabelAs(ResourcesPlugin.getInstance().getLabelForProperty(REGEX_ACTION_TYPE + "." + ACTION_PROPERTY_INFO_IS_CONTAINMENT)))
 			.addSingleController(CONFIG_NODE_PROCESSOR, new AttachSpecificInfoConfigurationProcessor())
 			.addCategory(CATEGORY_CONFIG_SETTINGS)
@@ -243,7 +243,7 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_CLEAR_SPECIFIC_INFO)
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
 					new PropertyDescriptor().setNameAs(ACTION_PROPERTY_INFO_KEY)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true)
+					.setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setContributesToCreationAs(true)
 					.setLabelAs(ResourcesPlugin.getInstance().getLabelForProperty(REGEX_ACTION_TYPE + "." + ACTION_PROPERTY_INFO_KEY)))
 			.addSingleController(CONFIG_NODE_PROCESSOR, new ClearSpecificInfoConfigurationProcessor())
 			.addCategory(CATEGORY_CONFIG_SETTINGS)
@@ -252,15 +252,15 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(ACTION_TYPE_KEEP_SPECIFIC_INFO)
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
 					new PropertyDescriptor().setNameAs(ACTION_PROPERTY_INFO_KEY)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true)
+					.setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setContributesToCreationAs(true)
 					.setLabelAs(ResourcesPlugin.getInstance().getLabelForProperty(REGEX_ACTION_TYPE + "." + ACTION_PROPERTY_INFO_KEY)))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
 					new PropertyDescriptor().setNameAs(ACTION_PROPERTY_INFO_IS_CONTAINMENT)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(true).setContributesToCreationAs(true)
+					.setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN).setContributesToCreationAs(true)
 					.setLabelAs(ResourcesPlugin.getInstance().getLabelForProperty(REGEX_ACTION_TYPE + "." + ACTION_PROPERTY_INFO_IS_CONTAINMENT)))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
 					new PropertyDescriptor().setNameAs(ACTION_PROPERTY_INFO_IS_LIST)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(true).setContributesToCreationAs(true)
+					.setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN).setContributesToCreationAs(true)
 					.setLabelAs(ResourcesPlugin.getInstance().getLabelForProperty(REGEX_ACTION_TYPE + "." + ACTION_PROPERTY_INFO_IS_LIST)))
 			.addSingleController(CONFIG_NODE_PROCESSOR, new KeepSpecificInfoConfigurationProcessor())
 			.addCategory(CATEGORY_CONFIG_SETTINGS)
@@ -279,7 +279,7 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			.addSingleController(CONFIG_NODE_PROCESSOR, new EnterStateConfigurationProcessor())
 			.addAdditiveController(PROPERTY_DESCRIPTOR, 
 					new PropertyDescriptor().setNameAs(ACTION_PROPERTY_ENTER_STATE_IF_PROPERTY_SET)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING))
+					.setTypeAs(PROPERTY_EDITOR_TYPE_STRING))
 			.addCategory(CATEGORY_CONFIG_SETTINGS)
 			.addCategory(CATEGORY_REGEX_ACTION);
 		
@@ -354,12 +354,12 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTY_SETTER, new RegexController())
 			.addAdditiveController(PROPERTY_DESCRIPTOR, 
 					new PropertyDescriptor().setNameAs(REGEX_WITH_MACROS)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true).setOrderIndexAs(20))
+					.setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setContributesToCreationAs(true).setOrderIndexAs(20))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
-					new PropertyDescriptor().setNameAs(FULL_REGEX).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setReadOnlyAs(true).setOrderIndexAs(30))
+					new PropertyDescriptor().setNameAs(FULL_REGEX).setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setReadOnlyAs(true).setOrderIndexAs(30))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
 					new PropertyDescriptor().setNameAs(NAME)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true).setOrderIndexAs(10));
+					.setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setContributesToCreationAs(true).setOrderIndexAs(10));
 
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(FILE_NODE_TYPE)
 			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(REGEX_EXTENSION, "fpp", "mindmap", true))
@@ -378,9 +378,9 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			.addSingleController(CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX + CoreConstants.BASE_RENDERER_TEXT, new GenericDescriptor(REGEX_NAME))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
 					new PropertyDescriptor().setNameAs(NAME)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(10))
+					.setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(10))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
-					new PropertyDescriptor().setNameAs(FULL_REGEX).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setReadOnlyAs(true).setOrderIndexAs(20))
+					new PropertyDescriptor().setNameAs(FULL_REGEX).setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setReadOnlyAs(true).setOrderIndexAs(20))
 			.addAdditiveController(PROPERTIES_PROVIDER,	new ConstantValuePropertyProvider(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/codesync.regex/bricks.png")))
 			.addAdditiveController(CHILDREN_PROVIDER, new VirtualRegexChildrenProvider());
 
@@ -388,24 +388,24 @@ public class CodeSyncRegexPlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTIES_PROVIDER,	new ConstantValuePropertyProvider(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/codesync.regex/brick.png")))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
 					new PropertyDescriptor().setNameAs(NAME)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(10))
+					.setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(10))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
 					new PropertyDescriptor().setNameAs(FULL_REGEX)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(20))
+					.setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(20))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	
 					new PropertyDescriptor().setNameAs(START)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(30))
+					.setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(30))
 			.addAdditiveController(PROPERTY_DESCRIPTOR,	new PropertyDescriptor()
-			.setNameAs(END).setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(40))
+			.setNameAs(END).setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(40))
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(CoreConstants.NAME, ResourcesPlugin.getInstance().getMessage("regexMatches.root")));
 				
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(VIRTUAL_REGEX_TYPE)
 			.addAdditiveController(PROPERTY_DESCRIPTOR, 
 					new PropertyDescriptor().setNameAs(NAME)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setMandatoryAs(true).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(10))
+					.setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setContributesToCreationAs(true).setReadOnlyAs(true).setOrderIndexAs(10))
 			.addAdditiveController(PROPERTY_DESCRIPTOR, 
 					new PropertyDescriptor().setNameAs(FULL_REGEX)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_STRING).setReadOnlyAs(true).setOrderIndexAs(20))
+					.setTypeAs(PROPERTY_EDITOR_TYPE_STRING).setReadOnlyAs(true).setOrderIndexAs(20))
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, ResourcesPlugin.getInstance().getResourceUrl("images/codesync.regex/bricks.png")))
 			.addAdditiveController(CHILDREN_PROVIDER, new VirtualRegexChildrenProvider());
 	

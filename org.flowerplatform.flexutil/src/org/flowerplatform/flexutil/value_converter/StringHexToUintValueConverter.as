@@ -14,7 +14,6 @@
  * license-end
  */
 package org.flowerplatform.flexutil.value_converter {
-	import org.flowerplatform.flexutil.controller.AbstractValueConverter;
 	
 	/**
 	 * @author Cristian Spiescu

@@ -39,11 +39,17 @@ public final class UtilConstants {
 	public static final String EXTRA_INFO_VALUE_CONVERTER = "valueConverter";
 	public static final String EXTRA_INFO_CSV_TO_LIST_PREFIX = "csvToListPrefix";
 	public static final String EXTRA_INFO_CSV_TO_LIST_SUFFIX = "csvToListSuffix";
-	
-	// Other
+
 	public static final String VALUE_CONVERTER_STRING_HEX_TO_UINT = "stringHexToUint";
 	public static final String VALUE_CONVERTER_CSV_TO_LIST = "csvToList";
-
+	public static final String VALUE_CONVERTER_LIST_TO_LIST = "listToList";
+	
+	// Properties
+	public static final String FEATURE_PROPERTY_DESCRIPTORS = "PropertyDescriptors";
+	public static final String FEATURE_PROPERTY_GROUP_DESCRIPTORS = "PropertyGroupsDescriptors";
+	public static final String PROPERTY_EDITOR_TYPE_STRING = "String";
+	public static final String PROPERTY_EDITOR_TYPE_BOOLEAN = "Boolean";
+	
 	
 	////////////////////////////////////////////////////////////////////
 	// Constants only in Java (or before the constants cleaning up)

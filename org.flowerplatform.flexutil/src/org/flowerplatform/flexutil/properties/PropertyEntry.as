@@ -15,5 +15,6 @@ package org.flowerplatform.flexutil.properties {
 		public var descriptor:PropertyDescriptor;
 		public var value:Object;
 		public var isGroup:Boolean;
+		public var context:Object;
 	}
 }

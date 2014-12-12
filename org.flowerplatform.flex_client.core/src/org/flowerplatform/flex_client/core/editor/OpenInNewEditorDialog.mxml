@@ -84,14 +84,14 @@ previously), and a new editor is opened directly.
 				so.flush();
 			}
 			
-			override protected function okHandler(event:Event = null):void {
+			override public function okHandler(event:Event = null):void {
 				if (rememberSetting.selected) {
 					alwaysOpenInNewEditor = true;					
 				}
 				openInNewEditor();
 			}
 			
-			override protected function cancelHandler(event:Event = null):void {
+			override public function cancelHandler(event:Event = null):void {
 				_resultHandler.handleDialogResult(false);
 				super.cancelHandler();
 			}

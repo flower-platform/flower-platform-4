@@ -10,14 +10,23 @@
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
 			import mx.collections.IList;
 			
 			import spark.events.IndexChangeEvent;
 			
 			import org.apache.flex.collections.VectorList;
+			import org.flowerplatform.flexutil.FlexUtilConstants;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
+			import org.flowerplatform.flexutil.flexdiagram.StandAloneSequentialLayoutVisualChildrenController;
 			import org.flowerplatform.flexutil.properties.PropertiesHelper;
+			import org.flowerplatform.flexutil.properties.PropertyCommitController;
+			import org.flowerplatform.flexutil.properties.PropertyDescriptor;
+			import org.flowerplatform.flexutil.properties.PropertyEntryRendererController;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			
 			
 			[Bindable]
 			protected var dataProvider:IList;
@@ -47,6 +56,13 @@
 				dataProvider.addItem(model);
 				list.selectedIndex = 0;
 				listChangeHandler(null);
+
+				var propertiesContext:Object = new Object();
+
+				propertiesContext[FlexUtilConstants.PROPERTIES_CONTEXT_SHOW_REMOVE_PROPERTY] = 
+					propertiesContext[FlexUtilConstants.PROPERTIES_CONTEXT_SHOW_ADD_PROPERTY] = 
+					propertiesContext[FlexUtilConstants.PROPERTIES_CONTEXT_INCLUDE_PROPERTIES_WITHOUT_DESCRIPTOR] = true;
+				propertiesForm.context = propertiesContext;
 			}
 			
 			protected function listChangeHandler(event:IndexChangeEvent):void {
@@ -58,12 +74,24 @@
 				}
 			}
 			
+			protected function showQuickFormclickHandler():void {
+				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+					.setTitle("Quick Form")
+					.setViewContent(
+						new PropertiesForm().createQuickPropertiesForm(null, propertiesForm.typeDescriptorRegistry, new Object(), new ArrayCollection([
+							new PropertyDescriptor().setName("field1"),
+							new PropertyDescriptor().setName("field2").setLabel("Field 2"),
+							new PropertyDescriptor().setName("field3").setLabel("Field 3").setType(FlexUtilConstants.PROPERTY_EDITOR_TYPE_BOOLEAN)])))
+					.show(false);
+			}
+			
 		]]>
 	</fx:Script>
 	<s:Panel title="Sample Data" height="30%">
 		<s:layout>
 			<s:VerticalLayout/>
 		</s:layout>
+		<s:Label text="@see also: The mind map sample, in flexdiagram.samples, using 'Edit properties in renderer'"/>
 		<s:List id="list" dataProvider="{dataProvider}" width="100%" height="100%" change="listChangeHandler(event)"/>	
 		<s:HGroup verticalAlign="middle">
 			<s:Label text="Property"/>
@@ -72,13 +100,14 @@
 			<s:TextInput id="value"/>
 			<s:Button label="Change" click="propertiesForm.data.properties[property.text] = value.text;"/>
 		</s:HGroup>
-		<s:Button label="Reset selection" click="list.selectedItem = null; listChangeHandler(null)"/>
+		<s:Button label="Reset Selection" click="list.selectedItem = null; listChangeHandler(null)"/>
+		<s:Button label="Show Quick Form" click="showQuickFormclickHandler()"/>
 	</s:Panel>
 	<s:Panel title="Properties" height="70%">
 		<s:Scroller height="100%" width="100%">
 			<s:HGroup width="100%">
 				<properties:PropertiesForm id="propertiesForm" width="100%" 
-					visualChildrenController="{new SampleStandAloneSequentialLayoutVisualChildrenController()}"
+					visualChildrenController="{new StandAloneSequentialLayoutVisualChildrenController(0, null, new PropertyEntryRendererController(new PropertyCommitController()))}"
 					typeDescriptorRegistry="{PropertiesHelper.registerPropertyRenderers(new TypeDescriptorRegistry())}"
 					propertiesHelper="{new SamplePropertiesHelper()}"
 					/>

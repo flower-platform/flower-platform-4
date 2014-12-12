@@ -1,18 +1,24 @@
-package org.flowerplatform.flexutil.properties
-{
+package org.flowerplatform.flexutil.properties {
 	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
 	
+	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.utils.LinkedList;
 	import mx.utils.LinkedListNode;
+	import mx.utils.ObjectUtil;
 	
+	import org.apache.flex.collections.VectorList;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
-	import org.flowerplatform.flexutil.LinkedListWrapper;
+	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.GenericDescriptor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
+	import org.flowerplatform.flexutil.list.EmptyList;
+	import org.flowerplatform.flexutil.list.LinkedListWrapper;
 	import org.flowerplatform.flexutil.properties.editor.BooleanPropertyEditor;
+	import org.flowerplatform.flexutil.properties.editor.IPropertyEditor;
+	import org.flowerplatform.flexutil.properties.editor.StringCsvListPropertyEditor;
 	import org.flowerplatform.flexutil.properties.editor.StringPropertyEditor;
 
 	/**
@@ -35,51 +41,77 @@ package org.flowerplatform.flexutil.properties
 		public static function registerPropertyRenderers(typeDescriptorRegistry:TypeDescriptorRegistry):TypeDescriptorRegistry {
 			typeDescriptorRegistry.getOrCreateTypeDescriptor(FlexUtilConstants.NOTYPE_PROPERTY_EDITORS)
 				.addSingleController(FlexUtilConstants.PROPERTY_EDITOR_TYPE_STRING, new GenericDescriptor(StringPropertyEditor))
+				.addSingleController(FlexUtilConstants.PROPERTY_EDITOR_TYPE_STRING_CSV_LIST, new GenericDescriptor(StringCsvListPropertyEditor))
 				.addSingleController(FlexUtilConstants.PROPERTY_EDITOR_TYPE_BOOLEAN, new GenericDescriptor(BooleanPropertyEditor));
+			
+			var stringCsvListPropertyEditor:GenericDescriptor = new GenericDescriptor(StringCsvListPropertyEditor);
+			
+			typeDescriptorRegistry.getOrCreateTypeDescriptor(FlexUtilConstants.NOTYPE_CLASSES_TO_PROPERTY_EDITORS)
+				.addSingleController(Utils.getClassNameForObject(String, true), new GenericDescriptor(StringPropertyEditor))
+				.addSingleController(Utils.getClassNameForObject(ArrayCollection, true), stringCsvListPropertyEditor)
+				.addSingleController(Utils.getClassNameForObject(ArrayList, true), stringCsvListPropertyEditor)
+				.addSingleController(Utils.getClassNameForObject(VectorList, true), stringCsvListPropertyEditor)
+				.addSingleController(Utils.getClassNameForObject(Boolean, true), new GenericDescriptor(BooleanPropertyEditor));
 			return typeDescriptorRegistry;
 		}
 		
-		protected const EMPTY_LIST:ArrayList = new ArrayList([]);
+		public var propertyDescriptors:IList;
 		
-		protected function getEventDispatcher(model:Object):IEventDispatcher {
-			throw new Error("This should be implemented");
+		public var groupDescriptors:IList;
+		
+		protected function getEventDispatcher(context:Object, model:Object):IEventDispatcher {
+			return null;
 		}
 		
-		protected function copyAllModelProperties(model:Object):Object {
-			throw new Error("This should be implemented");
+		protected function copyAllModelProperties(context:Object, model:Object):Object {
+			return ObjectUtil.copy(model);
 		}
 		
-		protected function getDescriptorsForGroups(model:Object):IList {
-			throw new Error("This should be implemented");
+		protected function getDescriptorsForGroups(context:Object, model:Object):IList {
+			return groupDescriptors;
 		}
 		
-		protected function getDescriptorsForProperties(model:Object):IList {
-			throw new Error("This should be implemented");
+		protected function getDescriptorsForProperties(context:Object, model:Object):IList {
+			return propertyDescriptors;
 		}
 		
-		protected function getGroupForPropertiesWithoutDescriptor():String {
-			return "propertiesWithoutDescriptor";
+		protected function getGroupForPropertiesWithoutDescriptor(context:Object):String {
+			return "";
 		}
 		
-		protected function getGroupForPropertiesWithoutGroup():String {
-			return "propertiesWithoutGroup";
+		protected function getGroupForPropertiesWithoutGroup(context:Object):String {
+			return "";
+		}
+		
+		protected function createPropertyEntry(context:Object, isGroup:Boolean, propertyDescriptor:PropertyDescriptor, typeDescriptorRegistry:TypeDescriptorRegistry, model:Object):PropertyEntry {
+			var entry:PropertyEntry = new PropertyEntry();
+			entry.context = context;
+			entry.descriptor = propertyDescriptor;
+			entry.isGroup = isGroup;
+			entry.typeDescriptorRegistry = typeDescriptorRegistry;
+			entry.model = model;
+			if (model != null) {
+				entry.eventDispatcher = getEventDispatcher(context, model);
+			}
+			return entry;
 		}
 
-		public function getPropertyEntries(typeDescriptorRegistry:TypeDescriptorRegistry, model:Object, includePropertiesWithoutDescriptor:Boolean):IList {
+
+		public function getPropertyEntries(newContext:Object, typeDescriptorRegistry:TypeDescriptorRegistry, model:Object):IList {
 			if (model == null) {
-				return EMPTY_LIST;
+				return EmptyList.INSTANCE;
 			}
 			var result:LinkedList = new LinkedList();
 			
 			// add the groups to the result
 			var groupInsertBefore:Dictionary = new Dictionary(); // for a group, gives the LinkedListNode before which we need to insert an item belonging to that group
 			var lastGroup:String = null; // the map above doesn't contain info for the last group; i.e. we should insert elements with push
-			var descriptorsForGroups:IList = getDescriptorsForGroups(model);
+			var descriptorsForGroups:IList = getDescriptorsForGroups(newContext, model);
+			if (descriptorsForGroups == null) {
+				descriptorsForGroups = EmptyList.INSTANCE;
+			}
 			for (var i:int = 0; i < descriptorsForGroups.length; i++) {
-				var newGroupEntry:PropertyEntry = new PropertyEntry();
-				newGroupEntry.isGroup = true;
-				newGroupEntry.descriptor = PropertyDescriptor(descriptorsForGroups.getItemAt(i));
-				
+				var newGroupEntry:PropertyEntry = createPropertyEntry(newContext, true, PropertyDescriptor(descriptorsForGroups.getItemAt(i)), typeDescriptorRegistry, null); 
 				var node:LinkedListNode = result.push(newGroupEntry);
 				if (lastGroup != null) {
 					// i.e. not the first iteration
@@ -89,16 +121,15 @@ package org.flowerplatform.flexutil.properties
 				lastGroup = newGroupEntry.descriptor.name;
 			}
 			
-			var allModelProperties:Object = copyAllModelProperties(model);
+			var allModelProperties:Object = copyAllModelProperties(newContext, model);
 			
 			// add the properties to the result, at the right places (i.e. next to the category)
-			var descriptorsForProperties:IList = getDescriptorsForProperties(model);
+			var descriptorsForProperties:IList = getDescriptorsForProperties(newContext, model);
+			if (descriptorsForProperties == null) {
+				descriptorsForProperties = EmptyList.INSTANCE;
+			}
 			for (i = 0; i < descriptorsForProperties.length; i++) {
-				var entry:PropertyEntry = new PropertyEntry();
-				entry.typeDescriptorRegistry = typeDescriptorRegistry;
-				entry.model = model;
-				entry.eventDispatcher = getEventDispatcher(model);
-				entry.descriptor = PropertyDescriptor(descriptorsForProperties.getItemAt(i));
+				var entry:PropertyEntry = createPropertyEntry(newContext, false, PropertyDescriptor(descriptorsForProperties.getItemAt(i)), typeDescriptorRegistry, model);
 				if (allModelProperties.hasOwnProperty(entry.descriptor.name)) {
 					// add the value to the entry
 					entry.value = allModelProperties[entry.descriptor.name];
@@ -106,11 +137,11 @@ package org.flowerplatform.flexutil.properties
 					delete allModelProperties[entry.descriptor.name];
 				}
 				
-				var groupForCurrentEntry:String = entry.descriptor.category;
+				var groupForCurrentEntry:String = entry.descriptor.group;
 				if (groupForCurrentEntry == null) {
 					// if we used null for desc without group: if such a desc would be processed first => no group entry; else => group entry with name = "null"
 					// i.e. not very consistent
-					groupForCurrentEntry = getGroupForPropertiesWithoutGroup();
+					groupForCurrentEntry = getGroupForPropertiesWithoutGroup(newContext);
 				}
 				
 				node = groupInsertBefore[groupForCurrentEntry];
@@ -123,9 +154,7 @@ package org.flowerplatform.flexutil.properties
 					if (groupForCurrentEntry != lastGroup) {
 						// i.e. a new group =>
 						// create PropertyEntry with a PropertyDescriptor created on the fly
-						newGroupEntry = new PropertyEntry();
-						newGroupEntry.isGroup = true;
-						newGroupEntry.descriptor = new PropertyDescriptor();
+						newGroupEntry = createPropertyEntry(newContext, true, new PropertyDescriptor(), typeDescriptorRegistry, null); 
 						newGroupEntry.descriptor.name = groupForCurrentEntry;
 						
 						// and add it to the map
@@ -141,24 +170,22 @@ package org.flowerplatform.flexutil.properties
 				}
 			}
 			
-			if (includePropertiesWithoutDescriptor) {
-				newGroupEntry = new PropertyEntry();
-				newGroupEntry.isGroup = true;
-				newGroupEntry.descriptor = new PropertyDescriptor();
-				newGroupEntry.descriptor.name = getGroupForPropertiesWithoutDescriptor();
-
-				// and add it to the map
-				node = result.push(newGroupEntry);
-				// no need to update groupInsertBefore and lastGroup
-				
+			if (Utils.getPropertySafe(newContext, FlexUtilConstants.PROPERTIES_CONTEXT_INCLUDE_PROPERTIES_WITHOUT_DESCRIPTOR)) {
+				var first:Boolean = true;
+				// the properties left don't have a descriptor
 				for (var key:String in allModelProperties) {
-					// the properties left don't have a descriptor
-					entry = new PropertyEntry();
-					entry.descriptor = new PropertyDescriptor();
+					if (first) {
+						newGroupEntry = createPropertyEntry(newContext, true, new PropertyDescriptor(), typeDescriptorRegistry, null);
+						newGroupEntry.descriptor.name = getGroupForPropertiesWithoutDescriptor(newContext);
+						
+						// and add it to the map
+						node = result.push(newGroupEntry);
+						// no need to update groupInsertBefore and lastGroup
+						
+						first = false;
+					}
+					entry = createPropertyEntry(newContext, false, new PropertyDescriptor(), typeDescriptorRegistry, model);
 					entry.descriptor.name = key;
-					entry.typeDescriptorRegistry = typeDescriptorRegistry;
-					entry.model = model;
-					entry.eventDispatcher = getEventDispatcher(model);
 					entry.value = allModelProperties[key];
 					result.push(entry);
 				}

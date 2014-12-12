@@ -34,9 +34,6 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	import org.flowerplatform.flexdiagram.samples.mindmap.controller.SampleSequentialLayoutVisualChildrenController;
 	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapModelSelectionRenderer;
 	import org.flowerplatform.flexdiagram.samples.mindmap.renderer.SampleMindMapRenderer;
-	import org.flowerplatform.flexutil.properties.PropertyEntryRendererController;
-	import org.flowerplatform.flexutil.samples.properties.SamplePropertyCommitController;
-	import org.flowerplatform.flexdiagram.samples.renderer.SubModelIconItemRenderer;
 	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	import org.flowerplatform.flexutil.FlexUtilConstants;
 	import org.flowerplatform.flexutil.controller.GenericDescriptor;
@@ -44,7 +41,9 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	import org.flowerplatform.flexutil.properties.DelegatingPropertyCommitController;
 	import org.flowerplatform.flexutil.properties.PropertiesHelper;
-	import org.flowerplatform.flexutil.value_converter.CsvToListValueConverter;
+	import org.flowerplatform.flexutil.properties.PropertyCommitController;
+	import org.flowerplatform.flexutil.properties.PropertyEntryRendererController;
+	import org.flowerplatform.flexutil.value_converter.AbstractValueConverter;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -59,9 +58,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 			registry = new TypeDescriptorRegistry();
 			registry.typeProvider = typeProvider;
 			PropertiesHelper.registerPropertyRenderers(registry);
-			
-			registry.getOrCreateTypeDescriptor(FlexUtilConstants.NOTYPE_VALUE_CONVERTERS)
-				.addSingleController(FlexUtilConstants.VALUE_CONVERTER_CSV_TO_LIST, new CsvToListValueConverter());
+			AbstractValueConverter.registerValueConverters(registry);
 
 			registry.getOrCreateTypeDescriptor("mindmap")
 				.addSingleController(FlexDiagramConstants.MINDMAP_MODEL_CONTROLLER, new SampleMindMapModelController())
@@ -75,7 +72,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 				
 				// properties
 				.addSingleController(FlexDiagramConstants.VISUAL_CHILDREN_CONTROLLER, new SampleSequentialLayoutVisualChildrenController(this))
-				.addSingleController(FlexUtilConstants.FEATURE_PROPERTY_COMMIT_CONTROLLER, new SamplePropertyCommitController())
+				.addSingleController(FlexUtilConstants.FEATURE_PROPERTY_COMMIT_CONTROLLER, new PropertyCommitController())
 				
 				.addSingleController("mindMapValuesProvider", new ValuesProvider())
 				.addSingleController(FlexDiagramConstants.BASE_RENDERER_FONT_FAMILY, new GenericDescriptor("fontFamily"))
@@ -92,7 +89,7 @@ package org.flowerplatform.flexdiagram.samples.mindmap {
 				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE, new GenericDescriptor("cloudType"))
 				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_COLOR, new GenericDescriptor("cloudColor"))
 				.addSingleController(FlexDiagramConstants.MIND_MAP_RENDERER_HAS_CHILDREN, new GenericDescriptor("hasChildren"))
-				.addSingleController("mindMapNodeRenderer.detailsText", new GenericDescriptor("details"))
+				.addSingleController(FlexDiagramConstants.BASE_RENDERER_DETAILS_TEXT, new GenericDescriptor("details"))
 				.addSingleController(FlexDiagramConstants.BASE_RENDERER_NOTE, new GenericDescriptor("note"));
 			
 			

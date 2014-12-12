@@ -2,6 +2,7 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="org.flowerplatform.flex_client.resources.Resources"/>
+    <classEntry path="org.flowerplatform.flex_client.resources.ActionOrderIndexes"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

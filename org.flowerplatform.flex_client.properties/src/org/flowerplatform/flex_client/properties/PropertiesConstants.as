@@ -25,8 +25,6 @@ package org.flowerplatform.flex_client.properties {
 		public static const PREFERENCE_TYPE:String = "preference";
 		public static const PREFERENCE_CATEGORY_TYPE:String = FlexUtilConstants.CATEGORY_PREFIX + PREFERENCE_TYPE;
 		
-		public static const PROPERTY_DESCRIPTOR:String = "propertyDescriptor";
-		
 		public static const PROPERTY_DESCRIPTOR_PROVIDER:String = "propertyDescriptorProvider";
 		
 		public static const INCLUDE_RAW_PROPERTY:String = "includeRawProperty";
@@ -38,8 +36,6 @@ package org.flowerplatform.flex_client.properties {
 		public static const PROPERTY_LINE_RENDERER_TYPE_PREFERENCE_GLOBAL:String = "PreferenceGlobal";
 		public static const PROPERTY_LINE_RENDERER_TYPE_PREFERENCE_USER:String = "PreferenceUser";
 		
-		public static const PROPERTY_DESCRIPTOR_TYPE_STRING:String = "String";
-		public static const PROPERTY_DESCRIPTOR_TYPE_BOOLEAN:String = "Boolean";
 		public static const PROPERTY_DESCRIPTOR_TYPE_NUMBER:String = "Number";
 		public static const PROPERTY_DESCRIPTOR_TYPE_NUMBER_STEPPER:String = "NumberStepper";
 		public static const PROPERTY_DESCRIPTOR_TYPE_DROP_DOWN_LIST:String = "DropDownList";

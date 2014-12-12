@@ -37,7 +37,7 @@
 				focusManager.setFocus(link);
 			}
 			
-			override protected function okHandler(event:Event = null):void {
+			override public function okHandler(event:Event = null):void {
 				CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, link.text);
 				cancelHandler();
 			}

@@ -49,7 +49,7 @@
 					});
 			}
 			
-			override protected function okHandler(event:Event = null):void {
+			override public function okHandler(event:Event = null):void {
 				if (Validator.validateAll([usernameValidator]).length > 0) {
 					return;
 				}

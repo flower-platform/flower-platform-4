@@ -53,7 +53,7 @@
 					treeList.finalizeTree();
 				}
 				
-				override protected function okHandler(event:Event = null):void {					
+				override public function okHandler(event:Event = null):void {					
 					// if it's selected an item from tree -> call merge operation					
 					var selectedNode:Node;					
 					if (treeList.selectedItem){
