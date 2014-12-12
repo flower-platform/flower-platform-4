@@ -34,6 +34,7 @@ import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_HAS_CHILDR
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_SIDE;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE;
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.core.CoreConstants.ROOT_TYPE;
@@ -343,6 +344,11 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(CoreConstants.REMOVE_NODE_CONTROLLER, updateController)
 		
 			.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new PropertyDescriptorDefaultPropertyValueProvider());
+		
+		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CoreConstants.CATEGORY_CONFIG_SETTINGS)
+			.addAdditiveController(PROPERTY_DESCRIPTOR, 
+					new PropertyDescriptor().setNameAs(CoreConstants.CONFIG_SETTING_DISABLED)
+					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(false).setContributesToCreationAs(true));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CoreConstants.PREFERENCE_CATEGORY_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new PreferencePropertiesProvider().setOrderIndexAs(1000)); // after persistence props provider

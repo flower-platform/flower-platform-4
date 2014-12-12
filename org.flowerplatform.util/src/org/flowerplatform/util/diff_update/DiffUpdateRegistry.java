@@ -62,7 +62,9 @@ public class DiffUpdateRegistry {
 	 * @param resourceSet
 	 */
 	public void registerResourceSet(String resourceSet) {
-		updatesMap.put(resourceSet, new ArrayList<DiffUpdate>());
+		if (!updatesMap.containsKey(resourceSet)) {
+			updatesMap.put(resourceSet, new ArrayList<DiffUpdate>());
+		}
 	}
 
 	/**

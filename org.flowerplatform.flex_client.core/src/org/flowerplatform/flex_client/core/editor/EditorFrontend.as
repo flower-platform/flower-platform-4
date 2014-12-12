@@ -18,6 +18,7 @@ package org.flowerplatform.flex_client.core.editor {
 	
 	import mx.collections.IList;
 	import mx.managers.IFocusManagerComponent;
+	import mx.rpc.Fault;
 	import mx.rpc.events.FaultEvent;
 	
 	import spark.components.VGroup;
@@ -71,7 +72,7 @@ package org.flowerplatform.flex_client.core.editor {
 			// nothing to do
 		}
 		
-		protected function subscribeFaultCallback(event:FaultEvent):void {
+		protected function subscribeFaultCallback(fault:Fault):void {
 			// close editor
 			FlexUtilGlobals.getInstance().workbench.closeView(IEventDispatcher(viewHost), true, true);
 		}

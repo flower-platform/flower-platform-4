@@ -93,4 +93,4 @@ var _entityRegistryManager;
 
 var Constants = { UPDATED: "updated", ADDED: "added", REMOVED: "removed", REQUEST_REFRESH: "requestRefresh" };
 
-var _entityRegistryManager = new EntityRegistryManager();
+var _entityRegistryManager;

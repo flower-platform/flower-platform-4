@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.util.regex;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.slf4j.Logger;
@@ -30,36 +32,23 @@ public class RegexProcessingSession {
 	
 	protected Matcher matcher;
 	
-	protected RegexConfiguration configuration;
+	public RegexConfiguration configuration;
 
 	// attributes holding results of the last match
 	
 	protected int currentMatchGroupIndex;
 	
-	protected AbstractRegexWithAction currentRegex;
+	protected AbstractRegexWithActions currentRegex;
 	
 	protected String[] currentSubMatchesForCurrentRegex;
 	
-	public boolean ignoreMatches;
-	
-	public int currentNestingLevel;
+	// TODO CS: move to map
+	// public boolean ignoreMatches;
+	// public int currentNestingLevel;
 	
 	protected String lastMatchCategory;
-	/**
-	 *@author Cristina Constantinescu
-	 **/
-	public void reset(boolean resetMatcher) {
-		currentMatchGroupIndex = -1;
-		currentRegex = null;		
-		currentSubMatchesForCurrentRegex = null;		
-		ignoreMatches = !configuration.useUntilFoundThisIgnoreAll ? false : true;
-		currentNestingLevel = 0;
-		lastMatchCategory = null;
-		
-		if (resetMatcher) {
-			matcher.reset();
-		}
-	}
+	
+	public Map<Object, Object> context;
 	
 	public Matcher getMatcher() {
 		return matcher;
@@ -73,13 +62,40 @@ public class RegexProcessingSession {
 		return currentMatchGroupIndex;
 	}
 
-	public AbstractRegexWithAction getCurrentRegex() {
+	public AbstractRegexWithActions getCurrentRegex() {
 		return currentRegex;
 	}
 
 	public String[] getCurrentSubMatchesForCurrentRegex() {
 		return currentSubMatchesForCurrentRegex;
 	}
+	
+	public Map<Object, Object> getContext() {
+		return context;
+	}
+
+	/**
+	 *@author Cristina Constantinescu
+	 **/
+	public void reset(boolean resetMatcher) {
+		currentMatchGroupIndex = -1;
+		currentRegex = null;		
+		currentSubMatchesForCurrentRegex = null;		
+		lastMatchCategory = null;
+		context = new HashMap<>();
+		
+		if (resetMatcher) {
+			matcher.reset();
+		}
+		// TODO CS: move
+		//ignoreMatches = !configuration.useUntilFoundThisIgnoreAll ? false : true;
+		// ignoreMatches = configuration.useUntilFoundThisIgnoreAll;
+		context.put("ignoreMatches", !configuration.useUntilFoundThisIgnoreAll ? false : true);
+		context.put("currentNestingLevel", 0);
+		context.put("currentNode", null);
+		context.put("DO_NOT_EXECUTE_OTHER_ACTIONS", false);
+	}
+
 	/**
 	 *@author Cristina Constantinescu
 	 **/
@@ -156,7 +172,7 @@ public class RegexProcessingSession {
 			}
 		}
 		
-		currentRegex.executeAction(this);
+		currentRegex.executeActions(this);
 		
 		return true;
 	}
