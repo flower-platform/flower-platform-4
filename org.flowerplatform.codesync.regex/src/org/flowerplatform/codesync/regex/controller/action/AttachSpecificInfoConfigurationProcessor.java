@@ -1,7 +1,7 @@
 package org.flowerplatform.codesync.regex.controller.action;
 
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_ATTACH_SPECIFIC_INFO_IS_CONTAINMENT_PROPERTY;
-import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_TYPE_ATTACH_SPECIFIC_INFO_KEY_PROPERTY;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_PROPERTY_INFO_IS_CONTAINMENT;
+import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.ACTION_PROPERTY_INFO_KEY;
 
 import org.flowerplatform.codesync.regex.action.AttachSpecificInfoAction;
 import org.flowerplatform.core.node.remote.Node;
@@ -14,8 +14,8 @@ public class AttachSpecificInfoConfigurationProcessor extends RegexActionConfigu
 
 	@Override
 	protected RegexAction createRegexAction(Node node) {
-		String attachInfoKey = (String) node.getPropertyValue(ACTION_TYPE_ATTACH_SPECIFIC_INFO_KEY_PROPERTY);
-		Boolean isContainment = (Boolean) node.getPropertyValue(ACTION_TYPE_ATTACH_SPECIFIC_INFO_IS_CONTAINMENT_PROPERTY);
+		String attachInfoKey = (String) node.getPropertyValue(ACTION_PROPERTY_INFO_KEY);
+		Boolean isContainment = (Boolean) node.getPropertyValue(ACTION_PROPERTY_INFO_IS_CONTAINMENT);
 		return new AttachSpecificInfoAction(attachInfoKey, isContainment);
 	}
 }

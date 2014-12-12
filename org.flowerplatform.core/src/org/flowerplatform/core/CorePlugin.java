@@ -33,6 +33,7 @@ import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_CLOUD_TYPE
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_HAS_CHILDREN;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_SIDE;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX;
+import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_BOOLEAN;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE;
@@ -48,6 +49,7 @@ import java.io.File;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
+import org.flowerplatform.core.config_processor.ConfigSettingsPropertiesController;
 import org.flowerplatform.core.file.FileSystemControllers;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
@@ -345,10 +347,14 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 			.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new PropertyDescriptorDefaultPropertyValueProvider());
 		
+		
+		ConfigSettingsPropertiesController configSettingsPropertiesController = new ConfigSettingsPropertiesController();
 		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CoreConstants.CATEGORY_CONFIG_SETTINGS)
 			.addAdditiveController(PROPERTY_DESCRIPTOR, 
 					new PropertyDescriptor().setNameAs(CoreConstants.CONFIG_SETTING_DISABLED)
-					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(false).setContributesToCreationAs(true));
+					.setTypeAs(PROPERTY_DESCRIPTOR_TYPE_BOOLEAN).setMandatoryAs(false).setContributesToCreationAs(true))
+			.addAdditiveController(PROPERTIES_PROVIDER, configSettingsPropertiesController)
+			.addAdditiveController(CoreConstants.PROPERTY_SETTER, configSettingsPropertiesController);
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CoreConstants.PREFERENCE_CATEGORY_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new PreferencePropertiesProvider().setOrderIndexAs(1000)); // after persistence props provider

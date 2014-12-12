@@ -18,15 +18,12 @@ package org.flowerplatform.codesync.regex.controller;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_CONFIGS_FOLDER;
 import static org.flowerplatform.codesync.regex.CodeSyncRegexConstants.REGEX_TEST_FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreUtils.getRepoFromNode;
-import static org.flowerplatform.core.file.FileControllerUtils.getFileAccessController;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.flowerplatform.codesync.regex.CodeSyncRegexConstants;
 import org.flowerplatform.codesync.regex.CodeSyncRegexPlugin;
-import org.flowerplatform.core.CoreConstants;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.node.NodeService;
@@ -44,26 +41,20 @@ public class RegexTestFilesChildrenProvider extends AbstractController implement
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
 		VirtualNodeResourceHandler virtualNodeHandler = CorePlugin.getInstance().getVirtualNodeResourceHandler();
-		String nodeSpecificPart = virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri());
-		String path = CoreUtils.getRepoFromNode(node) + "/" + REGEX_CONFIGS_FOLDER + "/" + nodeSpecificPart + "/"
+		String technology = virtualNodeHandler.getTypeSpecificPartFromNodeUri(node.getNodeUri());
+		String path = CoreUtils.getRepoFromNode(node) + "/" + REGEX_CONFIGS_FOLDER + "/" + technology + "/"
 				+ CodeSyncRegexConstants.REGEX_TEST_FILES_FOLDER;
-
 		Object testFilesFolder = null;
 		try {
 			testFilesFolder = CorePlugin.getInstance().getFileAccessController().getFile(path);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
 		List<Object> testFiles = CodeSyncRegexPlugin.getInstance().getRegexService().getTestFiles(testFilesFolder);
-		if (testFiles == null) {
-			// there are no test files
-			return Collections.emptyList();
-		}
 		List<Node> children = new ArrayList<Node>();
 		for (Object testFile : testFiles) {
 			String relativePath = CorePlugin.getInstance().getFileAccessController().getPathRelativeToFile(testFile, testFilesFolder);
-			String typeSpecificPart = nodeSpecificPart + "$" + relativePath;
+			String typeSpecificPart = technology + "$" + relativePath;
 			Node child = new Node(virtualNodeHandler.createVirtualNodeUri(getRepoFromNode(node),
 					REGEX_TEST_FILE_NODE_TYPE, typeSpecificPart), REGEX_TEST_FILE_NODE_TYPE);
 			children.add(child);
@@ -73,22 +64,6 @@ public class RegexTestFilesChildrenProvider extends AbstractController implement
 
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
-		Object file = null;
-		String path = CoreUtils.getRepoFromNode(node) + "/" + REGEX_CONFIGS_FOLDER;
-		try {
-			file = getFileAccessController().getFile(path);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		Object[] files = getFileAccessController().listFiles(file);
-		if (files == null) {
-			return false;
-		}
-		if (files.length == 1 && CoreConstants.METADATA.equals(getFileAccessController().getName(files[0]))) {
-			// calculate hasChildren without metadata directory
-			return false;
-
-		}
-		return files.length > 0;
+		return getChildren(node, context).size() > 0;
 	}
 }

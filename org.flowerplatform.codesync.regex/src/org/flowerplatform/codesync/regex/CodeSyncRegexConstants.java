@@ -42,16 +42,16 @@ public final class CodeSyncRegexConstants {
 	public static final String VIRTUAL_REGEX_TYPE = "regexVirtual";
 		
 	public static final String REGEX_ACTIONS_DESCRIPTOR_TYPE = "RegexActions";
-	public static final String ACTION_TYPE_KEEP_SPECIFIC_INFO = "KeepSpecificInfoAction";
-	public static final String ACTION_TYPE_CREATE_NODE = "CreateNodeAction";
-	public static final String ACTION_TYPE_ATTACH_SPECIFIC_INFO = "AttachSpecificInfoAction";
-	public static final String ACTION_TYPE_CHECK_STATE = "CheckStateAction";
-	public static final String ACTION_TYPE_ENTER_STATE = "EnterStateAction";
-	public static final String ACTION_TYPE_EXIT_STATE = "ExistStateAction";
-	public static final String ACTION_TYPE_CLEAR_SPECIFIC_INFO = "ClearSpecificInfoAction";
-	public static final String ACTION_TYPE_ATTACH_NODE_TO_CURRENT_STATE_ACTION = "AttachNodeToCurrentStateAction";
-	public static final String ACTION_TYPE_INCREASE_NESTING_LEVEL = "IncreaseNestingLevelAction";
-	public static final String ACTION_TYPE_DECREASE_NESTING_LEVEL = "DecreaseNestingLevelAction";
+	public static final String ACTION_TYPE_KEEP_SPECIFIC_INFO = "keepSpecificInfoAction";
+	public static final String ACTION_TYPE_CREATE_NODE = "createNodeAction";
+	public static final String ACTION_TYPE_ATTACH_SPECIFIC_INFO = "attachSpecificInfoAction";
+	public static final String ACTION_TYPE_CHECK_STATE = "checkStateAction";
+	public static final String ACTION_TYPE_ENTER_STATE = "enterStateAction";
+	public static final String ACTION_TYPE_EXIT_STATE = "exitStateAction";
+	public static final String ACTION_TYPE_CLEAR_SPECIFIC_INFO = "clearSpecificInfoAction";
+	public static final String ACTION_TYPE_ATTACH_NODE_TO_CURRENT_STATE_ACTION = "attachNodeToCurrentStateAction";
+	public static final String ACTION_TYPE_INCREASE_NESTING_LEVEL = "increaseNestingLevelAction";
+	public static final String ACTION_TYPE_DECREASE_NESTING_LEVEL = "decreaseNestingLevelAction";
 
 	public static final String REGEX_CONFIGS_FOLDER = ".regex-configs";
 	public static final String REGEX_CONFIG_FILE = ".regex-config";
@@ -87,15 +87,16 @@ public final class CodeSyncRegexConstants {
 	public static final String REGEX_WITH_MACROS = "regex";
 	public static final String FULL_REGEX = "fullRegex";
 
-	public static final String ACTION_TYPE_CREATE_NODE_PROPERTIES = "properties";
-	public static final String ACTION_TYPE_CREATE_NODE_NEW_NODE_TYPE = "newNodeType";
-	public static final String ACTION_TYPE_KEEP_SPECIFIC_INFO_KEY_PROPERTY = "keepInfoKey";
-	public static final String ACTION_TYPE_KEEP_SPECIFIC_INFO_IS_LIST_PROPERTY = "isList";
-	public static final String ACTION_TYPE_KEEP_SPECIFIC_INFO_IS_CONTAINMENT_PROPERTY = "keepIsContainment";
-	public static final String ACTION_TYPE_ATTACH_SPECIFIC_INFO_KEY_PROPERTY = "attachInfoKey";
-	public static final String ACTION_TYPE_ATTACH_SPECIFIC_INFO_IS_CONTAINMENT_PROPERTY = "attachIsContainment";
-	public static final String ACTION_TYPE_VALID_STATES_PROPERTY = "validStates";
-	public static final String ACTION_TYPE_CLEAR_SPECIFIC_INFO_KEY_PROPERTY = "clearInfoKey";
+	public static final String ACTION_PROPERTY_INFO_KEY = "infoKey";
+	public static final String ACTION_PROPERTY_INFO_IS_LIST = "isList";
+	public static final String ACTION_PROPERTY_INFO_IS_CONTAINMENT = "isContainment";
+	
+	public static final String ACTION_PROPERTY_CREATE_NODE_PROPERTIES = "properties";
+	public static final String ACTION_PROPERTY_CREATE_NODE_NEW_NODE_TYPE = "newNodeType";
+	
+	public static final String ACTION_PROPERTY_ENTER_STATE_IF_PROPERTY_SET = "property";
+	
+	public static final String ACTION_PROPERTY_VALID_STATES_PROPERTY = "validStates";
 	
 	public static final String START = "start";
 	public static final String START_L = "startLine";
@@ -122,7 +123,6 @@ public final class CodeSyncRegexConstants {
 	public static final String CURRENT_NODE = "currentNode";
 	public static final String CURRENT_NESTING_LEVEL = "currentNestingLevel";
 	public static final String STATE_STACK = "stateStack";
-	public static final String DO_NOT_EXECUTE_OTHER_ACTIONS = "doNotExecuteOtherActions";
 	
 	private CodeSyncRegexConstants() {
 	}

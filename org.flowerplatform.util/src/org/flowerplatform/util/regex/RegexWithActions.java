@@ -18,6 +18,8 @@
  */
 package org.flowerplatform.util.regex;
 
+import static org.flowerplatform.util.UtilConstants.DO_NOT_EXECUTE_OTHER_ACTIONS;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,9 +50,9 @@ public class RegexWithActions extends AbstractRegexWithActions {
 	@Override
 	public void executeActions(RegexProcessingSession session) {
 		List<RegexAction> listOfRegexActionsAvailable = getRegexActions();
-		session.context.put("DO_NOT_EXECUTE_OTHER_ACTIONS", false);
+		session.context.put(DO_NOT_EXECUTE_OTHER_ACTIONS, false);
 		for (RegexAction listItem : listOfRegexActionsAvailable) {
-			if ((boolean) session.context.get("DO_NOT_EXECUTE_OTHER_ACTIONS")) {
+			if ((boolean) session.context.get(DO_NOT_EXECUTE_OTHER_ACTIONS)) {
 				break;
 			}
 			listItem.executeAction(session);
