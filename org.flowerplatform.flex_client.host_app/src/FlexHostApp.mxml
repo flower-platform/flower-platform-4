@@ -172,8 +172,6 @@ license-end
 			ObjectProxy;
 			ImageSnapshot;
 			
-			public var workbench:Workbench;
-			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
 				// The channels are puzzled by a query string that has slashes,
@@ -198,6 +196,9 @@ license-end
 				imageContentCache.maxCacheEntries = 300;
 				FlexUtilGlobals.getInstance().imageContentCache = imageContentCache;
 				
+				FlexUtilGlobals.getInstance().workbench = workbench;
+				workbench.viewProvider = FlexUtilGlobals.getInstance().composedViewProvider;
+	
 				FlexUtilGlobals.getInstance().messageBoxFactory = new AlertPopupMessageBoxFactory();
 				FlexUtilGlobals.getInstance().popupHandlerFactory = new PopupHandlerFactory();
 				FlexUtilGlobals.getInstance().progressMonitorHandlerFactory = new ProgressMonitorDialogHandlerFactory();
@@ -218,24 +219,12 @@ license-end
 				var pluginUrls:Array = pluginUrlsAsString.split(",");
 				for (var i:int = 0; i < pluginUrls.length; i++) {
 					pluginUrls[i] = FlexUtilGlobals.getInstance().flexPluginManager.appendVersionToUrl(pluginUrls[i], FlexGlobals.topLevelApplication.parameters.version);
-				}
-				FlexUtilGlobals.getInstance().flexPluginManager.loadPlugins(new ArrayCollection(pluginUrls), pluginsLoaded);
-			}
-			
-			protected function pluginsLoaded(callbackObject:Object):void {
-				if (FlexUtilGlobals.getInstance().workbench == null) {
-					workbench = new Workbench();
-					workbench.percentWidth = 100;
-					workbench.percentHeight = 100;
-					addElement(workbench);
-					FlexUtilGlobals.getInstance().workbench = workbench;
-				}
-				if (FlexUtilGlobals.getInstance().workbench is Workbench) {
-					workbench = Workbench(FlexUtilGlobals.getInstance().workbench);
-					workbench.viewProvider = FlexUtilGlobals.getInstance().composedViewProvider;
-				}
+				}				
+				FlexUtilGlobals.getInstance().flexPluginManager.loadPlugins(new ArrayCollection(pluginUrls));
 			}
 		]]>
 	</fx:Script>
+	
+	<layout:Workbench id="workbench" width="100%" height="100%" />
 	
 </s:Application>

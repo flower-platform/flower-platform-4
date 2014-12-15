@@ -13,5 +13,6 @@
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.flowerplatform.host.web_app"/>
+	<classpathentry kind="lib" path="lib/flex-messaging-core.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
