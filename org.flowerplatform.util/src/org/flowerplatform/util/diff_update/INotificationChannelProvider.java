@@ -7,13 +7,13 @@ import java.util.List;
  * @author Claudiu Matei
  *
  */
-public interface IResourceSetProvider {
+public interface INotificationChannelProvider {
 
 	/**
 	 * 
-	 * @param uid
+	 * @param entity
 	 * @return
 	 */
-	List<String> getResourceSets(String entityUid);
+	List<String> getNotificationChannels(Object entity);
 	
 }

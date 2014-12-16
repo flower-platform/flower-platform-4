@@ -19,8 +19,8 @@ public class DiffUpdateRegistry {
 	 * 
 	 * @param update
 	 */
-	public void addUpdate(String resourceSet, DiffUpdate update) {
-		List<DiffUpdate> updates = updatesMap.get(resourceSet);
+	public void addUpdate(String notificationChannel, DiffUpdate update) {
+		List<DiffUpdate> updates = updatesMap.get(notificationChannel);
 		if (updates == null) {
 			return;
 		}
@@ -29,12 +29,12 @@ public class DiffUpdateRegistry {
 	
 	/**
 	 * 
-	 * @param resourceSet
+	 * @param notificationChannel
 	 * @param firstId
 	 * @param lastId
 	 */
-	public List<DiffUpdate> getUpdates(String resourceSet, long firstId, long lastId) {
-		List<DiffUpdate> updates = updatesMap.get(resourceSet);
+	public List<DiffUpdate> getUpdates(String notificationChannel, long firstId, long lastId) {
+		List<DiffUpdate> updates = updatesMap.get(notificationChannel);
 		if (updates == null) {
 			return null;
 		}
@@ -59,20 +59,20 @@ public class DiffUpdateRegistry {
 
 	/**
 	 * 
-	 * @param resourceSet
+	 * @param notificationChannel
 	 */
-	public void registerResourceSet(String resourceSet) {
-		if (!updatesMap.containsKey(resourceSet)) {
-			updatesMap.put(resourceSet, new ArrayList<DiffUpdate>());
+	public void registerNotificationChannel(String notificationChannel) {
+		if (!updatesMap.containsKey(notificationChannel)) {
+			updatesMap.put(notificationChannel, new ArrayList<DiffUpdate>());
 		}
 	}
 
 	/**
 	 * 
-	 * @param resourceSet
+	 * @param notificationChannel
 	 */
-	public void unregisterResourceSet(String resourceSet) {
-		updatesMap.remove(resourceSet);
+	public void unregisterNotificationChannel(String notificationChannel) {
+		updatesMap.remove(notificationChannel);
 	}
 
 }

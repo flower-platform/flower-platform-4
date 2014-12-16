@@ -9,12 +9,12 @@ import java.util.List;
  */
 public class DiffUpdateController {
 	
-	private IResourceSetProvider resourceSetProvider;	
+	private INotificationChannelProvider notificationChannelProvider;	
 	
 	private DiffUpdateRegistry diffUpdateRegistry;
 	
-	public DiffUpdateController(IResourceSetProvider resourceSetProvider) {
-		this.resourceSetProvider = resourceSetProvider;
+	public DiffUpdateController(INotificationChannelProvider notificationChannelProvider) {
+		this.notificationChannelProvider = notificationChannelProvider;
 		this.diffUpdateRegistry = new DiffUpdateRegistry();
 	}
 	
@@ -24,39 +24,39 @@ public class DiffUpdateController {
 	 */
 	public void addUpdate(DiffUpdate update) {
 		String entityUid = update.getEntityUid();
-		List<String> resourceSets = resourceSetProvider.getResourceSets(entityUid);
-		if (resourceSets == null) {
+		List<String> updateChannels = notificationChannelProvider.getNotificationChannels(entityUid);
+		if (updateChannels == null) {
 			return;
 		}
-		for (String resourceSet : resourceSets) {
-			diffUpdateRegistry.addUpdate(resourceSet, update);
+		for (String updateChannel : updateChannels) {
+			diffUpdateRegistry.addUpdate(updateChannel, update);
 		}
 	}
 
 	/**
 	 * 
-	 * @param resourceSet
+	 * @param updateChannel
 	 * @param firstId
 	 * @param lastId
 	 */
-	public void getUpdates(String resourceSet, long firstId, long lastId) {
-		diffUpdateRegistry.getUpdates(resourceSet, firstId, lastId);
+	public void getUpdates(String updateChannel, long firstId, long lastId) {
+		diffUpdateRegistry.getUpdates(updateChannel, firstId, lastId);
 	}
 
 	/**
 	 * 
-	 * @param resourceSet
+	 * @param notificationChannel
 	 */
-	public void registerResourceSet(String resourceSet) {
-		diffUpdateRegistry.registerResourceSet(resourceSet);
+	public void registerNotificationChannel(String notificationChannel) {
+		diffUpdateRegistry.registerNotificationChannel(notificationChannel);
 	}
 
 	/**
 	 * 
-	 * @param resourceSet
+	 * @param notificationChannel
 	 */
-	public void unregisterResourceSet(String resourceSet) {
-		diffUpdateRegistry.unregisterResourceSet(resourceSet);
+	public void unregisterNotificationChannel(String notificationChannel) {
+		diffUpdateRegistry.unregisterNotificationChannel(notificationChannel);
 	}
 	
 }
