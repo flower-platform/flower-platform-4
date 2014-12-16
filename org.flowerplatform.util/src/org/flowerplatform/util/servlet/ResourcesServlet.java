@@ -56,6 +56,8 @@ public abstract class ResourcesServlet extends HttpServlet {
 	protected String prefix;
 	
 	protected boolean useRealPath;
+	protected String realPathNotFoundFind = null;
+	protected String realPathNotFoundReplace = null;
 		
 	/**
 	 * @author Cristina Constantinescu
@@ -68,8 +70,18 @@ public abstract class ResourcesServlet extends HttpServlet {
 		useFilesFromTemporaryDirectory = Boolean.valueOf((String) getServletContext().getAttribute(ServletUtils.PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY));
 	
 		protocol = config.getInitParameter(PROTOCOL);
+		if (protocol == null) {
+			protocol = "platform:/plugin";
+		}
 		prefix = config.getInitParameter(PREFIX);
+		if (prefix == null) {
+			prefix = UtilConstants.PUBLIC_RESOURCES_DIR;
+		}
 		useRealPath = Boolean.parseBoolean(config.getInitParameter(USE_REAL_PATH));
+		if (useRealPath) {
+			realPathNotFoundFind = config.getInitParameter("realPathNotFoundFind");
+			realPathNotFoundReplace = config.getInitParameter("realPathNotFoundReplace");
+		}
 	}
 	/**
 	 *@author Mariana Gheorghe
