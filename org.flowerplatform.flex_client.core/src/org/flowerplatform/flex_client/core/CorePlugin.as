@@ -228,39 +228,7 @@ package org.flowerplatform.flex_client.core {
 				}
 			);
 
-			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null,
-				function(result:Object):void {
-					var list:ArrayCollection = ArrayCollection(result);
-					for (var i:int = 0; i < list.length; i++) {
-						var remote:TypeDescriptorRemote = TypeDescriptorRemote(list.getItemAt(i));
-						
-						// create new type descriptor with remote type
-						var descriptor:TypeDescriptor = null;
-						if (Utils.beginsWith(remote.type, FlexUtilConstants.CATEGORY_PREFIX)) {
-							descriptor = nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(remote.type);
-						} else {
-							descriptor = nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(remote.type);
-						}
-						
-						// add static categories
-						for each (var category:String in remote.categories) {
-							descriptor.addCategory(category);
-						}
-						
-						// add single controllers
-						for (var singleControllerType:String in remote.singleControllers) {
-							descriptor.addSingleController(singleControllerType, remote.singleControllers[singleControllerType]);
-						}
-						
-						// add additive controllers
-						for (var additiveControllerType:String in remote.additiveControllers) {
-							for each (var additiveController:AbstractController in remote.additiveControllers[additiveControllerType]) {
-								descriptor.addAdditiveController(additiveControllerType, additiveController);
-							}
-						}
-					}
-				}
-			);
+			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null, nodeTypeDescriptorRegistry.addTypeDescriptorsRemote);
 			
 			nodeTypeDescriptorRegistry.typeProvider = nodeTypeProvider;
 

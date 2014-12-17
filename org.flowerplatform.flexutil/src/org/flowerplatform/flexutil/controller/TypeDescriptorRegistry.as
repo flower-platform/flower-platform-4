@@ -17,6 +17,7 @@ package org.flowerplatform.flexutil.controller {
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayList;
+	import mx.collections.ArrayCollection;
 	import mx.collections.IList;
 	import mx.core.mx_internal;
 	
@@ -88,6 +89,37 @@ package org.flowerplatform.flexutil.controller {
 		
 		public function addDynamicCategoryProvider(provider:IDynamicCategoryProvider):void {
 			getDynamicCategoryProviders().addItem(provider);
+		}
+		
+		public function addTypeDescriptorsRemote(typeDescriptorRemoteList:ArrayCollection): void {
+			for (var i:int = 0; i < typeDescriptorRemoteList.length; i++) {
+				var remote:TypeDescriptorRemote = TypeDescriptorRemote(typeDescriptorRemoteList.getItemAt(i));
+				
+				// create new type descriptor with remote type
+				var descriptor:TypeDescriptor = null;
+				if (Utils.beginsWith(remote.type, FlexUtilConstants.CATEGORY_PREFIX)) {
+					descriptor = this.getOrCreateCategoryTypeDescriptor(remote.type);
+				} else {
+					descriptor = this.getOrCreateTypeDescriptor(remote.type);
+				}
+				
+				// add static categories
+				for each (var category:String in remote.categories) {
+					descriptor.addCategory(category);
+				}
+				
+				// add single controllers
+				for (var singleControllerType:String in remote.singleControllers) {
+					descriptor.addSingleController(singleControllerType, remote.singleControllers[singleControllerType]);
+				}
+				
+				// add additive controllers
+				for (var additiveControllerType:String in remote.additiveControllers) {
+					for each (var additiveController:AbstractController in remote.additiveControllers[additiveControllerType]) {
+						descriptor.addAdditiveController(additiveControllerType, additiveController);
+					}
+				}
+			}
 		}
 		
 		public function TypeDescriptorRegistry() {

@@ -35,6 +35,7 @@ package  com.crispico.flower.util.layout {
 	import com.crispico.flower.util.layout.view.activeview.ActiveViewList;
 	
 	import flash.display.DisplayObject;
+	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
@@ -56,6 +57,10 @@ package  com.crispico.flower.util.layout {
 	import mx.core.UIComponent;
 	import mx.core.mx_internal;
 	import mx.events.FlexEvent;
+	import mx.events.ResizeEvent;
+	import mx.managers.PopUpManager;
+	
+	import flexlib.containers.SuperTabNavigator;
 	
 	import flexlib.containers.SuperTabNavigator;
 	
@@ -232,7 +237,8 @@ package  com.crispico.flower.util.layout {
 
 			addEventListener(FillContextMenuEvent.FILL_CONTEXT_MENU, fillContextMenuHandler);
 			
-			// Adds CTRL+M as shortcut to maximize/minimize the active view layout data.			
+			// Adds CTRL+M as shortcut to maximize/minimize the active view layout data.
+			//(new KeyBindings()).registerBinding(new Shortcut(true, false, "m"), maximizeRestoreActiveStackLayoutData);
 			FlexUtilGlobals.getInstance().keyBindings.registerBinding(new Shortcut(true, false, false, Keyboard.M), maximizeRestoreActiveStackLayoutData); // CTRL + M
 			
 			// prepare default actions for the right click menu on a tab name
@@ -2248,7 +2254,7 @@ package  com.crispico.flower.util.layout {
 		 * 
 		 * @author Cristina
 		 */ 
-		public function addViewInPopupWindow(view:Object, x:Number= NaN, y:Number=NaN, width:Number=NaN, height:Number=NaN, isModal:Boolean = false, existingComponent:UIComponent = null, existingViewPopupWindowInstance:ViewPopupWindow = null):ViewPopupWindow {
+		public function addViewInPopupWindow(view:Object, x:Number= NaN, y:Number=NaN, width:Number=NaN, height:Number=NaN, isModal:Boolean = false, existingComponent:UIComponent = null, existingViewPopupWindowInstance:ViewPopupWindow = null, parent:DisplayObject = null):ViewPopupWindow {
 			// get viewLayoutData
 			var viewLayoutData:ViewLayoutData;
 			if (view is String) {
@@ -2277,8 +2283,6 @@ package  com.crispico.flower.util.layout {
 			var component:UIComponent = existingComponent != null ? existingComponent : getNewViewComponentInstance(viewLayoutData);
 			component.percentWidth = 100;
 			component.percentHeight = 100;
-			popup.addChild(component);
-			
 			
 			if (viewLayoutData.dimensions.length != 0) {
 				if (isNaN(x)) {
@@ -2316,7 +2320,12 @@ package  com.crispico.flower.util.layout {
 			popup.viewLayoutData = viewLayoutData;
 			popup.component = component;
 			
-			popup.showPopup(width, height, null, isModal);
+			if (!component.initialized) {
+				popup.visible = false;
+				component.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:Event):void {popup.visible = true; PopUpManager.centerPopUp(popup);});
+			}
+			popup.showPopup(width, height, parent, isModal);
+			popup.addChild(component);
 			
 			// set coordonates
 			if (!isNaN(x) && !isNaN(y)) {
@@ -2331,7 +2340,7 @@ package  com.crispico.flower.util.layout {
 			
 			return popup;
 		}
-			
+					
 		/**
 		 * Searches vertical for the first stack found below the first editor sash.
 		 * If not found, creates one.

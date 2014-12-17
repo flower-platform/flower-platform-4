@@ -130,9 +130,14 @@ package org.flowerplatform.flexutil.global_menu {
 		}
 		
 		/**
-		 * Normal menu (other possible types: separator, check or radio)
+		 * Menu type (possible values: normal, separator, check or radio)
 		 */
 		public function getType(node:Object):String {
+			if (node is IAction) {
+				if (IAction(node).label == GlobalMenuBar.MENU_LABEL_SEPARATOR) {
+					return "separator";
+				}
+			}
 			return "normal";
 		}
 		
