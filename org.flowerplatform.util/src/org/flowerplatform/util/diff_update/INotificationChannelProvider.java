@@ -14,6 +14,6 @@ public interface INotificationChannelProvider {
 	 * @param entity
 	 * @return
 	 */
-	List<String> getNotificationChannels(Object entity);
+	List<String> getNotificationChannels(String entityUid);
 	
 }

@@ -7,13 +7,13 @@ import java.util.List;
  * @author Claudiu Matei
  *
  */
-public class DiffUpdateController {
+public class DiffUpdateService {
 	
 	private INotificationChannelProvider notificationChannelProvider;	
 	
 	private DiffUpdateRegistry diffUpdateRegistry;
 	
-	public DiffUpdateController(INotificationChannelProvider notificationChannelProvider) {
+	public DiffUpdateService(INotificationChannelProvider notificationChannelProvider) {
 		this.notificationChannelProvider = notificationChannelProvider;
 		this.diffUpdateRegistry = new DiffUpdateRegistry();
 	}
@@ -39,8 +39,8 @@ public class DiffUpdateController {
 	 * @param firstId
 	 * @param lastId
 	 */
-	public void getUpdates(String updateChannel, long firstId, long lastId) {
-		diffUpdateRegistry.getUpdates(updateChannel, firstId, lastId);
+	public List<DiffUpdate> getUpdates(String updateChannel, long firstId, long lastId) {
+		return diffUpdateRegistry.getUpdates(updateChannel, firstId, lastId);
 	}
 
 	/**

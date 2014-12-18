@@ -46,7 +46,7 @@ EntityRegistryManager.prototype.getNotificationChannels = function() {
 
 EntityRegistryManager.prototype.getEntityRegistriesForNotificationChannel = function(notificationChannel) {	
 	var entityRegistryEntry = this.entityRegistryEntries[notificationChannel];
-	if (!entityRegistriesEntry) {
+	if (!entityRegistryEntry) {
 		return null;
 	}	
 	return entityRegistryEntry.entityRegistries;
@@ -84,7 +84,7 @@ EntityRegistryManager.prototype.removeListener = function(listener) {
 	}
 };
 
-EntityRegistryEntry = function() {
+var EntityRegistryEntry = function() {
 	this.entityRegistries = [];
 	this.lastDiffUpdateId = -1;
 }

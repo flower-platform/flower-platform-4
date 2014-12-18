@@ -71,7 +71,7 @@ EntityRegistry.prototype.registerEntityInternal = function(entity, parentUid, ch
 		var oldPropertiesSet = null;
 		if (this.entityOperationsAdapter.object_hasDynamicProperties(entity)) {
 			oldPropertiesSet = {};
-			adapter.object_iterateProperties(oldPropertiesHolder, function (key, value) {
+			this.entityOperationsAdapter.object_iterateProperties(oldPropertiesHolder, function (key, value) {
 				oldPropertiesSet[key] = true;
 			});
 		}
@@ -237,9 +237,9 @@ EntityRegistry.prototype.removeEntityChangeListener = function(listener) {
 };			
 
 EntityRegistry.prototype.printDebugInfo = function() {
-	java.lang.System.out.println("*** registry ***");
+	//java.lang.System.out.println("*** registry ***");
 	for (var prop in this.registry) {
-		java.lang.System.out.println(prop + " : " + this.registry[prop]);
+//		java.lang.System.out.println(prop + " : " + this.registry[prop]);
 	}
 };			
 
