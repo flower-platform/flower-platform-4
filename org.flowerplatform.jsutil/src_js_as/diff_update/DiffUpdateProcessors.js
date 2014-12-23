@@ -18,7 +18,7 @@ var AddEntityDiffUpdateProcessor = function() {
 	
 };
 AddEntityDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegistry, diffUpdate) {
-	var entity = diffUpdate.getEntity();
+	var entity = diffUpdate.entity;
 	if (diffUpdate.parentUid) { // child entity
 		entityRegistry.registerEntity(entity, diffUpdate.getParentUid(), diffUpdate.getParentChildrenProperty(), diffUpdate.getIndex());
 	}

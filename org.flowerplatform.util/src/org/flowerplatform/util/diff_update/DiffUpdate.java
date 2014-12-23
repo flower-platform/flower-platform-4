@@ -37,4 +37,7 @@ public class DiffUpdate {
 		this.entityUid = entityUid;
 	}
 	
+	public String toString() {
+		return getClass().getSimpleName() + ":" + getId();
+	}
 }
