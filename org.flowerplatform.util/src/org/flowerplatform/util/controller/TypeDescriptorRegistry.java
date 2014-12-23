@@ -47,6 +47,8 @@ public class TypeDescriptorRegistry {
 	 */
 	boolean configurable = true;
 
+	private ITypeProvider typeProvider;
+	
 	/**
 	 * @see TypeDescriptor#additiveControllers
 	 */
@@ -55,6 +57,15 @@ public class TypeDescriptorRegistry {
 	}
 
 	private Map<String, TypeDescriptor> typeDescriptors = new HashMap<String, TypeDescriptor>();
+	
+	public ITypeProvider getTypeProvider() {
+		return typeProvider;
+	}
+
+	public void setTypeProvider(ITypeProvider typeProvider) {
+		this.typeProvider = typeProvider;
+	}
+
 	/**
 	 *@author see class
 	 **/
@@ -62,12 +73,7 @@ public class TypeDescriptorRegistry {
 		if (type.startsWith(UtilConstants.CATEGORY_PREFIX)) {
 			throw new IllegalArgumentException("Please use getOrCreateCategoryTypeDescriptor()");
 		}
-		TypeDescriptor result = typeDescriptors.get(type);
-		if (result == null) {
-			result = new TypeDescriptor(this, type);
-			typeDescriptors.put(type, result);
-		}
-		return result;
+		return getOrCreateTypeDescriptorInternal(type);
 	}
 	
 	/**
@@ -81,6 +87,10 @@ public class TypeDescriptorRegistry {
 		if (!type.startsWith(UtilConstants.CATEGORY_PREFIX)) {
 			throw new IllegalArgumentException("Category type should be prefixed with 'category.'");
 		}
+		return getOrCreateTypeDescriptorInternal(type);
+	}
+	
+	public TypeDescriptor getOrCreateTypeDescriptorInternal(String type) {
 		TypeDescriptor result = typeDescriptors.get(type);
 		if (result == null) {
 			result = new CategoryTypeDescriptor(this, type);
@@ -169,4 +179,13 @@ public class TypeDescriptorRegistry {
 		}
 		return remotes;
 	}
+	
+	public IController getSingleController(String feature, Object model) {
+		return getExpectedTypeDescriptor(typeProvider.getType(model)).getSingleController(feature, model);
+	}
+
+	public List<? extends IController> getAdditiveControllers(String feature, Object model) {
+		return getExpectedTypeDescriptor(typeProvider.getType(model)).getAdditiveControllers(feature, model);
+	}
+
 }

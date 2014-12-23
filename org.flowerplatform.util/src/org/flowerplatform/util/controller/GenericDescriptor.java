@@ -21,17 +21,17 @@ import java.util.Map;
 /**
  * @author Cristian Spiescu
  */
-public class GenericDescriptor extends AbstractController implements IDescriptor {
+public class GenericDescriptor<T> extends AbstractController implements IDescriptor {
 	
-	private Object value;
+	private T value;
 	
 	private Map<String, Object> extraInfo;
 
-	public Object getValue() {
+	public T getValue() {
 		return value;
 	}
 
-	public void setValue(Object value) {
+	public void setValue(T value) {
 		this.value = value;
 	}
 
@@ -43,18 +43,12 @@ public class GenericDescriptor extends AbstractController implements IDescriptor
 		this.extraInfo = extraInfo;
 	}
 
-	public GenericDescriptor(Object value) {
+	public GenericDescriptor(T value) {
 		super();
 		this.value = value;
 	}
 	
-	/**
-	 * 
-	 * @param key
-	 * @param val
-	 * @return
-	 */
-	public GenericDescriptor addExtraInfoProperty(String key, String val) {
+	public GenericDescriptor<T> addExtraInfoProperty(String key, String val) {
 		if (extraInfo == null) {
 			extraInfo = new HashMap<String, Object>();
 		}
