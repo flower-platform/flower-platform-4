@@ -14,7 +14,9 @@
  * license-end
  */
   
-var AddEntityDiffUpdateProcessor = function() { };
+var AddEntityDiffUpdateProcessor = function() { 
+	
+};
 AddEntityDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegistry, diffUpdate) {
 	var entity = diffUpdate.getEntity();
 	if (diffUpdate.parentUid) { // child entity
@@ -33,4 +35,9 @@ RemoveEntityDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegis
 var PropertiesDiffUpdateProcessor = function() { };
 PropertiesDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegistry, diffUpdate) {
 	entityRegistry.setProperties(diffUpdate.entityUid, diffUpdate.properties);
+};
+
+var InitialInfoDiffUpdateProcessor = function() { };
+InitialInfoDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegistry, diffUpdate) {
+	
 };

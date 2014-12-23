@@ -58,5 +58,10 @@ public class DiffUpdateService {
 	public void unregisterNotificationChannel(String notificationChannel) {
 		diffUpdateRegistry.unregisterNotificationChannel(notificationChannel);
 	}
+
+	
+	public long getLastUpdateId(String notificationChannel) {
+		return diffUpdateRegistry.getLastUpdateId(notificationChannel);
+	}
 	
 }

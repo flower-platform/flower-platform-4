@@ -1,6 +1,7 @@
 package org.flowerplatform.util.diff_update;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,6 @@ public class DiffUpdateRegistry {
 
 	private Map<String, List<DiffUpdate>> updatesMap = new HashMap<String, List<DiffUpdate>>();
 	
-	
 	/**
 	 * 
 	 * @param update
@@ -24,6 +24,7 @@ public class DiffUpdateRegistry {
 		if (updates == null) {
 			return;
 		}
+		update.setId(getLastUpdateId(notificationChannel) + 1);
 		updates.add(update);
 	}
 	
@@ -36,7 +37,7 @@ public class DiffUpdateRegistry {
 	public List<DiffUpdate> getUpdates(String notificationChannel, long firstId, long lastId) {
 		List<DiffUpdate> updates = updatesMap.get(notificationChannel);
 		if (updates == null) {
-			return null;
+			return Collections.emptyList();
 		}
 		ArrayList<DiffUpdate> res = new ArrayList<>();
 		boolean foundFirst = false, foundLast = (lastId == -1);
@@ -50,7 +51,7 @@ public class DiffUpdateRegistry {
 				foundFirst = true;
 			}
 			if (foundLast) {
-				res.add(res.size(), update);
+				res.add(0, update);
 			}
 			i--;
 		}
@@ -75,4 +76,13 @@ public class DiffUpdateRegistry {
 		updatesMap.remove(notificationChannel);
 	}
 
+	public long getLastUpdateId(String notificationChannel) {
+		List<DiffUpdate> updates = updatesMap.get(notificationChannel);
+		if (updates == null || updates.size() == 0) {
+			return 0;
+		}
+		DiffUpdate lastUpdate = updates.get(updates.size() - 1);
+		return lastUpdate.getId();
+	}
+	
 }

@@ -14,22 +14,20 @@
  * license-end
  */
  
-var EntityOperationsAdapter = function() {
-	
-};
+var EntityOperationsAdapter = function() { };
 
 EntityOperationsAdapter.prototype.getEntityUid = function(entity) {
-	return entity.uid;
+	return entity.entityUid;
 };
 
 EntityOperationsAdapter.prototype.setChildren = function(entity, childrenProperty, children) {
 	entity[childrenProperty] = children;
-}
+};
 
 EntityOperationsAdapter.prototype.setParent = function(entity, parentUid, parentChildrenProperty) {
 	entity.parentUid = parentUid;
 	entity.parentChildrenProperty = parentChildrenProperty;
-}
+};
 
 EntityOperationsAdapter.prototype.getChildrenProperties=function(entity) {
 	var childrenProperties = [];
@@ -39,7 +37,7 @@ EntityOperationsAdapter.prototype.getChildrenProperties=function(entity) {
 		}
 	}
 	return childrenProperties;
-}
+};
 
 EntityOperationsAdapter.prototype.getChildrenLists = function(entity) {
 	var lists = [];
@@ -49,11 +47,11 @@ EntityOperationsAdapter.prototype.getChildrenLists = function(entity) {
 		}
 	}
 	return lists;
-}
+};
 
 EntityOperationsAdapter.prototype.getChildrenList = function(entity, property) {
 	return entity[property];
-}
+};
 
 
 EntityOperationsAdapter.prototype.list_addItem = function(list, element, index) {
@@ -62,59 +60,46 @@ EntityOperationsAdapter.prototype.list_addItem = function(list, element, index) 
 	} else {
 		list.splice(index, 0, element);	
 	}
-}
+};
 
 EntityOperationsAdapter.prototype.list_setItemAt = function(list, element, index) {
 	list[index] = element;
-}
+};
 
-EntityOperationsAdapter.prototype.list_removeItemAt(list, index) {
+EntityOperationsAdapter.prototype.list_removeItemAt = function(list, index) {
 	return list.remove(index);
-}
+};
 
-/**
- * @author See class.
- */
-public void list_removeItem(List<Object> list, Object element) {
-	list.remove(element);
-}
+EntityOperationsAdapter.prototype.list_removeItem = function(list, element) {
+	var index = list.indexOf(element);
+	list.splice(index, 1);
+};
 
-/**
- * @author See class.
- */
-public int list_getLength(List<Object> list) {
-	return list.size();
-}
+EntityOperationsAdapter.prototype.list_getLength = function(list) {
+	return list.length;
+};
 
-/**
- * @author See class.
- */
-public Object list_getItemAt(List<Object> list, int index) {
-	return list.get(index);
-}
+EntityOperationsAdapter.prototype.list_getItemAt = function(list, index) {
+	return list[index];
+};
 
 
-public Object object_getPropertiesHolder(Object entity) {
+EntityOperationsAdapter.prototype.object_getPropertiesHolder = function(entity) {
 	return entity;
-}
+};
 
-public boolean object_hasDynamicProperties(Object entity) {
+EntityOperationsAdapter.prototype.object_hasDynamicProperties = function(entity) {
 	return false;
-}
+};
 
-public void object_iterateProperties(Object propertiesHolder, IteratePropertiesCallback ipc) throws ReflectiveOperationException, IllegalArgumentException, IntrospectionException {
-	BeanInfo beanInfo = Introspector.getBeanInfo(propertiesHolder.getClass());
-    PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-    for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-    	if (propertyDescriptor.getWriteMethod() != null && !propertyDescriptor.getName().equals("details") && !propertyDescriptor.getName().equals("subdetails")) {
-        	ipc.callback(propertyDescriptor.getName(), propertyDescriptor.getReadMethod().invoke(propertiesHolder));
-    	}
-    }
-}
-
-
-public void propertiesMap_iterateProperties(Map<String, Object> properties, IteratePropertiesCallback ipc) throws ReflectiveOperationException, IllegalArgumentException, IntrospectionException {
-	for (Entry<String, Object> entry : properties.entrySet()) {
-    	ipc.callback(entry.getKey(), entry.getValue());
+EntityOperationsAdapter.prototype.object_iterateProperties = function(propertiesHolder, callback) {
+	for (var property in propertiesHolder) {
+		callback(property, propertiesHolder[property]);
 	}
-}
+};
+
+EntityOperationsAdapter.prototype.propertiesMap_iterateProperties = function(properties, callback) {
+	for (var property in properties) {
+		callback(property, properties[property]);
+	}
+};

@@ -204,9 +204,14 @@ similar ca mai sus: adapter.propertiesMap_iterateProperties(propertiesMap, handl
 EntityRegistry.prototype.setProperties = function(uid, properties) {
 	var entity = this.getEntityByUid(uid);
 
+	if (entity == null) {
+		return;
+	}
+	
 	var propertiesHolder = this.entityOperationsAdapter.object_getPropertiesHolder(entity);
-
 	this.entityOperationsAdapter.propertiesMap_iterateProperties(properties, function (key, value) {
+		trace("*** EntityRegistry:213 - "+ key + " " + value);
+		if (key == 'data') return;
 		propertiesHolder[key] = value;
 	});
 	

@@ -36,10 +36,13 @@ EntityRegistryManager.prototype.createEntityRegistry = function(notificationChan
 };
 
 // TODO CS: de sters la sfarsit
-EntityRegistryManager.prototype.getNotificationChannels = function() {
+EntityRegistryManager.prototype.getNotificationChannelsData = function() {
 	var notificationChannels = [];
 	for (var notificationChannel in this.entityRegistryEntries) {
-		notificationChannels.push(notificationChannel);
+		var channelData = {};
+		channelData.notificationChannel = notificationChannel;
+		channelData.lastDiffUpdateId = this.entityRegistryEntries[notificationChannel].lastDiffUpdateId;
+		notificationChannels.push(channelData);
 	}
 	return notificationChannels;
 };
@@ -64,7 +67,7 @@ EntityRegistryManager.prototype.processDiffUpdate = function(notificationChannel
 	}
 	var entityRegistryEntry = this.entityRegistryEntries[notificationChannel];
 	if (diffUpdate.id <= entityRegistryEntry.lastDiffUpdateId) {
-		throw "Update id is less than last processed update id. ";
+		throw "Update id (" + diffUpdate.id + ") is less than last processed update id (" + entityRegistryEntry.lastDiffUpdateId + ").";
 	}
 	for (var i in entityRegistryEntry.entityRegistries) {
 		var entityRegistry = entityRegistryEntry.entityRegistries[i];
@@ -80,7 +83,7 @@ EntityRegistryManager.prototype.addListener = function(listener) {
 EntityRegistryManager.prototype.removeListener = function(listener) {
 	var i = this.listeners.indexOf(listener);	
 	if (i != -1) {	
-		this.listeners.splice(i, 1);		
+		this.listeners.splice(i, 1);	
 	}
 };
 
@@ -89,8 +92,4 @@ var EntityRegistryEntry = function() {
 	this.lastDiffUpdateId = -1;
 }
 
-var _entityRegistryManager;
-
-var Constants = { UPDATED: "updated", ADDED: "added", REMOVED: "removed", REQUEST_REFRESH: "requestRefresh" };
-
-var _entityRegistryManager;
+var Constants = { UPDATED: "updated", ADDED: "added", REMOVED: "removed", EMPTY: "empty", REQUEST_REFRESH: "requestRefresh", INITIAL_INFO: "initialInfo" };
