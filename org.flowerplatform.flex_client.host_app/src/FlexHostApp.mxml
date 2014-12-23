@@ -64,8 +64,16 @@ license-end
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
+			import mx.containers.Accordion;
+			import mx.controls.CheckBox;
+			import mx.controls.ComboBox;
+			import mx.controls.DataGrid;
+			import mx.controls.DateField;
+			import mx.controls.RadioButton;
 			import mx.controls.TextArea;
 			import mx.core.FlexGlobals;
+			import mx.effects.Glow;
+			import mx.effects.easing.Linear;
 			import mx.events.FlexEvent;
 			import mx.graphics.ImageSnapshot;
 			import mx.managers.BrowserManager;
@@ -92,8 +100,10 @@ license-end
 			import mx.messaging.messages.MessagePerformanceInfo;
 			import mx.messaging.messages.RemotingMessage;
 			import mx.messaging.messages.SOAPMessage;
+			import mx.preloaders.DownloadProgressBar;
 			import mx.rpc.AsyncResponder;
 			import mx.rpc.remoting.mxml.RemoteObject;
+			import mx.skins.spark.BorderSkin;
 			import mx.states.AddChild;
 			import mx.utils.ObjectProxy;
 			import mx.utils.RpcClassAliasInitializer;
@@ -171,6 +181,20 @@ license-end
 			ArrayList;
 			ObjectProxy;
 			ImageSnapshot;
+			
+			// needed by xops
+			DataGrid;
+			CheckBox;
+			ComboBox;
+			DateField;
+			RadioButton;
+			Accordion;
+			DownloadProgressBar;
+			IWatcherSetupUtil;
+			ArrayElementWatcher;
+			BorderSkin;
+			Linear;
+			Glow;
 			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
