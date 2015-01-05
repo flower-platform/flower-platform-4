@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flexutil.selection {
 	import flash.events.EventDispatcher;
 	import flash.events.TimerEvent;
@@ -5,6 +20,7 @@ package org.flowerplatform.flexutil.selection {
 	
 	import mx.collections.IList;
 	
+	import org.flowerplatform.flexutil.list.EmptyList;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	import org.flowerplatform.flexutil.view_content_host.IViewHost;
 	
@@ -116,11 +132,34 @@ package org.flowerplatform.flexutil.selection {
 				if (selectionProvider is ISelectionForServerProvider) {
 					event.selectionForServer = ISelectionForServerProvider(selectionProvider).convertSelectionToSelectionForServer(selection);
 				}			
+				// dispatch event even if selectionProvider == null -> it means that the last view was closed			
+				dispatchEvent(event);
+			}			
+		
+		}
+		
+		/**
+		 * Utility function that gets the current selection. This method doesn't return null.
+		 */
+		public function getCurrentSelection():IList {
+			if (activeSelectionProvider == null || activeSelectionProvider.getSelection() == null) {
+				return EmptyList.INSTANCE;
+			} else {
+				return activeSelectionProvider.getSelection();
 			}
 			
-			// dispatch event even if selectionProvider == null -> it means that the last view was closed
-			
-			dispatchEvent(event);
+		}
+		
+		/**
+		 * Utility function.
+		 */
+		public function getFirstElementFromCurrentSelection():Object {
+			var selection:IList = getCurrentSelection();
+			if (selection.length <= 0) {
+				return null;
+			} else {
+				return selection.getItemAt(0);
+			}
 		}
 		
 	}

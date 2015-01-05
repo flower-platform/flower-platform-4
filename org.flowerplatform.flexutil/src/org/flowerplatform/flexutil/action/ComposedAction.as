@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,12 +11,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexutil.action {
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 
 	/**
 	 * @see IComposedAction
@@ -75,16 +73,8 @@ package org.flowerplatform.flexutil.action {
 		override public function run():void {			
 			if (delegateIfSingleChild) {
 				var visibleChildActions:Array = getVisibleChildActions();
-				if (visibleChildActions.length == 1) {
-					var singleVisibleChildAction:IAction = visibleChildActions[0];
-					try {
-						singleVisibleChildAction.selection = selection;
-						singleVisibleChildAction.context = context;
-						singleVisibleChildAction.run();
-					} finally {										
-						singleVisibleChildAction.selection = null;
-						singleVisibleChildAction.context = null;
-					}
+				if (visibleChildActions.length == 1) {					
+					FlexUtilGlobals.getInstance().actionHelper.runAction(visibleChildActions[0], selection, context);					
 					return;
 				}				
 			}

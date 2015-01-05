@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 	import flash.events.IEventDispatcher;
 	
@@ -7,6 +22,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	
+	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
@@ -46,22 +62,23 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 		protected function creationCompleteHandler(event:FlexEvent):void {
 //			leftActiveComponent = FlexUtilGlobals.getInstance().composedViewProvider.createView(new ViewLayoutData(ExplorerViewProvider.ID));
 			
-			FlexUtilGlobals.getInstance().workbench = this;
 			this.addEventListener(ViewsRemovedEvent.VIEWS_REMOVED, CorePlugin.getInstance().resourceNodesManager.viewsRemovedHandler);
 			this.addEventListener(ActiveViewChangedEvent.ACTIVE_VIEW_CHANGED, CorePlugin.getInstance().resourceNodesManager.activeViewChangedHandler);
 			
 			showOpenEditorsCalloutButton.splitView = this;
+			
+			CorePlugin.getInstance().handleLinkForCommand(CoreConstants.OPEN_RESOURCES, "virtual:user/repo|root");
 		}
 		
 		public function load(layoutData:Object, reuseExistingViews:Boolean = false, keepNewLayoutEditors:Boolean = false):void {
 			// TODO
 		}
 		
-		public function addEditorView(viewLayoutData:ViewLayoutData, setFocusOnView:Boolean=false, existingComponent:UIComponent=null):UIComponent {
+		public function addEditorView(viewLayoutData:ViewLayoutData, setFocusOnView:Boolean=false, existingComponent:UIComponent=null, addViewInOtherStack:Boolean = false):UIComponent {
 			var comp:UIComponent = FlexUtilGlobals.getInstance().composedViewProvider.createView(viewLayoutData);
 			rightActiveComponent = comp;
 			rightComponents.addItem(comp);
-			showOpenEditorsCalloutButton.addEditorFrontend(comp);
+			showOpenEditorsCalloutButton.addEditorFrontend(comp, viewLayoutData);
 			if (oneViewMode && oneViewModeLeftViewActive) {
 				oneViewModeLeftViewActive = false;
 			}
@@ -74,19 +91,24 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 			}
 		}
 			
-		public function closeView(view:IEventDispatcher, shouldDispatchEvent:Boolean=true):void {
-			closeViews(new ArrayCollection([view]), shouldDispatchEvent);
+		public function closeView(view:IEventDispatcher, shouldDispatchEvent:Boolean = true, canPreventDefault:Boolean = true):void {
+			closeViews(new ArrayCollection([view]), shouldDispatchEvent, canPreventDefault);
 		}
 		
-		public function closeViews(views:ArrayCollection, shouldDispatchEvent:Boolean=true):void {
+		public function closeViews(views:ArrayCollection, shouldDispatchEvent:Boolean = true, canPreventDefault:Boolean = true):void {
 			var viewsRemovedEvent:ViewsRemovedEvent = new ViewsRemovedEvent(views);			
-			viewsRemovedEvent.canPreventDefault = shouldDispatchEvent;
-			dispatchEvent(viewsRemovedEvent);
+			if (shouldDispatchEvent) {
+				viewsRemovedEvent.canPreventDefault = canPreventDefault;
+				dispatchEvent(viewsRemovedEvent);
+			}
 
 			for each (var view:UIComponent in views) {
 				if (!viewsRemovedEvent.dontRemoveViews.contains(view)) {
 					var viewRemovedEvent:ViewRemovedEvent = new ViewRemovedEvent();
-					viewRemovedEvent.canPreventDefault = shouldDispatchEvent;
+					if (shouldDispatchEvent) {
+						viewRemovedEvent.canPreventDefault = canPreventDefault;
+						view.dispatchEvent(viewRemovedEvent);
+					}
 					view.dispatchEvent(viewRemovedEvent);
 				}				
 			}
@@ -130,7 +152,7 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 		public function getViewComponentForEditor(editor:UIComponent):UIComponent {			
 			return editor;
 		}
-		
+				
 		/**
 		 * @author Cristina Constantinescu
 		 */ 
@@ -144,6 +166,10 @@ package org.flowerplatform.flex_client.host_app.mobile.view_content_host {
 				}
 			}
 			return result;
+		}
+		
+		public function moveComponentNearWorkbench(sourceComponent:UIComponent, side:Number):void {
+			// do nothing
 		}
 		
 	}

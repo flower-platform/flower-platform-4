@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexutil.mobile.view_content_host {
@@ -22,6 +19,7 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 	
 	import org.flowerplatform.flexutil.popup.IPopupHandler;
 	import org.flowerplatform.flexutil.popup.IPopupHandlerFactory;
+	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 	
 	import spark.components.Scroller;
 	import spark.components.View;
@@ -38,6 +36,9 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 			var view:View = View(viewNavigator.activeView);	
 			// for MindMapIconsBar, because of the skin, (viewport != viewContent)
 			if (view is MobileViewHost && view.numElements > 0 && (Scroller(view.getElementAt(0)).viewport == viewContent || Scroller(view.getElementAt(0)).viewport == viewContent.parent)) {
+				if (viewContent is IViewContent) {
+					IViewContent(viewContent).additionalCloseHandler();					
+				}
 				viewNavigator.popView();
 			}
 		}

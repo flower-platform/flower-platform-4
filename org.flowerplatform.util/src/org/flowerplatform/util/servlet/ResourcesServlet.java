@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.util.servlet;
 
 import java.io.File;
@@ -15,6 +30,9 @@ import org.flowerplatform.util.UtilConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ *@author Mariana Gheorghe
+ **/
 public abstract class ResourcesServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 5438373882820622871L;
@@ -23,9 +41,23 @@ public abstract class ResourcesServlet extends HttpServlet {
 	
 	protected static int counter = 0;
 	
-	private static final Logger logger = LoggerFactory.getLogger(ResourcesServlet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesServlet.class);
 		
 	protected boolean useFilesFromTemporaryDirectory = false; 
+	
+	protected static final String PROTOCOL = "protocol";
+	
+	protected static final String PREFIX = "prefix";
+	
+	protected static final String USE_REAL_PATH = "useRealPath";
+	
+	protected String protocol;
+	
+	protected String prefix;
+	
+	protected boolean useRealPath;
+	protected String realPathNotFoundFind = null;
+	protected String realPathNotFoundReplace = null;
 		
 	/**
 	 * @author Cristina Constantinescu
@@ -36,15 +68,33 @@ public abstract class ResourcesServlet extends HttpServlet {
 		ServletUtils.addAllAdditionalAttributesToServletContext(getServletContext());	
 		
 		useFilesFromTemporaryDirectory = Boolean.valueOf((String) getServletContext().getAttribute(ServletUtils.PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY));
-	}
 	
+		protocol = config.getInitParameter(PROTOCOL);
+		if (protocol == null) {
+			protocol = "platform:/plugin";
+		}
+		prefix = config.getInitParameter(PREFIX);
+		if (prefix == null) {
+			prefix = UtilConstants.PUBLIC_RESOURCES_DIR;
+		}
+		useRealPath = Boolean.parseBoolean(config.getInitParameter(USE_REAL_PATH));
+		if (useRealPath) {
+			realPathNotFoundFind = config.getInitParameter("realPathNotFoundFind");
+			realPathNotFoundReplace = config.getInitParameter("realPathNotFoundReplace");
+		}
+	}
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	protected void send404(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404.
+			//CHECKSTYLE:OFF
 		} catch (IOException e) {
 			// do nothing
+			//CHECKSTYLE:ON
 		}
-		logger.warn("Resource not found; sending 404: {}", request.getPathInfo());
+		LOGGER.warn("Resource not found; sending 404: {}", request.getPathInfo());
 	}
 	
 	/**

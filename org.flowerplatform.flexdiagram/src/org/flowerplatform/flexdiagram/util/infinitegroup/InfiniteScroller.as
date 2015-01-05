@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram.util.infinitegroup {
@@ -29,7 +26,6 @@ package org.flowerplatform.flexdiagram.util.infinitegroup {
 	
 	import spark.components.Group;
 	import spark.components.supportClasses.SkinnableComponent;
-	import spark.core.ContentRequest;
 
 	use namespace mx_internal;
 	
@@ -40,7 +36,7 @@ package org.flowerplatform.flexdiagram.util.infinitegroup {
 	 * @author Cristina Constantinescu
 	 */ 
 	public class InfiniteScroller extends SkinnableComponent implements IVisualElementContainer, IFocusManagerComponent {
-						
+
 		/////////////////
 		
 		[SkinPart(required="false", type="org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteVScrollBar")]
@@ -90,6 +86,10 @@ package org.flowerplatform.flexdiagram.util.infinitegroup {
 		
 		public function InfiniteScroller() {
 			setStyle("skinClass", InfiniteScrollerSkin);
+			// same code as in Scroller; @see comment for "hasFocusableChildren"
+			// without this, forms within diagram elements wouldn't allow navigation with tab
+			hasFocusableChildren = true;
+			focusEnabled = false;
 		}
 		
 		private function installViewport():void	{

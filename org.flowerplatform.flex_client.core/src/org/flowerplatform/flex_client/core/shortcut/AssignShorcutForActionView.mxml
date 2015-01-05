@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
 <!--
  @author Cristina Constantinescu
 -->
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<host:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" implements="org.flowerplatform.flexutil.view_content_host.IViewContent"
-		 creationComplete="creationCompleteHandler(event)" >
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:host="org.flowerplatform.flexutil.view_content_host.*" >
 	
-	<s:layout>
-		<s:VerticalLayout />
-	</s:layout>
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.IList;
@@ -28,25 +41,16 @@
 			
 			public var actionId:String;
 			
-			protected var _viewhost:IViewHost;
-			
 			protected var shortcut:Shortcut;
-			
-			public function getActions(selection:IList):Vector.<IAction> {				
-				return null;
-			}
-			
-			public function set viewHost(viewHost:IViewHost):void {
-				_viewhost = viewHost;
-				_viewhost.setLabel(Resources.getMessage("shortcut.enter"));
-				_viewhost.setIcon(Resources.keyboardIcon);
-			}
-						
-			protected function creationCompleteHandler(event:FlexEvent):void {
+									
+			override protected function creationCompleteHandler(event:FlexEvent):void {
 				// add listener with the biggest priority -> NO OTHER listeners must intercept key_down events
-				UIComponent(FlexGlobals.topLevelApplication).stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler1, false, int.MAX_VALUE);	
+				UIComponent(FlexGlobals.topLevelApplication).stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler1, true, int.MAX_VALUE);	
 				
 				Utils.makePseudoDisabled(txtShortcut);
+				
+				okButton.tabFocusEnabled = false;
+				cancelButton.tabFocusEnabled = false;
 			}
 					
 			private function keyDownHandler1(event:KeyboardEvent):void {
@@ -59,6 +63,15 @@
 					return;
 				}		
 				
+				// shortcut must start with a key found in filterShortcuts
+				var filterShortcuts:Dictionary = FlexUtilGlobals.getInstance().keyBindings.filterShortcuts;
+				if (!(event.ctrlKey && (filterShortcuts.hasOwnProperty("CONTROL") || filterShortcuts.hasOwnProperty("COMMAND")) ||
+						event.altKey && filterShortcuts.hasOwnProperty("ALTERNATE") ||
+						event.shiftKey && filterShortcuts.hasOwnProperty("SHIFT") ||
+						filterShortcuts.hasOwnProperty(Utils.getKeyNameFromKeyCode(event.keyCode)))) {				
+					return;
+				}
+				
 				shortcut = new Shortcut(event.ctrlKey, event.shiftKey, event.altKey, event.keyCode);
 				var shortcutLabel:String = shortcut.toString();
 				if (shortcutLabel == null) {
@@ -68,29 +81,37 @@
 				txtShortcut.text = shortcutLabel;
 			}
 				
-			protected function okButton_clickHandler(event:MouseEvent):void {
-				if (shortcut != null && shortcut.toString() != null) {
-					if (!FlexUtilGlobals.getInstance().keyBindings.registerBinding(shortcut, actionId)) {
-						FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()		
-							.setText(Resources.getMessage("shortcut.already.used"))
-							.setWidth(400)
-							.setHeight(200)
-							.showMessageBox();
-						return;
-					}
+			override public function okHandler(event:Event = null):void {
+				if (shortcut == null || shortcut.toString() == null) {
+					return;
 				}
-				cancelButton_clickHandler();
+				
+				var handler:Object = FlexUtilGlobals.getInstance().keyBindings.getRegisteredHandler(shortcut);
+				if (handler != null) { // shortcut already assign, ask user
+					FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+						.setText(Resources.getMessage("shortcut.already.used", [handler.toString()]))
+						.setTitle(Resources.getMessage("info"))
+						.setWidth(400)
+						.setHeight(200)
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.yes'), function():void {registerBinding(); cancelHandler();})
+						.addButton(FlexUtilAssets.INSTANCE.getMessage('dialog.no'))
+						.showMessageBox();				
+				} else {
+					registerBinding();
+					cancelHandler();
+				}		
 			}
 			
-			protected function cancelButton_clickHandler(event:MouseEvent = null):void {
+			protected function registerBinding():void {
+				FlexUtilGlobals.getInstance().keyBindings.registerBinding(shortcut, actionId);				
+			}
+			
+			override public function additionalCloseHandler():void {
 				// important to remove listener after using it -> otherwise BIG problems (no other key_down events will be dispatched)
-				UIComponent(FlexGlobals.topLevelApplication).stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler1);
-				
-				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
-				
+				UIComponent(FlexGlobals.topLevelApplication).stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler1, true);
 				FlexUtilGlobals.getInstance().keyBindings.learnShortcutOnNextActionInvocation = false;
 			}
-			
+		
 		]]>
 	</fx:Script>
 	
@@ -98,10 +119,5 @@
 		<s:TextInput id="txtShortcut" width="100%" tabFocusEnabled="false" />
 		<s:Button label="Clear" click="{txtShortcut.text = ''}" tabFocusEnabled="false" />
 	</s:HGroup>
-	
-	<s:HGroup width="100%" horizontalAlign="right" verticalAlign="middle" paddingTop="10">
-		<s:Button id="okButton" label="{FlexUtilAssets.INSTANCE.getMessage('dialog.ok')}" click="okButton_clickHandler(event)" tabFocusEnabled="false" />
-		<s:Button id="cancelButton" label="{FlexUtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="cancelButton_clickHandler(event)" tabFocusEnabled="false"/>
-	</s:HGroup>
-	
-</s:Group>
+		
+</host:BasicViewContent>

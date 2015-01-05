@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.codesync.action;
@@ -24,18 +21,18 @@ import org.flowerplatform.codesync.adapter.IModelAdapter;
 
 
 /**
- * 
- */
+ *@author Mariana Gheorghe
+ **/
 public class DiffActionCopyRightToLeft extends DiffAction {
 
 	@Override
 	public ActionResult execute(Match match, int diffIndex) {
 		Diff diff = match.getDiffs().get(diffIndex);
-		IModelAdapter leftModelAdapter = match.getCodeSyncAlgorithm().getLeftModelAdapter(match, match.getLeft());
-		IModelAdapter rightModelAdapter = match.getCodeSyncAlgorithm().getRightModelAdapter(match, match.getRight());
+		IModelAdapter leftModelAdapter = match.getCodeSyncAlgorithm().getLeftModelAdapter(match.getLeft());
+		IModelAdapter rightModelAdapter = match.getCodeSyncAlgorithm().getRightModelAdapter(match.getRight());
 		
-		Object value = rightModelAdapter.getValueFeatureValue(match.getRight(), diff.getFeature(), null);
-		leftModelAdapter.setValueFeatureValue(match.getLeft(), diff.getFeature(), value);
+		Object value = rightModelAdapter.getValueFeatureValue(match.getRight(), diff.getFeature(), null, match.getCodeSyncAlgorithm());
+		leftModelAdapter.setValueFeatureValue(match.getLeft(), diff.getFeature(), value, match.getCodeSyncAlgorithm());
 		diff.setConflict(false);
 		diff.setLeftModified(true);
 		

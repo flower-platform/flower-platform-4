@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.util.plugin;
@@ -22,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
@@ -36,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 
-	private final static Logger logger = LoggerFactory.getLogger(AbstractFlowerJavaPlugin.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFlowerJavaPlugin.class);
 	
 	private BundleContext bundleContext;
 	
@@ -53,7 +51,9 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 	protected String getMessagesFilePath() {
 		return getBundleContext().getBundle().getSymbolicName() + "/" + UtilConstants.PUBLIC_RESOURCES_DIR + "/" + UtilConstants.MESSAGES_FILE;
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	public void registerMessageBundle() throws Exception {
 		String messageFilePath = getMessagesFilePath();
 		URL messagesFileUrl;
@@ -64,14 +64,17 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 			inputStream = messagesFileUrl.openStream();
 			resourceBundle = new PropertyResourceBundle(inputStream);
 		} catch (IOException e) {
-			logger.warn(String.format("For bundle %s cannot find (or we had exception while loading) corresponding resources bundle/file %s", getBundleContext().getBundle().getSymbolicName(), messageFilePath), e);
+			LOGGER.warn(String.format("For bundle %s cannot find (or we had exception while loading) corresponding resources bundle/file %s", 
+					getBundleContext().getBundle().getSymbolicName(), messageFilePath), e);
 		} finally {
 			if (inputStream != null) {
 				inputStream.close();
 			}
 		}
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	protected void setupExtensionPointsAndExtensions() throws Exception {
 		// nothing to do here (yet)
 	}
@@ -88,7 +91,9 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 	public void stop(BundleContext context) throws Exception {
 		this.bundleContext = null;
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	public String getMessage(String messageKey, Object... substitutions) {
 		String message = resourceBundle.getString(messageKey);
 		if (substitutions.length == 0) {
@@ -97,11 +102,12 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 			return MessageFormat.format(message, substitutions);
 		}
 	}
-
+	/**
+	 *@author see class
+	 **/
 	public String getResourceUrl(String resource) {
-		return "servlet/" + UtilConstants.PUBLIC_RESOURCES_DIR + "/" + 
-				getBundleContext().getBundle().getSymbolicName() + "/" +
-				resource;
+		return UtilConstants.PUBLIC_RESOURCES_SERVLET + "/" 
+				+ getBundleContext().getBundle().getSymbolicName() + "/" + resource;
 	}
 	
 	/**
@@ -133,6 +139,32 @@ public abstract class AbstractFlowerJavaPlugin implements BundleActivator {
 			composedUrl = UtilConstants.IMAGE_COMPOSER_SERVLET + composedUrl;
 		}
 		return composedUrl;
+	}
+
+	/**
+	 * @author Claudiu Matei 
+	 */
+	public String getLabelForNodeType(String nodeType) {
+		String typeLabel;
+		try {
+			typeLabel = getMessage(nodeType + ".label");
+		} catch (MissingResourceException e) {
+			typeLabel = nodeType;
+		}
+		return typeLabel;
+	}
+
+	/**
+	 * @author Claudiu Matei 
+	 */
+	public String getLabelForProperty(String propertyName) {
+		String propertyLabel;
+		try {
+			propertyLabel = getMessage(propertyName + ".label");
+		} catch (MissingResourceException e) {
+			propertyLabel = propertyName;
+		}
+		return propertyLabel;
 	}
 	
 }

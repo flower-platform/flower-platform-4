@@ -21,7 +21,7 @@ license-end
 <!---
 @author Cristian Spiescu
 -->
-<s:Application applicationComplete="applicationCompleteHandler(event)"
+<s:Application applicationComplete="applicationCompleteHandler(event), dispatchEvent(new FlexEvent(FlexEvent.INITIALIZE))"
 			   xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:layout="com.crispico.flower.util.layout.*">
@@ -29,7 +29,7 @@ license-end
 		@namespace s "library://ns.adobe.com/flex/spark";
 		@namespace mx "library://ns.adobe.com/flex/mx";
 		
-		s|FormItem {
+		.propertyFormItemOld {
 			skinClass: ClassReference("org.flowerplatform.flexutil.form.FlowerFormItemSkin");
 		}
 		
@@ -42,20 +42,42 @@ license-end
 			skinClass: ClassReference("org.flowerplatform.flexutil.button.HaloButtonBarSkin");
 		}
 		
+		@namespace popup "com.crispico.flower.util.popup.*";
+		
+		popup|ResizablePopupWindow {
+			borderAlpha: 0.8;
+			modalTransparency: 0.8;
+		}
+		
+		global {
+			modalTransparencyDuration: 200;
+		}		
 	</fx:Style>
 	<s:layout>
 		<s:VerticalLayout/>
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
+			import com.crispico.flower.util.layout.Workbench;
 			import com.crispico.flower.util.popup.PopupHandlerFactory;
 			import com.crispico.flower.util.popup.ProgressMonitorDialogHandlerFactory;
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
+			import mx.containers.Accordion;
+			import mx.controls.CheckBox;
+			import mx.controls.ComboBox;
+			import mx.controls.DataGrid;
+			import mx.controls.DateField;
+			import mx.controls.RadioButton;
+			import mx.controls.TextArea;
 			import mx.core.FlexGlobals;
+			import mx.effects.Glow;
+			import mx.effects.easing.Linear;
 			import mx.events.FlexEvent;
 			import mx.graphics.ImageSnapshot;
+			import mx.managers.BrowserManager;
+			import mx.managers.IBrowserManager;
 			import mx.messaging.channels.AMFChannel;
 			import mx.messaging.config.ConfigMap;
 			import mx.messaging.management.Attribute;
@@ -78,11 +100,21 @@ license-end
 			import mx.messaging.messages.MessagePerformanceInfo;
 			import mx.messaging.messages.RemotingMessage;
 			import mx.messaging.messages.SOAPMessage;
+			import mx.preloaders.DownloadProgressBar;
 			import mx.rpc.AsyncResponder;
 			import mx.rpc.remoting.mxml.RemoteObject;
+			import mx.skins.spark.BorderSkin;
 			import mx.states.AddChild;
 			import mx.utils.ObjectProxy;
 			import mx.utils.RpcClassAliasInitializer;
+			import mx.validators.RegExpValidator;
+			import mx.validators.StringValidator;
+			
+			import spark.core.ContentCache;
+			import spark.formatters.DateTimeFormatter;
+			import spark.layouts.TileLayout;
+			import spark.utils.DataItem;
+			import spark.validators.NumberValidator;
 			
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
@@ -91,12 +123,6 @@ license-end
 			import org.flowerplatform.flexutil.popup.AlertPopupMessageBoxFactory;
 			import org.flowerplatform.flexutil.spinner.LogoSpinner;
 			import org.flowerplatform.flexutil.spinner.ModalSpinner;
-			
-			import spark.core.ContentCache;
-			import spark.formatters.DateTimeFormatter;
-			import spark.layouts.TileLayout;
-			import spark.utils.DataItem;
-			import spark.validators.NumberValidator;
 			
 			// Classes from Flex framework, used by plugins. We put them here, to force them to
 			// be linked into this app. Otherwise, the compiler wouldn't include them in this app
@@ -114,9 +140,12 @@ license-end
 
 			// needed by .properties
 			NumberValidator;
+			RegExpValidator;
+			StringValidator;
 			
 			// needed by .mindmap
 			TileLayout;
+			TextArea;
 			
 			// needed by .core
 			DateTimeFormatter;
@@ -152,6 +181,20 @@ license-end
 			ArrayList;
 			ObjectProxy;
 			ImageSnapshot;
+			
+			// needed by xops
+			DataGrid;
+			CheckBox;
+			ComboBox;
+			DateField;
+			RadioButton;
+			Accordion;
+			DownloadProgressBar;
+			IWatcherSetupUtil;
+			ArrayElementWatcher;
+			BorderSkin;
+			Linear;
+			Glow;
 			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
@@ -191,12 +234,16 @@ license-end
 				}
 				
 				// INITIALIZATION SPINNER START
-				ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(FlexUtilAssets.logoFlower));
+				var spinnerIconSource:String = FlexGlobals.topLevelApplication.parameters.spinnerIcon;
+				if (spinnerIconSource != null)
+					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(spinnerIconSource));
+				else
+					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(FlexUtilAssets.logoFlower));
 				
 				var pluginUrls:Array = pluginUrlsAsString.split(",");
 				for (var i:int = 0; i < pluginUrls.length; i++) {
 					pluginUrls[i] = FlexUtilGlobals.getInstance().flexPluginManager.appendVersionToUrl(pluginUrls[i], FlexGlobals.topLevelApplication.parameters.version);
-				}
+				}				
 				FlexUtilGlobals.getInstance().flexPluginManager.loadPlugins(new ArrayCollection(pluginUrls));
 			}
 		]]>

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,41 +11,42 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.core.node.remote;
 
 import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
-import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR_TYPE_STRING;
+import static org.flowerplatform.util.UtilConstants.PROPERTY_EDITOR_TYPE_STRING;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_DEFAULT;
 
 import java.util.List;
 
+import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.controller.AbstractController;
 import org.flowerplatform.util.controller.IDescriptor;
+import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
- * @author Razvan Tache
  * @author Cristina Constantinescu
  * @author Sebastian Solomon
  */
 public class PropertyDescriptor extends AbstractController implements IDescriptor {
 	
 	private String name;
-	private String title;
-	private String type = PROPERTY_DESCRIPTOR_TYPE_STRING;
-	private String category = PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
-	private boolean contributesToCreation = false;
-	private boolean mandatory = false;
+	private String label;
+	
+	private String type = PROPERTY_EDITOR_TYPE_STRING;
+	private String group = PROPERTY_DESCRIPTOR_DEFAULT_CATEGORY;
+	
+	private String propertyLineRenderer = PROPERTY_LINE_RENDERER_TYPE_DEFAULT;
+	
+	private boolean writeableOnCreate;
 	
 	private boolean readOnly;
+	
 	private List<?> possibleValues;
 	
-	private Boolean hasChangeCheckbox = false;
-	
-	private Object defaultValue = null;
+	private Object defaultValue;
 
 	public String getName() {
 		return name;
@@ -55,23 +56,28 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.name = name;
 	}
 	
+	//CHECKSTYLE:OFF
 	public PropertyDescriptor setNameAs(String name) {
 		this.name = name;
 		return this;
 	}
+	//CHECKSTYLE:ON
 		
-	public String getTitle() {
-		return title;
+	public String getLabel() {
+		return label;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
-	public PropertyDescriptor setTitleAs(String title) {
-		this.title = title;
+	//CHECKSTYLE:OFF
+	public PropertyDescriptor setLabelAs(String label) {
+		this.label = label;
 		return this;
 	}
+	//CHECKSTYLE:ON
+	
 	
 	public String getType() {
 		return type;
@@ -81,54 +87,30 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.type = type;
 	}
 	
+	//CHECKSTYLE:OFF
+
 	public PropertyDescriptor setTypeAs(String type) {
 		this.type = type;
 		return this;
 	}
-	
-	/**
-	 * @author Sebastian Solomon
-	 */
-	public String getCategory() {
-		return category;
+	//CHECKSTYLE:ON
+
+	public String getGroup() {
+		return group;
 	}
 	
-	/**
-	 * @author Sebastian Solomon
-	 */
-	public void setCategory(String category) {
-		this.category = category;
+	public void setGroup(String category) {
+		this.group = category;
 	}
 	
-	/**
-	 * @author Sebastian Solomon
-	 */
-	public PropertyDescriptor setCategoryAs (String category) {
-		this.category = category;
+	//CHECKSTYLE:OFF
+
+	public PropertyDescriptor setGroupAs(String group) {
+		this.group = group;
 		return this;
 	}
-	
-	/**
-	 * @author Sebastian Solomon
-	 */
-	public Boolean getHasChangeCheckbox() {
-		return hasChangeCheckbox;
-	}
-	
-	/**
-	 * @author Sebastian Solomon
-	 */
-	public void setHasChangeCheckbox(Boolean hasChangeCheckbox) {
-		this.hasChangeCheckbox = hasChangeCheckbox;
-	}
-	
-	/**
-	 * @author Sebastian Solomon
-	 */
-	public PropertyDescriptor setHasChangeCheckboxAs(Boolean hasChangeCheckbox) {
-		this.hasChangeCheckbox = hasChangeCheckbox;
-		return this;
-	}
+	//CHECKSTYLE:ON
+
 	
 	public boolean getReadOnly() {
 		return readOnly;
@@ -138,8 +120,11 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.readOnly = readOnly;
 	}
 	
-	public PropertyDescriptor setReadOnlyAs(boolean readOnly) {
-		this.readOnly = readOnly;
+	/**
+	 *@author see class
+	 **/
+	public PropertyDescriptor setReadOnlyAs(boolean readOnlyValue) {
+		this.readOnly = readOnlyValue;
 		return this;
 	}
 
@@ -151,37 +136,30 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.possibleValues = possibleValues;
 	}
 	
-	public PropertyDescriptor setPossibleValuesAs(List<?> possibleValues) {
-		this.possibleValues = possibleValues;
+	/**
+	 *@author Mariana Gheorghe
+	 **/
+	public PropertyDescriptor setPossibleValuesAs(List<?> givenPossibleValues) {
+		this.possibleValues = givenPossibleValues;
 		return this;
 	}
 	
-	public boolean getContributesToCreation() {
-		return contributesToCreation;
+	public boolean getWriteableOnCreate() {
+		return writeableOnCreate;
 	}
 
-	public void setContributesToCreation(boolean contributeToCreation) {
-		this.contributesToCreation = contributeToCreation;
+	public void setWriteableOnCreate(boolean contributeToCreation) {
+		this.writeableOnCreate = contributeToCreation;
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public PropertyDescriptor setContributesToCreationAs(boolean contributeToCreation) {
-		this.contributesToCreation = contributeToCreation;
+		this.writeableOnCreate = contributeToCreation;
 		return this;
 	}
 
-	public boolean getMandatory() {
-		return mandatory;
-	}
-
-	public void setMandatory(boolean mandatory) {
-		this.mandatory = mandatory;
-	}
-	
-	public PropertyDescriptor setMandatoryAs(boolean mandatory) {
-		this.mandatory = mandatory;
-		return this;
-	}
-	
 	public Object getDefaultValue() {
 		return defaultValue;
 	}
@@ -190,19 +168,49 @@ public class PropertyDescriptor extends AbstractController implements IDescripto
 		this.defaultValue = defaultValue;
 	}
 	
+	//CHECKSTYLE:OFF
 	public PropertyDescriptor setDefaultValueAs(Object defaultValue) {
 		this.defaultValue = defaultValue;
 		return this;
+		//CHECKSTYLE:ON
 	}
 	
+	public String getPropertyLineRenderer() {
+		return propertyLineRenderer;
+	}
+
+	public void setPropertyLineRenderer(String propertyLineRenderer) {
+		this.propertyLineRenderer = propertyLineRenderer;
+	}
+	
+	/**
+	 *@author see class
+	 **/
+	public PropertyDescriptor setPropertyLineRendererAs(String lineRenderer) {
+		this.propertyLineRenderer = lineRenderer;
+		return this;
+	}
+	
+	/**
+	 * @author Claudiu Matei
+	 */
+	@Override
+	public void setTypeDescriptor(TypeDescriptor typeDescriptor) {
+		super.setTypeDescriptor(typeDescriptor);
+		if (label == null) {
+			label = ResourcesPlugin.getInstance().getLabelForProperty(typeDescriptor.getType() + "." + name);
+		}
+	}
+
 	@Override
 	public String toString() {
-		return String.format("PropertiesDescriptor [name = %s, title = %s, category = %s, " +
-				"\ntype = %s, readOnly = %b, possibleValues = %s, " +
-				"\ncontributesToCreation = %b, mandatory = %b, orderIndex = %d]", 
-				getName(), getTitle(), getCategory(),
-				getType(), getReadOnly(), getPossibleValues(),
-				getContributesToCreation(), getMandatory(), getOrderIndex());
-	}
-	
+		return "PropertyDescriptor [name=" + name + ", title=" + label
+				+ ", type=" + type + ", category=" + group
+				+ ", propertyLineRenderer=" + propertyLineRenderer
+				+ ", writeableOnCreate=" + writeableOnCreate
+				+ ", readOnly=" + readOnly
+				+ ", possibleValues=" + possibleValues + ", defaultValue="
+				+ defaultValue + "]";
+	}	
+
 }

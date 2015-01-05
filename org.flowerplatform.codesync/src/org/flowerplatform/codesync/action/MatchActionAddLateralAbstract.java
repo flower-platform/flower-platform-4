@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.codesync.action;
@@ -22,10 +19,13 @@ import org.flowerplatform.codesync.Diff;
 import org.flowerplatform.codesync.Match;
 
 /**
- * 
- */
+ *@author Mariana Gheorghe
+ **/
 public abstract class MatchActionAddLateralAbstract extends MatchActionAddAbstract {
 
+	/**
+	 *@author Mariana Gheorghe
+	 **/
 	public MatchActionAddLateralAbstract(boolean processDiffs) {
 		super(processDiffs);
 	}

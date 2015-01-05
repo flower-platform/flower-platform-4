@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
+<!--
+@author Cristina Brinza 
+-->
+<ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					 xmlns:s="library://ns.adobe.com/flex/spark" 
+					 xmlns:mx="library://ns.adobe.com/flex/mx" 
+					 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import spark.events.TextOperationEvent;
+			import spark.layouts.VerticalLayout;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.resources.Resources;
+			
+			public var nodeUri:String;
+			
+			override protected function creationCompleteHandler(event:FlexEvent):void {
+				super.creationCompleteHandler(event);
+				
+				VerticalLayout(layout).paddingBottom = VerticalLayout(layout).paddingTop = VerticalLayout(layout).paddingLeft = VerticalLayout(layout).paddingRight = 10;
+				okButton.enabled = false;
+			}
+			
+			override public function okHandler(event:Event=null):void {
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.createTag", [nodeUri, tagName.text, tagMessage.text, associateTag.text, forceReplace.selected]);
+				
+				super.cancelHandler(event);
+			}
+			
+			protected function changeHandler(event:TextOperationEvent):void {
+				okButton.enabled = (tagName.text != "" && tagMessage.text != "");
+			}
+			
+		]]>
+	</fx:Script>
+		
+	<s:Label text="{Resources.getMessage('flex_client.team.git.ui.CreateTagAction.tagName')}"
+			 fontWeight="bold"/>
+	<s:TextInput id="tagName"
+				 width="100%"
+				 creationComplete="{callLater(tagName.setFocus)}"
+				 change="changeHandler(event)"/>
+	
+	<s:Label text="{Resources.getMessage('flex_client.team.git.ui.CreateTagAction.tagMessage')}"
+			 fontWeight="bold"
+			 paddingTop="10"/>
+	<s:TextArea id="tagMessage"
+				width="100%"
+				change="changeHandler(event)"/>
+		
+	<s:Label text="{Resources.getMessage('flex_client.team.git.ui.CreateTagAction.associateTag')}"
+			 fontWeight="bold"
+			 paddingTop="10"/>
+	<s:TextInput id="associateTag"
+				 width="100%"/>
+	
+	<s:HGroup paddingTop="10">
+		<s:CheckBox id="forceReplace"
+					label="{Resources.getMessage('flex_client.team.git.ui.CreateTagAction.forceReplace')}"/>		
+	</s:HGroup>
+	
+</ns:BasicViewContent>

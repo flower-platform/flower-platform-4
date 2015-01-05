@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,15 +11,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.util.servlet;
 
 import java.io.BufferedInputStream;
 import java.io.Closeable;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,22 +48,26 @@ import org.slf4j.LoggerFactory;
  */
 public class PublicResourcesServlet extends ResourcesServlet {
 
-	private static final Logger logger = LoggerFactory.getLogger(PublicResourcesServlet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PublicResourcesServlet.class);
 
 	private static final long serialVersionUID = 1L;
 	
     private static final int DEFAULT_BUFFER_SIZE = 10240; // 10KB.
-
+    
     private static void close(Closeable resource) {
         if (resource != null) {
             try {
                 resource.close();
+                //CHECKSTYLE:OFF
             } catch (IOException e) {
             	// Do nothing.
+            	//CHECKSTYLE:ON
             }
         }
     }
-    
+    /**
+	 *@author see class
+	 **/
 	protected Pair<InputStream, Closeable> getInputStreamForFileWithinZip(final InputStream fileInputStream, String fileWithinZip) throws IOException {
 		final BufferedInputStream bis = new BufferedInputStream(fileInputStream, DEFAULT_BUFFER_SIZE);
 		final ZipInputStream zis = new ZipInputStream(bis);
@@ -98,8 +100,8 @@ public class PublicResourcesServlet extends ResourcesServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String requestedFile = request.getPathInfo();
-		if (logger.isTraceEnabled()) {
-			logger.trace("Resource requested: {}", requestedFile);
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.trace("Resource requested: {}", requestedFile);
 		}
 
 		// Check if file is actually supplied to the request URI.
@@ -176,23 +178,36 @@ public class PublicResourcesServlet extends ResourcesServlet {
 						     IOUtils.copy(input, output);
 						     input.close();
 						     output.close();
-						     logger.debug("File {} served from temp",  mapValue);
+						     LOGGER.debug("File {} served from temp",  mapValue);
 						     return;
 						} else { // temporary file was deleted from disk
-							logger.debug("File {} found to be missing from temp",  mapValue);
+							LOGGER.debug("File {} found to be missing from temp",  mapValue);
 						}
 					} else {
-						synchronized(this) {
+						synchronized (this) {
 							counter++;
 							mapValue = counter + "";
 							tempFilesMap.put(mapKey, mapValue);
-							logger.debug("mapValue '{}' added", mapValue );
+							LOGGER.debug("mapValue '{}' added", mapValue);
 						}
 					}
 				}
 			}
 				
-			requestedFile = "platform:/plugin" + plugin + "/" + UtilConstants.PUBLIC_RESOURCES_DIR + file;
+//			requestedFile = "platform:/plugin" + plugin + "/" + UtilConstants.PUBLIC_RESOURCES_DIR + file;
+			requestedFile = plugin + "/" + prefix + file;
+			if (useRealPath) {
+				String path = getServletContext().getRealPath(requestedFile);
+				if (!new File(path).exists() && realPathNotFoundFind != null) {
+					// This is useful in XOPS, when the application is served (from within Eclipse/WTP) directly, i.e. without publishing.
+					// In this case, the current dir is WebContent, so we look around for serving the plugins. We do this only if not found,
+					// because we don't have a mechanism to know if we are in PROD (i.e. the above path would apply) or in DEV (i.e. the below
+					// path would apply)
+					path = getServletContext().getRealPath(requestedFile.replaceFirst(realPathNotFoundFind, realPathNotFoundReplace));
+				}
+				requestedFile = path;
+			}
+			requestedFile = protocol + requestedFile;
 			
 			// Get content type by filename from the file or file inside zip
 			String contentType = getServletContext().getMimeType(fileInsideZipArchive != null ? fileInsideZipArchive : file);
@@ -224,7 +239,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 					input = url.openConnection().getInputStream();
 					inputCloseable = input;
 	            } catch (IOException e) {
-					// may fail if the resource is not available
+	            	// may fail if the resource is not available
 	            	send404(request, response);
 					return;
 				}
@@ -248,7 +263,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 						}
 						
 						Files.copy(input, getTempFile(mapValue).toPath(), StandardCopyOption.REPLACE_EXISTING);
-						logger.debug("file '{}' was writen in temp", mapValue);
+						LOGGER.debug("file '{}' was writen in temp", mapValue);
 						
 						input.close();
 						input = new FileInputStream(getTempFilePath(mapValue));

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
+<host:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:properties="org.flowerplatform.flexutil.properties.*"
+		 xmlns:baseRenderer="org.flowerplatform.flexdiagram.renderer.*"
+		 xmlns:host="org.flowerplatform.flexutil.view_content_host.*"
+		 implements="mx.managers.IFocusManagerComponent">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.managers.IFocusManagerComponent;
+			import mx.utils.ObjectProxy;
+			import mx.utils.object_proxy;
+			
+			import org.flowerplatform.flex_client.core.CoreConstants;
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.properties.PropertiesPlugin;
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexdiagram.ControllerUtils;
+			import org.flowerplatform.flexdiagram.DiagramShellContext;
+			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramShell;
+			import org.flowerplatform.flexutil.FlexUtilAssets;
+			import org.flowerplatform.flexutil.FlexUtilConstants;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.flexdiagram.StandAloneSequentialLayoutVisualChildrenController;
+			import org.flowerplatform.flexutil.layout.event.ViewRemovedEvent;
+			import org.flowerplatform.flexutil.properties.PropertyCommitController;
+			import org.flowerplatform.flexutil.properties.PropertyDescriptor;
+			import org.flowerplatform.flexutil.properties.PropertyEntry;
+			import org.flowerplatform.flexutil.properties.PropertyEntryRendererController;
+			import org.flowerplatform.flexutil.selection.ISelectionProvider;
+			import org.flowerplatform.flexutil.selection.SelectionChangedEvent;
+			
+			
+			protected var propertiesContext:Object = new Object();
+			
+			protected var propertyCommitController:PropertyCommitController;
+			
+			// properties needed for createMode
+			public var nodeToAdd:Node = null;
+			public var siblingNodeUri:String = null;
+			public var parentNode:Node = null;
+			public var diagramShellContext:DiagramShellContext = null;
+			
+			override protected function createChildren():void {
+				if (nodeToAdd != null) {
+					addButtons = true;
+				}				
+				super.createChildren();
+				
+				hasFocusableChildren = true;
+				
+				if (nodeToAdd != null) {
+					propertyCommitController = new PropertyCommitController();
+				} else {
+					propertyCommitController = new NodePropertyCommitController()
+				}
+
+				propertiesForm.visualChildrenController = new StandAloneSequentialLayoutVisualChildrenController(0, null, new PropertyEntryRendererController(propertyCommitController, Resources.deleteIcon));
+
+				if (nodeToAdd != null) {
+					propertiesContext[FlexUtilConstants.PROPERTIES_CONTEXT_IS_CREATE_MODE] = true;
+					adjustContextAndVisibility();
+					propertiesForm.data = nodeToAdd;
+					title.visible = title.includeInLayout = false;
+					return;
+				}
+
+				// get selection from active provider to populate properties list with data
+				var activeSelectionProvider:ISelectionProvider = FlexUtilGlobals.getInstance().selectionManager.activeSelectionProvider;
+				if (activeSelectionProvider != null) {
+					// create dummy event
+					var event:SelectionChangedEvent = new SelectionChangedEvent();
+					event.selection = activeSelectionProvider.getSelection();
+					selectionChangedHandler(event);
+				}
+				// listen for selection changes				
+				IEventDispatcher(_viewHost).addEventListener(ViewRemovedEvent.VIEW_REMOVED, viewRemovedHandler);
+				FlexUtilGlobals.getInstance().selectionManager.addEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);
+			}
+		
+			private function viewRemovedHandler(event:ViewRemovedEvent):void {
+				FlexUtilGlobals.getInstance().selectionManager.removeEventListener(SelectionChangedEvent.SELECTION_CHANGED, selectionChangedHandler);
+			}
+						
+			private function selectionChangedHandler(event:SelectionChangedEvent):void {
+				if (event != null) {
+					if (event.selection == null || event.selection.length == 0 || !(event.selection.getItemAt(0) is Node)) { 
+						// happens when changing active view						
+						PropertiesPlugin.getInstance().currentSelectedNode = null;
+						title.data = null;
+						title.noteText = title.text = Resources.getMessage("properties.emptySelection");
+						propertiesForm.data = null;
+						return;
+					}
+					// get new selected node
+					var firstSelectedElement:Object = Node(event.selection.getItemAt(0));
+					PropertiesPlugin.getInstance().currentSelectedNode = Node(firstSelectedElement);
+				} else {
+					// happens on click on the raw/advanced/internal button
+					firstSelectedElement = propertiesForm.data;
+				}
+				
+				title.data = firstSelectedElement;
+				adjustContextAndVisibility();
+				propertiesForm.data = firstSelectedElement;
+			}
+			
+			private function adjustContextAndVisibility():void {
+				btnAddProperty.includeInLayout = btnAddProperty.visible 
+					= propertiesContext[FlexUtilConstants.PROPERTIES_CONTEXT_SHOW_ADD_PROPERTY] 
+					= propertiesContext[FlexUtilConstants.PROPERTIES_CONTEXT_INCLUDE_PROPERTIES_WITHOUT_DESCRIPTOR] 		
+					= btnShowInternalProperties.selected;
+				
+				propertiesContext[FlexUtilConstants.PROPERTIES_CONTEXT_SHOW_REMOVE_PROPERTY] = (nodeToAdd == null) && btnShowInternalProperties.selected;
+			}
+				
+			protected function btnAddPropertyClickHandler():void {
+				var result:Object = new Object();
+				result.name = "";
+				result.value = "";
+				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
+					.setTitle(FlexUtilAssets.INSTANCE.getMessage('properties.addProperty'))
+					.setIcon(Resources.addIcon)
+					.setViewContent(
+						new PropertiesForm().createQuickPropertiesForm(function ():void {
+								var entry:PropertyEntry = new PropertyEntry();
+								entry.descriptor = new PropertyDescriptor().setName(result.name);
+								entry.model = propertiesForm.data;
+								entry.eventDispatcher = Node(propertiesForm.data).properties;
+								entry.value = result.value;
+								propertyCommitController.commitProperty(entry);
+								propertiesForm.shouldRefreshVisualChildren = true;
+							}, propertiesForm.typeDescriptorRegistry, result, new ArrayCollection([
+							new PropertyDescriptor().setName("name").setLabel(FlexUtilAssets.INSTANCE.getMessage("properties.name")),
+							new PropertyDescriptor().setName("value").setLabel(FlexUtilAssets.INSTANCE.getMessage("properties.value"))])))
+					.show(false);
+			}
+			
+			override public function okHandler(event:Event=null):void {
+				// used when createMode=true
+				super.okHandler(event);
+				var context:Object = ObjectProxy(nodeToAdd.properties).object_proxy::object;
+				context["type"] = nodeToAdd.type;
+				if (siblingNodeUri != null) {
+					context[CoreConstants.INSERT_BEFORE_FULL_NODE_ID] = siblingNodeUri;
+				}
+
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.addChild", [parentNode.nodeUri, context], 
+					function(childFullNodeId:String):void {
+						// expand parentNode, select the added child.
+						if (!ControllerUtils.getMindMapModelController(diagramShellContext, parentNode).getExpanded(diagramShellContext, parentNode)) {
+							diagramShellContext[CoreConstants.HANDLER] = function():void {CorePlugin.getInstance().selectNode(diagramShellContext, childFullNodeId);};
+							MindMapDiagramShell(diagramShellContext.diagramShell).getModelController(diagramShellContext, parentNode).setExpanded(diagramShellContext, parentNode, true);
+						} else {
+							CorePlugin.getInstance().selectNode(diagramShellContext, childFullNodeId);
+						}
+						cancelHandler();
+					});
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:HGroup width="100%" horizontalAlign="right" paddingLeft="5"  paddingRight="5" paddingBottom="5">
+		<s:Scroller width="100%" maxHeight="80">
+			<!-- I don't know why, but the scroller eats about 1 px, i.e. the bottom/right border line is hidden; that's why we wrapp inside a hgroup -->
+			<s:HGroup width="100%" paddingBottom="1" paddingRight="1">
+				<baseRenderer:BaseRenderer id="title" width="100%"
+										   typeDescriptorRegistry="{CorePlugin.getInstance().nodeTypeDescriptorRegistry}" resetPropertiesOnDataNull="true" 
+										   featureForValuesProvider="{CoreConstants.MIND_MAP_FEATURE_FOR_VALUES_PROVIDER}"/>
+			</s:HGroup>
+		</s:Scroller>
+		<s:Button id="btnAddProperty" icon="{Resources.addIcon}" toolTip="{FlexUtilAssets.INSTANCE.getMessage('properties.addProperty')}"					
+						width="{btnShowInternalProperties.width}" height="{btnShowInternalProperties.height}" click="btnAddPropertyClickHandler()"/>
+		<s:ToggleButton id="btnShowInternalProperties" selected="true"
+						icon="{Resources.tableGear}" toolTip="{Resources.getMessage('properties.internal.show')}"					
+						creationComplete="{if (!FlexUtilGlobals.getInstance().isMobile) {btnShowInternalProperties.width=22; btnShowInternalProperties.height=22;}}"
+						click="{selectionChangedHandler(null)}"/>
+	</s:HGroup>
+	
+	<properties:PropertiesForm id="propertiesForm" width="100%" height="100%" context="{propertiesContext}"
+		typeDescriptorRegistry="{CorePlugin.getInstance().nodeTypeDescriptorRegistry}"
+		propertiesHelper="{PropertiesPlugin.getInstance().propertiesHelper}"/>
+	
+</host:BasicViewContent>

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,23 +11,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexutil.action {
 	import flash.utils.getQualifiedClassName;
 	
 	import mx.collections.IList;
-	import mx.messaging.AbstractConsumer;
+	
+	import org.flowerplatform.flexutil.FlexUtilAssets;
 
 	/**
 	 * @author Cristian Spiescu
 	 */
-	public class ActionBase implements IAction {
+	public dynamic class ActionBase implements IAction {
 
-		private var _id:String = getQualifiedClassName(this);
+		private var _id:String;
 		private var _parentId:String;
 		private var _orderIndex:Number;
 		private var _preferShowOnActionBar:Boolean;
@@ -47,7 +45,25 @@ package org.flowerplatform.flexutil.action {
 		 */
 		private var _functionDelegate:Function;
 		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		private var _isSelected:Boolean = false;
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		private var _isToggleAction:Boolean = false;
+		
 		public function get id():String {
+			if (_id == null) {
+				// try to get id from each class (static attribute ID), if not found, use qualified class name
+				if (Object(this).constructor.hasOwnProperty("ID")) {
+					_id = Object(this).constructor["ID"];
+				} else {
+					_id = getQualifiedClassName(this);
+				}
+			}			
 			return _id;
 		}
 		
@@ -99,6 +115,7 @@ package org.flowerplatform.flexutil.action {
 			return this;
 		}
 		
+		[Bindable]
 		public function get icon():Object {
 			return _icon;
 		}
@@ -190,15 +207,49 @@ package org.flowerplatform.flexutil.action {
 		}
 		
 		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		public function get isSelected():Boolean {
+			return _isSelected;
+		}
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		public function set isSelected(value:Boolean):void {
+			_isSelected = value;
+			icon = value ? FlexUtilAssets.checkedIcon : FlexUtilAssets.uncheckedIcon;
+		}
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		public function get isToggleAction():Boolean {
+			return _isToggleAction;
+		}
+		
+		/**
+		 * @author Iulian-Catalin Burcea
+		 */
+		public function set isToggleAction(value:Boolean):void {
+			_isToggleAction = value;
+			isSelected = false;
+		}
+		
+		/**
 		 * Use functionDelegate, if any exists.
 		 * 
 		 * @author Cristian Spiescu
 		 * @author Mircea Negreanu
+		 * @author Iulian-Catalin Burcea
 		 */
 		public function run():void {
 			// if we have a functionDelegate than execute that
 			if (functionDelegate != null) {
 				functionDelegate();
+			}
+			if (isToggleAction) {
+				isSelected = !isSelected;
 			}
 		}
 		

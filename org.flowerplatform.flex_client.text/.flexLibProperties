@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="org.flowerplatform.flex_client.text.TextConstants"/>
+    <classEntry path="org.flowerplatform.flex_client.text.TextEditorDescriptor"/>
+    <classEntry path="org.flowerplatform.flex_client.text.TextEditorFrontend"/>
+    <classEntry path="org.flowerplatform.flex_client.text.TextPlugin"/>
+    <classEntry path="org.flowerplatform.flex_client.text.codemirror_editor.MobileCodeMirrorEditor"/>
+    <classEntry path="org.flowerplatform.flex_client.text.codemirror_editor.StageWebViewUIComponent"/>
+    <classEntry path="org.flowerplatform.flex_client.text.codemirror_editor.WebCodeMirrorEditor"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

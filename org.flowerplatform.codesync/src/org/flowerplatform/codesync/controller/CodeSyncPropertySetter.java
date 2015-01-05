@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,35 +11,32 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.codesync.controller;
 
-import static org.flowerplatform.codesync.CodeSyncConstants.FEATURE_PROVIDER;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.getOriginalPropertyName;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncFalseAndPropagateToParents;
 import static org.flowerplatform.codesync.controller.CodeSyncControllerUtils.setSyncTrueAndPropagateToParents;
 
+import java.util.Map;
+
 import org.flowerplatform.codesync.CodeSyncConstants;
-import org.flowerplatform.codesync.feature_provider.FeatureProvider;
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IPropertySetter;
-import org.flowerplatform.core.node.controller.PropertyValueWrapper;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
 import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
-import org.flowerplatform.util.controller.TypeDescriptor;
 
 /**
  * @author Mariana Gheorghe
  */
 public class CodeSyncPropertySetter extends AbstractController implements IPropertySetter {
 
+	/**
+	 *@author see class
+	 **/
 	public CodeSyncPropertySetter() {
 		// invoked before the persistence controllers
 		// to cache the current value of the property before it is overwritten
@@ -47,42 +44,51 @@ public class CodeSyncPropertySetter extends AbstractController implements IPrope
 	}
 	
 	@Override
-	public void setProperty(Node node, String property, PropertyValueWrapper wrapper, ServiceContext<NodeService> context) {
-		// if the node is newly added or marked removed => propagate sync flag false
-		if (CodeSyncConstants.REMOVED.equals(property) || CodeSyncConstants.ADDED.equals(property)) {
-			setSyncFalseAndPropagateToParents(node, context.getService());
+	public void setProperties(Node node, Map<String, Object> properties, ServiceContext<NodeService> context) {
+		// disable the controllers during the execution of sync algorithm
+		if (context.getBooleanValue(CodeSyncConstants.SYNC_IN_PROGRESS)) {
 			return;
 		}
 		
-		// check if property is synchronizable
-		if (!isSyncProperty(node, property)) {
-			return;
-		}
-		
-		boolean isOriginalPropertySet = false;
-		Object originalValue = null;
-		String originalProperty = getOriginalPropertyName(property);
-		// get the original value from property.original or property
-		if (node.getOrPopulateProperties().containsKey(originalProperty)) {
-			isOriginalPropertySet = true;
-			originalValue = node.getOrPopulateProperties().get(originalProperty);
-		} else if (node.getOrPopulateProperties().containsKey(property)) {
-			originalValue = node.getOrPopulateProperties().get(property);
-		} else {
-			originalValue = wrapper.getPropertyValue();
-		}
-		
-		if (!Utils.safeEquals(originalValue, wrapper.getPropertyValue())) {
-			if (!isOriginalPropertySet) {
-				// trying to set a different value; keep the old value in property.original if it does not exist
-				context.getService().setProperty(node, originalProperty, originalValue, new ServiceContext<NodeService>(context.getService()));
+		for (String property : properties.keySet()) {
+			Object value = properties.get(property);
+			
+			// if the node is newly added or marked removed => propagate sync flag false
+			if (CodeSyncConstants.REMOVED.equals(property) || CodeSyncConstants.ADDED.equals(property)) {
 				setSyncFalseAndPropagateToParents(node, context.getService());
+				return;
 			}
-		} else {
-			if (isOriginalPropertySet) {
-				// trying to set the same value as the original (a revert operation); unset the original value
-				context.getService().unsetProperty(node, originalProperty, new ServiceContext<NodeService>(context.getService()));
-				setSyncTrueAndPropagateToParents(node, context.getService());
+			
+			// check if property is synchronizable
+			if (!isSyncProperty(node, property)) {
+				return;
+			}
+			
+			boolean isOriginalPropertySet = false;
+			Object originalValue = null;
+			String originalProperty = getOriginalPropertyName(property);
+			// get the original value from property.original or property
+			if (node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService())).containsKey(originalProperty)) {
+				isOriginalPropertySet = true;
+				originalValue = node.getPropertyValue(originalProperty);
+			} else if (node.getOrPopulateProperties(new ServiceContext<NodeService>(context.getService())).containsKey(property)) {
+				originalValue = node.getPropertyValue(property);
+			} else {
+				originalValue = value;
+			}
+			
+			if (!Utils.safeEquals(originalValue, value)) {
+				if (!isOriginalPropertySet) {
+					// trying to set a different value; keep the old value in property.original if it does not exist
+					context.getService().setProperty(node, originalProperty, originalValue, new ServiceContext<NodeService>(context.getService()));
+					setSyncFalseAndPropagateToParents(node, context.getService());
+				}
+			} else {
+				if (isOriginalPropertySet) {
+					// trying to set the same value as the original (a revert operation); unset the original value
+					context.getService().unsetProperty(node, originalProperty, new ServiceContext<NodeService>(context.getService()));
+					setSyncTrueAndPropagateToParents(node, context.getService());
+				}
 			}
 		}
 	}
@@ -93,16 +99,7 @@ public class CodeSyncPropertySetter extends AbstractController implements IPrope
 	}
 	
 	private boolean isSyncProperty(Node node, String property) {
-		TypeDescriptor descriptor = CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getExpectedTypeDescriptor(node.getType());
-		if (descriptor == null) {
-			return false;
-		}
-		
-		FeatureProvider featureProvider = descriptor.getSingleController(FEATURE_PROVIDER, node);
-		if (featureProvider.getValueFeatures(node).contains(property)) {
-			return true;
-		}
-		return false;
+		return !CodeSyncControllerUtils.isCodeSyncFlagConstant(property);
 	}
 	
 }

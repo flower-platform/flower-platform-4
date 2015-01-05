@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.core.file.download.remote;
 
 import java.io.File;
@@ -11,10 +26,10 @@ import java.util.concurrent.TimeUnit;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.CoreUtils;
 import org.flowerplatform.core.FlowerProperties.AddBooleanProperty;
-import org.flowerplatform.core.FlowerProperties.AddProperty;
+import org.flowerplatform.core.FlowerProperties.AddIntegerProperty;
+import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.file.download.DownloadInfo;
 import org.flowerplatform.core.file.download.DownloadServlet;
-import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.session.ISessionListener;
 import org.flowerplatform.util.UtilConstants;
 
@@ -55,10 +70,16 @@ public class DownloadService implements ISessionListener {
 	
 	private ScheduledExecutorService scheduler = CorePlugin.getInstance().getScheduledExecutorServiceFactory().createScheduledExecutorService();
 
+	/**
+	 *@author see class
+	 **/
 	class ClearDownloadInfoRunnable implements Runnable {
 		
 		private ScheduledExecutorService parentScheduler;
 		
+		/**
+		 *@author see class
+		 **/
 		public ClearDownloadInfoRunnable(ScheduledExecutorService parentScheduler) {			
 			this.parentScheduler = parentScheduler;
 		}
@@ -66,7 +87,8 @@ public class DownloadService implements ISessionListener {
 		@Override
 		public void run() {
 			for (Map.Entry<String, DownloadInfo> entry : downloadIdToDownloadInfo.entrySet()) {	
-				if (entry.getValue().getTimestamp()/100 < System.currentTimeMillis()/100 - Integer.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER))) {
+				if (entry.getValue().getTimestamp() / 100 < System.currentTimeMillis() / 100 - Integer.valueOf(CorePlugin.getInstance()
+						.getFlowerProperties().getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER))) {
 					removeDownloadInfo(entry.getKey());
 				}
 			}
@@ -74,21 +96,24 @@ public class DownloadService implements ISessionListener {
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public DownloadService() {
-		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER, PROP_DEFAULT_DOWNLOAD_CLEAN_SCHEDULER) {			
-			@Override
-			protected String validateProperty(String input) {				
-				return null;
-			}
-		});
-		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddBooleanProperty(PROP_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT, PROP_DEFAULT_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT));
+		CorePlugin.getInstance().getFlowerProperties().addProperty(new AddIntegerProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER, PROP_DEFAULT_DOWNLOAD_CLEAN_SCHEDULER));
+		CorePlugin.getInstance().getFlowerProperties()
+			.addProperty(new AddBooleanProperty(PROP_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT, PROP_DEFAULT_DOWNLOAD_DELETE_FILES_AFTER_DISCONNECT));
 				
 		CorePlugin.getInstance().addSessionListener(this);
 		
 		deleteTemporaryDownloadFolder();
-		scheduler.schedule(new ClearDownloadInfoRunnable(scheduler), Integer.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER)), TimeUnit.SECONDS);
+		scheduler.schedule(new ClearDownloadInfoRunnable(scheduler), Integer.valueOf(CorePlugin.getInstance().getFlowerProperties()
+				.getProperty(PROP_DOWNLOAD_CLEAN_SCHEDULER)), TimeUnit.SECONDS);
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public DownloadInfo getDownloadInfo(String downloadId) {
 		return downloadIdToDownloadInfo.get(downloadId);
 	}
@@ -158,7 +183,8 @@ public class DownloadService implements ISessionListener {
 		boolean isSingle = fullNodeIds.size() == 1; // true if single file, not directory
 		for (String fullNodeId : fullNodeIds) {
 			try {
-				Object file = CorePlugin.getInstance().getFileAccessController().getFile(new Node(fullNodeId).getIdWithinResource());
+				String path = FileControllerUtils.getFilePathWithRepo(fullNodeId);
+				Object file = CorePlugin.getInstance().getFileAccessController().getFile(path);
 				files.add(file);
 				if (CorePlugin.getInstance().getFileAccessController().isDirectory(file)) {
 					isSingle = false;

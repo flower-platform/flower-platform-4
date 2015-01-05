@@ -2,7 +2,7 @@
 <!-- 
 	license-start
  
-	Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -13,9 +13,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 	
-	Contributors:
-	  Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
- 
 	license-end
 -->
 <!--
@@ -34,7 +31,6 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayList;
-			import mx.collections.IList;
 			import mx.events.FlexEvent;
 			
 			import flashx.textLayout.conversion.TextConverter;
@@ -42,11 +38,10 @@
 			
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			import org.flowerplatform.flexutil.Utils;
-			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			private var _title:String;
+			private var _icon:Object;
 			
 			private var _text:String;
 			
@@ -57,10 +52,8 @@
 			
 			private var _viewHost:IViewHost;
 						
-			public function getActions(selection:IList):Vector.<IAction>{
-				return new Vector.<IAction>();
-			}
-			
+			private var additionalHandlerToBeExecutedAtClosing:Function;
+						
 			public function get viewHost():IViewHost {
 				return _viewHost;
 			}
@@ -118,6 +111,11 @@
 				return this;
 			}
 			
+			public function setIcon(value:Object):IMessageBox {
+				_icon = value;
+				return this;
+			}
+							
 			public function setWidth(value:int):IMessageBox {
 				width = value;
 				return this;
@@ -126,7 +124,7 @@
 			/**
 			 * @author Cristina Constantinescu
 			 */ 
-			public function addButton(title:String, handler:Function = null):IMessageBox {
+			public function addButton(title:String, handler:Function = null, useHandlerAtClosing:Boolean = false):IMessageBox {
 				var newBtn:Button = new Button();
 				newBtn.label = title;
 				
@@ -139,6 +137,10 @@
 					}
 				);
 				buttons.addItem(newBtn);
+				
+				if (useHandlerAtClosing) {
+					additionalHandlerToBeExecutedAtClosing = handler;
+				}
 				return this;
 			}
 			
@@ -177,6 +179,7 @@
 				FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler()
 					.setViewContent(this)
 					.setTitle(_title)
+					.setIcon(_icon)
 					.setWidth(width)
 					.setHeight(height)
 					.show(modal);
@@ -196,6 +199,11 @@
 				}
 			}
 			
+			public function additionalCloseHandler():void {
+				if (additionalHandlerToBeExecutedAtClosing != null) {
+					additionalHandlerToBeExecutedAtClosing();
+				}
+			}	
 		]]>
 	</fx:Script>
 	 

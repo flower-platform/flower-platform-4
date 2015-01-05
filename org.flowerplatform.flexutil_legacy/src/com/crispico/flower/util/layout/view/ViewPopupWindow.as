@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package com.crispico.flower.util.layout.view
@@ -98,14 +95,16 @@ package com.crispico.flower.util.layout.view
 			close();
 		}	
 		
-		public function close(dispatchLayoutDataChangedEvent:Boolean = true):void {
+		public function close(dispatchLayoutDataChangedEvent:Boolean = true, shouldDispatchRemoveEvent:Boolean = true):void {
 			closeFormInternal();
 			
-			// dispatch remove events
-			var viewsRemovedEvent:ViewsRemovedEvent = new ViewsRemovedEvent(new ArrayCollection([component]));			
-			workbench.dispatchEvent(viewsRemovedEvent);
-			
-			component.dispatchEvent(new ViewRemovedEvent());	
+			if (shouldDispatchRemoveEvent) {
+				// dispatch remove events
+				var viewsRemovedEvent:ViewsRemovedEvent = new ViewsRemovedEvent(new ArrayCollection([component]));			
+				workbench.dispatchEvent(viewsRemovedEvent);
+				
+				component.dispatchEvent(new ViewRemovedEvent());	
+			}
 			if (dispatchLayoutDataChangedEvent) {
 				workbench.dispatchEvent(new LayoutDataChangedEvent());
 			}

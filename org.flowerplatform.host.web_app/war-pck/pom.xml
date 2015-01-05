@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.flowerplatform</groupId>
+	<artifactId>org.flowerplatform.host.web_app</artifactId>
+	<version>0.1.1_war</version>
+	<packaging>war</packaging>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	
+	<build>
+		<sourceDirectory>../src</sourceDirectory>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<webXml>../WebContent/WEB-INF/web.xml</webXml>
+					<warName>flower-platform_${appVersion}.v${maven.build.timestamp}${version.qualifierSuffix}</warName>
+
+					<outputDirectory>war</outputDirectory>
+
+					<webResources>
+						<resource>
+							<directory>../WebContent/WEB-INF</directory>
+							<includes>
+								<include>all.policy</include>
+								<include>flower-platform-home-default-files/**/*</include>
+							</includes>
+							<targetPath>WEB-INF</targetPath>
+						</resource>
+						<resource>
+							<directory>../WebContent/META-INF</directory>
+							<includes>
+								<include>context.xml</include>
+							</includes>
+							<targetPath>META-INF</targetPath>
+						</resource>
+						<resource>
+							<directory>../../${output.java}/product/products/org.flowerplatform.product/${product-environment}</directory>
+							<targetPath>WEB-INF/eclipse</targetPath>
+						</resource>
+					</webResources>
+
+					<!-- disable the generation of the META-INF/maven directory -->
+					<archive>
+						<addMavenDescriptor>false</addMavenDescriptor>
+					</archive>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<version>1.5.3</version>
+				<inherited>false</inherited>
+				<executions>
+					<execution>
+						<id>set-version-java-after</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+						<configuration>
+							<file>../org.flowerplatform.core/src/org/flowerplatform/core/CoreConstants.java</file>
+							<regex>true</regex>
+							<replacements>
+								<replacement>
+									<token>APP_VERSION = .*;</token>
+									<value>APP_VERSION = "${appVersion}${qualifierSuffix}";</value>
+								</replacement>
+							</replacements>
+						</configuration>
+					</execution>
+					<execution>
+						<id>set-version-flex-after</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+						<configuration>
+							<file>../org.flowerplatform.flex_client.core/src/org/flowerplatform/flex_client/core/plugin/AbstractFlowerFlexPlugin.as</file>
+							<regex>true</regex>
+							<replacements>
+								<replacement>
+									<token>_appVersion:String = .*;</token>
+									<value>_appVersion:String = "${appVersion}${qualifierSuffix}";</value>
+								</replacement>
+							</replacements>
+						</configuration>						
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.flowerplatform.host</groupId>
+			<artifactId>org.flowerplatform.host.servletbridge.base</artifactId>
+			<version>${appVersion}${version.qualifierSuffix}</version>
+		</dependency>
+	</dependencies>
+</project>

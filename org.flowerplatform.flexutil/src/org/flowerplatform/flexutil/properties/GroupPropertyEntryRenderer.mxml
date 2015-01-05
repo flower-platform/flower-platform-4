@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
+<!---
+Renderer for a properties group header.
+
+@author Cristian Spiescu
+-->
+<s:DataRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   width="100%">
+	<fx:Script>
+		<![CDATA[
+			
+			override public function set data(value:Object):void {
+				super.data = value;
+				if (data != null) {
+					label.text = PropertyEntry(data).descriptor.label != null ? PropertyEntry(data).descriptor.label : PropertyEntry(data).descriptor.name; 
+					label.visible = label.text != null && label.text != "";
+					label.includeInLayout = label.visible;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:HorizontalLayout verticalAlign="middle" paddingTop="10" paddingBottom="10"/>
+	</s:layout>
+	
+	<s:Label id="label" fontWeight="bold"/>
+	
+	<s:Group width="100%" >
+		<s:Line width="100%" >
+			<s:stroke>
+				<s:SolidColorStroke color="0xC4CCCC" weight="2" caps="square"/>
+			</s:stroke>
+		</s:Line>
+	</s:Group>	
+			
+</s:DataRenderer>

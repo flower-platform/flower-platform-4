@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.flowerplatform</groupId>
+	<artifactId>parent</artifactId>
+	<version>0.1.1</version>
+	<packaging>pom</packaging>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>flex</id>
+			<modules>
+				<module>flex</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>java</id>
+			<modules>
+				<module>java</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>war</id>
+			<modules>
+				<module>../org.flowerplatform.host.web_app/war-pck</module>
+			</modules>
+		</profile>
+	</profiles>
+
+	<modules>
+		<module>checkstyle</module>
+	</modules>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant</artifactId>
+			<version>1.9.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-ant-tasks</artifactId>
+			<version>2.1.3</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.12.1</version>
+				<configuration>
+					<!-- <configLocation>checkstyle/checkstyle-config.xml</configLocation> -->
+					<propertyExpansion>config_loc=${basedir}/checkstyle</propertyExpansion>
+					<configLocation>${basedir}/checkstyle/checkstyle-config.xml</configLocation>
+					<suppressionsLocation>${basedir}/checkstyle/suppressions.xml</suppressionsLocation>
+					<includeTestSourceDirectory>true</includeTestSourceDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.12.1</version>
+				<configuration>
+					<configLocation>checkstyle/checkstyle-config.xml</configLocation>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+</project>

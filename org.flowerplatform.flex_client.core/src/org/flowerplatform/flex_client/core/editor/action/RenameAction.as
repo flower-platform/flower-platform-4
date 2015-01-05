@@ -1,64 +1,40 @@
 /* license-start
-* 
-* Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
-* 
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation version 3.
-* 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-* 
-* Contributors:
-*   Crispico - Initial API and implementation
-*
-* license-end
-*/
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.core.editor.action {
-	import avmplus.getQualifiedClassName;
-	
-	import flash.utils.getDefinitionByName;
-	
-	import mx.utils.ObjectUtil;
-	
-	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
 	import org.flowerplatform.flex_client.core.editor.ui.RichTextWithRendererView;
-	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
-	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
 	import org.flowerplatform.flex_client.resources.Resources;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	import org.flowerplatform.flexutil.dialog.IDialogResultHandler;
+	import org.flowerplatform.flexutil.controller.ValuesProvider;
 	
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	public class RenameAction extends DiagramShellAwareActionBase {
 		
+		public static const ID:String = "org.flowerplatform.flex_client.core.editor.action.RenameAction";
+		
 		public function RenameAction() {			
 			label = Resources.getMessage("mindmap.edit.node.core");
 			icon = Resources.editIcon;
 			orderIndex = 80;
 		}
-				
-		override public function get visible():Boolean {
-			if (selection != null && selection.length == 1 && selection.getItemAt(0) is Node) {
-				var type:String = Node(selection.getItemAt(0)).type;
-				if (type == CoreConstants.ROOT_TYPE || 
-					type == CoreConstants.REPOSITORY_TYPE || 
-					type == CoreConstants.FILE_SYSTEM_NODE_TYPE ||
-					type == CoreConstants.CODE_TYPE) {
-					
-					return false;
-				}
-				return true;
-			}
-			return false;
-		}
-						
+								
 		override public function run():void {
 			var node:Node = Node(selection.getItemAt(0));
 			
@@ -66,12 +42,12 @@ package org.flowerplatform.flex_client.core.editor.action {
 			view.node = node;
 			view.diagramShellContext = diagramShellContext;
 			
-			var titleProvider:GenericValueProviderFromDescriptor = NodeControllerUtils.getTitleProvider(diagramShellContext.diagramShell.registry, node);
-			view.text = String(titleProvider.getValue(node));
+			var valuesProvider:ValuesProvider = CorePlugin.getInstance().getNodeValuesProviderForMindMap(diagramShellContext.diagramShell.registry, node);
+			view.text = String(valuesProvider.getValue(diagramShellContext.diagramShell.registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT));
 			
 			view.resultHandler = function(newValue:String):void {				
 				// invoke service method and wait for result to close the rename popup
-				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.fullNodeId, titleProvider.getPropertyNameFromGenericDescriptor(node), newValue], 
+				CorePlugin.getInstance().serviceLocator.invoke("nodeService.setProperty", [node.nodeUri, valuesProvider.getPropertyName(diagramShellContext.diagramShell.registry, node, FlexDiagramConstants.BASE_RENDERER_TEXT), newValue], 
 					function(data:Object):void {
 						if (view != null) {
 							FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(view);
@@ -84,7 +60,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 				.setViewContent(view)
 				.setWidth(500)
 				.setHeight(400)
-				.setTitle(label)
+				.setTitle(label)	
+				.setIcon(icon)
 				.show();			
 		}
 				

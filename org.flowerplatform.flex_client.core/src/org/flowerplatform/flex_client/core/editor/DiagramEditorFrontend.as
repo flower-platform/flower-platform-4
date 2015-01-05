@@ -1,26 +1,25 @@
 /* license-start
-* 
-* Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
-* 
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation version 3.
-* 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-* 
-* Contributors:
-*   Crispico - Initial API and implementation
-*
-* license-end
-*/
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.core.editor {
 
 	import mx.collections.IList;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
+	
+	import spark.components.HGroup;
 	
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.remote.Node;
@@ -29,8 +28,6 @@ package org.flowerplatform.flex_client.core.editor {
 	import org.flowerplatform.flexdiagram.renderer.DiagramRenderer;
 	import org.flowerplatform.flexdiagram.util.infinitegroup.InfiniteScroller;
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
-	
-	import spark.components.HGroup;
 	
 	/**
 	 * @author Mariana Gheorghe
@@ -59,7 +56,7 @@ package org.flowerplatform.flex_client.core.editor {
 			editorArea.gap=1;
 			editorArea.paddingRight = 0;
 									
-			var diagramRenderer:DiagramRenderer = new DiagramRenderer();
+			var diagramRenderer:DiagramRenderer = createDiagramRenderer();
 			diagramRenderer.useGrid = false;			
 			diagramRenderer.horizontalScrollPosition = diagramRenderer.verticalScrollPosition = 0;
 			
@@ -73,7 +70,6 @@ package org.flowerplatform.flex_client.core.editor {
 			diagramShell.registry = CorePlugin.getInstance().nodeTypeDescriptorRegistry;
 			diagramShell.typeProvider = CorePlugin.getInstance().nodeTypeProvider;
 			diagramShell.diagramRenderer = diagramRenderer;
-			diagramShell.rootModel = new Node(editorInput);
 			
 			actionProvider.composedActionProviderProcessors.push(new DiagramShellAwareProcessor(diagramShell));			
 			diagramShell.selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangedHandler);
@@ -85,9 +81,13 @@ package org.flowerplatform.flex_client.core.editor {
 			throw new Error("Must provide a diagram shell!");
 		}
 		
-		override protected function subscribeResultCallback(resourceNode:Node):void {
-			super.subscribeResultCallback(resourceNode);
-			nodeUpdateProcessor.requestChildren(diagramShell.getNewDiagramShellContext(), null);
+		protected function createDiagramRenderer():DiagramRenderer {
+			return new DiagramRenderer();
+		}
+		
+		override protected function subscribeResultCallback(rootNode:Node, resourceNode:Node):void {
+			super.subscribeResultCallback(rootNode, resourceNode);
+			diagramShell.rootModel = rootNode;
 		}
 		
 		protected function selectionChangedHandler(e:CollectionEvent):void {

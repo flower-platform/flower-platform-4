@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
-    <classEntry path="org.flowerplatform.flexutil.samples.renderer.MultipleIconItemRendererSample"/>
     <classEntry path="org.flowerplatform.flexutil.samples.tree.TreeNodeHierarchicalModelAdapter"/>
     <classEntry path="org.flowerplatform.flexutil.samples.tree.TreeSample"/>
-    <classEntry path="org.flowerplatform.flexutil.samples.context_menu.ContextMenuSample"/>
     <classEntry path="org.flowerplatform.flexutil.samples.context_menu.SampleAction1"/>
     <classEntry path="org.flowerplatform.flexutil.samples.gradient_list.GradientBackgroundListSample"/>
     <classEntry path="org.flowerplatform.flexutil.samples.gradient_list.LeftList"/>
@@ -14,6 +12,11 @@
     <classEntry path="org.flowerplatform.flexutil.samples.global_menu.SampleActionGlobalMenu1"/>
     <classEntry path="org.flowerplatform.flexutil.samples.spinner.ModalSpinnerSample"/>
     <classEntry path="org.flowerplatform.flexutil.samples.spinner.RemoveGlobalSpinnerViewContent"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.object_proxy.ObjectProxySample"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.object_proxy.INodeChangedListener"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.properties.SamplePropertiesHelper"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.properties.PropertiesStandAloneSample"/>
+    <classEntry path="org.flowerplatform.flexutil.samples.properties.SamplePropertiesModel"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

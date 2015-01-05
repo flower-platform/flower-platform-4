@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.core.editor.action {
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
@@ -10,6 +25,8 @@ package org.flowerplatform.flex_client.core.editor.action {
 	 * @author Mariana Gheorghe
 	 */
 	public class ForceUpdateAction extends ActionBase {
+				
+		public static const ID:String = "org.flowerplatform.flex_client.core.editor.action.ForceUpdateAction";
 		
 		public function ForceUpdateAction() {
 			super();
@@ -19,14 +36,12 @@ package org.flowerplatform.flex_client.core.editor.action {
 		}
 		
 		public function updateLabel():void {
-			if (CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient == -1) {
+			if (CorePlugin.getInstance().lastUpdateTimestampOfClient == -1) {
 				label = "No resource updates requested yet";
 			} else {
 				var formatter:DateTimeFormatter = new DateTimeFormatter();
-				formatter.dateTimePattern = "yyyy-MM-dd HH:mm:ss";
-				var date:Date = new Date();
-				date.time = CorePlugin.getInstance().resourceNodeIdsToNodeUpdateProcessors.lastUpdateTimestampOfClient;
-				label = "Last update: " + formatter.format(date);
+				formatter.dateTimePattern = "yyyy-MM-dd HH:mm:ss";							
+				label = "Last update: " + formatter.format(new Date(CorePlugin.getInstance().lastUpdateTimestampOfClient));
 			}
 		}
 		

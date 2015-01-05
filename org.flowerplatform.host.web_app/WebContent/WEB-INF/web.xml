@@ -36,62 +36,6 @@
 			<param-name>frameworkLauncherClass</param-name>
 			<param-value>org.eclipse.equinox.servletbridge.flower.FlowerFrameworkLauncher</param-value>
 		</init-param>
-		
-		<!--*******************************************************************************
-		 FlowerFrameworkLauncher specific parameters 
-		 **********************************************************************************-->	
-		
-		<!-- 
-			If set, starts in dev. mode. The name of the Eclipse launch configuration.
-			The configuration file path and the properties osgi.configuration.area, 
-			osgi.dev are generated based on this info,
-			pointing to the development workspace; it is something like
-			...WORKSPACE/.metadata/.plugins/org.eclipse.pde.core/Flower Platform - Host WebApp (write plugin config to file)
-			
-			NOTE1: The below configuration needs to be launched manually at least once
-			before launching Tomcat (in order to have the proper files generated). It
-			needs to be relaunched as well when this config changes (e.g. new plugins
-			are added).
-	
-			NOTE2: In dev. mode the webapp's context is something like
-			...WORKSPACE\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\org.flowerplatform.web.app\
-		 -->
-		<init-param>
-			<param-name>developmentLaunchConfigurationWindows</param-name>
-			<param-value>Flower Platform - Host WebApp (write plugin config to file)</param-value>
-		</init-param>
-		<init-param>
-			<param-name>developmentLaunchConfigurationLinux</param-name>
-			<param-value>Flower Platform - Web Linux</param-value>
-		</init-param>
-	
-		<!-- 
-			If in production mode (i.e. no dev mode, i.e. developmentLaunchConfiguration not set), 
-			points to the location of the eclipse configuration files; this directory is used as
-			osgi.configuration.area. This directory (probably ...eclipse/configuration):
-				* should contain config.ini;
-				* may contain (although not mandatory of course) dev.ini, that will be used if found;
-				* ../plugins should contain the FDC plugins.
-				
-			If in dev mode, this parameter is ignored.
-		 -->
-		<init-param>
-			<param-name>eclipseConfigurationLocation</param-name>
-			<param-value>WEB-INF/eclipse/configuration</param-value>
-		</init-param>
-		
-		<!-- 
-			Mandatory. The location (relative to the webapp's context) where to find the
-			Eclipse workspace to be used.
-			
-			In dev. mode, this is relative the dev web app project (even if this is not in the workspace,
-			and it is within the dir of the git repo). Uses a small helper builder that writes absolute-path-helper.txt.
-			@see FlowerFrameworkLauncher for more details.
-		 -->
-		<init-param>
-			<param-name>workspaceLocation</param-name>
-			<param-value>workspace/repository</param-value>
-		</init-param>	
 	
 		<load-on-startup>1</load-on-startup>
 	</servlet>

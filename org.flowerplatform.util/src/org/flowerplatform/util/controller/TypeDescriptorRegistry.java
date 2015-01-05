@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.util.controller;
 
 import java.util.ArrayList;
@@ -23,7 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TypeDescriptorRegistry {
 
-	private final static Logger logger = LoggerFactory.getLogger(TypeDescriptorRegistry.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TypeDescriptorRegistry.class);
 	
 	/**
 	 * Package visibility, so that {@link TypeDescriptor} can change it.
@@ -32,6 +47,8 @@ public class TypeDescriptorRegistry {
 	 */
 	boolean configurable = true;
 
+	private ITypeProvider typeProvider;
+	
 	/**
 	 * @see TypeDescriptor#additiveControllers
 	 */
@@ -41,16 +58,22 @@ public class TypeDescriptorRegistry {
 
 	private Map<String, TypeDescriptor> typeDescriptors = new HashMap<String, TypeDescriptor>();
 	
+	public ITypeProvider getTypeProvider() {
+		return typeProvider;
+	}
+
+	public void setTypeProvider(ITypeProvider typeProvider) {
+		this.typeProvider = typeProvider;
+	}
+
+	/**
+	 *@author see class
+	 **/
 	public TypeDescriptor getOrCreateTypeDescriptor(String type) {
 		if (type.startsWith(UtilConstants.CATEGORY_PREFIX)) {
 			throw new IllegalArgumentException("Please use getOrCreateCategoryTypeDescriptor()");
 		}
-		TypeDescriptor result = typeDescriptors.get(type);
-		if (result == null) {
-			result = new TypeDescriptor(this, type);
-			typeDescriptors.put(type, result);
-		}
-		return result;
+		return getOrCreateTypeDescriptorInternal(type);
 	}
 	
 	/**
@@ -64,6 +87,10 @@ public class TypeDescriptorRegistry {
 		if (!type.startsWith(UtilConstants.CATEGORY_PREFIX)) {
 			throw new IllegalArgumentException("Category type should be prefixed with 'category.'");
 		}
+		return getOrCreateTypeDescriptorInternal(type);
+	}
+	
+	public TypeDescriptor getOrCreateTypeDescriptorInternal(String type) {
 		TypeDescriptor result = typeDescriptors.get(type);
 		if (result == null) {
 			result = new CategoryTypeDescriptor(this, type);
@@ -79,25 +106,31 @@ public class TypeDescriptorRegistry {
 	public TypeDescriptor getExpectedTypeDescriptor(String type) {
 		TypeDescriptor result = typeDescriptors.get(type);
 		if (result == null) {
-			logger.warn("Operation invoked for nodeType = {}, but there is no associated descriptor registered! Aborting operation.", type);
+			LOGGER.warn("Operation invoked for nodeType = {}, but there is no associated descriptor registered! Aborting operation.", type);
 			return null;
 		}
 		return result;
 	}
 		
 	private List<IDynamicCategoryProvider> dynamicCategoryProviders;
-	
+	/**
+	 *@author see class
+	 **/
 	public List<IDynamicCategoryProvider> getDynamicCategoryProviders() {
 		if (dynamicCategoryProviders == null) {
 			dynamicCategoryProviders = new ArrayList<IDynamicCategoryProvider>();			
 		}
 		return dynamicCategoryProviders;
 	}
-	
+	/**
+	 *@author see class
+	 **/
 	public void addDynamicCategoryProvider(IDynamicCategoryProvider provider) {
 		getDynamicCategoryProviders().add(provider);
 	}
-
+	/**
+	 *@author see class
+	 **/
 	public TypeDescriptorRegistry() {
 		super();
 		addDynamicCategoryProvider(new AllDynamicCategoryProvider());
@@ -146,4 +179,13 @@ public class TypeDescriptorRegistry {
 		}
 		return remotes;
 	}
+	
+	public IController getSingleController(String feature, Object model) {
+		return getExpectedTypeDescriptor(typeProvider.getType(model)).getSingleController(feature, model);
+	}
+
+	public List<? extends IController> getAdditiveControllers(String feature, Object model) {
+		return getExpectedTypeDescriptor(typeProvider.getType(model)).getAdditiveControllers(feature, model);
+	}
+
 }

@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
 <!--
 This is a confirmation dialog to open a node in a new editor. 
 
@@ -12,22 +28,15 @@ previously), and a new editor is opened directly.
 
 @author Mariana Gheorghe
 -->
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<host:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 implements="org.flowerplatform.flexutil.view_content_host.IViewContent,org.flowerplatform.flexutil.dialog.IDialog">
-	<s:layout>
-		<s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingBottom="10" paddingRight="10"/>
-	</s:layout>
-	
+		 xmlns:host="org.flowerplatform.flexutil.view_content_host.*"
+		 implements="org.flowerplatform.flexutil.dialog.IDialog">
+		
 	<s:Label text="{Resources.getMessage('editor.openInNewEditor.message')}"/>
 	<s:CheckBox id="rememberSetting" label="{Resources.getMessage('editor.openInNewEditor.remember')}" selected="true"/>
-	
-	<s:HGroup width="100%" horizontalAlign="right">
-		<s:Button label="{FlexUtilAssets.INSTANCE.getMessage('dialog.ok')}" click="okClickHandler()"/>
-		<s:Button label="{FlexUtilAssets.INSTANCE.getMessage('dialog.cancel')}" click="cancelClickHandler()"/>
-	</s:HGroup>
-	
+		
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.IList;
@@ -75,44 +84,31 @@ previously), and a new editor is opened directly.
 				so.flush();
 			}
 			
-			protected function okClickHandler():void {
+			override public function okHandler(event:Event = null):void {
 				if (rememberSetting.selected) {
 					alwaysOpenInNewEditor = true;					
 				}
 				openInNewEditor();
 			}
 			
-			protected function cancelClickHandler():void {
+			override public function cancelHandler(event:Event = null):void {
 				_resultHandler.handleDialogResult(false);
-				close();
+				super.cancelHandler();
 			}
 			
 			private function openInNewEditor():void {
 				CorePlugin.getInstance().openEditor(node);
 				_resultHandler.handleDialogResult(true);
-				close();
+				super.cancelHandler();
 			}
-			
-			private function close():void {
-				FlexUtilGlobals.getInstance().popupHandlerFactory.removePopup(this);
-			}
-			
-			private var _viewHost:IViewHost;
-			
-			public function set viewHost(viewHost:IViewHost):void {
-				_viewHost = viewHost;
-			}
-			
-			public function getActions(selection:IList):Vector.<IAction> {
-				return null;
-			}
-			
+				
 			private var _resultHandler:IDialogResultHandler;
 			
 			public function setResultHandler(resultHandler:IDialogResultHandler):void {
 				_resultHandler = resultHandler;
 			}
+			
 		]]>
 	</fx:Script>
 	
-</s:Group>
+</host:BasicViewContent>

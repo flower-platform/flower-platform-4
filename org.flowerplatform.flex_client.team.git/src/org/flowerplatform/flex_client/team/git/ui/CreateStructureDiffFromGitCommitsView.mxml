@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
+<!-- 
+ @author Valentina-Camelia Bojan
+-->
+<ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009"
+					 xmlns:s="library://ns.adobe.com/flex/spark"
+					 xmlns:mx="library://ns.adobe.com/flex/mx"
+					 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
+					 xmlns:cs="org.flowerplatform.flexutil.components.*"
+					 creationComplete="creationCompleteDiffFromCommitsHandler(event)">
+
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.utils.StringUtil;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flexutil.Utils;
+						
+			[Bindable]
+			public var repo:String;
+			
+			protected var okPseudoEnabled:Boolean = false;
+			
+			protected function creationCompleteDiffFromCommitsHandler(event:FlexEvent):void {
+				Utils.makePseudoDisabled(startResultArea);
+				Utils.makePseudoDisabled(endResultArea);
+				okButton.enabled = false;
+				getStartInfo.enabled = getEndInfo.enabled = false;
+				currentState = "messages";
+			}
+			
+			protected function changeToStartResult():void {
+				if (currentState == "endResult" || currentState == 'results') {
+					currentState = "results";
+				} else {
+					currentState = "startResult";
+				}
+			}
+			
+			protected function changeToEndResult():void {
+				if (currentState == "startResult"  || currentState == 'results') {
+					currentState = "results";
+				} else {
+					currentState = "endResult";
+				}
+			}
+			
+			protected function changeToStartMessage():void {
+				if (currentState == 'results') {
+					currentState = 'endResult';
+				} else if (currentState == 'startResult') {
+					currentState = 'messages';
+				}
+			}
+			
+			protected function changeToEndMessage():void {
+				if (currentState == 'results') {
+					currentState = 'startResult';
+				} else if (currentState == 'endResult') {
+					currentState = 'messages';
+				}
+			}
+			
+			protected function validateStartHashHandler(isHashValid:Boolean):void{
+				if (isHashValid) {
+					if (okPseudoEnabled) {
+						okButton.enabled = true;
+					} else {
+						okPseudoEnabled = true;
+					}
+					changeToStartResult();
+				} else {
+					startResultArea.text = Resources.getMessage('flex_client.team.git.createSdiff.invalidState');
+					changeToStartMessage();
+					if (okPseudoEnabled) {
+						okPseudoEnabled = false;
+					}
+					okButton.enabled = false;
+				}
+			}
+			
+			protected function validateEndHashHandler(isHashValid:Boolean):void{
+				if (isHashValid) {
+					if (okPseudoEnabled) {
+						okButton.enabled = true;
+					} else {
+						okPseudoEnabled = true;
+					}
+					changeToEndResult();
+				} else {
+					endResultArea.text = Resources.getMessage('flex_client.team.git.createSdiff.invalidState');
+					changeToEndMessage();
+					if (okPseudoEnabled) {
+						okPseudoEnabled = false;
+					}
+					okButton.enabled = false;
+				}
+			}
+			
+			protected function clickGetStartInfoHandler(event:MouseEvent):void {				
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.validateHash", 
+										[startHash.text, repo], validateStartHashHandler);
+			}
+			
+			protected function clickGetEndInfoHandler(event:MouseEvent):void {
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.validateHash", 
+										[endHash.text, repo], validateEndHashHandler);	
+			}
+			
+			protected function changeStartHashHandler(event:Event):void {
+				if (startHash.text.length == 0){
+					startResultArea.text = Resources.getMessage('flex_client.team.git.createSdiff.defaultState');
+					getStartInfo.enabled = false;
+					changeToStartMessage();
+				} else {
+					getStartInfo.enabled = true;
+				}
+			}
+			
+			protected function changeEndHashHandler(event:Event):void {	
+				if (endHash.text.length == 0){
+					endResultArea.text = Resources.getMessage('flex_client.team.git.createSdiff.defaultState');
+					getEndInfo.enabled = false;
+					changeToEndMessage();
+				} else {
+					getEndInfo.enabled = true;
+				}
+			}
+			
+			override public function okHandler(event:Event=null):void {
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.createStructureDiffFromGitCommits", 
+					[startHash.text, endHash.text, repo, 
+					StringUtil.substitute(Resources.getMessage('codesync.sdiff.outputSdiffPath'), [outputFileComponent.text])],
+					function(node:Node):void {
+						CorePlugin.getInstance().openEditor(node);
+						cancelHandler();
+					});
+			}			
+		]]>
+	</fx:Script>
+	
+	<ns:states>
+		<s:State name="messages"/>
+		<s:State name="startResult"/>
+		<s:State name="endResult"/>
+		<s:State name="results"/>
+	</ns:states>	
+	
+	<s:VGroup width="100%" height="100%" gap="40">
+		<s:VGroup width="100%" height="50%">
+			<s:HGroup width="100%" gap="5" verticalAlign="middle">
+				<s:Label id="sLabel"
+						 text="{Resources.getMessage('flex_client.team.git.createSdiff.startHash')}"/>		
+				<s:TextInput id="startHash" width="100%" change="changeStartHashHandler(event)"/>
+				<s:Button id="getStartInfo"
+						  label="{Resources.getMessage('flex_client.team.git.createSdiff.getInfo')}"
+						  click="clickGetStartInfoHandler(event)"/>
+			</s:HGroup>
+			
+			<s:TextArea id="startResultArea" includeIn="messages, endResult" width="100%"
+						height="100%" fontStyle="italic"
+						text="{Resources.getMessage('flex_client.team.git.createSdiff.defaultState')}"/>
+			
+			<s:Button includeIn="startResult, results" label="Test"/>				
+		</s:VGroup>	
+		
+		
+		<s:VGroup width="100%" height="50%">
+			<s:HGroup width="100%" gap="5" verticalAlign="middle">
+				<s:Label width="{sLabel.width}"
+						 text="{Resources.getMessage('flex_client.team.git.createSdiff.endHash')}"/>		
+				<s:TextInput id="endHash" width="100%" change="changeEndHashHandler(event)"/>
+				<s:Button id="getEndInfo"
+						  label="{Resources.getMessage('flex_client.team.git.createSdiff.getInfo')}"
+						  click="clickGetEndInfoHandler(event)"/>
+			</s:HGroup>
+			
+			<s:TextArea id="endResultArea" includeIn="messages, startResult" width="100%"
+						height="100%" fontStyle="italic"
+						text="{Resources.getMessage('flex_client.team.git.createSdiff.defaultState')}"/>
+			
+			<s:Button includeIn="endResult, results" label="Test"/>
+		</s:VGroup>
+		
+		<cs:TextInputWithAutoCompleteLabelComponent id="outputFileComponent"
+													autoCompleteLabelFormat="{repo + Resources.getMessage('codesync.sdiff.fileNameLabelText', [Resources.getMessage('codesync.sdiff.outputSdiffPath')])}"
+													labelText="{Resources.getMessage('codesync.sdiff.createSdiff.fileName')}"/>
+	</s:VGroup>	
+	
+</ns:BasicViewContent>

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+license-start
+
+Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+license-end
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:samples="org.flowerplatform.flexdiagram.samples.*"
+		 xmlns:flexdiagram="org.flowerplatform.flexdiagram.*"
+		 xmlns:renderer="org.flowerplatform.flexdiagram.renderer.*"
+		 xmlns:infinitegroup="org.flowerplatform.flexdiagram.util.infinitegroup.*"
+		 xmlns:mindmap="org.flowerplatform.flexdiagram.samples.mindmap.*"
+		 xmlns:mindmap1="org.flowerplatform.flexdiagram.mindmap.*"
+		 xmlns:properties="org.flowerplatform.flexutil.properties.*"
+		 
+		 creationComplete="creationCompleteHandler(event)"
+		 implements="org.flowerplatform.flexdiagram.samples.IModelHolder, org.flowerplatform.flexutil.view_content_host.IViewContent">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.CollectionEvent;
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flexdiagram.ControllerUtils;
+			import org.flowerplatform.flexdiagram.DiagramShellContext;
+			import org.flowerplatform.flexdiagram.FlexDiagramConstants;
+			import org.flowerplatform.flexdiagram.mindmap.MindMapDiagramRenderer;
+			import org.flowerplatform.flexdiagram.mindmap.MindMapRootModelWrapper;
+			import org.flowerplatform.flexdiagram.renderer.BaseRenderer;
+			import org.flowerplatform.flexdiagram.samples.IModelHolder;
+			import org.flowerplatform.flexdiagram.samples.mindmap.model.SampleMindMapModel;
+			import org.flowerplatform.flexdiagram.tool.DragTool;
+			import org.flowerplatform.flexdiagram.tool.InplaceEditorTool;
+			import org.flowerplatform.flexdiagram.tool.ScrollTool;
+			import org.flowerplatform.flexdiagram.tool.SelectOnClickTool;
+			import org.flowerplatform.flexdiagram.tool.ZoomTool;
+			import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
+			import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
+			import org.flowerplatform.flexutil.flexdiagram.StandAloneSequentialLayoutVisualChildrenController;
+			import org.flowerplatform.flexutil.properties.PropertiesHelper;
+			import org.flowerplatform.flexutil.properties.PropertyCommitController;
+			import org.flowerplatform.flexutil.properties.PropertyEntryRendererController;
+			import org.flowerplatform.flexutil.samples.properties.SamplePropertiesHelper;
+			import org.flowerplatform.flexutil.view_content_host.IViewHost;
+			
+			
+			
+			
+			// the IDE doesn't see these imports during "organize imports"
+			BaseRenderer;
+			FlexDiagramConstants;
+			
+			private var _rootModel:Object;
+			
+			
+			public function additionalCloseHandler():void {
+			}
+			
+			public function set viewHost(viewHost:IViewHost):void {
+			}
+
+			[Bindable]
+			protected var selectedItem:SampleMindMapModel;
+			
+			[Bindable]
+			public function get rootModel():Object {
+				return _rootModel;
+			}
+			
+			public function set rootModel(value:Object):void {
+				_rootModel = value;				
+			}
+			
+			[Bindable]
+			public var mindMapRootModelWrapper:MindMapRootModelWrapper;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				new MindMapPopulator().populate(this, 20, 6);
+				
+				diagramShell.rootModel = rootModel;
+				mindMapRootModelWrapper = MindMapRootModelWrapper(diagramShell.rootModel);
+				diagramShell.registerTool(ScrollTool.ID, new ClassFactoryWithConstructor(ScrollTool));
+				diagramShell.registerTool(SelectOnClickTool.ID, new ClassFactoryWithConstructor(SelectOnClickTool));
+				diagramShell.registerTool(ZoomTool.ID, new ClassFactoryWithConstructor(ZoomTool));
+				diagramShell.registerTool(InplaceEditorTool.ID, new ClassFactoryWithConstructor(InplaceEditorTool));
+				diagramShell.registerTool(DragTool.ID, new ClassFactoryWithConstructor(DragTool));
+				
+				diagramShell.selectedItems.addEventListener(CollectionEvent.COLLECTION_CHANGE, selectionChangedHandler);
+				
+				var context:DiagramShellContext = diagramShell.getNewDiagramShellContext();
+				MindMapDiagramRenderer(diagramShell.diagramRenderer).callLater(function():void {ControllerUtils.getMindMapModelController(context, diagramShell.getRoot(context)).setExpanded(context, diagramShell.getRoot(context), true)});
+			}
+			
+			/**
+			 * @author Alexandra Topoloaga
+			 */
+			protected function selectionChangedHandler(event:Event):void {
+				if (diagramShell.mainSelectedItem is SampleMindMapModel) {
+					selectedItem = SampleMindMapModel(diagramShell.mainSelectedItem);
+				} else {
+					selectedItem = null;
+				}
+			}
+			
+			public function onFontSizeChange():void {
+				if (textInputFontSize.text != '' && int(textInputFontSize.text) >= 0 && int(textInputFontSize.text) < 720 ) {
+					selectedItem.fontSize = int(textInputFontSize.text);	
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<mindmap:SampleMindMapDiagramShell id="diagramShell" diagramRenderer="{diagramRenderer}"/>
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:HorizontalLayout/>
+	</s:layout>	
+	<s:Scroller width="40%" height="100%">
+		<s:VGroup width="40%" height="100%" clipAndEnableScrolling="true">
+			<s:HGroup gap="0">
+				<s:ToggleButton id="showDiagramChildren" label="Diagr Childr"/>
+				<s:ToggleButton id="showSibblings" label="Sibblings"/>
+				<s:ToggleButton id="showHardcodedProperties" label="Hardcd Props" selected="true"/>
+				<s:ToggleButton id="showProperties" label="Props"/>				
+			</s:HGroup>
+			
+			<s:Panel title="MindMapRootModelWrapper.children (size = {mindMapRootModelWrapper.children.length})" width="100%" height="30%" visible="{showDiagramChildren.selected}" includeInLayout="{showDiagramChildren.selected}">
+				<s:List id="list" width="100%" height="100%" dataProvider="{mindMapRootModelWrapper.children}"/>
+			</s:Panel>
+			
+			<s:Panel id="listofChildrenPanel" width="100%" height="30%"
+					 title="Sibblings" visible="{showSibblings.selected}" includeInLayout="{showSibblings.selected}">
+				<s:List id="childrenProviderList" width="100%" height="100%" 
+						doubleClick="selectedItem = childrenProviderList.selectedItem" doubleClickEnabled="true"
+						dataProvider="{selectedItem.parent.children}" 
+						itemRenderer="{new ClassFactoryWithConstructor(BaseRenderer, { 
+						showSelected : true,
+						featureForValuesProvider : 'mindMapValuesProvider',
+						typeDescriptorRegistry : diagramShell.registry
+						})}"/>
+			</s:Panel>
+			
+			<s:Panel id="formPanel" width="100%" title="Hardcoded Properties" visible="{showHardcodedProperties.selected}" includeInLayout="{showHardcodedProperties.selected}">
+				<s:Form width="100%" id="hardcodedProperties">
+					<s:layout>
+						<s:FormLayout id="fromLayout" gap="-7"/>
+					</s:layout>
+					
+					<s:FormItem label="Edit properties in renderer&#13;Must have no icons!&#13;Can only show; not hide.">
+						<s:CheckBox id="showPropertiesInline" selected="@{selectedItem.editProperties}" click="diagramShell.shouldRefreshVisualChildren(diagramShell.getNewDiagramShellContext(), selectedItem)"/>
+					</s:FormItem>
+					
+					<s:FormItem label="Show properties in renderer">
+						<s:CheckBox selected="@{selectedItem.showProperties}"/>
+					</s:FormItem>
+					
+					<s:FormItem label="Text:">
+						<s:TextInput width="100%" text="@{selectedItem.text}"/>
+					</s:FormItem>
+					
+					<s:FormItem label="Font Family:">
+						<s:DropDownList width="100%" selectedItem="@{selectedItem.fontFamily}"> 
+							<s:ArrayCollection>
+								<fx:String>Arial</fx:String>
+								<fx:String>Courier New</fx:String>
+								<fx:String>Dialog</fx:String>
+								<fx:String>DialogInput</fx:String>
+								<fx:String>Lucida Sans</fx:String>
+								<fx:String>Lucida Sans Typewriter</fx:String>
+								<fx:String>Monospaced</fx:String>
+								<fx:String>SansSerif</fx:String>
+								<fx:String>Serif</fx:String>
+								<fx:String>Times New Roman</fx:String>
+							</s:ArrayCollection>
+						</s:DropDownList>
+					</s:FormItem>
+					
+					<s:FormItem label="Font Size:">
+						<s:TextInput id="textInputFontSize" width="100%" change="onFontSizeChange()"
+									 text="{selectedItem.fontSize}"/>
+					</s:FormItem>
+					
+					<s:FormItem label="Font Bold:">
+						<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontBold}"/> 
+					</s:FormItem>
+					
+					<s:FormItem label="Font Italic:">
+						<s:CheckBox width="100%" fontWeight="bold" selected="@{selectedItem.fontItalic}"/>
+					</s:FormItem>
+					
+					<s:FormItem label="Icons:">
+						<s:HGroup width="100%">
+							<s:TextInput id="iconsTextInput" width="100%" text="@{selectedItem.icons}"/>  
+							<s:Graphic toolTip="E.g. bee,family,penguin,bookmark,freemind_butterfly,wizard,ksmiletris">
+								<s:BitmapImage source="@Embed('../../org.flowerplatform.flexdiagram.samples/icons/info.png')"/>
+							</s:Graphic> 
+						</s:HGroup>
+					</s:FormItem>
+					
+					<s:FormItem id="textInputCloudTypeForm" label="CloudType:">
+						<s:DropDownList width="100%" selectedItem="@{selectedItem.cloudType}"> 
+							<s:ArrayCollection source="{['', FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE_ARC, FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE_STAR, FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE_RECTANGLE, FlexDiagramConstants.MIND_MAP_RENDERER_CLOUD_TYPE_ROUNDED_RECTANGLE]}"/>
+						</s:DropDownList>
+					</s:FormItem>
+					
+					<s:FormItem id="noteInputForm" label="Note:">
+						<s:TextInput width="100%" text="@{selectedItem.note}"/>
+					</s:FormItem>
+					
+					<s:FormItem id="detailsInputForm" label="Details:">
+						<s:TextInput width="100%" text="@{selectedItem.details}"/>
+					</s:FormItem>
+					
+				</s:Form>	
+			</s:Panel>
+			
+			<s:Panel width="100%" title="Properties" visible="{showProperties.selected}" includeInLayout="{showProperties.selected}">
+				<properties:PropertiesForm id="propertiesForm" width="100%" data="{selectedItem}"
+										   visualChildrenController="{new StandAloneSequentialLayoutVisualChildrenController(0, null, new PropertyEntryRendererController(new PropertyCommitController()))}"
+										   typeDescriptorRegistry="{PropertiesHelper.registerPropertyRenderers(new TypeDescriptorRegistry())}"
+										   propertiesHelper="{new SamplePropertiesHelper()}"/>
+			</s:Panel>
+			
+		</s:VGroup>
+	</s:Scroller>
+	<s:Group width="100%" height="100%" >
+		<s:Rect x="{-diagramRenderer.viewPortRectOffsetTowardOutside}" y="{-diagramRenderer.viewPortRectOffsetTowardOutside}"
+				width="{scroller.width + 2 * diagramRenderer.viewPortRectOffsetTowardOutside}" height="{scroller.height + 2 * diagramRenderer.viewPortRectOffsetTowardOutside}">
+			<s:stroke>
+				<s:SolidColorStroke color="0x0000FF" weight="2" />					
+			</s:stroke>			
+		</s:Rect>
+		<infinitegroup:InfiniteScroller id="scroller" width="100%" height="100%">
+			<mindmap1:MindMapDiagramRenderer id="diagramRenderer" width="100%" height="100%"
+											 viewPortRectOffsetTowardOutside="-20"/>
+		</infinitegroup:InfiniteScroller>	
+	</s:Group>
+	
+</s:Group>

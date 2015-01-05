@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.util.log;
@@ -33,7 +30,9 @@ public class AuditDetails {
 	private Object param0;
 	private Object param1;
 	private Object param2;
-	
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public AuditDetails(Logger logger, String auditCategory, Object... params) {
 		time = System.currentTimeMillis();
 		this.auditCategory = auditCategory;
@@ -52,7 +51,10 @@ public class AuditDetails {
 			param0 = params[0];
 		}
 	}
-
+	
+	/**
+	 *@author Cristina Constantinescu
+	 **/
 	public void measureDuration() {
 		duration = System.currentTimeMillis() - time;
 	}

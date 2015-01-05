@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexutil.plugin {
@@ -243,16 +240,18 @@ package org.flowerplatform.flexutil.plugin {
 			// setup extension points
 			for each (var descriptor:FlexPluginDescriptor in descriptors) {
 				if (descriptor.errorObject == null) {
-					try {
-						var className:String = getClassNameForFlexPluginEntry(descriptor.url);
-						var clazz:Class = Class(getDefinitionByName(className));
-						descriptor.flexPlugin = new clazz();
-						descriptor.flexPlugin.flexPluginDescriptor = descriptor;
-						descriptor.flexPlugin.preStart();
-						
-						flexPluginManager.flexPluginEntries.addItem(descriptor);
-					} catch (e:Object) {
-						descriptor.errorObject = e;
+					if (getStartPlugin(descriptor.url)) {
+						try {
+							var className:String = getClassNameForFlexPluginEntry(descriptor.url);
+							var clazz:Class = Class(getDefinitionByName(className));
+							descriptor.flexPlugin = new clazz();
+							descriptor.flexPlugin.flexPluginDescriptor = descriptor;
+							descriptor.flexPlugin.preStart();
+							
+							flexPluginManager.flexPluginEntries.addItem(descriptor);
+						} catch (e:Object) {
+							descriptor.errorObject = e;
+						}
 					}
 				}
 				
@@ -261,12 +260,14 @@ package org.flowerplatform.flexutil.plugin {
 			// start plugins
 			for each (descriptor in descriptors) {
 				if (descriptor.errorObject == null) {
-					try {
-						className = getClassNameForFlexPluginEntry(descriptor.url);
-						clazz = Class(getDefinitionByName(className));
-						descriptor.flexPlugin.start();
-					} catch (e:Object) {
-						descriptor.errorObject = e;
+					if (getStartPlugin(descriptor.url)) {
+						try {
+							className = getClassNameForFlexPluginEntry(descriptor.url);
+							clazz = Class(getDefinitionByName(className));
+							descriptor.flexPlugin.start();
+						} catch (e:Object) {
+							descriptor.errorObject = e;
+						}
 					}
 				}
 				
@@ -305,6 +306,15 @@ package org.flowerplatform.flexutil.plugin {
 				var lastPackageWithFirstLetterCapitalized:String = lastPackage.charAt(0).toUpperCase() + lastPackage.substr(1);
 				return groups[1] + "." + lastPackageWithFirstLetterCapitalized + "Plugin";
 			}
+		}
+		
+		protected function getStartPlugin(url:String):Boolean {
+			var startPluginRegEx:RegExp = new RegExp("[\\?&]startPlugin=(.*?)[\\z|&]");
+			var startPluginRegExGroups:Array = startPluginRegEx.exec(url);
+			if (startPluginRegExGroups != null && startPluginRegExGroups.length == 2 && startPluginRegExGroups[1] == "false") {
+				return false;
+			}
+			return true;
 		}
 		
 		protected function handlePluginsWithErrors(failedEntries:ArrayCollection):void {

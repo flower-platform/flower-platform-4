@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.flowerplatform</groupId>
+	<artifactId>parent-java</artifactId>
+	<version>0.1.1.qualifier</version>
+	<packaging>pom</packaging>
+
+	<!-- list of modules to build -->
+	<profiles>
+		<profile>
+			<id>java-base</id>
+			<modules>
+				<!-- base plugins -->
+				<module>../../org.flowerplatform.util</module>
+				<module>../../org.flowerplatform.resources</module>
+				<module>../../org.flowerplatform.core</module>
+				<module>../../org.flowerplatform.mindmap</module>
+				<module>../../org.flowerplatform.freeplane</module>
+				<module>../../org.flowerplatform.text</module>
+				<module>../../org.flowerplatform.codesync</module>
+				<module>../../org.flowerplatform.codesync.java</module>
+				<module>../../org.flowerplatform.codesync.as</module>
+				<module>../../org.flowerplatform.codesync.sdiff</module>
+				<module>../../org.flowerplatform.codesync.regex</module>
+				<module>../../org.flowerplatform.team.git</module>
+
+				<!-- not packaged as plugins, only available during compile time -->
+				<module>../../org.flowerplatform.host.servletbridge.base</module>
+				<module>../../org.flowerplatform.host.web_app</module>
+
+				<!-- depend on the above jars -->
+				<module>../../org.flowerplatform.host.servletbridge.registry</module>
+				<module>../../org.flowerplatform.host.servletbridge.extensionbundle</module>
+
+				<!-- flex client plugins -->
+				<module>../../org.flowerplatform.flex_client.core</module>
+				<module>../../org.flowerplatform.flex_client.properties</module>
+				<module>../../org.flowerplatform.flex_client.mindmap</module>
+				<module>../../org.flowerplatform.flex_client.text</module>
+				<module>../../org.flowerplatform.flex_client.codesync</module>
+				<module>../../org.flowerplatform.flex_client.codesync.sdiff</module>
+				<module>../../org.flowerplatform.flex_client.codesync.regex</module>
+				<module>../../org.flowerplatform.flex_client.team.git</module>
+				<module>../../org.flowerplatform.flex_client.host_app</module>
+				<module>../../org.flowerplatform.flex_client.host_app.config.web</module>
+				<module>../../org.flowerplatform.flex_client.web</module>
+				<module>../../org.flowerplatform.flex_client.server</module>
+
+				<!-- js client plugins -->
+				<module>../../org.flowerplatform.js_client.common_js_as</module>
+				<module>../../org.flowerplatform.js_client.core</module>
+				<module>../../org.flowerplatform.js_client.users</module>
+				<module>../../org.flowerplatform.js_client.host_app.config.web</module>
+				<module>../../org.flowerplatform.js_client.server</module>
+				<module>../../org.flowerplatform.js_client.java</module>
+
+				<!-- tests -->
+				<module>../../org.flowerplatform.tests</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>java-product</id>
+			<modules>
+				<module>../../org.flowerplatform.product</module>
+			</modules>
+		</profile>
+	</profiles>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	
+		<output.java.prefix>..</output.java.prefix>
+		
+		<!-- this property will be changed for tests, to allow using a different output dir during eclipse build -->
+		<output.directory>${output.java.prefix}/${output.java}/classes/${project.artifactId}</output.directory>
+	
+		<tycho.version>0.21.0</tycho.version>
+		<eclipseRepo.url>http://download.eclipse.org/eclipse/updates/4.3/R-4.3.2-201402211700</eclipseRepo.url>
+		<egitRepo.url>http://download.eclipse.org/egit/updates</egitRepo.url>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>eclipse</id>
+			<url>${eclipseRepo.url}</url>
+			<layout>p2</layout>
+		</repository>
+		
+		<repository>
+			<id>egit</id>
+			<url>${egitRepo.url}</url>
+			<layout>p2</layout>
+		</repository>
+	</repositories>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<outputDirectory>${output.directory}</outputDirectory>
+		<directory>${output.java.prefix}/${output.java}/distr/${project.artifactId}</directory>
+
+		<plugins>
+		
+			<!-- replace version numbers in CoreConstants.java -->
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<version>1.5.3</version>
+				<inherited>false</inherited>
+				<executions>
+					<execution>
+						<id>set-version-before</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+						<configuration>
+							<file>../org.flowerplatform.core/src/org/flowerplatform/core/CoreConstants.java</file>
+							<regex>true</regex>
+							<replacements>
+								<replacement>
+									<token>APP_VERSION = .*;</token>
+									<value>APP_VERSION = "${appVersion}.v${maven.build.timestamp}${qualifierSuffix}";</value>
+								</replacement>
+							</replacements>
+						</configuration>
+					</execution>
+         		</executions>
+			</plugin>
+		
+			<!-- Tycho build -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<!-- ignore access restriction error on javax.servlet -->
+					<compilerArgument>-err:-forbidden</compilerArgument>
+
+					<!-- classpath elements needed at compile time -->
+					<!-- provided by the servlet container at runtime -->
+					<extraClasspathElements>
+						<extraClasspathElement>
+							<groupId>javax.servlet</groupId>
+							<artifactId>javax.servlet-api</artifactId>
+							<version>3.0.1</version>
+						</extraClasspathElement>
+						<extraClasspathElement>
+							<groupId>org.flowerplatform.host</groupId>
+							<artifactId>org.flowerplatform.host.web_app</artifactId>
+							<version>${appVersion}${version.qualifierSuffix}</version>
+						</extraClasspathElement>
+					</extraClasspathElements>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<extensions>true</extensions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<!-- disable the generation of the META-INF/maven directory -->
+					<archive>
+						<addMavenDescriptor>false</addMavenDescriptor>
+					</archive>
+					
+					<format>'v${maven.build.timestamp}${version.qualifierSuffix}'</format>
+
+					<!-- resources to be packaged -->
+					<additionalFileSets>
+						<fileSet>
+							<directory>public-resources</directory>
+							<prefix>public-resources/</prefix>
+							<includes>
+								<include>**/*</include>
+							</includes>
+							<excludes>
+								<!-- do NOT include swc built from IDE -->
+								<exclude>swc/*</exclude>
+
+								<exclude>*.local</exclude>
+								<exclude>*.merge</exclude>
+								<exclude>.gitignore</exclude>
+							</excludes>
+						</fileSet>
+
+						<fileSet>
+							<directory>../${output.flex}/distr/${project.artifactId}</directory>
+							<prefix>public-resources/swc/</prefix>
+							<includes>
+								<include>${project.artifactId}.swc</include>
+							</includes>
+						</fileSet>
+
+						<fileSet>
+							<directory>WebContent</directory>
+							<prefix>WebContent/</prefix>
+							<includes>
+								<include>**/*</include>
+							</includes>
+						</fileSet>
+					</additionalFileSets>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<version>${tycho.version}</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<environments>
+						<environment>
+							<os>${os}</os>
+							<ws>${ws}</ws>
+							<arch>${arch}</arch>
+						</environment>
+					</environments>
+				</configuration>
+			</plugin>
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<!-- get rid of errors when building from the IDE -->
+				<!-- this has no effect on the tycho build -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.eclipse.tycho</groupId>
+										<artifactId>tycho-compiler-plugin</artifactId>
+										<versionRange>[${tycho.version},)</versionRange>
+										<goals>
+											<goal>compile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.eclipse.tycho</groupId>
+										<artifactId>tycho-packaging-plugin</artifactId>
+										<versionRange>[${tycho.version},)</versionRange>
+										<goals>
+											<goal>build-qualifier</goal>
+											<goal>validate-id</goal>
+											<goal>validate-version</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project> 

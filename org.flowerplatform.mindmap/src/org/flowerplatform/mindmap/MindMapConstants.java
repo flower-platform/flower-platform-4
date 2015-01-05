@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.mindmap;
 
 import java.util.ArrayList;
@@ -8,7 +23,10 @@ import org.flowerplatform.core.CoreConstants;
 /**
  * @author Cristina Constantinescu
  */
-public class MindMapConstants {
+public final class MindMapConstants {
+	
+	private MindMapConstants() {
+	}
 	
 	//////////////////////////////////
 	// Node types
@@ -25,17 +43,19 @@ public class MindMapConstants {
 	
 	public static final String NODE_DETAILS = "nodeDetails";
 	
-	public static final List<String> FONT_SIZES = new ArrayList<>();
+	public static final List<Integer> FONT_SIZES = new ArrayList<>();
 	static {
 		for (int i = 1; i <= 72; i++) {
-			FONT_SIZES.add(String.valueOf(i));
+			FONT_SIZES.add(i);
 		}
 	}
 	
 	// CLOUD SHAPES
-	public static final String SHAPE_NONE = "none";		
-	public static final String SHAPE_RECTANGLE = "rectangle";
-	public static final String SHAPE_ROUND_RECTANGLE = "roundRectangle";
+	public static final String SHAPE_NONE = "NONE";		
+	public static final String SHAPE_RECTANGLE = "RECT";
+	public static final String SHAPE_ROUND_RECTANGLE = "ROUND_RECT";
+	public static final String SHAPE_ARC = "ARC";
+	public static final String SHAPE_STAR = "STAR";
 			
 	public static final int DEFAULT_MIN_WIDTH = 1;
 	public static final int DEFAULT_MAX_WIDTH = 600;
@@ -76,8 +96,8 @@ public class MindMapConstants {
 	// Resource
 	//////////////////////////////////
 	
-	public static final String FREEPLANE_MINDMAP_RESOURCE_KEY = "freePlaneMindMap";
-	public static final String FREEPLANE_PERSISTENCE_RESOURCE_KEY = "freePlanePersistence";
+	public static final String FREEPLANE_MINDMAP_RESOURCE_KEY = "fpm";
+	public static final String FREEPLANE_PERSISTENCE_RESOURCE_KEY = "fpp";
 	public static final String FREEPLANE_MINDMAP_CATEGORY = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY;
 	public static final String FREEPLANE_PERSISTENCE_CATEGORY = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_PERSISTENCE_RESOURCE_KEY;
 	

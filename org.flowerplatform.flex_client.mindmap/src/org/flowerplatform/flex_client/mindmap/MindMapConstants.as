@@ -1,8 +1,22 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.mindmap {
 	import flash.system.Capabilities;
 	
 	import org.flowerplatform.flex_client.core.CoreConstants;
-	import org.flowerplatform.flexutil.FlexUtilConstants;
 	
 	/**
 	 * @author Cristina Constantinescu
@@ -13,23 +27,28 @@ package org.flowerplatform.flex_client.mindmap {
 		// Node types and categories
 		//////////////////////////////////
 		
-		public static const MINDMAP_NODE_TYPE:String = "freeplaneNode"
+		public static const MINDMAP_NODE_TYPE:String = "freeplaneNode";
+		public static const MINDMAP_NODE_TYPE_1:String = "freeplaneNode1";
 		
-		public static const FREEPLANE_MINDMAP_RESOURCE_KEY:String = "freePlaneMindMap";
-		public static const FREEPLANE_PERSISTENCE_RESOURCE_KEY:String = "freePlanePersistence";
+		public static const FREEPLANE_MINDMAP_RESOURCE_KEY:String = "fpm";
+		public static const FREEPLANE_PERSISTENCE_RESOURCE_KEY:String = "fpp";
 		
 		public static const FREEPLANE_MINDMAP_CATEGORY:String = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_MINDMAP_RESOURCE_KEY;
 		public static const FREEPLANE_PERSISTENCE_CATEGORY:String = CoreConstants.CATEGORY_RESOURCE_PREFIX + FREEPLANE_PERSISTENCE_RESOURCE_KEY;
+		
+		public static const FEATURE_SHOW_PROPERTIES_IN_RENDERER:String = "showPropertiesInRenderer";
 		
 		//////////////////////////////////
 		// Node properties
 		//////////////////////////////////
 		
 		// CLOUD SHAPES
-		public static const SHAPE_NONE:String = "none";		
-		public static const SHAPE_RECTANGLE:String = "rectangle";
-		public static const SHAPE_ROUND_RECTANGLE:String = "roundRectangle";
-				
+		public static const SHAPE_NONE:String = "NONE";		
+		public static const SHAPE_RECTANGLE:String = "RECT";
+		public static const SHAPE_ROUND_RECTANGLE:String = "ROUND_RECT";
+		public static const SHAPE_ARC:String = "ARC";
+		public static const SHAPE_STAR:String = "STAR";
+		
 		public static const TEXT:String = "text";
 		
 		public static const MIN_WIDTH:String = "minWidth";
@@ -65,7 +84,7 @@ package org.flowerplatform.flex_client.mindmap {
 			+ "licq;penguin;freemind_butterfly;bee;"
 			+ "forward;back;up;down;"
 			+ "addition;subtraction;multiplication;division";
-
+		
 		
 		/**
 		 * Font size correction.
@@ -85,5 +104,10 @@ package org.flowerplatform.flex_client.mindmap {
 		
 		public static const MINDMAP_CONTENT_TYPE:String = "mindmap";
 		public static const MINDMAP_EDITOR_NAME:String = "MindMap Editor";
+		
+		public static const LOAD_CUSTOM_ICONS:int = 1;
+		public static const LOAD_DEFAULT_ICONS:int = 2;
+		
+		public static const EVENT_SHOW_PROPERTIES_IN_RENDERER:String = "showPropertiesInRenderer";
 	}
 }

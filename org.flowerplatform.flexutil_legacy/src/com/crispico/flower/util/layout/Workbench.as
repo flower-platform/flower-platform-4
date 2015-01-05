@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package  com.crispico.flower.util.layout {
@@ -38,13 +35,12 @@ package  com.crispico.flower.util.layout {
 	import com.crispico.flower.util.layout.view.activeview.ActiveViewList;
 	
 	import flash.display.DisplayObject;
+	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
-	
-	import flexlib.containers.SuperTabNavigator;
 	
 	import mx.collections.ArrayCollection;
 	import mx.containers.BoxDirection;
@@ -61,6 +57,12 @@ package  com.crispico.flower.util.layout {
 	import mx.core.UIComponent;
 	import mx.core.mx_internal;
 	import mx.events.FlexEvent;
+	import mx.events.ResizeEvent;
+	import mx.managers.PopUpManager;
+	
+	import flexlib.containers.SuperTabNavigator;
+	
+	import flexlib.containers.SuperTabNavigator;
 	
 	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.ActionBase;
@@ -1952,7 +1954,7 @@ package  com.crispico.flower.util.layout {
 		 * @param setFocusOnView - sets focus after creating the view
 		 * @param existingComponent - if not null, it is used as view's graphical component (no new component will be created)
 		 */ 
-		public function addEditorView(viewLayoutData:ViewLayoutData, setFocusOnView:Boolean = false, existingComponent:UIComponent= null):UIComponent {
+		public function addEditorView(viewLayoutData:ViewLayoutData, setFocusOnView:Boolean = false, existingComponent:UIComponent= null, addViewInOtherStack:Boolean = false):UIComponent {
 			var array:ArrayCollection = new ArrayCollection;
 			getAllSashEditorLayoutData(_rootLayout, array);	
 			if (array.length == 0) {
@@ -1962,7 +1964,7 @@ package  com.crispico.flower.util.layout {
 			var sashEditorLayoutData:SashLayoutData = array[0];
 			var stack:StackLayoutData;
 			var tabNavigator:SuperTabNavigator;
-			if (sashEditorLayoutData.children.length == 0) {
+			if (sashEditorLayoutData.children.length == 0 || addViewInOtherStack) {
 				stack = new StackLayoutData();
 				stack.parent = sashEditorLayoutData;	
 				sashEditorLayoutData.children.addItem(stack);
@@ -1973,7 +1975,7 @@ package  com.crispico.flower.util.layout {
 				layoutDataToComponent[sashEditorLayoutData].addChild(tabNavigator);
 				_componentToLayoutData[tabNavigator] = stack; 
 				_layoutDataToComponent[stack] = tabNavigator;			
-			} else {
+			} else {				
 				var stacks:ArrayCollection = new ArrayCollection();
 				getAllStackLayoutData(sashEditorLayoutData, stacks);
 				stack = StackLayoutData(stacks.getItemAt(0));
@@ -2061,17 +2063,19 @@ package  com.crispico.flower.util.layout {
 		 * 		
 		 * 
 		 */
-		public function closeViews(views:ArrayCollection /* of UIComponent */, shouldDispatchEvent:Boolean = true):void {			
-			var viewsRemovedEvent:ViewsRemovedEvent = new ViewsRemovedEvent(views);			
-			viewsRemovedEvent.canPreventDefault = shouldDispatchEvent;
-			dispatchEvent(viewsRemovedEvent);
-
+		public function closeViews(views:ArrayCollection /* of UIComponent */, shouldDispatchEvent:Boolean = true, canPreventDefault:Boolean = true):void {			
+			var viewsRemovedEvent:ViewsRemovedEvent = new ViewsRemovedEvent(views);	
+			if (shouldDispatchEvent) {
+				viewsRemovedEvent.canPreventDefault = canPreventDefault;
+				dispatchEvent(viewsRemovedEvent);
+			}
 			for each (var view:UIComponent in views) {
 				if (!viewsRemovedEvent.dontRemoveViews.contains(view)) {
 					var viewRemovedEvent:ViewRemovedEvent = new ViewRemovedEvent();
-					viewRemovedEvent.canPreventDefault = shouldDispatchEvent;
-					view.dispatchEvent(viewRemovedEvent);
-
+					if (shouldDispatchEvent) {
+						viewRemovedEvent.canPreventDefault = canPreventDefault;
+						view.dispatchEvent(viewRemovedEvent);
+					}
 					if (viewRemovedEvent.canRemoveView) {
 						removeViewInternal(view);
 					}
@@ -2091,8 +2095,8 @@ package  com.crispico.flower.util.layout {
 		 * If a view represents the current active view, 
 		 * then it will be removed from <code>activeViewList</code>.
 		 */ 		
-		public function closeView(view:IEventDispatcher, shouldDispatchEvent:Boolean = true):void {
-			closeViews(new ArrayCollection([view]), shouldDispatchEvent);			
+		public function closeView(view:IEventDispatcher, shouldDispatchEvent:Boolean = true, canPreventDefault:Boolean = true):void {
+			closeViews(new ArrayCollection([view]), shouldDispatchEvent, canPreventDefault);			
 		}
 
 		/**
@@ -2250,7 +2254,7 @@ package  com.crispico.flower.util.layout {
 		 * 
 		 * @author Cristina
 		 */ 
-		public function addViewInPopupWindow(view:Object, x:Number= NaN, y:Number=NaN, width:Number=NaN, height:Number=NaN, isModal:Boolean = false, existingComponent:UIComponent = null, existingViewPopupWindowInstance:ViewPopupWindow = null):ViewPopupWindow {
+		public function addViewInPopupWindow(view:Object, x:Number= NaN, y:Number=NaN, width:Number=NaN, height:Number=NaN, isModal:Boolean = false, existingComponent:UIComponent = null, existingViewPopupWindowInstance:ViewPopupWindow = null, parent:DisplayObject = null):ViewPopupWindow {
 			// get viewLayoutData
 			var viewLayoutData:ViewLayoutData;
 			if (view is String) {
@@ -2279,8 +2283,6 @@ package  com.crispico.flower.util.layout {
 			var component:UIComponent = existingComponent != null ? existingComponent : getNewViewComponentInstance(viewLayoutData);
 			component.percentWidth = 100;
 			component.percentHeight = 100;
-			popup.addChild(component);
-			
 			
 			if (viewLayoutData.dimensions.length != 0) {
 				if (isNaN(x)) {
@@ -2318,7 +2320,12 @@ package  com.crispico.flower.util.layout {
 			popup.viewLayoutData = viewLayoutData;
 			popup.component = component;
 			
-			popup.showPopup(width, height, null, isModal);
+			if (!component.initialized) {
+				popup.visible = false;
+				component.addEventListener(FlexEvent.CREATION_COMPLETE, function(e:Event):void {popup.visible = true; PopUpManager.centerPopUp(popup);});
+			}
+			popup.showPopup(width, height, parent, isModal);
+			popup.addChild(component);
 			
 			// set coordonates
 			if (!isNaN(x) && !isNaN(y)) {
@@ -2333,7 +2340,7 @@ package  com.crispico.flower.util.layout {
 			
 			return popup;
 		}
-			
+					
 		/**
 		 * Searches vertical for the first stack found below the first editor sash.
 		 * If not found, creates one.
@@ -2571,6 +2578,13 @@ package  com.crispico.flower.util.layout {
 				getAllEditorViews(layoutData, array);
 			}
 		}
+		
+		public function moveComponentNearWorkbench(sourceComponent:UIComponent, side:Number):void {
+			var source:LayoutData = componentToLayoutData[getViewComponentForEditor(sourceComponent)];
+			
+			moveLayout(source, rootLayout, -1, side);
+		}
+		
 	}
 		
 }

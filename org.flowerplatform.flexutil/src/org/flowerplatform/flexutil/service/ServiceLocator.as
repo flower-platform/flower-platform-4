@@ -1,11 +1,25 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flexutil.service {
 	import flash.utils.Dictionary;
 	
 	import mx.messaging.ChannelSet;
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.AsyncToken;
-	import mx.rpc.events.FaultEvent;
-	import mx.rpc.events.ResultEvent;
+	import mx.rpc.Fault;
 	import mx.rpc.remoting.RemoteObject;
 	
 	import org.flowerplatform.flexutil.FlexUtilAssets;
@@ -20,6 +34,8 @@ package org.flowerplatform.flexutil.service {
 		protected var channelSet:ChannelSet;
 		
 		protected var remoteObjects:Dictionary = new Dictionary();
+		
+		public var globalFaultHandler:Function = null;
 		
 		public function ServiceLocator(channelSet:ChannelSet) {
 			this.channelSet = channelSet;			
@@ -43,22 +59,28 @@ package org.flowerplatform.flexutil.service {
 			return remoteObject;
 		}
 		
-		public function faultHandler(event:FaultEvent, responder:ServiceResponder):void {
+		public function faultHandler(fault:Fault, responder:ServiceResponder):void {
 			if (responder.faultHandler != null) {
-				responder.faultHandler(event);
+				responder.faultHandler(fault);
+			} else if (globalFaultHandler != null) {
+				globalFaultHandler(fault, responder);
 			} else {
-				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-					.setWidth(300)
-					.setHeight(200)
-					.setTitle(FlexUtilAssets.INSTANCE.getMessage("service.fault.title"))
-					.setText(FlexUtilAssets.INSTANCE.getMessage("service.fault.message", [event.fault.faultString, event.fault.content]))
-					.showMessageBox();
+				defaultFaultHandler(fault, responder);
 			}			
 		}
 		
-		public function resultHandler(event:ResultEvent, responder:ServiceResponder):void {
+		public function defaultFaultHandler(fault:Fault, responder:ServiceResponder):void {
+			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+				.setWidth(300)
+				.setHeight(200)
+				.setTitle(FlexUtilAssets.INSTANCE.getMessage("service.fault.title"))
+				.setText(FlexUtilAssets.INSTANCE.getMessage("service.fault.message", [fault.faultString, fault.faultDetail, fault.content]))
+				.showMessageBox();
+		}
+		
+		public function resultHandler(result:Object, responder:ServiceResponder):void {
 			if (responder.resultHandler != null) {
-				responder.resultHandler(event);
+				responder.resultHandler(result);
 			}
 		}
 			

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.util.servlet;
@@ -48,7 +45,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ImageComposerServlet extends ResourcesServlet {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ImageComposerServlet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImageComposerServlet.class);
 
 	private static final long serialVersionUID = 1L;
 	
@@ -77,19 +74,19 @@ public class ImageComposerServlet extends ResourcesServlet {
 						InputStream result = new FileInputStream(getTempFilePath(mapValue));
 						OutputStream output = response.getOutputStream();
 						IOUtils.copy(result, output);
-						logger.debug("File {} served from temp",  mapValue);
+						LOGGER.debug("File {} served from temp",  mapValue);
 						result.close();
 						output.close();
 						return;
 					} else { // the temporary file was deleted from disk. 
-						logger.debug("File {} found to be missing from temp",  mapValue);
+						LOGGER.debug("File {} found to be missing from temp",  mapValue);
 					}
 				} else {
-					synchronized(this) {
+					synchronized (this) {
 						counter++;
 						mapValue = counter + "";
 						tempFilesMap.put(requestedFile, mapValue);
-						logger.debug("mapValue {} added",  mapValue);
+						LOGGER.debug("mapValue {} added",  mapValue);
 					}
 				}
 			}
@@ -109,6 +106,11 @@ public class ImageComposerServlet extends ResourcesServlet {
 				if (!path.startsWith("/")) {
 					path = "/" + path;
 				}
+				String prefix = "/" + UtilConstants.PUBLIC_RESOURCES_SERVLET;
+				if (path.startsWith(prefix)) {
+					path = path.substring(path.indexOf(prefix) + prefix.length());
+				}
+				
 				indexOfSecondSlash = path.indexOf('/', 1);
 				String plugin = path.substring(0, indexOfSecondSlash);
 				path = path.substring(indexOfSecondSlash);
@@ -123,9 +125,12 @@ public class ImageComposerServlet extends ResourcesServlet {
 					if (height < image.getHeight()) {
 						height = image.getHeight();
 					}
+					//CHECKSTYLE:OFF
 				} catch (Exception e) {
 					// one of the images was not found; skip it
+					//CHECKSTYLE:ON
 				}
+				
 			}
 			
 			BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -148,7 +153,7 @@ public class ImageComposerServlet extends ResourcesServlet {
 	    	try { 
 	    		if (tempOutput != null) {
 			    	ImageIO.write(result, "png", tempOutput);
-			    	logger.debug("file {} written in temp",  mapValue);
+			    	LOGGER.debug("file {} written in temp",  mapValue);
 	    		}
 				ImageIO.write(result, "png", output);
 	    	} finally {

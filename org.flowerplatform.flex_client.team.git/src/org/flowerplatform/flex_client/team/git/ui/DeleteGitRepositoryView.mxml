@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
+<!--
+@author Catalin Burcea
+-->
+<ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.resources.Resources;
+			
+			public var repoNode:Node;
+			
+			override public function okHandler(event:Event = null):void {			
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.deleteGitRepository", [repoNode.nodeUri, keepWorkingDirectoryContent.selected]);
+				cancelHandler(event);
+			}
+			
+			override protected function creationCompleteHandler(event:FlexEvent):void {
+				super.creationCompleteHandler(event);
+				
+				deleteGitRepoLabel.text = Resources.getMessage('flex_client.team.git.action.deleteGitRepositoryLabel', [CorePlugin.getInstance().getRepository(repoNode.nodeUri)]);
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Label id="deleteGitRepoLabel" />
+	<s:CheckBox id="keepWorkingDirectoryContent">{Resources.getMessage('flex_client.team.git.ui.keepWorkingDirectoryContent')}</s:CheckBox>
+</ns:BasicViewContent>

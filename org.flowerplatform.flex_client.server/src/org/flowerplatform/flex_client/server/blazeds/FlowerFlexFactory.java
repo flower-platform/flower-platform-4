@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.server.blazeds;
 
 import org.flowerplatform.core.CorePlugin;
@@ -63,17 +78,30 @@ public class FlowerFlexFactory implements FlexFactory {
 		return factoryInstance.lookup();
 	}
 
+	/**
+	 *@author see class
+	 **/
 	static class FlowerFactoryInstance extends FactoryInstance {
+		
+		/**
+		 *@author see class
+		 **/
 		FlowerFactoryInstance(FlowerFlexFactory factory, String id,
 				ConfigMap properties) {
 			super(factory, id, properties);
 		}
 
+		/**
+		 *@author see class
+		 **/
 		public String toString() {
 			return "FlowerFactory instance for id=" + getId() + " source="
 					+ getSource() + " scope=" + getScope();
 		}
 
+		/**
+		 *@author see class
+		 **/
 		public Object lookup() {
 			return CorePlugin.getInstance().getServiceRegistry()
 					.getService(getSource());

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram.controller.model_children {
@@ -23,10 +20,10 @@ package org.flowerplatform.flexdiagram.controller.model_children {
 	import mx.events.PropertyChangeEvent;
 	
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
-	import org.flowerplatform.flexdiagram.util.ParentAwareArrayList;
+	import org.flowerplatform.flexutil.list.ParentAwareArrayList;
 	
 	/**
-	 * <b>NOTE:</b> The handler for removed elements doesn't work for the follwing cases: a) <code>list.removeAll()</code> and
+	 * <b>NOTE:</b> The handler for removed elements doesn't work for the following cases: a) <code>list.removeAll()</code> and
 	 * b) <code>list.source = newValue</code> because a CollectionEvent of type RESET is sent which doen not contain information
 	 * about the old elements. This may be solved by adding logic (i.e. event dispatch) to the list in these 2 methods or maybe even better
 	 * in <code>stopTrackUpdates()</code>. 

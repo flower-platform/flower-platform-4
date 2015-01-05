@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 
@@ -37,12 +34,18 @@ public class ScheduledExecutorServiceFactory {
 	
 	private Collection<ScheduledExecutorService> executorServices = Collections.synchronizedList(new ArrayList<ScheduledExecutorService>());
 
+	/**
+	 *@author see class
+	 **/
 	public ScheduledExecutorService createScheduledExecutorService() {
 		ScheduledExecutorService executorService =  Executors.newScheduledThreadPool(1);
 		executorServices.add(executorService);
 		return executorService;
 	}
 
+	/**
+	 *@author see class
+	 **/
 	public void dispose() {
 		for (ScheduledExecutorService executorService : executorServices) { 
 			executorService.shutdownNow();

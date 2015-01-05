@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,15 +11,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package com.crispico.flower.util.layout.view.activeview
 {
 	import com.crispico.flower.util.layout.Workbench;
 	import com.crispico.flower.util.layout.view.LayoutTabNavigator;
+	import com.crispico.flower.util.layout.view.ViewPopupWindow;
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.INavigatorContent;
@@ -80,15 +78,15 @@ package com.crispico.flower.util.layout.view.activeview
 		 * Dispatches an event to notify about changes.
 		 */ 
 		public function setActiveView(newActiveView:UIComponent, setFocusOnNewView:Boolean = true, dispatchActiveViewChangedEvent:Boolean = true, restoreIfMinimized:Boolean = true):void {		
-			if (newActiveView == null) {
+			if (newActiveView == null || newActiveView.parent is ViewPopupWindow) {
 				return;
 			}
 			
 			if (restoreIfMinimized) {
 				// if minimized, restore it
 				var viewLayoutData:ViewLayoutData = ViewLayoutData(workbench.componentToLayoutData[newActiveView]);
-				if (StackLayoutData(viewLayoutData.parent).mrmState == StackLayoutData.USER_MINIMIZED ||
-					StackLayoutData(viewLayoutData.parent).mrmState == StackLayoutData.FORCED_MINIMIZED) {
+				if (viewLayoutData.parent != null && (StackLayoutData(viewLayoutData.parent).mrmState == StackLayoutData.USER_MINIMIZED ||
+					StackLayoutData(viewLayoutData.parent).mrmState == StackLayoutData.FORCED_MINIMIZED)) {
 					workbench.restore(StackLayoutData(viewLayoutData.parent));
 				}
 			}

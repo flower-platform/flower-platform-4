@@ -1,28 +1,25 @@
 /* license-start
-* 
-* Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
-* 
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation version 3.
-* 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-* 
-* Contributors:
-*   Crispico - Initial API and implementation
-*
-* license-end
-*/
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flexutil.global_menu {
 	import mx.collections.ArrayCollection;
 	import mx.collections.ICollectionView;
 	import mx.collections.IList;
 	import mx.controls.menuClasses.IMenuDataDescriptor;
 	
-	import org.flowerplatform.flexutil.action.ActionUtil;
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 	import org.flowerplatform.flexutil.action.IAction;
 	import org.flowerplatform.flexutil.action.IActionProvider;
 	
@@ -87,7 +84,7 @@ package org.flowerplatform.flexutil.global_menu {
 			
 			var children:ArrayCollection = new ArrayCollection();
 			
-			ActionUtil.processAndIterateActions(id, 
+			FlexUtilGlobals.getInstance().actionHelper.processAndIterateActions(id, 
 				actionProvider.getActions(selection), 
 				selection, 
 				null, 
@@ -113,7 +110,7 @@ package org.flowerplatform.flexutil.global_menu {
 		 */
 		public function hasChildren(node:Object, model:Object=null):Boolean {
 			if (node is IAction) {
-				return (ActionUtil.isComposedAction(IAction(node)));
+				return (FlexUtilGlobals.getInstance().actionHelper.isComposedAction(IAction(node)));
 			}
 			return false;
 		}
@@ -127,15 +124,20 @@ package org.flowerplatform.flexutil.global_menu {
 		 */
 		public function isBranch(node:Object, model:Object=null):Boolean {
 			if (node is IAction) {
-				return (ActionUtil.isComposedAction(IAction(node)));
+				return (FlexUtilGlobals.getInstance().actionHelper.isComposedAction(IAction(node)));
 			}
 			return false;
 		}
 		
 		/**
-		 * Normal menu (other possible types: separator, check or radio)
+		 * Menu type (possible values: normal, separator, check or radio)
 		 */
 		public function getType(node:Object):String {
+			if (node is IAction) {
+				if (IAction(node).label == GlobalMenuBar.MENU_LABEL_SEPARATOR) {
+					return "separator";
+				}
+			}
 			return "normal";
 		}
 		

@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,13 +11,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.core;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -37,18 +36,22 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Cristian Spiescu
  * @author Cristina Constantinescu
+ * @author Cristina Brinza
  */
 public class FlowerProperties extends Properties {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = LoggerFactory.getLogger(FlowerProperties.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FlowerProperties.class);
 	
 	public static final long DB_VERSION = 0;
 	
 	private static final String PROPERTIES_FILE = "META-INF/flower-platform.properties";
-	private static final String PROPERTIES_FILE_LOCAL = PROPERTIES_FILE + ".local";
+	private static final String PROPERTIES_FILE_LOCAL = CoreConstants.FLOWER_PLATFORM_HOME + "/flower-platform.properties";
 	
+	/**
+	 *@author see class
+	 **/
 	/* package */ FlowerProperties() {
 		super();
 		
@@ -56,28 +59,41 @@ public class FlowerProperties extends Properties {
 		
 		// get properties from global and local file, if exists
 		try {
-			InputStream is = this.getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE_LOCAL);
+			// get properties from global file first
+			InputStream is = this.getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE);	
 			if (is != null) {
 				this.load(is);
 				IOUtils.closeQuietly(is);
-			} 
-			
-			is = this.getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE);			
-			this.load(is);
-			IOUtils.closeQuietly(is);
-			
+			}
 		} catch (IOException e) {
-			throw new RuntimeException("Error while loading properties from local file.", e);
+			throw new RuntimeException(String.format("Error while loading properties from %s file.", PROPERTIES_FILE), e);
+		}
+		
+		try {
+			// get properties from local file, if exists
+			File file = new File(PROPERTIES_FILE_LOCAL);
+			if (file.exists()) {
+				FileInputStream fis = new FileInputStream(file);
+				if (fis != null) {
+					this.load(fis);
+					IOUtils.closeQuietly(fis);
+				}
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("Error while loading properties from %s file.", PROPERTIES_FILE_LOCAL), e);
 		}
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public void addProperty(AddProperty p) {
 		if (p.propertyName == null || p.propertyDefaultValue == null) {
 			throw new IllegalArgumentException("Property name and default value shouldn't be null.");
 		}
 
-		if (logger.isTraceEnabled()) {
-			logger.trace("Adding property with name = {}, default value = {}, user value = {}", 
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.trace("Adding property with name = {}, default value = {}, user value = {}", 
 					new Object[] { p.propertyName, p.propertyDefaultValue, get(p.propertyName) });
 		}
 		
@@ -89,14 +105,14 @@ public class FlowerProperties extends Properties {
 			String validationErrorMessage = p.validateProperty(userValue);
 			if (validationErrorMessage != null) {
 				// validation failed; 
-				logger.error("Property Validation Error! Failed to set property = {} to value = {}; reverting to default = {}. Reason: {}", 
-						new Object[] {p.propertyName, userValue, p.propertyDefaultValue, validationErrorMessage} );
+				LOGGER.error("Property Validation Error! Failed to set property = {} to value = {}; reverting to default = {}. Reason: {}", 
+						new Object[] {p.propertyName, userValue, p.propertyDefaultValue, validationErrorMessage});
 				remove(p.propertyName);
 			}
 		} else {
 			if (p.inputFromFileMandatory) {
 				// Mariana: if the user did not provide a value and the property is mandatory => validation error
-				logger.error("Property Validation Error! Failed to provide a value for mandatory property = {}; default value is set to = {}.",
+				LOGGER.error("Property Validation Error! Failed to provide a value for mandatory property = {}; default value is set to = {}.",
 					new Object[] {p.propertyName, p.propertyDefaultValue});
 			}
 		}
@@ -106,7 +122,10 @@ public class FlowerProperties extends Properties {
 		return defaults;
 	}
 	
-	public static abstract class AddProperty {
+	/**
+	 *@author see class
+	 **/
+	public abstract static class AddProperty {
 		
 		protected String propertyName;
 		
@@ -114,12 +133,18 @@ public class FlowerProperties extends Properties {
 		
 		protected boolean inputFromFileMandatory = false;
 		
+		/**
+		 *@author see class
+		 **/
 		public AddProperty(String propertyName, String propertyDefaultValue) {
 			super();
 			this.propertyName = propertyName;
 			this.propertyDefaultValue = propertyDefaultValue;
 		}
 
+		/**
+		 *@author see class
+		 **/
 		protected abstract String validateProperty(String input);
 		
 		/**
@@ -129,8 +154,8 @@ public class FlowerProperties extends Properties {
 		 * 
 		 * @author Mariana
 		 */
-		public AddProperty setInputFromFileMandatory(boolean inputFromFileMandatory) {
-			this.inputFromFileMandatory = inputFromFileMandatory;
+		public AddProperty setInputFromFileMandatory(boolean isInputFromFileMandatory) {
+			this.inputFromFileMandatory = isInputFromFileMandatory;
 			return this;
 		}
 	}
@@ -140,6 +165,9 @@ public class FlowerProperties extends Properties {
 	 */
 	public static class AddBooleanProperty extends AddProperty {
 
+		/**
+		 *@author see class
+		 **/
 		public AddBooleanProperty(String propertyName,
 				String propertyDefaultValue) {
 			super(propertyName, propertyDefaultValue);
@@ -156,8 +184,14 @@ public class FlowerProperties extends Properties {
 		
 	}
 
+	/**
+	 *@author see class
+	 **/
 	public static class AddIntegerProperty extends AddProperty {
 
+		/**
+		 *@author see class
+		 **/
 		public AddIntegerProperty(String propertyName, String propertyDefaultValue) {
 			super(propertyName, propertyDefaultValue);
 		}
@@ -173,16 +207,23 @@ public class FlowerProperties extends Properties {
 		} 
 	}
 	
+	/**
+	 *@author see class
+	 **/
 	public static class AddStringProperty extends AddProperty {
 
+		/**
+		 *@author see class
+		 **/
 		public AddStringProperty(String propertyName, String propertyDefaultValue) {
 			super(propertyName, propertyDefaultValue);
 		}
 
 		@Override
 		protected String validateProperty(String input) {
-			if (input == null || input.trim().length() == 0)
+			if (input == null || input.trim().length() == 0) {
 				return "Value is null or empty";
+			}
 			return null;
 		}
 	}

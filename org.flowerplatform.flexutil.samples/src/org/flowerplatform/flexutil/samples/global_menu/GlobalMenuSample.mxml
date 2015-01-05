@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
-license-start
-
-Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation version 3.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-
-Contributors:
-Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
-
-license-end
+	license-start
+ 
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
 -->
 <!--
 	@author Mircea Negreanu
@@ -31,11 +28,9 @@ license-end
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
-			import mx.events.FlexEvent;
-			
 			import org.flowerplatform.flexutil.action.ActionBase;
 			import org.flowerplatform.flexutil.action.VectorActionProvider;
-			import org.flowerplatform.flexutil.samples.renderer.MultipleIconItemRendererSample;
+			import org.flowerplatform.flexutil.samples.context_menu.ContextMenuSample;
 
 			
 			private function creationCompleteHandler():void {
@@ -45,7 +40,7 @@ license-end
 				var action:ActionBase = new SampleActionGlobalMenuC1();
 				action.label = "First Action";
 				action.id = "firstaction";
-				action.icon = MultipleIconItemRendererSample.infoImage;
+				action.icon = ContextMenuSample.infoImage;
 				actionProvider.getActions(null).push(action);
 				
 				action = new SampleActionGlobalMenuC1();
@@ -67,7 +62,13 @@ license-end
 				action.label = "Second SubAction";
 				action.id = "secondsubaction";
 				action.parentId = "secondaction";
-				action.icon = MultipleIconItemRendererSample.defaultImage;
+				action.icon = ContextMenuSample.defaultImage;
+				actionProvider.getActions(null).push(action);
+
+				// create a separator.
+				action = new SampleActionGlobalMenu1();
+				action.label = GlobalMenuBar.MENU_LABEL_SEPARATOR;
+				action.parentId = "secondaction";
 				actionProvider.getActions(null).push(action);
 				
 				action = new SampleActionGlobalMenu1();
@@ -91,7 +92,7 @@ license-end
 				
 				action = new SampleActionGlobalMenu1();
 				action.parentId = "secondsubaction";
-				action.icon = MultipleIconItemRendererSample.defaultImage;
+				action.icon = ContextMenuSample.defaultImage;
 				actionProvider.getActions(null).push(action);
 				
 				mainMenu.actionProvider = actionProvider;

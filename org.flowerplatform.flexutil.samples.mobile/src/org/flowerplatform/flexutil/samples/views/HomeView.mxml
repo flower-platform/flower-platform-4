@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" title="HomeView">
 	<s:layout>
@@ -12,6 +28,7 @@
 			import org.flowerplatform.flexutil.mobile.view_content_host.split.MobileSplitViewHost;
 			import org.flowerplatform.flexutil.samples.gradient_list.LeftList;
 			import org.flowerplatform.flexutil.samples.gradient_list.RightList;
+			import org.flowerplatform.flexutil.samples.properties.PropertiesStandAloneSample;
 			
 			private function splitViewWrapperClickHandler(event:MouseEvent):void {
 				var leftActiveComponent:Button = new Button();
@@ -53,4 +70,5 @@
 	<s:Button label="Split Mobile View Host" click="splitViewWrapperClickHandler(event)"/>
 	<s:Button label="Gradient List" click="gradientListClickHandler(event)"/>
 	<s:Button label="Validating Text Input" click="navigator.pushView(ValidatingTextInputSkinSampleView)"/>
+	<s:Button label="Properties" click="navigator.pushView(MobileViewHost, { viewContent: new PropertiesStandAloneSample() })"/>
 </s:View>

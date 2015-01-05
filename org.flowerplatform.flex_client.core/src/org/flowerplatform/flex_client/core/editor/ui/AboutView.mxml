@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
-license-start
-
-Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation version 3.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-
-Contributors:
-Crispico - Initial API and implementation  The product is licensed under GPL. This is the new version of the license.
-
-license-end
+	license-start
+ 
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
 -->
 <!---
  @author Sebastian Solmon
@@ -30,7 +27,6 @@ license-end
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.IList;
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			
@@ -38,15 +34,10 @@ license-end
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.view_content_host.IViewContent;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
 			
 			private var _viewHost:IViewHost;
-			
-			public function getActions(selection:IList):Vector.<IAction> {
-				return null;
-			}
 			
 			public function get viewHost():IViewHost {
 				return _viewHost;
@@ -64,9 +55,13 @@ license-end
 			
 			protected function creationCompleteHandler(event:FlexEvent):void {
 				UIComponent(appVersionLabel.labelDisplay).setStyle('fontWeight','normal');
-				UIComponent(apiVersionLabel.labelDisplay).setStyle('fontWeight','normal');	
+				UIComponent(apiVersionLabel.labelDisplay).setStyle('fontWeight','normal');
+				UIComponent(serverAppVersionLabel.labelDisplay).setStyle('fontWeight','normal');
 			}
 			
+			public function additionalCloseHandler():void {	
+				// nothing to do
+			}
 		]]>
 	</fx:Script>
 	
@@ -81,6 +76,9 @@ license-end
 	<s:Form>
 		<s:FormItem id="appVersionLabel" label="{Resources.getMessage('about.app.version.label')}">
 			<s:Label id="appVersion" text="{CorePlugin.getInstance().appVersion}"/>
+		</s:FormItem>
+		<s:FormItem id="serverAppVersionLabel" label="{Resources.getMessage('about.server.app.version.label')}">
+			<s:Label id="serverAppVersion" text="{CorePlugin.getInstance().serverAppVersion}"/>
 		</s:FormItem>
 		<s:FormItem id="apiVersionLabel" label="{Resources.getMessage('about.api.version.label')}">
 			<s:Label id="apiVersion" text="{CorePlugin.getInstance().apiVersion}"/>

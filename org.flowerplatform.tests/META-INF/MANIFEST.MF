@@ -2,18 +2,30 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests
 Bundle-SymbolicName: org.flowerplatform.tests;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.jdt.core,
  org.junit,
- org.flowerplatform.util,
- org.flowerplatform.codesync.code.java,
  org.eclipse.core.resources,
+ org.flowerplatform.util,
+ org.flowerplatform.resources,
+ org.eclipse.equinox.common,
+ org.eclipse.osgi,
+ org.eclipse.compare.core,
+ com.ibm.icu,
  org.flowerplatform.core,
- org.flowerplatform.freeplane,
+ org.flowerplatform.codesync,
+ org.flowerplatform.codesync.as,
+ org.flowerplatform.codesync.java,
+ org.flowerplatform.codesync.sdiff,
  org.flowerplatform.mindmap,
- org.flowerplatform.resources
+ org.flowerplatform.freeplane,
+ org.flowerplatform.js_client.java
 Bundle-Activator: org.flowerplatform.tests.TestActivator
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .,
- libs/mockito-all-1.9.5.jar
+Bundle-ClassPath: lib-from-maven/mockito-all-1.9.5.jar,
+ .
+Export-Package: org.flowerplatform.tests
+Import-Package: javax.servlet,
+ javax.servlet.http
+

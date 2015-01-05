@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.core;
 
 import java.util.HashMap;
@@ -6,14 +21,12 @@ import java.util.Map;
 
 /**
  * @author Sebastian Solomon
+ * @author Mariana Gheorghe
  */
 public class RemoteMethodInvocationInfo {
-	private String serviceId;
 
-	private String methodName;
-
-	private List<?> parameters;
-
+	private String serviceMethodOrUrl;
+	
 	private long startTimestamp;
 
 	private Object returnValue;
@@ -25,29 +38,12 @@ public class RemoteMethodInvocationInfo {
 	 */
 	private Map<?, ?> headers;
 	
-	
-	public String getServiceId() {
-		return serviceId;
+	public String getServiceMethodOrUrl() {
+		return serviceMethodOrUrl;
 	}
 
-	public void setServiceId(String serviceId) {
-		this.serviceId = serviceId;
-	}
-
-	public String getMethodName() {
-		return methodName;
-	}
-
-	public void setMethodName(String methodName) {
-		this.methodName = methodName;
-	}
-
-	public List<?> getParameters() {
-		return parameters;
-	}
-
-	public void setParameters(List<?> parameters) {
-		this.parameters = parameters;
+	public void setServiceMethodOrUrl(String serviceMethodOrUrl) {
+		this.serviceMethodOrUrl = serviceMethodOrUrl;
 	}
 
 	public long getStartTimestamp() {
@@ -91,11 +87,24 @@ public class RemoteMethodInvocationInfo {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<String> getResourceNodeIds() {
-		return (List<String>) getHeaders().get(CoreConstants.RESOURCE_NODE_IDS);
+	public List<String> getResourceSets() {
+		return (List<String>) getHeaders().get(CoreConstants.RESOURCE_SETS);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getResourceUris() {
+		return (List<String>) getHeaders().get(CoreConstants.RESOURCE_URIS);
 	}
 
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public long getTimestampOfLastRequest() {
-		return ((Number) getHeaders().get(CoreConstants.LAST_UPDATE_TIMESTAMP)).longValue();
+		// may be null if the request comes from the web app
+		Object timestamp = getHeaders().get(CoreConstants.LAST_UPDATE_TIMESTAMP);
+		if (timestamp == null) {
+			return 0;
+		}
+		return ((Number) timestamp).longValue();
 	}
 }

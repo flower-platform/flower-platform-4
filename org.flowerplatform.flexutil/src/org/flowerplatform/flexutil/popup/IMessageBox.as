@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,14 +11,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexutil.popup {
 	public interface IMessageBox {
 		function setTitle(value:String):IMessageBox;
+		function setIcon(value:Object):IMessageBox;
 		function setText(value:String):IMessageBox;
 		function setWidth(value:int):IMessageBox;
 		function setHeight(value:int):IMessageBox;
@@ -27,9 +25,9 @@ package org.flowerplatform.flexutil.popup {
 		/**
 		 * @author Cristina Constantinescu
 		 */ 
-		function addButton(title:String, handler:Function = null):IMessageBox;
+		function addButton(title:String, handler:Function = null, useHandlerAtClosing:Boolean = false):IMessageBox;
 		function setSelectText(value:Boolean):IMessageBox;
 		
-		function showMessageBox(modal:Boolean = true):void;		
+		function showMessageBox(modal:Boolean = true):void;
 	}
 }

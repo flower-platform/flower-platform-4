@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,33 +11,32 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram.samples.controller {
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	
-	import org.flowerplatform.flexdiagram.DiagramShell;
-	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.renderer.ConnectionRendererController;
 	import org.flowerplatform.flexdiagram.renderer.connection.ConnectionRenderer;
 	import org.flowerplatform.flexdiagram.samples.model.BasicConnection;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	
+	/**
+	 * @author Cristian Spiescu
+	 */
 	public class BasicConnectionRendererController extends ConnectionRendererController {
 		
-		public function BasicConnectionRendererController(rendererClass:Class=null, orderIndex:int = 0) {
-			super(rendererClass, orderIndex);
+		public function BasicConnectionRendererController(rendererClassFactory:ClassFactoryWithConstructor=null, orderIndex:int = 0) {
+			super(rendererClassFactory, orderIndex);
 		}
 		
-		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
+		override public function associatedModelToRenderer(context:Object, model:Object, renderer:IVisualElement):void {
 			super.associatedModelToRenderer(context, model, renderer);
 			ConnectionRenderer(renderer).middleConnectionLabel.text = "Connection Label";
 		}
 		
-		override public function unassociatedModelFromRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement, isModelDisposed:Boolean):void {
+		override public function unassociatedModelFromRenderer(context:Object, model:Object, renderer:IVisualElement, isModelDisposed:Boolean):void {
 			super.unassociatedModelFromRenderer(context, model, renderer, isModelDisposed);
 			if (isModelDisposed && renderer != null) {
 					IVisualElementContainer(renderer.parent).removeElement(renderer);

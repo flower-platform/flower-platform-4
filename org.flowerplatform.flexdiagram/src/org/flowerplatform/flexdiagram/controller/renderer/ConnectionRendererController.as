@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram.controller.renderer {
@@ -23,6 +20,8 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 	
 	import mx.core.IVisualElement;
 	
+	import spark.components.Label;
+	
 	import org.flowerplatform.flexdiagram.ControllerUtils;
 	import org.flowerplatform.flexdiagram.DiagramShellContext;
 	import org.flowerplatform.flexdiagram.controller.AbsoluteLayoutRectangleController;
@@ -31,8 +30,7 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 	import org.flowerplatform.flexdiagram.renderer.connection.ClipUtils;
 	import org.flowerplatform.flexdiagram.renderer.connection.ConnectionEnd;
 	import org.flowerplatform.flexdiagram.renderer.connection.ConnectionRenderer;
-	
-	import spark.components.Label;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	
 	/**
 	 * @author Cristian Spiescu
@@ -56,16 +54,16 @@ package org.flowerplatform.flexdiagram.controller.renderer {
 		
 		protected static const ALMOST_HORIZONTAL_LINE:int = 0;
 
-		public function ConnectionRendererController(rendererClass:Class=null, orderIndex:int = 0) {
-			super(rendererClass, orderIndex);
+		public function ConnectionRendererController(rendererClassFactory:ClassFactoryWithConstructor=null, orderIndex:int = 0) {
+			super(rendererClassFactory, orderIndex);
 		}
 		
 		/**
 		 * @author Cristian Spiescu
 		 * @author Cristina Constantinescu
 		 */ 
-		override public function associatedModelToRenderer(context:DiagramShellContext, model:Object, renderer:IVisualElement):void {
-			updateConnectionEnds(context, model, null);
+		override public function associatedModelToRenderer(context:Object, model:Object, renderer:IVisualElement):void {
+			updateConnectionEnds(DiagramShellContext(context), model, null);
 			
 			var connectionRenderer:ConnectionRenderer = ConnectionRenderer(renderer);
 			connectionRenderer.sourceEndType = getSourceEndFigureType(model);

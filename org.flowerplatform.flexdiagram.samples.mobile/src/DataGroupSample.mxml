@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" applicationDPI="160"
 			   creationComplete="creationCompleteHandler(event)" xmlns:samples="org.flowerplatform.flexdiagram.samples.*">
@@ -7,15 +23,12 @@
 			import mx.collections.ArrayList;
 			import mx.events.FlexEvent;
 			
-			[Embed(source="/info.png")]			
-			public const _iconInfo:Class;
-			
 			protected function creationCompleteHandler(event:FlexEvent):void {
 				var list:ArrayList = new ArrayList();
 				for (var i:int = 0; i < 1000; i++) {
 					var object:Object = new Object();
 					object.label = "Lorem " + i;
-					object.icon = _iconInfo;
+//					object.icon = _iconInfo;
 					list.addItem(object);
 				}
 				dataGroup.dataProvider = list;

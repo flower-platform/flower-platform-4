@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.core.file;
 
 import static org.flowerplatform.core.CoreConstants.DONT_PROCESS_OTHER_CONTROLLERS;
@@ -5,12 +20,16 @@ import static org.flowerplatform.core.CoreConstants.FILE_IS_DIRECTORY;
 import static org.flowerplatform.core.CoreConstants.FILE_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.FILE_SYSTEM_NODE_TYPE;
 import static org.flowerplatform.core.CoreConstants.NAME;
+import static org.flowerplatform.core.CoreConstants.OVERRIDE;
+import static org.flowerplatform.core.CoreUtils.getRepoFromNode;
+import static org.flowerplatform.core.file.FileControllerUtils.createFileNodeUri;
+import static org.flowerplatform.core.file.FileControllerUtils.getFileAccessController;
+import static org.flowerplatform.core.file.FileControllerUtils.getFilePathWithRepo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.flowerplatform.core.CoreConstants;
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.controller.IAddNodeController;
 import org.flowerplatform.core.node.controller.IChildrenProvider;
@@ -21,34 +40,28 @@ import org.flowerplatform.util.controller.AbstractController;
 
 /**
  * @author Sebastian Solomon
+ * @author Mariana Gheorghe
  */
-public class FileChildrenController extends AbstractController 
+public class FileChildrenController extends AbstractController
 		implements IChildrenProvider, IAddNodeController, IRemoveNodeController {
-
-	private static IFileAccessController fileAccessController = CorePlugin
-			.getInstance().getFileAccessController();
 
 	@Override
 	public List<Node> getChildren(Node node, ServiceContext<NodeService> context) {
-		String path;
-		path = node.getIdWithinResource();
-
+		String path = FileControllerUtils.getFilePathWithRepo(node);
 		Object file = null;
 		try {
-			file = fileAccessController.getFile(path);
+			file = getFileAccessController().getFile(path);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}
-		Object[] files = fileAccessController.listFiles(file);
+		}		
 		List<Node> children = new ArrayList<Node>();
-		for (Object object : files) {
-			if (CoreConstants.METADATA.equals(fileAccessController.getName(object)) && path == null) {
-				// don't show metadata directory from workspace
-				continue;
+		
+		Object[] files = getFileAccessController().listFiles(file);
+		if (files != null) {			
+			for (Object object : files) {
+				Node child = new Node(createFileNodeUri(getRepoFromNode(node), getFileAccessController().getPath(object)), FILE_NODE_TYPE);
+				children.add(child);
 			}
-			children.add(new Node(CoreConstants.FILE_NODE_TYPE, 
-					node.getType().equals(CoreConstants.FILE_SYSTEM_NODE_TYPE) ? node.getFullNodeId() : node.getResource(),
-					fileAccessController.getPath(object), null));
 		}
 		return children;
 	}
@@ -56,16 +69,17 @@ public class FileChildrenController extends AbstractController
 	@Override
 	public boolean hasChildren(Node node, ServiceContext<NodeService> context) {
 		Object file = null;
+		String path = getFilePathWithRepo(node);
 		try {
-			file = fileAccessController.getFile(node.getIdWithinResource());
+			file = getFileAccessController().getFile(path);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		Object[] files = fileAccessController.listFiles(file);
+		Object[] files = getFileAccessController().listFiles(file);
 		if (files == null) {
 			return false;
 		}
-		if (files.length == 1 && CoreConstants.METADATA.equals(fileAccessController.getName(files[0]))) {
+		if (files.length == 1 && CoreConstants.METADATA.equals(getFileAccessController().getName(files[0]))) {
 			// calculate hasChildren without metadata directory
 			return false;
 		
@@ -75,55 +89,51 @@ public class FileChildrenController extends AbstractController
 	
 	@Override
 	public void addNode(Node parentNode, Node child, ServiceContext<NodeService> context) {
-		IFileAccessController fileAccessController = CorePlugin.getInstance()
-				.getFileAccessController();
 		Object parentFile;
-
+		String path = getFilePathWithRepo(parentNode);
 		try {
-			parentFile = fileAccessController.getFile(parentNode.getIdWithinResource());
+			parentFile = getFileAccessController().getFile(path);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 
-		if (!fileAccessController.isDirectory(parentFile)) {
-			parentFile = fileAccessController.getParentFile(parentFile);
-			String path = fileAccessController.getPath(parentFile);
+		if (!getFileAccessController().isDirectory(parentFile)) {
+			parentFile = getFileAccessController().getParentFile(parentFile);
+			path = getFileAccessController().getPath(parentFile);
 			Node fileParentNode;
 			
 			if (path.length() != 0) { // parent File is not the FileSystem node
-				fileParentNode = new Node(FILE_NODE_TYPE, parentNode.getResource(), path, null);
+				fileParentNode = new Node(createFileNodeUri(getRepoFromNode(parentNode), path), FILE_NODE_TYPE);
 			} else {
-				fileParentNode = new Node(FILE_SYSTEM_NODE_TYPE, CoreConstants.SELF_RESOURCE, null, null);
+				fileParentNode = new Node(createFileNodeUri(getRepoFromNode(parentNode), null), FILE_SYSTEM_NODE_TYPE);
 			}
 			context.getService().addChild(fileParentNode, child, context);
 			context.add(DONT_PROCESS_OTHER_CONTROLLERS, true);
 			return;
 		}
 		
-		if (parentNode.getType().equals(FILE_SYSTEM_NODE_TYPE)) {
-			child.setResource(parentNode.getFullNodeId());
-		}
-
 		String name = (String) context.get(NAME);
-		Object fileToCreate = fileAccessController.getFile(parentFile, name);
-		child.setIdWithinResource(fileAccessController.getPath(fileToCreate));
-		boolean isDir = (boolean) context.get(FILE_IS_DIRECTORY);
+		Object fileToCreate = getFileAccessController().getFile(parentFile, name);
+		child.setNodeUri(createFileNodeUri(getRepoFromNode(parentNode), getFileAccessController().getPath(fileToCreate)));
+		boolean isDir = context.getBooleanValue(FILE_IS_DIRECTORY);
 		
-		if (fileAccessController.exists(fileToCreate)) {
-			throw new RuntimeException("There is already a file with the same name in this location.");
-		} else if (!fileAccessController.createFile(fileToCreate, isDir)) {
+		if (getFileAccessController().exists(fileToCreate)) {
+			if (context.getBooleanValue(OVERRIDE)) {
+				getFileAccessController().delete(fileToCreate);
+			} else {
+				throw new RuntimeException("There is already a file with the same name in this location.");
+			}
+		} 
+		
+		if (!getFileAccessController().createFile(fileToCreate, isDir)) {
 			throw new RuntimeException("The filename, directory name, or volume label syntax is incorrect");
 		}
-		child.getOrPopulateProperties();
 	}
 	
 	@Override
 	public void removeNode(Node node, Node child, ServiceContext<NodeService> context) {
-		IFileAccessController fileAccessController = CorePlugin
-				.getInstance().getFileAccessController();	
 		try {
-			fileAccessController.delete(fileAccessController
-					.getFile(child.getIdWithinResource()));
+			getFileAccessController().delete(getFileAccessController().getFile(getFilePathWithRepo(child)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

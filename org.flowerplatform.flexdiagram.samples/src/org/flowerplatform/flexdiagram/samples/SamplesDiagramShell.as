@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package org.flowerplatform.flexdiagram.samples {
@@ -40,6 +37,7 @@ package org.flowerplatform.flexdiagram.samples {
 	import org.flowerplatform.flexdiagram.samples.controller.BasicTypeProvider;
 	import org.flowerplatform.flexdiagram.samples.renderer.SubModelIconItemRenderer;
 	import org.flowerplatform.flexdiagram.tool.controller.SelectOrDragToCreateElementController;
+	import org.flowerplatform.flexutil.ClassFactoryWithConstructor;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
 	/**
@@ -51,8 +49,9 @@ package org.flowerplatform.flexdiagram.samples {
 			super();
 			
 			typeProvider = new BasicTypeProvider();
-			
 			registry = new TypeDescriptorRegistry();
+			registry.typeProvider = typeProvider;
+
 			registry.getOrCreateTypeDescriptor("basicModel")
 				.addSingleController(FlexDiagramConstants.ABSOLUTE_LAYOUT_RECTANGLE_CONTROLLER, new BasicModelAbsoluteLayoutRectangleController())
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new BasicModelModelChildrenController())
@@ -68,14 +67,14 @@ package org.flowerplatform.flexdiagram.samples {
 			registry.getOrCreateTypeDescriptor("basicSubModel")
 				.addSingleController(FlexDiagramConstants.MODEL_CHILDREN_CONTROLLER, new BasicSubModelChildrenProvider())
 				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
-				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new ClassReferenceRendererController(SubModelIconItemRenderer))
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new ClassReferenceRendererController(new ClassFactoryWithConstructor(SubModelIconItemRenderer)))
 				.addSingleController(FlexDiagramConstants.SELECTION_CONTROLLER, new BasicSubModelSelectionController())
 				.addSingleController(FlexDiagramConstants.INPLACE_EDITOR_CONTROLLER, new BasicSubModelInplaceEditorController())				
 				.addSingleController(FlexDiagramConstants.SELECT_OR_DRAG_TO_CREATE_ELEMENT_CONTROLLER, new SelectOrDragToCreateElementController());
 			
 			registry.getOrCreateTypeDescriptor("basicConnection")				
 				.addSingleController(FlexDiagramConstants.MODEL_EXTRA_INFO_CONTROLLER, new DynamicModelExtraInfoController())				
-				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new BasicConnectionRendererController(ConnectionRenderer))					
+				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, new BasicConnectionRendererController(new ClassFactoryWithConstructor(ConnectionRenderer)))					
 				.addSingleController(FlexDiagramConstants.SELECT_OR_DRAG_TO_CREATE_ELEMENT_CONTROLLER, new SelectOrDragToCreateElementController());
 			
 			registry.getOrCreateTypeDescriptor("diagram")				

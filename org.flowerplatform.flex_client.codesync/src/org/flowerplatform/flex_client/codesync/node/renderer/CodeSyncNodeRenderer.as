@@ -1,59 +1,81 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.flex_client.codesync.node.renderer {
+	
+	import mx.collections.ArrayList;
+	import mx.collections.IList;
+	import mx.events.PropertyChangeEvent;
 	
 	import org.flowerplatform.flex_client.codesync.CodeSyncConstants;
 	import org.flowerplatform.flex_client.codesync.CodeSyncPlugin;
-	import org.flowerplatform.flex_client.core.editor.update.event.NodeUpdatedEvent;
-	import org.flowerplatform.flex_client.core.node.controller.GenericValueProviderFromDescriptor;
-	import org.flowerplatform.flex_client.core.node.controller.NodeControllerUtils;
-	import org.flowerplatform.flex_client.mindmap.renderer.NodeRenderer;
-	import org.flowerplatform.flexutil.FlowerArrayList;
+	import org.flowerplatform.flex_client.core.CorePlugin;
+	import org.flowerplatform.flex_client.core.editor.remote.Node;
+	import org.flowerplatform.flex_client.mindmap.renderer.NodeMindMapRenderer;
+	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
 	
 	/**
 	 * @author Mariana Gheorghe
+	 * @author Cristian Spiescu
 	 */
-	public class CodeSyncNodeRenderer extends NodeRenderer {
+	public class CodeSyncNodeRenderer extends NodeMindMapRenderer {
 		
-		override protected function nodeUpdatedHandler(event:NodeUpdatedEvent = null):void {
-			super.nodeUpdatedHandler(event);
+		/**
+		 * @author Cristina Constantinescu
+		 */
+		private static const SYNC_PROPERTIES:Array = [CodeSyncConstants.SYNC, CodeSyncConstants.CHILDREN_SYNC, CodeSyncConstants.CONFLICT, CodeSyncConstants.CHILDREN_CONFLICT];
+		
+		override protected function modelChangedHandler(event:PropertyChangeEvent):void {
+			super.modelChangedHandler(event);
 			
-			if (NodeControllerUtils.hasPropertyChanged(node, CodeSyncConstants.SYNC, event) ||
-				NodeControllerUtils.hasPropertyChanged(node, CodeSyncConstants.CHILDREN_SYNC, event) ||
-				NodeControllerUtils.hasPropertyChanged(node, CodeSyncConstants.CONFLICT, event) ||
-				NodeControllerUtils.hasPropertyChanged(node, CodeSyncConstants.CHILDREN_CONFLICT, event)) {
+			if (event == null || SYNC_PROPERTIES.indexOf(event.property)) {
 				// a sync property has changed, redecorate the original icon
 				composeIconWithSyncMarkers();
 			}
 		}
 		
 		protected function composeIconWithSyncMarkers():void {
-			var iconsProvider:GenericValueProviderFromDescriptor =  NodeControllerUtils.getIconsProvider(diagramShellContext.diagramShell.registry, node);
-			var icon:String = String(iconsProvider.getValue(node));
-			var composedUrl:String = CodeSyncPlugin.getInstance().getImageComposerUrl(icon);
+			var node:Node = Node(data);
+			var icons:IList = 
+					IList(CorePlugin.getInstance().getNodeValuesProviderForMindMap(diagramShellContext.diagramShell.registry, node)
+							.getValue(diagramShellContext.diagramShell.registry, node, FlexDiagramConstants.BASE_RENDERER_ICONS));
+			var initialUrl:String = null, composedUrl:String = null;
+			if (icons.length > 0) {
+				initialUrl = String(icons.getItemAt(0));
+			}
 			if (node.properties.conflict == true) {
-				composedUrl = append(composedUrl, "syncMarker_conflict.gif");
+				composedUrl = append(initialUrl, "syncMarker_conflict.gif");
 			} else if (node.properties.childrenConflict == true) {
-				composedUrl = append(composedUrl, "syncMarker_childrenConflict.gif");
+				composedUrl = append(initialUrl, "syncMarker_childrenConflict.gif");
 			} else if (node.properties.added == true) {
-				composedUrl = append(composedUrl, "syncMarker_added.gif");
+				composedUrl = append(initialUrl, "syncMarker_added.gif");
 			} else if (node.properties.removed == true) {
-				composedUrl = append(composedUrl, "syncMarker_deleted.gif");
+				composedUrl = append(initialUrl, "syncMarker_deleted.gif");
 			} else if (node.properties.sync == false) {
-				composedUrl = append(composedUrl, "syncMarker_red.gif");
+				composedUrl = append(initialUrl, "syncMarker_red.gif");
 			} else if (node.properties.childrenSync == false) {
-				composedUrl = append(composedUrl, "syncMarker_orange.gif");
+				composedUrl = append(initialUrl, "syncMarker_orange.gif");
 			} else {
-				composedUrl = append(composedUrl, "syncMarker_green.gif");
+				composedUrl = append(initialUrl, "syncMarker_green.gif");
 			}
 			
-			icons = new FlowerArrayList([composedUrl]);
+			this.icons = new ArrayList([composedUrl]);
 		}
 		
 		private function append(composedUrl:String, marker:String):String {
-			return CodeSyncPlugin.getInstance().getImageComposerUrl(composedUrl, getSyncMarkerPath(marker));
-		}
-		
-		private function getSyncMarkerPath(marker:String):String {
-			return "org.flowerplatform.resources/images/codesync/sync-markers/" + marker;
+			return CodeSyncPlugin.getInstance().getImageComposerUrl(composedUrl, "org.flowerplatform.resources/images/codesync/sync-markers/" + marker);
 		}
 		
 	}

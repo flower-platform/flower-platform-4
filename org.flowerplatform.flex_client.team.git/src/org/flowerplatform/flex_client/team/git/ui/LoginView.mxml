@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	license-start
+ 
+	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation version 3.
+	 
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+	
+	license-end
+-->
+<!-- 
+@author Andreea Tita
+-->
+<ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					 xmlns:s="library://ns.adobe.com/flex/spark" 
+					 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="org.flowerplatform.flexutil.view_content_host.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.validators.Validator;
+			
+			import org.flowerplatform.flex_client.core.CorePlugin;
+			import org.flowerplatform.flex_client.core.editor.remote.Node;
+			import org.flowerplatform.flex_client.resources.Resources;
+			import org.flowerplatform.flex_client.team.git.GitConstants;
+			import org.flowerplatform.flex_client.team.git.remote.GitCredentials;
+			import org.flowerplatform.flexutil.Utils;
+		
+			public var node:Node;
+			
+			[Bindable]
+			public var repoURL:String;
+			
+			override protected function creationCompleteHandler(event:FlexEvent):void {
+				repoURL = String(ArrayCollection(node.getPropertyValue(GitConstants.REMOTE_URIS)).getItemAt(0));
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.getCredentials",[repoURL],
+					function(result:GitCredentials):void {
+						if (result != null) {
+							username.text = result.username;
+						}
+					});
+			}
+			
+			override public function okHandler(event:Event = null):void {
+				if (Validator.validateAll([usernameValidator]).length > 0) {
+					return;
+				}
+				
+				var credentials:GitCredentials = new GitCredentials();
+				credentials.username = username.text;
+				credentials.password = password.text;
+				
+				CorePlugin.getInstance().serviceLocator.invoke("GitService.setCredentials", [repoURL, credentials]);
+				cancelHandler();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<mx:StringValidator id="usernameValidator" source="{username}" property="text" minLength="1"/>
+	</fx:Declarations>
+	
+	<s:Form id="form" width="100%" height="100%">
+		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.loginView.repository')}" width="100%">
+			<s:TextInput id="repository" width="100%" text="{repoURL}" creationComplete="{Utils.makePseudoDisabled(repository)}" />
+		</s:FormItem>	
+		
+		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.loginView.username')}" width="100%">
+			<s:TextInput id="username" width="100%" creationComplete="{callLater(username.setFocus)}" />
+		</s:FormItem>	
+		
+		<s:FormItem label="{Resources.getMessage('flex_client.team.git.ui.loginView.password')}" width="100%">
+			<s:TextInput id="password" displayAsPassword="true" width="100%"/>
+		</s:FormItem>	
+	</s:Form>
+	
+</ns:BasicViewContent>

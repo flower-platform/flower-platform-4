@@ -1,6 +1,6 @@
 /* license-start
  * 
- * Copyright (C) 2008 - 2013 Crispico, <http://www.crispico.com/>.
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,9 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
  * 
- * Contributors:
- *   Crispico - Initial API and implementation
- *
  * license-end
  */
 package  com.crispico.flower.util.layout.view {
@@ -174,7 +171,7 @@ package  com.crispico.flower.util.layout.view {
 		private function tabMiddleClickHadler(event:MouseEvent):void {
 			if (event.target != null && DisplayObject(event.target).parent is FlowerSuperTab) {				
 				var viewLayoutData:ViewLayoutData = ViewLayoutData(stackLayoutData.children.getItemAt(tabBar.getChildIndex(DisplayObject(event.target).parent)));
-				workbench.closeView(workbench.layoutDataToComponent[viewLayoutData]);
+				workbench.closeView(workbench.layoutDataToComponent[viewLayoutData], true, true);
 			}
 		}
 		
@@ -288,7 +285,7 @@ package  com.crispico.flower.util.layout.view {
 		private function closeTabHandler(event:SuperTabEvent):void {			
 			var viewLayoutData:ViewLayoutData = ViewLayoutData(stackLayoutData.children.getItemAt(event.tabIndex));
 			
-			workbench.closeView(workbench.layoutDataToComponent[viewLayoutData]);	
+			workbench.closeView(workbench.layoutDataToComponent[viewLayoutData], true, true);	
 			
 			event.preventDefault();			
 		}

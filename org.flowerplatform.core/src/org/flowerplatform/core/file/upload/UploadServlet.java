@@ -1,3 +1,18 @@
+/* license-start
+ * 
+ * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation version 3.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+ * 
+ * license-end
+ */
 package org.flowerplatform.core.file.upload;
 
 import java.io.File;
@@ -39,8 +54,11 @@ public class UploadServlet extends HttpServlet {
 
 	public static final String UPLOAD_SERVLET_NAME = "/servlet/upload";
 	
-	private static final Logger logger = LoggerFactory.getLogger(UploadServlet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UploadServlet.class);
 	
+	/**
+	 *@author see class
+	 **/
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		if (!isMultipart) {
@@ -55,7 +73,7 @@ public class UploadServlet extends HttpServlet {
 			return;
 		}
 		
-		logger.trace("Uploading {}", uploadInfo);
+		LOGGER.trace("Uploading {}", uploadInfo);
 		
 		// create temporary upload location file for archive that needs to be unzipped after
 		File file = new File(uploadInfo.getTmpLocation());
