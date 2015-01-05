@@ -18,6 +18,12 @@ public class DiffUpdateService {
 		this.diffUpdateRegistry = new DiffUpdateRegistry();
 	}
 	
+	public void addUpdate(String[] notificationChannels, DiffUpdate update) {
+		for (String notificationChannel : notificationChannels) {
+			diffUpdateRegistry.addUpdate(notificationChannel, update);
+		}
+	}
+	
 	/**
 	 * 
 	 * @param update

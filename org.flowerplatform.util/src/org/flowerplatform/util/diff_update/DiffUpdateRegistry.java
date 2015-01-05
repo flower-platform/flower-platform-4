@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
  * @author Claudiu Matei
@@ -13,6 +16,8 @@ import java.util.Map;
  */
 public class DiffUpdateRegistry {
 
+	protected static final Logger logger = LoggerFactory.getLogger(DiffUpdateRegistry.class);
+	
 	private Map<String, List<DiffUpdate>> updatesMap = new HashMap<String, List<DiffUpdate>>();
 	
 	/**
@@ -21,8 +26,9 @@ public class DiffUpdateRegistry {
 	 */
 	public void addUpdate(String notificationChannel, DiffUpdate update) {
 		List<DiffUpdate> updates = updatesMap.get(notificationChannel);
+		logger.debug("For notificationChannel = {}, adding update = {}", notificationChannel, update);
 		if (updates == null) {
-			return;
+			throw new IllegalArgumentException("For inexistent notificationChannel =" + notificationChannel + ", trying to add update =" + update);
 		}
 		update.setId(getLastUpdateId(notificationChannel) + 1);
 		updates.add(update);

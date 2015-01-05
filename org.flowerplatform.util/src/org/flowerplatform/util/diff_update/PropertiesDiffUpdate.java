@@ -32,5 +32,10 @@ public class PropertiesDiffUpdate extends DiffUpdate {
 	public void addProperty(String key, Object value) {
 		properties.put(key, value);
 	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "[properties=" + properties + "]";
+	}
 	
 }

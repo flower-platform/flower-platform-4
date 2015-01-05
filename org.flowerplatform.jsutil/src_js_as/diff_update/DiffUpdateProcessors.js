@@ -20,7 +20,7 @@ var AddEntityDiffUpdateProcessor = function() {
 AddEntityDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegistry, diffUpdate) {
 	var entity = diffUpdate.entity;
 	if (diffUpdate.parentUid) { // child entity
-		entityRegistry.registerEntity(entity, diffUpdate.getParentUid(), diffUpdate.getParentChildrenProperty(), diffUpdate.getIndex());
+		entityRegistry.registerEntity(entity, diffUpdate.parentUid, diffUpdate.parentChildrenProperty, diffUpdate.index);
 	}
 	else {	// root entity
 		entityRegistry.registerEntity(entity);

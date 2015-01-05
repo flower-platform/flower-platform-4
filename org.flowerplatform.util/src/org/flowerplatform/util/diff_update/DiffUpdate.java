@@ -36,8 +36,11 @@ public class DiffUpdate {
 	public void setEntityUid(String entityUid) {
 		this.entityUid = entityUid;
 	}
-	
+
+	@Override
 	public String toString() {
-		return getClass().getSimpleName() + ":" + getId();
+		return "DiffUpdate[type=" + type + ", id=" + id + ", entityUid="
+				+ entityUid + "]";
 	}
+	
 }
