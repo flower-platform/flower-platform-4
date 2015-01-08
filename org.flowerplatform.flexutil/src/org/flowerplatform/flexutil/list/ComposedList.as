@@ -14,16 +14,75 @@
  * license-end
  */
 package org.flowerplatform.flexutil.list {
-	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 	
 	import mx.collections.IList;
+	import mx.events.CollectionEvent;
+	import mx.events.CollectionEventKind;
 	
-	public class ComposedList implements IList {
+	/**
+	 * @author Cristian Spiescu
+	 */
+	public class ComposedList extends EventDispatcher implements IList {
 		
-		protected var lists:Array;
+		protected var lists:Array = [];
 		
 		public function ComposedList(lists:Array) {
-			this.lists = lists;
+			for (var i:int = 0; i < lists.length; i++) {
+				var current:IList = lists[i] as IList; 
+				addList(current, false);
+			}
+			childListCollectionChangeHandler(null);
+		}
+		
+		public function addList(list:IList, shouldDispatchEvent:Boolean = true):void {
+			if (list == null || removeList(list, false) != null) {
+				// i.e. list already exists
+				return;
+			}
+			
+			lists.push(list);
+			list.addEventListener(CollectionEvent.COLLECTION_CHANGE, childListCollectionChangeHandler);
+			if (shouldDispatchEvent) {
+				childListCollectionChangeHandler(null);
+			}
+		}
+		
+		public function removeList(list:IList, shouldRemove:Boolean = true, shouldDispatchEvent:Boolean = true):IList {
+			if (list == null) {
+				return null;
+			}
+			for (var i:int = 0; i < lists.length; i++) {
+				var current:IList = lists[i] as IList; 
+				if (current == list) {
+					if (shouldRemove) {
+						current.removeEventListener(CollectionEvent.COLLECTION_CHANGE, childListCollectionChangeHandler);
+						lists.splice(i, 1);
+						if (shouldDispatchEvent) {
+							childListCollectionChangeHandler(null);
+						}
+					}
+					return current;					
+				}
+			}
+			return null;
+		}
+		
+		protected function childListCollectionChangeHandler(event:CollectionEvent):void {
+			if (event != null && event.kind == CollectionEventKind.UPDATE) {
+				dispatchEvent(event);
+			} else {
+				dispatchEvent(new CollectionEvent(CollectionEvent.COLLECTION_CHANGE, false, false, CollectionEventKind.RESET));
+			}
+		}
+		
+		public function getList(index:int):IList {
+			if (index >= lists.length) {
+				return null;
+			} else {
+				return lists[index];
+			}
 		}
 		
 		public function get length():int {
@@ -84,24 +143,5 @@ package org.flowerplatform.flexutil.list {
 			throw new Error("Unsupported operation");
 		}
 		
-		public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
-			throw new Error("Unsupported operation");
-		}
-		
-		public function removeEventListener(type:String, listener:Function, useCapture:Boolean=false):void {
-			throw new Error("Unsupported operation");
-		}
-		
-		public function dispatchEvent(event:Event):Boolean {
-			throw new Error("Unsupported operation");
-		}
-		
-		public function hasEventListener(type:String):Boolean {
-			throw new Error("Unsupported operation");
-		}
-		
-		public function willTrigger(type:String):Boolean {
-			throw new Error("Unsupported operation");
-		}
 	}
 }

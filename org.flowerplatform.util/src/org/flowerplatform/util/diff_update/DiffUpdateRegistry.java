@@ -26,11 +26,11 @@ public class DiffUpdateRegistry {
 	 */
 	public void addUpdate(String notificationChannel, DiffUpdate update) {
 		List<DiffUpdate> updates = updatesMap.get(notificationChannel);
-		logger.debug("For notificationChannel = {}, adding update = {}", notificationChannel, update);
 		if (updates == null) {
 			throw new IllegalArgumentException("For inexistent notificationChannel =" + notificationChannel + ", trying to add update =" + update);
 		}
 		update.setId(getLastUpdateId(notificationChannel) + 1);
+		logger.debug("For notificationChannel = {}, adding update = {}", notificationChannel, update);
 		updates.add(update);
 	}
 	
