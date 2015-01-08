@@ -156,7 +156,10 @@ EntityRegistry.prototype.registerChildrenInternal = function(parentUid, children
 // TODO CS: la fel ca mai sus: in anumite cazuri nu am nevoie sa sterg din lista de parinte
 EntityRegistry.prototype.unregisterEntity = function(uid) {
 	var entity = this.getEntityByUid(uid);
-	trace("DELETE: " + uid);
+	if (!entity) {
+		return;
+	} 
+	
 	if (entity.parentUid) {
 		// remove from parent
 		var parent = this.getEntityByUid(entity.parentUid);
