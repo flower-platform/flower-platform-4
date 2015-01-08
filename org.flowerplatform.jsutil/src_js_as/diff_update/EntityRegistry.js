@@ -23,6 +23,9 @@ var EntityRegistry = function(entityRegistryManager) {
 };
 
 EntityRegistry.prototype.registerEntity = function(entity, parentUid, childrenProperty, index) {
+	// TODO CS/DU: mie imi pare ca am putea sa comasam intr-o singura functie; idem si unreg?
+	// 2) putem face add-ul la sfarsit? de fapt tr sa adaugam entitatea merge-uita; acum adaug
+	// entitatea noua, ceea ce nu e bine
 	if (parentUid) {
 		var parent = this.registry[parentUid];
 		var parentChildren = this.entityOperationsAdapter.getChildrenList(parent, childrenProperty);
@@ -31,6 +34,7 @@ EntityRegistry.prototype.registerEntity = function(entity, parentUid, childrenPr
 	this.registerEntityInternal(entity, parentUid, childrenProperty);
 };
 
+// TODO CS/DU: de ce avem varianta simpla si internal?
 EntityRegistry.prototype.registerChildren = function(parentUid, childrenProperty, children) {
 	this.registerChildrenInternal(parentUid, childrenProperty, children);
 };
@@ -60,15 +64,30 @@ adapter.object_iterateProperties(object, function (key, value) {
 
 EntityRegistry.prototype.registerEntityInternal = function(entity, parentUid, childrenProperty) {
 	var uid = this.entityOperationsAdapter.getEntityUid(entity);
-
 	var oldEntity = this.registry[uid];
+	var manyToOneProperties = this.entityOperationsAdapter.getManyToOneProperties(entity);
+
 	if (!oldEntity) {
+		// i.e. did not exist in the registry => newly added
 		this.registry[uid] = entity;
-	} else { // merge entity
+		oldEntity = entity;
+		var propertiesHolder = this.entityOperationsAdapter.object_getPropertiesHolder(entity);
 		
+		// manyToOneProps: replace with a "parent" instance from the registry
+		if (manyToOneProperties) {
+			for (var i in manyToOneProperties) {
+				var property = manyToOneProperties[i];
+				var refUid = this.entityOperationsAdapter.getEntityUid(propertiesHolder[property]);
+				propertiesHolder[property] = this.registry[refUid]; // if the object is not found => null; otherwise risk of infinite loop, and other nasty things
+			}
+		}
+	} else { 
+		// i.e. an old entity exists; it will be reused (and the new one, merged into it)
+		// CS/DU: vad in functia asta ca folosim de cateva ori this.registry[uid] in log de oldEntity
 		var oldPropertiesHolder = this.entityOperationsAdapter.object_getPropertiesHolder(this.registry[uid]);
 		
 		var oldPropertiesSet = null;
+		// TODO CS/DU: ce face acest hasDynamic? vad ca ret false
 		if (this.entityOperationsAdapter.object_hasDynamicProperties(entity)) {
 			oldPropertiesSet = {};
 			this.entityOperationsAdapter.object_iterateProperties(oldPropertiesHolder, function (key, value) {
@@ -78,7 +97,14 @@ EntityRegistry.prototype.registerEntityInternal = function(entity, parentUid, ch
 		
 		var propertiesHolder = this.entityOperationsAdapter.object_getPropertiesHolder(entity);
 		this.entityOperationsAdapter.object_iterateProperties(propertiesHolder, function (key, value) {
-			oldPropertiesHolder[key] = value;
+			if (manyToOneProperties && manyToOneProperties[0] == key) { // CS/DU ..[0] is temp
+				// i.e. a many-to-one property
+				var refUid = this.entityOperationsAdapter.getEntityUid(propertiesHolder[key]);
+				propertiesHolder[key] = this.registry[refUid]; // see many-to-one case above
+			} else {
+				// i.e. "normal" property
+				oldPropertiesHolder[key] = value;
+			}
 			if (oldPropertiesSet) {
 				oldPropertiesSet[key] = false;
 			}
@@ -98,7 +124,11 @@ EntityRegistry.prototype.registerEntityInternal = function(entity, parentUid, ch
 		var parent = this.registry[parentUid];
 		this.entityOperationsAdapter.setParent(this.registry[uid], parentUid, childrenProperty);
 	}
-
+	
+	// TODO CS/DU ca treaba asta sa mearga, deocamdata adaptorul tr sa NU dea si propr
+	// copii in apelul: object_iterateProperties (putin mai sus). Trebuie reorganizat, caci nu imi place, ca in
+	// aceasta clipa, aici, obiectul vechi e inconsistent: are propr simple noi, si listele vechi. As vrea ca metoda
+	// de mai jos sa opereze direct pe o lista, nu prin UID
 	var childrenProperties = this.entityOperationsAdapter.getChildrenProperties(entity);
 	if (childrenProperties) {
 		for (var i in childrenProperties) {
@@ -110,6 +140,8 @@ EntityRegistry.prototype.registerEntityInternal = function(entity, parentUid, ch
 	for (var i = 0; i < this.entityChangeListeners.length; i++) {
 		this.entityChangeListeners[i].entityRegistered(entity);
 	}
+	
+	return oldEntity;
 };
 
 /*
@@ -124,6 +156,8 @@ EntityRegistry.prototype.registerChildrenInternal = function(parentUid, children
 	var oldChildrenList = this.entityOperationsAdapter.getChildrenList(parent, childrenProperty);
 	var oldChildrenSet;
 	if (oldChildrenList != children) {
+		// this may happen only during new object add; i.e. we recurse on an object and we want to register all
+		// children
 		oldChildrenSet = { };
 		var n = this.entityOperationsAdapter.list_getLength(oldChildrenList);
 		for (var i = 0; i < n; i++) {
@@ -136,11 +170,11 @@ EntityRegistry.prototype.registerChildrenInternal = function(parentUid, children
 	var n = this.entityOperationsAdapter.list_getLength(children);
 	for (var i = 0; i < n; i++) {
 		var child = this.entityOperationsAdapter.list_getItemAt(children, i);
-		this.registerEntityInternal(child, parentUid, childrenProperty);
+		var mergedEntity = this.registerEntityInternal(child, parentUid, childrenProperty);
 		if (oldChildrenSet) {
 			var childUid = this.entityOperationsAdapter.getEntityUid(child);
 			oldChildrenSet[childUid] = false;
-			this.entityOperationsAdapter.list_setItemAt(children, this.getEntityByUid(childUid), i);
+			this.entityOperationsAdapter.list_setItemAt(children, mergedEntity, i);
 		}
 	}
 	if (oldChildrenSet) {
