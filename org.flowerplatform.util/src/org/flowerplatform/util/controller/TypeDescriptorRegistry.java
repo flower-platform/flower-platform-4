@@ -16,6 +16,7 @@
 package org.flowerplatform.util.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -185,7 +186,11 @@ public class TypeDescriptorRegistry {
 	}
 
 	public List<? extends IController> getAdditiveControllers(String feature, Object model) {
-		return getExpectedTypeDescriptor(typeProvider.getType(model)).getAdditiveControllers(feature, model);
+		TypeDescriptor typeDescriptor = getExpectedTypeDescriptor(typeProvider.getType(model));
+		if (typeDescriptor != null) {
+			return typeDescriptor.getAdditiveControllers(feature, model);
+		}
+		return Collections.emptyList();
 	}
 
 }
