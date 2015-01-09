@@ -96,11 +96,12 @@ EntityRegistry.prototype.registerEntityInternal = function(entity, parentUid, ch
 		}
 		
 		var propertiesHolder = this.entityOperationsAdapter.object_getPropertiesHolder(entity);
+		var this_ = this; // TODO CS/DU: mai avem apel this din callback?
 		this.entityOperationsAdapter.object_iterateProperties(propertiesHolder, function (key, value) {
 			if (manyToOneProperties && manyToOneProperties[0] == key) { // CS/DU ..[0] is temp
 				// i.e. a many-to-one property
-				var refUid = this.entityOperationsAdapter.getEntityUid(propertiesHolder[key]);
-				propertiesHolder[key] = this.registry[refUid]; // see many-to-one case above
+				var refUid = this_.entityOperationsAdapter.getEntityUid(propertiesHolder[key]);
+				propertiesHolder[key] = this_.registry[refUid]; // see many-to-one case above
 			} else {
 				// i.e. "normal" property
 				oldPropertiesHolder[key] = value;
