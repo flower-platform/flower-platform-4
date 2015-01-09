@@ -3,7 +3,6 @@
   <includeClasses>
     <classEntry path="com.crispico.flower.util.popup.TextAreaPopupMessageBoxFactory"/>
     <classEntry path="com.crispico.flower.util.layout.view.ITabCustomizer"/>
-    <classEntry path="com.crispico.flower.flexdiagram.action.DelegatingAction"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
