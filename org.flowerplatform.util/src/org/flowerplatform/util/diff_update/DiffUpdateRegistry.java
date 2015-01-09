@@ -29,7 +29,8 @@ public class DiffUpdateRegistry {
 		if (updates == null) {
 			throw new IllegalArgumentException("For inexistent notificationChannel =" + notificationChannel + ", trying to add update =" + update);
 		}
-		update.setId(getLastUpdateId(notificationChannel) + 1);
+		long lastUpdateId = getLastUpdateId(notificationChannel);
+		update.setId(lastUpdateId + 1);
 		logger.debug("For notificationChannel = {}, adding update = {}", notificationChannel, update);
 		updates.add(update);
 	}
