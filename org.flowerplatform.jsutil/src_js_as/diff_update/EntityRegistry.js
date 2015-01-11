@@ -26,12 +26,13 @@ EntityRegistry.prototype.registerEntity = function(entity, parentUid, childrenPr
 	// TODO CS/DU: mie imi pare ca am putea sa comasam intr-o singura functie; idem si unreg?
 	// 2) putem face add-ul la sfarsit? de fapt tr sa adaugam entitatea merge-uita; acum adaug
 	// entitatea noua, ceea ce nu e bine
+	this.registerEntityInternal(entity, parentUid, childrenProperty);
 	if (parentUid) {
 		var parent = this.registry[parentUid];
 		var parentChildren = this.entityOperationsAdapter.getChildrenList(parent, childrenProperty);
 		this.entityOperationsAdapter.list_addItem(parentChildren, entity, index);
 	}
-	this.registerEntityInternal(entity, parentUid, childrenProperty);
+
 };
 
 // TODO CS/DU: de ce avem varianta simpla si internal?

@@ -25,14 +25,39 @@ var EntityRegistryManager = function(entityOperationsAdapter) {
 
 EntityRegistryManager.prototype.createEntityRegistry = function(notificationChannel) {
 	var entityRegistry = new EntityRegistry(this);
+	entityRegistry.notificationChannel = notificationChannel;
 	var entityRegistryEntry = this.entityRegistryEntries[notificationChannel];
 	if (!entityRegistryEntry) {
 		entityRegistryEntry = new EntityRegistryEntry();
+		entityRegistryEntry.notificationChannel = notificationChannel;
 		this.entityRegistryEntries[notificationChannel] = entityRegistryEntry;
 	}
 	entityRegistryEntry.entityRegistries.push(entityRegistry);
 	
 	return entityRegistry;
+};
+
+EntityRegistryManager.prototype.removeEntityRegistry = function(entityRegistry) {
+	var entityRegistryEntry = this.entityRegistryEntries[entityRegistry.notificationChannel];
+	if (!entityRegistryEntry) {
+		throw "notificationChannel not found: " + entityRegistry.notificationChannel;
+	}
+	var found = false;
+	for (var i = 0; i < entityRegistryEntry.entityRegistries.length; i++) {
+		if (entityRegistryEntry.entityRegistries[i] == entityRegistry) {
+			// found
+			found = true;
+			entityRegistryEntry.entityRegistries.splice(i, 1);
+			break;
+		}
+	} 
+	if (!found) {
+		throw "entityRegistry not found: " + entityRegistry;
+	}
+	if (entityRegistryEntry.entityRegistries.length == 0) {
+		delete this.entityRegistryEntries[entityRegistry.notificationChannel];
+	}
+	// TODO CS/DU: vad ca: 1) ER are handlers; avem deci mem leak aici ca nu dezirengistram? 2) vad ca are si ref catre adapter. nu mai bine tinem ac. ref doar in ERM
 };
 
 // TODO CS: de sters la sfarsit
