@@ -50,7 +50,7 @@ public final class CoreConstants {
 
 	// from MindMapConstants
 	public static final String MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX = "mindMap.";
-	public static final String FEATURE_SHOW_PROPERTIES_IN_RENDERER= "showPropertiesInRenderer";
+	public static final String FEATURE_SHOW_PROPERTIES_IN_RENDERER = "showPropertiesInRenderer";
 	
 	////////////////////////////////////////////////////////////////////
 	// Constants only in Java (or before the constants cleaning up)
@@ -121,6 +121,11 @@ public final class CoreConstants {
 	public static final String INSERT_BEFORE_FULL_NODE_ID = "insertBeforeFullNodeId"; 
 	
 	public static final String PROPERTY_DEFAULT_FORMAT = "%s.default";
+
+	public static final String CONFIG_SETTING_DISABLED = "configSettingDisabled";
+	public static final String CATEGORY_CONFIG_SETTINGS = UtilConstants.CATEGORY_PREFIX + "configSettings";
+	
+	public static final String OVERWRITE_IF_NECESSARY = "overwriteIfNecessary";
 	
 	//////////////////////////////////
 	// File node properties
@@ -144,6 +149,7 @@ public final class CoreConstants {
 	public static final String PROPERTY_SETTER = "propertySetter";
 	public static final String RAW_NODE_DATA_PROVIDER = "rawNodeDataProvider";
 	public static final String REMOVE_NODE_CONTROLLER = "removeNodeController";
+	public static final String CONFIG_NODE_PROCESSOR = "configNodeProcessor";
 	
 	//////////////////////////////////
 	// Descriptors
@@ -193,16 +199,12 @@ public final class CoreConstants {
 	 */
 	public static final String NODE_IS_RESOURCE_NODE = "nodeIsResourceNode";
 
-	public static final String OVERRIDE = "override";
-	
-	
 	/**
 	 * Used to save the last value of a node's property in context, before the property is updated 
 	 * @author Claudiu Matei
 	 */
 	public static final String OLD_VALUES = "oldValue";
 
-	
 	//////////////////////////////////
 	// Resource
 	//////////////////////////////////

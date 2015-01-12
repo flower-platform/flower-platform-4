@@ -33,12 +33,13 @@ import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_CLOUD_TYPE
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_HAS_CHILDREN;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_RENDERER_SIDE;
 import static org.flowerplatform.core.CoreConstants.MIND_MAP_VALUES_PROVIDER_FEATURE_PREFIX;
+import static org.flowerplatform.core.CoreConstants.PROPERTIES_PROVIDER;
+import static org.flowerplatform.core.CoreConstants.PROPERTY_DESCRIPTOR;
 import static org.flowerplatform.core.CoreConstants.PROPERTY_LINE_RENDERER_TYPE_PREFERENCE;
 import static org.flowerplatform.core.CoreConstants.REPOSITORY_TYPE;
 import static org.flowerplatform.core.CoreConstants.ROOT_TYPE;
 import static org.flowerplatform.core.CoreConstants.VIRTUAL_NODE_SCHEME;
 import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_VALUE_CONVERTER;
-import static org.flowerplatform.util.UtilConstants.FEATURE_PROPERTY_DESCRIPTORS;
 import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_CSV_TO_LIST;
 import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_STRING_HEX_TO_UINT;
 
@@ -47,6 +48,7 @@ import java.io.File;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
+import org.flowerplatform.core.config_processor.ConfigSettingsPropertiesController;
 import org.flowerplatform.core.file.FileSystemControllers;
 import org.flowerplatform.core.file.IFileAccessController;
 import org.flowerplatform.core.file.PlainFileAccessController;
@@ -344,6 +346,15 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 		
 			.addAdditiveController(DEFAULT_PROPERTY_PROVIDER, new PropertyDescriptorDefaultPropertyValueProvider());
 		
+		
+		ConfigSettingsPropertiesController configSettingsPropertiesController = new ConfigSettingsPropertiesController();
+		getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CoreConstants.CATEGORY_CONFIG_SETTINGS)
+			.addAdditiveController(UtilConstants.FEATURE_PROPERTY_DESCRIPTORS, 
+					new PropertyDescriptor().setNameAs(CoreConstants.CONFIG_SETTING_DISABLED)
+					.setTypeAs(UtilConstants.PROPERTY_EDITOR_TYPE_BOOLEAN).setContributesToCreationAs(true))
+			.addAdditiveController(PROPERTIES_PROVIDER, configSettingsPropertiesController)
+			.addAdditiveController(CoreConstants.PROPERTY_SETTER, configSettingsPropertiesController);
+		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CoreConstants.PREFERENCE_CATEGORY_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTIES_PROVIDER, new PreferencePropertiesProvider().setOrderIndexAs(1000)); // after persistence props provider
 		
@@ -351,13 +362,12 @@ public class CorePlugin extends AbstractFlowerJavaPlugin {
 			.addCategory(CoreConstants.PREFERENCE_CATEGORY_TYPE)
 			.addAdditiveController(CoreConstants.PROPERTY_SETTER, new PreferencePropertySetter())
 			// TODO CC: to remove when working at preferences persistence
-			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setTypeAs(UtilConstants.PROPERTY_EDITOR_TYPE_STRING)
+			.addAdditiveController(PROPERTY_DESCRIPTOR, new PropertyDescriptor().setTypeAs(UtilConstants.PROPERTY_EDITOR_TYPE_STRING)
 					.setNameAs("value").setPropertyLineRendererAs(PROPERTY_LINE_RENDERER_TYPE_PREFERENCE).setReadOnlyAs(true));
 			
 		new FileSystemControllers().registerControllers();
 		new ResourceDebugControllers().registerControllers();
 		new TypeDescriptorRegistryDebugControllers().registerControllers();
-		
 		if (Boolean.valueOf(CorePlugin.getInstance().getFlowerProperties().getProperty(PROP_DELETE_TEMPORARY_DIRECTORY_AT_SERVER_STARTUP))) {
 			FileUtils.deleteDirectory(UtilConstants.TEMP_FOLDER);
 		}

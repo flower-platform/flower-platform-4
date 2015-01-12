@@ -1,0 +1,2244 @@
+<map version="freeplane 1.3.0">
+<!--To view this file, download free mind mapping software Freeplane from http://freeplane.sourceforge.net -->
+<node TEXT="New Mindmap" ID="ID_1998516687" CREATED="1415621437752" MODIFIED="1415621437752"><hook NAME="MapStyle">
+
+<map_styles>
+<stylenode LOCALIZED_TEXT="styles.root_node">
+<stylenode LOCALIZED_TEXT="styles.predefined" POSITION="right">
+<stylenode LOCALIZED_TEXT="default" MAX_WIDTH="600" COLOR="#000000" STYLE="as_parent">
+<font NAME="SansSerif" SIZE="10" BOLD="false" ITALIC="false"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="defaultstyle.details"/>
+<stylenode LOCALIZED_TEXT="defaultstyle.note"/>
+<stylenode LOCALIZED_TEXT="defaultstyle.floating">
+<edge STYLE="hide_edge"/>
+<cloud COLOR="#f0f0f0" SHAPE="ROUND_RECT"/>
+</stylenode>
+</stylenode>
+<stylenode LOCALIZED_TEXT="styles.user-defined" POSITION="right">
+<stylenode LOCALIZED_TEXT="styles.topic" COLOR="#18898b" STYLE="fork">
+<font NAME="Liberation Sans" SIZE="10" BOLD="true"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="styles.subtopic" COLOR="#cc3300" STYLE="fork">
+<font NAME="Liberation Sans" SIZE="10" BOLD="true"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="styles.subsubtopic" COLOR="#669900">
+<font NAME="Liberation Sans" SIZE="10" BOLD="true"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="styles.important">
+<icon BUILTIN="yes"/>
+</stylenode>
+</stylenode>
+<stylenode LOCALIZED_TEXT="styles.AutomaticLayout" POSITION="right">
+<stylenode LOCALIZED_TEXT="AutomaticLayout.level.root" COLOR="#000000">
+<font SIZE="18"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="AutomaticLayout.level,1" COLOR="#0033ff">
+<font SIZE="16"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="AutomaticLayout.level,2" COLOR="#00b439">
+<font SIZE="14"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="AutomaticLayout.level,3" COLOR="#990000">
+<font SIZE="12"/>
+</stylenode>
+<stylenode LOCALIZED_TEXT="AutomaticLayout.level,4" COLOR="#111111">
+<font SIZE="10"/>
+</stylenode>
+</stylenode>
+</stylenode>
+</map_styles>
+</hook>
+<attribute NAME="nodeType" VALUE="regexMatches"/>
+<attribute NAME="resourceUri" VALUE="txt:user1/repo-2|.regex-configs/AS3/test-files/FlexHostResourceOperationsHandler.as"/>
+<attribute NAME="showGroupedByRegex" VALUE="false" OBJECT="java.lang.Boolean|false"/>
+<node TEXT="" POSITION="right" ID="ID_433189767" CREATED="1415621437752" MODIFIED="1415621437752">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="14" OBJECT="java.lang.Integer|14"/>
+<attribute NAME="fullRegex" VALUE="/\*.*?\*/"/>
+<attribute NAME="startChar" VALUE="0" OBJECT="java.lang.Integer|0"/>
+<attribute NAME="startLine" VALUE="0" OBJECT="java.lang.Integer|0"/>
+<attribute NAME="name" VALUE="1) multiline-comment"/>
+<attribute NAME="start" VALUE="L0 C0"/>
+<attribute NAME="regexName" VALUE="multiline-comment"/>
+<attribute NAME="end" VALUE="L14 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_633691870" CREATED="1415621437752" MODIFIED="1415621437752">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="15" OBJECT="java.lang.Integer|15"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="49" OBJECT="java.lang.Integer|49"/>
+<attribute NAME="startLine" VALUE="15" OBJECT="java.lang.Integer|15"/>
+<attribute NAME="name" VALUE="2) open-bracket"/>
+<attribute NAME="start" VALUE="L15 C49"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L15 C50"/>
+<attribute NAME="endChar" VALUE="50" OBJECT="java.lang.Integer|50"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1492550172" CREATED="1415621437768" MODIFIED="1415621437768">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="37" OBJECT="java.lang.Integer|37"/>
+<attribute NAME="fullRegex" VALUE="/\*\*(.*?)\*/"/>
+<attribute NAME="startChar" VALUE="1" OBJECT="java.lang.Integer|1"/>
+<attribute NAME="startLine" VALUE="34" OBJECT="java.lang.Integer|34"/>
+<attribute NAME="name" VALUE="3) asdoc"/>
+<attribute NAME="start" VALUE="L34 C1"/>
+<attribute NAME="regexName" VALUE="asdoc"/>
+<attribute NAME="end" VALUE="L37 C4"/>
+<attribute NAME="endChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+<node TEXT="" ID="ID_825432180" CREATED="1415621437768" MODIFIED="1415621437768">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="37" OBJECT="java.lang.Integer|37"/>
+<attribute NAME="startChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+<attribute NAME="startLine" VALUE="34" OBJECT="java.lang.Integer|34"/>
+<attribute NAME="name" VALUE="&#xd;&#xa;&#x9; * @author Cristina Constantinescu&#xd;&#xa;&#x9; * @author Mariana Gheorghe&#xd;&#xa;&#x9; "/>
+<attribute NAME="start" VALUE="L34 C4"/>
+<attribute NAME="end" VALUE="L37 C2"/>
+<attribute NAME="endChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_970287782" CREATED="1415621437768" MODIFIED="1415621437768">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="38" OBJECT="java.lang.Integer|38"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bclass\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*).*?(?=\{)"/>
+<attribute NAME="startChar" VALUE="1" OBJECT="java.lang.Integer|1"/>
+<attribute NAME="startLine" VALUE="38" OBJECT="java.lang.Integer|38"/>
+<attribute NAME="name" VALUE="4) type-class"/>
+<attribute NAME="start" VALUE="L38 C1"/>
+<attribute NAME="regexName" VALUE="type-class"/>
+<attribute NAME="end" VALUE="L38 C90"/>
+<attribute NAME="endChar" VALUE="90" OBJECT="java.lang.Integer|90"/>
+<node TEXT="" ID="ID_1105466941" CREATED="1415621437768" MODIFIED="1415621437768">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="38" OBJECT="java.lang.Integer|38"/>
+<attribute NAME="startChar" VALUE="1" OBJECT="java.lang.Integer|1"/>
+<attribute NAME="startLine" VALUE="38" OBJECT="java.lang.Integer|38"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L38 C1"/>
+<attribute NAME="end" VALUE="L38 C7"/>
+<attribute NAME="endChar" VALUE="7" OBJECT="java.lang.Integer|7"/>
+</node>
+<node TEXT="" ID="ID_1276779481" CREATED="1415621437768" MODIFIED="1415621437768">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="38" OBJECT="java.lang.Integer|38"/>
+<attribute NAME="startChar" VALUE="14" OBJECT="java.lang.Integer|14"/>
+<attribute NAME="startLine" VALUE="38" OBJECT="java.lang.Integer|38"/>
+<attribute NAME="name" VALUE="FlexHostResourceOperationsHandler"/>
+<attribute NAME="start" VALUE="L38 C14"/>
+<attribute NAME="end" VALUE="L38 C47"/>
+<attribute NAME="endChar" VALUE="47" OBJECT="java.lang.Integer|47"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1498088491" CREATED="1415621437768" MODIFIED="1415621437768">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="38" OBJECT="java.lang.Integer|38"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="90" OBJECT="java.lang.Integer|90"/>
+<attribute NAME="startLine" VALUE="38" OBJECT="java.lang.Integer|38"/>
+<attribute NAME="name" VALUE="5) open-bracket"/>
+<attribute NAME="start" VALUE="L38 C90"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L38 C91"/>
+<attribute NAME="endChar" VALUE="91" OBJECT="java.lang.Integer|91"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_168332794" CREATED="1415621437768" MODIFIED="1415621437768">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="40" OBJECT="java.lang.Integer|40"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bvar\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="40" OBJECT="java.lang.Integer|40"/>
+<attribute NAME="name" VALUE="6) attribute-var"/>
+<attribute NAME="start" VALUE="L40 C2"/>
+<attribute NAME="regexName" VALUE="attribute-var"/>
+<attribute NAME="end" VALUE="L40 C34"/>
+<attribute NAME="endChar" VALUE="34" OBJECT="java.lang.Integer|34"/>
+<node TEXT="" ID="ID_53170343" CREATED="1415621437768" MODIFIED="1415621437768">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="40" OBJECT="java.lang.Integer|40"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="40" OBJECT="java.lang.Integer|40"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L40 C2"/>
+<attribute NAME="end" VALUE="L40 C8"/>
+<attribute NAME="endChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+</node>
+<node TEXT="" ID="ID_1463354180" CREATED="1415621437768" MODIFIED="1415621437768">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="40" OBJECT="java.lang.Integer|40"/>
+<attribute NAME="startChar" VALUE="13" OBJECT="java.lang.Integer|13"/>
+<attribute NAME="startLine" VALUE="40" OBJECT="java.lang.Integer|40"/>
+<attribute NAME="name" VALUE="saveAction"/>
+<attribute NAME="start" VALUE="L40 C13"/>
+<attribute NAME="end" VALUE="L40 C23"/>
+<attribute NAME="endChar" VALUE="23" OBJECT="java.lang.Integer|23"/>
+</node>
+<node TEXT="" ID="ID_118123085" CREATED="1415621437768" MODIFIED="1415621437768">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="40" OBJECT="java.lang.Integer|40"/>
+<attribute NAME="startChar" VALUE="24" OBJECT="java.lang.Integer|24"/>
+<attribute NAME="startLine" VALUE="40" OBJECT="java.lang.Integer|40"/>
+<attribute NAME="name" VALUE="SaveAction"/>
+<attribute NAME="start" VALUE="L40 C24"/>
+<attribute NAME="end" VALUE="L40 C34"/>
+<attribute NAME="endChar" VALUE="34" OBJECT="java.lang.Integer|34"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_619653943" CREATED="1415621437768" MODIFIED="1415621437768">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="41" OBJECT="java.lang.Integer|41"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bvar\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="41" OBJECT="java.lang.Integer|41"/>
+<attribute NAME="name" VALUE="7) attribute-var"/>
+<attribute NAME="start" VALUE="L41 C2"/>
+<attribute NAME="regexName" VALUE="attribute-var"/>
+<attribute NAME="end" VALUE="L41 C40"/>
+<attribute NAME="endChar" VALUE="40" OBJECT="java.lang.Integer|40"/>
+<node TEXT="" ID="ID_834907536" CREATED="1415621437768" MODIFIED="1415621437768">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="41" OBJECT="java.lang.Integer|41"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="41" OBJECT="java.lang.Integer|41"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L41 C2"/>
+<attribute NAME="end" VALUE="L41 C8"/>
+<attribute NAME="endChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+</node>
+<node TEXT="" ID="ID_1791206719" CREATED="1415621437768" MODIFIED="1415621437768">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="41" OBJECT="java.lang.Integer|41"/>
+<attribute NAME="startChar" VALUE="13" OBJECT="java.lang.Integer|13"/>
+<attribute NAME="startLine" VALUE="41" OBJECT="java.lang.Integer|41"/>
+<attribute NAME="name" VALUE="saveAllAction"/>
+<attribute NAME="start" VALUE="L41 C13"/>
+<attribute NAME="end" VALUE="L41 C26"/>
+<attribute NAME="endChar" VALUE="26" OBJECT="java.lang.Integer|26"/>
+</node>
+<node TEXT="" ID="ID_291082868" CREATED="1415621437768" MODIFIED="1415621437768">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="41" OBJECT="java.lang.Integer|41"/>
+<attribute NAME="startChar" VALUE="27" OBJECT="java.lang.Integer|27"/>
+<attribute NAME="startLine" VALUE="41" OBJECT="java.lang.Integer|41"/>
+<attribute NAME="name" VALUE="SaveAllAction"/>
+<attribute NAME="start" VALUE="L41 C27"/>
+<attribute NAME="end" VALUE="L41 C40"/>
+<attribute NAME="endChar" VALUE="40" OBJECT="java.lang.Integer|40"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_865852002" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="45" OBJECT="java.lang.Integer|45"/>
+<attribute NAME="fullRegex" VALUE="/\*\*(.*?)\*/"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="43" OBJECT="java.lang.Integer|43"/>
+<attribute NAME="name" VALUE="8) asdoc"/>
+<attribute NAME="start" VALUE="L43 C2"/>
+<attribute NAME="regexName" VALUE="asdoc"/>
+<attribute NAME="end" VALUE="L45 C5"/>
+<attribute NAME="endChar" VALUE="5" OBJECT="java.lang.Integer|5"/>
+<node TEXT="" ID="ID_1660774941" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="45" OBJECT="java.lang.Integer|45"/>
+<attribute NAME="startChar" VALUE="5" OBJECT="java.lang.Integer|5"/>
+<attribute NAME="startLine" VALUE="43" OBJECT="java.lang.Integer|43"/>
+<attribute NAME="name" VALUE="&#xd;&#xa;&#x9;&#x9; * Just some test doc, don&apos;t mind me.&#xd;&#xa;&#x9;&#x9; "/>
+<attribute NAME="start" VALUE="L43 C5"/>
+<attribute NAME="end" VALUE="L45 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_586615188" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="46" OBJECT="java.lang.Integer|46"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bvar\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="46" OBJECT="java.lang.Integer|46"/>
+<attribute NAME="name" VALUE="9) attribute-var"/>
+<attribute NAME="start" VALUE="L46 C2"/>
+<attribute NAME="regexName" VALUE="attribute-var"/>
+<attribute NAME="end" VALUE="L46 C38"/>
+<attribute NAME="endChar" VALUE="38" OBJECT="java.lang.Integer|38"/>
+<node TEXT="" ID="ID_723666350" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="46" OBJECT="java.lang.Integer|46"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="46" OBJECT="java.lang.Integer|46"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L46 C2"/>
+<attribute NAME="end" VALUE="L46 C8"/>
+<attribute NAME="endChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+</node>
+<node TEXT="" ID="ID_239558788" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="46" OBJECT="java.lang.Integer|46"/>
+<attribute NAME="startChar" VALUE="13" OBJECT="java.lang.Integer|13"/>
+<attribute NAME="startLine" VALUE="46" OBJECT="java.lang.Integer|46"/>
+<attribute NAME="name" VALUE="reloadAction"/>
+<attribute NAME="start" VALUE="L46 C13"/>
+<attribute NAME="end" VALUE="L46 C25"/>
+<attribute NAME="endChar" VALUE="25" OBJECT="java.lang.Integer|25"/>
+</node>
+<node TEXT="" ID="ID_516332523" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="46" OBJECT="java.lang.Integer|46"/>
+<attribute NAME="startChar" VALUE="26" OBJECT="java.lang.Integer|26"/>
+<attribute NAME="startLine" VALUE="46" OBJECT="java.lang.Integer|46"/>
+<attribute NAME="name" VALUE="ReloadAction"/>
+<attribute NAME="start" VALUE="L46 C26"/>
+<attribute NAME="end" VALUE="L46 C38"/>
+<attribute NAME="endChar" VALUE="38" OBJECT="java.lang.Integer|38"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1442383720" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="47" OBJECT="java.lang.Integer|47"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bvar\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="47" OBJECT="java.lang.Integer|47"/>
+<attribute NAME="name" VALUE="10) attribute-var"/>
+<attribute NAME="start" VALUE="L47 C2"/>
+<attribute NAME="regexName" VALUE="attribute-var"/>
+<attribute NAME="end" VALUE="L47 C58"/>
+<attribute NAME="endChar" VALUE="58" OBJECT="java.lang.Integer|58"/>
+<node TEXT="" ID="ID_87165012" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="47" OBJECT="java.lang.Integer|47"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="47" OBJECT="java.lang.Integer|47"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L47 C2"/>
+<attribute NAME="end" VALUE="L47 C8"/>
+<attribute NAME="endChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+</node>
+<node TEXT="" ID="ID_1996329688" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="47" OBJECT="java.lang.Integer|47"/>
+<attribute NAME="startChar" VALUE="13" OBJECT="java.lang.Integer|13"/>
+<attribute NAME="startLine" VALUE="47" OBJECT="java.lang.Integer|47"/>
+<attribute NAME="name" VALUE="showCommandStackAction"/>
+<attribute NAME="start" VALUE="L47 C13"/>
+<attribute NAME="end" VALUE="L47 C35"/>
+<attribute NAME="endChar" VALUE="35" OBJECT="java.lang.Integer|35"/>
+</node>
+<node TEXT="" ID="ID_995273869" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="47" OBJECT="java.lang.Integer|47"/>
+<attribute NAME="startChar" VALUE="36" OBJECT="java.lang.Integer|36"/>
+<attribute NAME="startLine" VALUE="47" OBJECT="java.lang.Integer|47"/>
+<attribute NAME="name" VALUE="ShowCommandStackAction"/>
+<attribute NAME="start" VALUE="L47 C36"/>
+<attribute NAME="end" VALUE="L47 C58"/>
+<attribute NAME="endChar" VALUE="58" OBJECT="java.lang.Integer|58"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_616176205" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="49" OBJECT="java.lang.Integer|49"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bvar\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="49" OBJECT="java.lang.Integer|49"/>
+<attribute NAME="name" VALUE="11) attribute-var"/>
+<attribute NAME="start" VALUE="L49 C2"/>
+<attribute NAME="regexName" VALUE="attribute-var"/>
+<attribute NAME="end" VALUE="L49 C36"/>
+<attribute NAME="endChar" VALUE="36" OBJECT="java.lang.Integer|36"/>
+<node TEXT="" ID="ID_1596611510" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="49" OBJECT="java.lang.Integer|49"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="49" OBJECT="java.lang.Integer|49"/>
+<attribute NAME="name" VALUE="private"/>
+<attribute NAME="start" VALUE="L49 C2"/>
+<attribute NAME="end" VALUE="L49 C9"/>
+<attribute NAME="endChar" VALUE="9" OBJECT="java.lang.Integer|9"/>
+</node>
+<node TEXT="" ID="ID_653781434" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="49" OBJECT="java.lang.Integer|49"/>
+<attribute NAME="startChar" VALUE="14" OBJECT="java.lang.Integer|14"/>
+<attribute NAME="startLine" VALUE="49" OBJECT="java.lang.Integer|49"/>
+<attribute NAME="name" VALUE="_nodeRegistryManager"/>
+<attribute NAME="start" VALUE="L49 C14"/>
+<attribute NAME="end" VALUE="L49 C34"/>
+<attribute NAME="endChar" VALUE="34" OBJECT="java.lang.Integer|34"/>
+</node>
+<node TEXT="" ID="ID_1771917827" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="49" OBJECT="java.lang.Integer|49"/>
+<attribute NAME="startChar" VALUE="35" OBJECT="java.lang.Integer|35"/>
+<attribute NAME="startLine" VALUE="49" OBJECT="java.lang.Integer|49"/>
+<attribute NAME="name" VALUE="*"/>
+<attribute NAME="start" VALUE="L49 C35"/>
+<attribute NAME="end" VALUE="L49 C36"/>
+<attribute NAME="endChar" VALUE="36" OBJECT="java.lang.Integer|36"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_584304234" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="51" OBJECT="java.lang.Integer|51"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bfunction\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\bget\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*[a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\(.*?\)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?=(\{?))"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="51" OBJECT="java.lang.Integer|51"/>
+<attribute NAME="name" VALUE="12) operation-getter"/>
+<attribute NAME="start" VALUE="L51 C2"/>
+<attribute NAME="regexName" VALUE="operation-getter"/>
+<attribute NAME="end" VALUE="L51 C46"/>
+<attribute NAME="endChar" VALUE="46" OBJECT="java.lang.Integer|46"/>
+<node TEXT="" ID="ID_1244660451" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="51" OBJECT="java.lang.Integer|51"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="51" OBJECT="java.lang.Integer|51"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L51 C2"/>
+<attribute NAME="end" VALUE="L51 C8"/>
+<attribute NAME="endChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+</node>
+<node TEXT="" ID="ID_859268801" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="51" OBJECT="java.lang.Integer|51"/>
+<attribute NAME="startChar" VALUE="18" OBJECT="java.lang.Integer|18"/>
+<attribute NAME="startLine" VALUE="51" OBJECT="java.lang.Integer|51"/>
+<attribute NAME="name" VALUE="get nodeRegistryManager"/>
+<attribute NAME="start" VALUE="L51 C18"/>
+<attribute NAME="end" VALUE="L51 C41"/>
+<attribute NAME="endChar" VALUE="41" OBJECT="java.lang.Integer|41"/>
+</node>
+<node TEXT="" ID="ID_886878777" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="51" OBJECT="java.lang.Integer|51"/>
+<attribute NAME="startChar" VALUE="44" OBJECT="java.lang.Integer|44"/>
+<attribute NAME="startLine" VALUE="51" OBJECT="java.lang.Integer|51"/>
+<attribute NAME="name" VALUE="*"/>
+<attribute NAME="start" VALUE="L51 C44"/>
+<attribute NAME="end" VALUE="L51 C45"/>
+<attribute NAME="endChar" VALUE="45" OBJECT="java.lang.Integer|45"/>
+</node>
+<node TEXT="" ID="ID_335717947" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="51" OBJECT="java.lang.Integer|51"/>
+<attribute NAME="startChar" VALUE="46" OBJECT="java.lang.Integer|46"/>
+<attribute NAME="startLine" VALUE="51" OBJECT="java.lang.Integer|51"/>
+<attribute NAME="name" VALUE="{"/>
+<attribute NAME="start" VALUE="L51 C46"/>
+<attribute NAME="end" VALUE="L51 C47"/>
+<attribute NAME="endChar" VALUE="47" OBJECT="java.lang.Integer|47"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_452771496" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="51" OBJECT="java.lang.Integer|51"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="46" OBJECT="java.lang.Integer|46"/>
+<attribute NAME="startLine" VALUE="51" OBJECT="java.lang.Integer|51"/>
+<attribute NAME="name" VALUE="13) open-bracket"/>
+<attribute NAME="start" VALUE="L51 C46"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L51 C47"/>
+<attribute NAME="endChar" VALUE="47" OBJECT="java.lang.Integer|47"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_199647518" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="53" OBJECT="java.lang.Integer|53"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="53" OBJECT="java.lang.Integer|53"/>
+<attribute NAME="name" VALUE="14) close-bracket"/>
+<attribute NAME="start" VALUE="L53 C2"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L53 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_298123219" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="55" OBJECT="java.lang.Integer|55"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bfunction\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\bset\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*[a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\(.*?\)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?=(\{?))"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="55" OBJECT="java.lang.Integer|55"/>
+<attribute NAME="name" VALUE="15) operation-setter"/>
+<attribute NAME="start" VALUE="L55 C2"/>
+<attribute NAME="regexName" VALUE="operation-setter"/>
+<attribute NAME="end" VALUE="L55 C56"/>
+<attribute NAME="endChar" VALUE="56" OBJECT="java.lang.Integer|56"/>
+<node TEXT="" ID="ID_1923090021" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="55" OBJECT="java.lang.Integer|55"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="55" OBJECT="java.lang.Integer|55"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L55 C2"/>
+<attribute NAME="end" VALUE="L55 C8"/>
+<attribute NAME="endChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+</node>
+<node TEXT="" ID="ID_447252666" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="55" OBJECT="java.lang.Integer|55"/>
+<attribute NAME="startChar" VALUE="18" OBJECT="java.lang.Integer|18"/>
+<attribute NAME="startLine" VALUE="55" OBJECT="java.lang.Integer|55"/>
+<attribute NAME="name" VALUE="set nodeRegistryManager"/>
+<attribute NAME="start" VALUE="L55 C18"/>
+<attribute NAME="end" VALUE="L55 C41"/>
+<attribute NAME="endChar" VALUE="41" OBJECT="java.lang.Integer|41"/>
+</node>
+<node TEXT="" ID="ID_896022006" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="55" OBJECT="java.lang.Integer|55"/>
+<attribute NAME="startChar" VALUE="51" OBJECT="java.lang.Integer|51"/>
+<attribute NAME="startLine" VALUE="55" OBJECT="java.lang.Integer|55"/>
+<attribute NAME="name" VALUE="void"/>
+<attribute NAME="start" VALUE="L55 C51"/>
+<attribute NAME="end" VALUE="L55 C55"/>
+<attribute NAME="endChar" VALUE="55" OBJECT="java.lang.Integer|55"/>
+</node>
+<node TEXT="" ID="ID_1209016315" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="55" OBJECT="java.lang.Integer|55"/>
+<attribute NAME="startChar" VALUE="56" OBJECT="java.lang.Integer|56"/>
+<attribute NAME="startLine" VALUE="55" OBJECT="java.lang.Integer|55"/>
+<attribute NAME="name" VALUE="{"/>
+<attribute NAME="start" VALUE="L55 C56"/>
+<attribute NAME="end" VALUE="L55 C57"/>
+<attribute NAME="endChar" VALUE="57" OBJECT="java.lang.Integer|57"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_960504962" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="55" OBJECT="java.lang.Integer|55"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="56" OBJECT="java.lang.Integer|56"/>
+<attribute NAME="startLine" VALUE="55" OBJECT="java.lang.Integer|55"/>
+<attribute NAME="name" VALUE="16) open-bracket"/>
+<attribute NAME="start" VALUE="L55 C56"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L55 C57"/>
+<attribute NAME="endChar" VALUE="57" OBJECT="java.lang.Integer|57"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1316389289" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="57" OBJECT="java.lang.Integer|57"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="57" OBJECT="java.lang.Integer|57"/>
+<attribute NAME="name" VALUE="17) close-bracket"/>
+<attribute NAME="start" VALUE="L57 C2"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L57 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_628790395" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="59" OBJECT="java.lang.Integer|59"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bfunction\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\(.*?\)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?=(\{?))"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="59" OBJECT="java.lang.Integer|59"/>
+<attribute NAME="name" VALUE="18) operation-function"/>
+<attribute NAME="start" VALUE="L59 C2"/>
+<attribute NAME="regexName" VALUE="operation-function"/>
+<attribute NAME="end" VALUE="L59 C76"/>
+<attribute NAME="endChar" VALUE="76" OBJECT="java.lang.Integer|76"/>
+<node TEXT="" ID="ID_1402696022" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="59" OBJECT="java.lang.Integer|59"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="59" OBJECT="java.lang.Integer|59"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L59 C2"/>
+<attribute NAME="end" VALUE="L59 C8"/>
+<attribute NAME="endChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+</node>
+<node TEXT="" ID="ID_85246483" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="59" OBJECT="java.lang.Integer|59"/>
+<attribute NAME="startChar" VALUE="18" OBJECT="java.lang.Integer|18"/>
+<attribute NAME="startLine" VALUE="59" OBJECT="java.lang.Integer|59"/>
+<attribute NAME="name" VALUE="activeViewChangedHandler"/>
+<attribute NAME="start" VALUE="L59 C18"/>
+<attribute NAME="end" VALUE="L59 C42"/>
+<attribute NAME="endChar" VALUE="42" OBJECT="java.lang.Integer|42"/>
+</node>
+<node TEXT="" ID="ID_910892499" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="59" OBJECT="java.lang.Integer|59"/>
+<attribute NAME="startChar" VALUE="71" OBJECT="java.lang.Integer|71"/>
+<attribute NAME="startLine" VALUE="59" OBJECT="java.lang.Integer|59"/>
+<attribute NAME="name" VALUE="void"/>
+<attribute NAME="start" VALUE="L59 C71"/>
+<attribute NAME="end" VALUE="L59 C75"/>
+<attribute NAME="endChar" VALUE="75" OBJECT="java.lang.Integer|75"/>
+</node>
+<node TEXT="" ID="ID_1445589409" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="59" OBJECT="java.lang.Integer|59"/>
+<attribute NAME="startChar" VALUE="76" OBJECT="java.lang.Integer|76"/>
+<attribute NAME="startLine" VALUE="59" OBJECT="java.lang.Integer|59"/>
+<attribute NAME="name" VALUE="{"/>
+<attribute NAME="start" VALUE="L59 C76"/>
+<attribute NAME="end" VALUE="L59 C77"/>
+<attribute NAME="endChar" VALUE="77" OBJECT="java.lang.Integer|77"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_998225239" CREATED="1415621437784" MODIFIED="1415621437784">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="59" OBJECT="java.lang.Integer|59"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="76" OBJECT="java.lang.Integer|76"/>
+<attribute NAME="startLine" VALUE="59" OBJECT="java.lang.Integer|59"/>
+<attribute NAME="name" VALUE="19) open-bracket"/>
+<attribute NAME="start" VALUE="L59 C76"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L59 C77"/>
+<attribute NAME="endChar" VALUE="77" OBJECT="java.lang.Integer|77"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1759594085" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="61" OBJECT="java.lang.Integer|61"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="61" OBJECT="java.lang.Integer|61"/>
+<attribute NAME="name" VALUE="20) close-bracket"/>
+<attribute NAME="start" VALUE="L61 C2"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L61 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_455474611" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bfunction\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\(.*?\)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?=(\{?))"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="name" VALUE="21) operation-function"/>
+<attribute NAME="start" VALUE="L63 C2"/>
+<attribute NAME="regexName" VALUE="operation-function"/>
+<attribute NAME="end" VALUE="L63 C63"/>
+<attribute NAME="endChar" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<node TEXT="" ID="ID_1338884339" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L63 C2"/>
+<attribute NAME="end" VALUE="L63 C8"/>
+<attribute NAME="endChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+</node>
+<node TEXT="" ID="ID_543518865" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="startChar" VALUE="18" OBJECT="java.lang.Integer|18"/>
+<attribute NAME="startLine" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="name" VALUE="updateEditorFrontendActionsEnablement"/>
+<attribute NAME="start" VALUE="L63 C18"/>
+<attribute NAME="end" VALUE="L63 C55"/>
+<attribute NAME="endChar" VALUE="55" OBJECT="java.lang.Integer|55"/>
+</node>
+<node TEXT="" ID="ID_931594701" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="startChar" VALUE="58" OBJECT="java.lang.Integer|58"/>
+<attribute NAME="startLine" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="name" VALUE="void"/>
+<attribute NAME="start" VALUE="L63 C58"/>
+<attribute NAME="end" VALUE="L63 C62"/>
+<attribute NAME="endChar" VALUE="62" OBJECT="java.lang.Integer|62"/>
+</node>
+<node TEXT="" ID="ID_1275863255" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="startChar" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="startLine" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="name" VALUE="{"/>
+<attribute NAME="start" VALUE="L63 C63"/>
+<attribute NAME="end" VALUE="L63 C64"/>
+<attribute NAME="endChar" VALUE="64" OBJECT="java.lang.Integer|64"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_995837268" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="startLine" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="name" VALUE="22) open-bracket"/>
+<attribute NAME="start" VALUE="L63 C63"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L63 C64"/>
+<attribute NAME="endChar" VALUE="64" OBJECT="java.lang.Integer|64"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_439305955" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="64" OBJECT="java.lang.Integer|64"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bvar\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?"/>
+<attribute NAME="startChar" VALUE="64" OBJECT="java.lang.Integer|64"/>
+<attribute NAME="startLine" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="name" VALUE="23) attribute-var"/>
+<attribute NAME="start" VALUE="L63 C64"/>
+<attribute NAME="regexName" VALUE="attribute-var"/>
+<attribute NAME="end" VALUE="L64 C27"/>
+<attribute NAME="endChar" VALUE="27" OBJECT="java.lang.Integer|27"/>
+<node TEXT="" ID="ID_122244793" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="startChar" VALUE="64" OBJECT="java.lang.Integer|64"/>
+<attribute NAME="startLine" VALUE="63" OBJECT="java.lang.Integer|63"/>
+<attribute NAME="name" VALUE=""/>
+<attribute NAME="start" VALUE="L63 C64"/>
+<attribute NAME="end" VALUE="L63 C64"/>
+<attribute NAME="endChar" VALUE="64" OBJECT="java.lang.Integer|64"/>
+</node>
+<node TEXT="" ID="ID_889799408" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="64" OBJECT="java.lang.Integer|64"/>
+<attribute NAME="startChar" VALUE="7" OBJECT="java.lang.Integer|7"/>
+<attribute NAME="startLine" VALUE="64" OBJECT="java.lang.Integer|64"/>
+<attribute NAME="name" VALUE="workbench"/>
+<attribute NAME="start" VALUE="L64 C7"/>
+<attribute NAME="end" VALUE="L64 C16"/>
+<attribute NAME="endChar" VALUE="16" OBJECT="java.lang.Integer|16"/>
+</node>
+<node TEXT="" ID="ID_1070855318" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="64" OBJECT="java.lang.Integer|64"/>
+<attribute NAME="startChar" VALUE="17" OBJECT="java.lang.Integer|17"/>
+<attribute NAME="startLine" VALUE="64" OBJECT="java.lang.Integer|64"/>
+<attribute NAME="name" VALUE="IWorkbench"/>
+<attribute NAME="start" VALUE="L64 C17"/>
+<attribute NAME="end" VALUE="L64 C27"/>
+<attribute NAME="endChar" VALUE="27" OBJECT="java.lang.Integer|27"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_112738697" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="65" OBJECT="java.lang.Integer|65"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bvar\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?"/>
+<attribute NAME="startChar" VALUE="70" OBJECT="java.lang.Integer|70"/>
+<attribute NAME="startLine" VALUE="64" OBJECT="java.lang.Integer|64"/>
+<attribute NAME="name" VALUE="24) attribute-var"/>
+<attribute NAME="start" VALUE="L64 C70"/>
+<attribute NAME="regexName" VALUE="attribute-var"/>
+<attribute NAME="end" VALUE="L65 C34"/>
+<attribute NAME="endChar" VALUE="34" OBJECT="java.lang.Integer|34"/>
+<node TEXT="" ID="ID_1324573664" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="64" OBJECT="java.lang.Integer|64"/>
+<attribute NAME="startChar" VALUE="70" OBJECT="java.lang.Integer|70"/>
+<attribute NAME="startLine" VALUE="64" OBJECT="java.lang.Integer|64"/>
+<attribute NAME="name" VALUE=""/>
+<attribute NAME="start" VALUE="L64 C70"/>
+<attribute NAME="end" VALUE="L64 C70"/>
+<attribute NAME="endChar" VALUE="70" OBJECT="java.lang.Integer|70"/>
+</node>
+<node TEXT="" ID="ID_901804395" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="65" OBJECT="java.lang.Integer|65"/>
+<attribute NAME="startChar" VALUE="7" OBJECT="java.lang.Integer|7"/>
+<attribute NAME="startLine" VALUE="65" OBJECT="java.lang.Integer|65"/>
+<attribute NAME="name" VALUE="activeComponent"/>
+<attribute NAME="start" VALUE="L65 C7"/>
+<attribute NAME="end" VALUE="L65 C22"/>
+<attribute NAME="endChar" VALUE="22" OBJECT="java.lang.Integer|22"/>
+</node>
+<node TEXT="" ID="ID_826879056" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="65" OBJECT="java.lang.Integer|65"/>
+<attribute NAME="startChar" VALUE="23" OBJECT="java.lang.Integer|23"/>
+<attribute NAME="startLine" VALUE="65" OBJECT="java.lang.Integer|65"/>
+<attribute NAME="name" VALUE="UIComponent"/>
+<attribute NAME="start" VALUE="L65 C23"/>
+<attribute NAME="end" VALUE="L65 C34"/>
+<attribute NAME="endChar" VALUE="34" OBJECT="java.lang.Integer|34"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1286702371" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="67" OBJECT="java.lang.Integer|67"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="42" OBJECT="java.lang.Integer|42"/>
+<attribute NAME="startLine" VALUE="67" OBJECT="java.lang.Integer|67"/>
+<attribute NAME="name" VALUE="25) open-bracket"/>
+<attribute NAME="start" VALUE="L67 C42"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L67 C43"/>
+<attribute NAME="endChar" VALUE="43" OBJECT="java.lang.Integer|43"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1156695580" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="68" OBJECT="java.lang.Integer|68"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bvar\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?"/>
+<attribute NAME="startChar" VALUE="43" OBJECT="java.lang.Integer|43"/>
+<attribute NAME="startLine" VALUE="67" OBJECT="java.lang.Integer|67"/>
+<attribute NAME="name" VALUE="26) attribute-var"/>
+<attribute NAME="start" VALUE="L67 C43"/>
+<attribute NAME="regexName" VALUE="attribute-var"/>
+<attribute NAME="end" VALUE="L68 C37"/>
+<attribute NAME="endChar" VALUE="37" OBJECT="java.lang.Integer|37"/>
+<node TEXT="" ID="ID_1526463530" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="67" OBJECT="java.lang.Integer|67"/>
+<attribute NAME="startChar" VALUE="43" OBJECT="java.lang.Integer|43"/>
+<attribute NAME="startLine" VALUE="67" OBJECT="java.lang.Integer|67"/>
+<attribute NAME="name" VALUE=""/>
+<attribute NAME="start" VALUE="L67 C43"/>
+<attribute NAME="end" VALUE="L67 C43"/>
+<attribute NAME="endChar" VALUE="43" OBJECT="java.lang.Integer|43"/>
+</node>
+<node TEXT="" ID="ID_415662856" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="68" OBJECT="java.lang.Integer|68"/>
+<attribute NAME="startChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+<attribute NAME="startLine" VALUE="68" OBJECT="java.lang.Integer|68"/>
+<attribute NAME="name" VALUE="editorFrontend"/>
+<attribute NAME="start" VALUE="L68 C8"/>
+<attribute NAME="end" VALUE="L68 C22"/>
+<attribute NAME="endChar" VALUE="22" OBJECT="java.lang.Integer|22"/>
+</node>
+<node TEXT="" ID="ID_1322408476" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="68" OBJECT="java.lang.Integer|68"/>
+<attribute NAME="startChar" VALUE="23" OBJECT="java.lang.Integer|23"/>
+<attribute NAME="startLine" VALUE="68" OBJECT="java.lang.Integer|68"/>
+<attribute NAME="name" VALUE="EditorFrontend"/>
+<attribute NAME="start" VALUE="L68 C23"/>
+<attribute NAME="end" VALUE="L68 C37"/>
+<attribute NAME="endChar" VALUE="37" OBJECT="java.lang.Integer|37"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_240931032" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="72" OBJECT="java.lang.Integer|72"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+<attribute NAME="startLine" VALUE="72" OBJECT="java.lang.Integer|72"/>
+<attribute NAME="name" VALUE="27) close-bracket"/>
+<attribute NAME="start" VALUE="L72 C3"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L72 C4"/>
+<attribute NAME="endChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_630902300" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="72" OBJECT="java.lang.Integer|72"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="10" OBJECT="java.lang.Integer|10"/>
+<attribute NAME="startLine" VALUE="72" OBJECT="java.lang.Integer|72"/>
+<attribute NAME="name" VALUE="28) open-bracket"/>
+<attribute NAME="start" VALUE="L72 C10"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L72 C11"/>
+<attribute NAME="endChar" VALUE="11" OBJECT="java.lang.Integer|11"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_287768604" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="75" OBJECT="java.lang.Integer|75"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+<attribute NAME="startLine" VALUE="75" OBJECT="java.lang.Integer|75"/>
+<attribute NAME="name" VALUE="29) close-bracket"/>
+<attribute NAME="start" VALUE="L75 C3"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L75 C4"/>
+<attribute NAME="endChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_582791885" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="76" OBJECT="java.lang.Integer|76"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="76" OBJECT="java.lang.Integer|76"/>
+<attribute NAME="name" VALUE="30) close-bracket"/>
+<attribute NAME="start" VALUE="L76 C2"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L76 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1463255223" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="78" OBJECT="java.lang.Integer|78"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bfunction\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\(.*?\)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?=(\{?))"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="78" OBJECT="java.lang.Integer|78"/>
+<attribute NAME="name" VALUE="31) operation-function"/>
+<attribute NAME="start" VALUE="L78 C2"/>
+<attribute NAME="regexName" VALUE="operation-function"/>
+<attribute NAME="end" VALUE="L78 C126"/>
+<attribute NAME="endChar" VALUE="126" OBJECT="java.lang.Integer|126"/>
+<node TEXT="" ID="ID_641987083" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="78" OBJECT="java.lang.Integer|78"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="78" OBJECT="java.lang.Integer|78"/>
+<attribute NAME="name" VALUE="private"/>
+<attribute NAME="start" VALUE="L78 C2"/>
+<attribute NAME="end" VALUE="L78 C9"/>
+<attribute NAME="endChar" VALUE="9" OBJECT="java.lang.Integer|9"/>
+</node>
+<node TEXT="" ID="ID_193008318" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="78" OBJECT="java.lang.Integer|78"/>
+<attribute NAME="startChar" VALUE="19" OBJECT="java.lang.Integer|19"/>
+<attribute NAME="startLine" VALUE="78" OBJECT="java.lang.Integer|78"/>
+<attribute NAME="name" VALUE="enableDisableAction"/>
+<attribute NAME="start" VALUE="L78 C19"/>
+<attribute NAME="end" VALUE="L78 C38"/>
+<attribute NAME="endChar" VALUE="38" OBJECT="java.lang.Integer|38"/>
+</node>
+<node TEXT="" ID="ID_1663187690" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="78" OBJECT="java.lang.Integer|78"/>
+<attribute NAME="startChar" VALUE="121" OBJECT="java.lang.Integer|121"/>
+<attribute NAME="startLine" VALUE="78" OBJECT="java.lang.Integer|78"/>
+<attribute NAME="name" VALUE="void"/>
+<attribute NAME="start" VALUE="L78 C121"/>
+<attribute NAME="end" VALUE="L78 C125"/>
+<attribute NAME="endChar" VALUE="125" OBJECT="java.lang.Integer|125"/>
+</node>
+<node TEXT="" ID="ID_1559743227" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="78" OBJECT="java.lang.Integer|78"/>
+<attribute NAME="startChar" VALUE="126" OBJECT="java.lang.Integer|126"/>
+<attribute NAME="startLine" VALUE="78" OBJECT="java.lang.Integer|78"/>
+<attribute NAME="name" VALUE="{"/>
+<attribute NAME="start" VALUE="L78 C126"/>
+<attribute NAME="end" VALUE="L78 C127"/>
+<attribute NAME="endChar" VALUE="127" OBJECT="java.lang.Integer|127"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_111475470" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="78" OBJECT="java.lang.Integer|78"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="126" OBJECT="java.lang.Integer|126"/>
+<attribute NAME="startLine" VALUE="78" OBJECT="java.lang.Integer|78"/>
+<attribute NAME="name" VALUE="32) open-bracket"/>
+<attribute NAME="start" VALUE="L78 C126"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L78 C127"/>
+<attribute NAME="endChar" VALUE="127" OBJECT="java.lang.Integer|127"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_758351872" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="81" OBJECT="java.lang.Integer|81"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="81" OBJECT="java.lang.Integer|81"/>
+<attribute NAME="name" VALUE="33) close-bracket"/>
+<attribute NAME="start" VALUE="L81 C2"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L81 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_888588043" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="83" OBJECT="java.lang.Integer|83"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bfunction\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\(.*?\)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?=(\{?))"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="83" OBJECT="java.lang.Integer|83"/>
+<attribute NAME="name" VALUE="34) operation-function"/>
+<attribute NAME="start" VALUE="L83 C2"/>
+<attribute NAME="regexName" VALUE="operation-function"/>
+<attribute NAME="end" VALUE="L83 C93"/>
+<attribute NAME="endChar" VALUE="93" OBJECT="java.lang.Integer|93"/>
+<node TEXT="" ID="ID_1825125299" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="83" OBJECT="java.lang.Integer|83"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="83" OBJECT="java.lang.Integer|83"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L83 C2"/>
+<attribute NAME="end" VALUE="L83 C8"/>
+<attribute NAME="endChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+</node>
+<node TEXT="" ID="ID_1007805163" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="83" OBJECT="java.lang.Integer|83"/>
+<attribute NAME="startChar" VALUE="18" OBJECT="java.lang.Integer|18"/>
+<attribute NAME="startLine" VALUE="83" OBJECT="java.lang.Integer|83"/>
+<attribute NAME="name" VALUE="updateSaveAllActionEnablement"/>
+<attribute NAME="start" VALUE="L83 C18"/>
+<attribute NAME="end" VALUE="L83 C47"/>
+<attribute NAME="endChar" VALUE="47" OBJECT="java.lang.Integer|47"/>
+</node>
+<node TEXT="" ID="ID_848094013" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="83" OBJECT="java.lang.Integer|83"/>
+<attribute NAME="startChar" VALUE="88" OBJECT="java.lang.Integer|88"/>
+<attribute NAME="startLine" VALUE="83" OBJECT="java.lang.Integer|83"/>
+<attribute NAME="name" VALUE="void"/>
+<attribute NAME="start" VALUE="L83 C88"/>
+<attribute NAME="end" VALUE="L83 C92"/>
+<attribute NAME="endChar" VALUE="92" OBJECT="java.lang.Integer|92"/>
+</node>
+<node TEXT="" ID="ID_294369653" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="83" OBJECT="java.lang.Integer|83"/>
+<attribute NAME="startChar" VALUE="93" OBJECT="java.lang.Integer|93"/>
+<attribute NAME="startLine" VALUE="83" OBJECT="java.lang.Integer|83"/>
+<attribute NAME="name" VALUE="{"/>
+<attribute NAME="start" VALUE="L83 C93"/>
+<attribute NAME="end" VALUE="L83 C94"/>
+<attribute NAME="endChar" VALUE="94" OBJECT="java.lang.Integer|94"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_39031328" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="83" OBJECT="java.lang.Integer|83"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="93" OBJECT="java.lang.Integer|93"/>
+<attribute NAME="startLine" VALUE="83" OBJECT="java.lang.Integer|83"/>
+<attribute NAME="name" VALUE="35) open-bracket"/>
+<attribute NAME="start" VALUE="L83 C93"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L83 C94"/>
+<attribute NAME="endChar" VALUE="94" OBJECT="java.lang.Integer|94"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_783525503" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="84" OBJECT="java.lang.Integer|84"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="31" OBJECT="java.lang.Integer|31"/>
+<attribute NAME="startLine" VALUE="84" OBJECT="java.lang.Integer|84"/>
+<attribute NAME="name" VALUE="36) open-bracket"/>
+<attribute NAME="start" VALUE="L84 C31"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L84 C32"/>
+<attribute NAME="endChar" VALUE="32" OBJECT="java.lang.Integer|32"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_21631899" CREATED="1415621437799" MODIFIED="1415621437799">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="86" OBJECT="java.lang.Integer|86"/>
+<attribute NAME="fullRegex" VALUE="//[^\r^\n]*\r?\n?"/>
+<attribute NAME="startChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+<attribute NAME="startLine" VALUE="85" OBJECT="java.lang.Integer|85"/>
+<attribute NAME="name" VALUE="37) single-line-comment"/>
+<attribute NAME="start" VALUE="L85 C4"/>
+<attribute NAME="regexName" VALUE="single-line-comment"/>
+<attribute NAME="end" VALUE="L86 C0"/>
+<attribute NAME="endChar" VALUE="0" OBJECT="java.lang.Integer|0"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1816886944" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="88" OBJECT="java.lang.Integer|88"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+<attribute NAME="startLine" VALUE="88" OBJECT="java.lang.Integer|88"/>
+<attribute NAME="name" VALUE="38) close-bracket"/>
+<attribute NAME="start" VALUE="L88 C3"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L88 C4"/>
+<attribute NAME="endChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1755997941" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="89" OBJECT="java.lang.Integer|89"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="39" OBJECT="java.lang.Integer|39"/>
+<attribute NAME="startLine" VALUE="89" OBJECT="java.lang.Integer|89"/>
+<attribute NAME="name" VALUE="39) open-bracket"/>
+<attribute NAME="start" VALUE="L89 C39"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L89 C40"/>
+<attribute NAME="endChar" VALUE="40" OBJECT="java.lang.Integer|40"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1636912787" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="91" OBJECT="java.lang.Integer|91"/>
+<attribute NAME="fullRegex" VALUE="//[^\r^\n]*\r?\n?"/>
+<attribute NAME="startChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+<attribute NAME="startLine" VALUE="90" OBJECT="java.lang.Integer|90"/>
+<attribute NAME="name" VALUE="40) single-line-comment"/>
+<attribute NAME="start" VALUE="L90 C4"/>
+<attribute NAME="regexName" VALUE="single-line-comment"/>
+<attribute NAME="end" VALUE="L91 C0"/>
+<attribute NAME="endChar" VALUE="0" OBJECT="java.lang.Integer|0"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1498202222" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="92" OBJECT="java.lang.Integer|92"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+<attribute NAME="startLine" VALUE="92" OBJECT="java.lang.Integer|92"/>
+<attribute NAME="name" VALUE="41) close-bracket"/>
+<attribute NAME="start" VALUE="L92 C3"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L92 C4"/>
+<attribute NAME="endChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1324594380" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="94" OBJECT="java.lang.Integer|94"/>
+<attribute NAME="fullRegex" VALUE="//[^\r^\n]*\r?\n?"/>
+<attribute NAME="startChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+<attribute NAME="startLine" VALUE="93" OBJECT="java.lang.Integer|93"/>
+<attribute NAME="name" VALUE="42) single-line-comment"/>
+<attribute NAME="start" VALUE="L93 C3"/>
+<attribute NAME="regexName" VALUE="single-line-comment"/>
+<attribute NAME="end" VALUE="L94 C0"/>
+<attribute NAME="endChar" VALUE="0" OBJECT="java.lang.Integer|0"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_990886502" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="94" OBJECT="java.lang.Integer|94"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="70" OBJECT="java.lang.Integer|70"/>
+<attribute NAME="startLine" VALUE="94" OBJECT="java.lang.Integer|94"/>
+<attribute NAME="name" VALUE="43) open-bracket"/>
+<attribute NAME="start" VALUE="L94 C70"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L94 C71"/>
+<attribute NAME="endChar" VALUE="71" OBJECT="java.lang.Integer|71"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1361739232" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="96" OBJECT="java.lang.Integer|96"/>
+<attribute NAME="fullRegex" VALUE="//[^\r^\n]*\r?\n?"/>
+<attribute NAME="startChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+<attribute NAME="startLine" VALUE="95" OBJECT="java.lang.Integer|95"/>
+<attribute NAME="name" VALUE="44) single-line-comment"/>
+<attribute NAME="start" VALUE="L95 C4"/>
+<attribute NAME="regexName" VALUE="single-line-comment"/>
+<attribute NAME="end" VALUE="L96 C0"/>
+<attribute NAME="endChar" VALUE="0" OBJECT="java.lang.Integer|0"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1669716577" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="97" OBJECT="java.lang.Integer|97"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+<attribute NAME="startLine" VALUE="97" OBJECT="java.lang.Integer|97"/>
+<attribute NAME="name" VALUE="45) close-bracket"/>
+<attribute NAME="start" VALUE="L97 C3"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L97 C4"/>
+<attribute NAME="endChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_647140195" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="98" OBJECT="java.lang.Integer|98"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="98" OBJECT="java.lang.Integer|98"/>
+<attribute NAME="name" VALUE="46) close-bracket"/>
+<attribute NAME="start" VALUE="L98 C2"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L98 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1441092752" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="102" OBJECT="java.lang.Integer|102"/>
+<attribute NAME="fullRegex" VALUE="/\*\*(.*?)\*/"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="100" OBJECT="java.lang.Integer|100"/>
+<attribute NAME="name" VALUE="47) asdoc"/>
+<attribute NAME="start" VALUE="L100 C2"/>
+<attribute NAME="regexName" VALUE="asdoc"/>
+<attribute NAME="end" VALUE="L102 C5"/>
+<attribute NAME="endChar" VALUE="5" OBJECT="java.lang.Integer|5"/>
+<node TEXT="" ID="ID_1287474765" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="102" OBJECT="java.lang.Integer|102"/>
+<attribute NAME="startChar" VALUE="5" OBJECT="java.lang.Integer|5"/>
+<attribute NAME="startLine" VALUE="100" OBJECT="java.lang.Integer|100"/>
+<attribute NAME="name" VALUE="&#xd;&#xa;&#x9;&#x9; * Update the save/save all actions enablement, and refreshes the editors labels.&#xd;&#xa;&#x9;&#x9; "/>
+<attribute NAME="start" VALUE="L100 C5"/>
+<attribute NAME="end" VALUE="L102 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_9666213" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="103" OBJECT="java.lang.Integer|103"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bfunction\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\(.*?\)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?=(\{?))"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="103" OBJECT="java.lang.Integer|103"/>
+<attribute NAME="name" VALUE="48) operation-function"/>
+<attribute NAME="start" VALUE="L103 C2"/>
+<attribute NAME="regexName" VALUE="operation-function"/>
+<attribute NAME="end" VALUE="L103 C86"/>
+<attribute NAME="endChar" VALUE="86" OBJECT="java.lang.Integer|86"/>
+<node TEXT="" ID="ID_137168044" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="103" OBJECT="java.lang.Integer|103"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="103" OBJECT="java.lang.Integer|103"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L103 C2"/>
+<attribute NAME="end" VALUE="L103 C8"/>
+<attribute NAME="endChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+</node>
+<node TEXT="" ID="ID_754259748" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="103" OBJECT="java.lang.Integer|103"/>
+<attribute NAME="startChar" VALUE="18" OBJECT="java.lang.Integer|18"/>
+<attribute NAME="startLine" VALUE="103" OBJECT="java.lang.Integer|103"/>
+<attribute NAME="name" VALUE="updateGlobalDirtyState"/>
+<attribute NAME="start" VALUE="L103 C18"/>
+<attribute NAME="end" VALUE="L103 C40"/>
+<attribute NAME="endChar" VALUE="40" OBJECT="java.lang.Integer|40"/>
+</node>
+<node TEXT="" ID="ID_295285076" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="103" OBJECT="java.lang.Integer|103"/>
+<attribute NAME="startChar" VALUE="81" OBJECT="java.lang.Integer|81"/>
+<attribute NAME="startLine" VALUE="103" OBJECT="java.lang.Integer|103"/>
+<attribute NAME="name" VALUE="void"/>
+<attribute NAME="start" VALUE="L103 C81"/>
+<attribute NAME="end" VALUE="L103 C85"/>
+<attribute NAME="endChar" VALUE="85" OBJECT="java.lang.Integer|85"/>
+</node>
+<node TEXT="" ID="ID_91208759" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="103" OBJECT="java.lang.Integer|103"/>
+<attribute NAME="startChar" VALUE="86" OBJECT="java.lang.Integer|86"/>
+<attribute NAME="startLine" VALUE="103" OBJECT="java.lang.Integer|103"/>
+<attribute NAME="name" VALUE="{"/>
+<attribute NAME="start" VALUE="L103 C86"/>
+<attribute NAME="end" VALUE="L103 C87"/>
+<attribute NAME="endChar" VALUE="87" OBJECT="java.lang.Integer|87"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_32854210" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="103" OBJECT="java.lang.Integer|103"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="86" OBJECT="java.lang.Integer|86"/>
+<attribute NAME="startLine" VALUE="103" OBJECT="java.lang.Integer|103"/>
+<attribute NAME="name" VALUE="49) open-bracket"/>
+<attribute NAME="start" VALUE="L103 C86"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L103 C87"/>
+<attribute NAME="endChar" VALUE="87" OBJECT="java.lang.Integer|87"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_595412758" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="108" OBJECT="java.lang.Integer|108"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="108" OBJECT="java.lang.Integer|108"/>
+<attribute NAME="name" VALUE="50) close-bracket"/>
+<attribute NAME="start" VALUE="L108 C2"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L108 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1849538494" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="111" OBJECT="java.lang.Integer|111"/>
+<attribute NAME="fullRegex" VALUE="//[^\r^\n]*\r?\n?"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="110" OBJECT="java.lang.Integer|110"/>
+<attribute NAME="name" VALUE="51) single-line-comment"/>
+<attribute NAME="start" VALUE="L110 C2"/>
+<attribute NAME="regexName" VALUE="single-line-comment"/>
+<attribute NAME="end" VALUE="L111 C0"/>
+<attribute NAME="endChar" VALUE="0" OBJECT="java.lang.Integer|0"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_885867511" CREATED="1415621437815" MODIFIED="1415621437815">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="111" OBJECT="java.lang.Integer|111"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bfunction\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\(.*?\)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?=(\{?))"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="111" OBJECT="java.lang.Integer|111"/>
+<attribute NAME="name" VALUE="52) operation-function"/>
+<attribute NAME="start" VALUE="L111 C2"/>
+<attribute NAME="regexName" VALUE="operation-function"/>
+<attribute NAME="end" VALUE="L111 C69"/>
+<attribute NAME="endChar" VALUE="69" OBJECT="java.lang.Integer|69"/>
+<node TEXT="" ID="ID_1089143054" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="111" OBJECT="java.lang.Integer|111"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="111" OBJECT="java.lang.Integer|111"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L111 C2"/>
+<attribute NAME="end" VALUE="L111 C8"/>
+<attribute NAME="endChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+</node>
+<node TEXT="" ID="ID_1888447622" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="111" OBJECT="java.lang.Integer|111"/>
+<attribute NAME="startChar" VALUE="18" OBJECT="java.lang.Integer|18"/>
+<attribute NAME="startLine" VALUE="111" OBJECT="java.lang.Integer|111"/>
+<attribute NAME="name" VALUE="getResourceNodeLabel"/>
+<attribute NAME="start" VALUE="L111 C18"/>
+<attribute NAME="end" VALUE="L111 C38"/>
+<attribute NAME="endChar" VALUE="38" OBJECT="java.lang.Integer|38"/>
+</node>
+<node TEXT="" ID="ID_1567153556" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="111" OBJECT="java.lang.Integer|111"/>
+<attribute NAME="startChar" VALUE="62" OBJECT="java.lang.Integer|62"/>
+<attribute NAME="startLine" VALUE="111" OBJECT="java.lang.Integer|111"/>
+<attribute NAME="name" VALUE="String"/>
+<attribute NAME="start" VALUE="L111 C62"/>
+<attribute NAME="end" VALUE="L111 C68"/>
+<attribute NAME="endChar" VALUE="68" OBJECT="java.lang.Integer|68"/>
+</node>
+<node TEXT="" ID="ID_1211811991" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="111" OBJECT="java.lang.Integer|111"/>
+<attribute NAME="startChar" VALUE="69" OBJECT="java.lang.Integer|69"/>
+<attribute NAME="startLine" VALUE="111" OBJECT="java.lang.Integer|111"/>
+<attribute NAME="name" VALUE="{"/>
+<attribute NAME="start" VALUE="L111 C69"/>
+<attribute NAME="end" VALUE="L111 C70"/>
+<attribute NAME="endChar" VALUE="70" OBJECT="java.lang.Integer|70"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_279389095" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="111" OBJECT="java.lang.Integer|111"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="69" OBJECT="java.lang.Integer|69"/>
+<attribute NAME="startLine" VALUE="111" OBJECT="java.lang.Integer|111"/>
+<attribute NAME="name" VALUE="53) open-bracket"/>
+<attribute NAME="start" VALUE="L111 C69"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L111 C70"/>
+<attribute NAME="endChar" VALUE="70" OBJECT="java.lang.Integer|70"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1490465656" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="113" OBJECT="java.lang.Integer|113"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="113" OBJECT="java.lang.Integer|113"/>
+<attribute NAME="name" VALUE="54) close-bracket"/>
+<attribute NAME="start" VALUE="L113 C2"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L113 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1769619894" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="117" OBJECT="java.lang.Integer|117"/>
+<attribute NAME="fullRegex" VALUE="/\*\*(.*?)\*/"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="115" OBJECT="java.lang.Integer|115"/>
+<attribute NAME="name" VALUE="55) asdoc"/>
+<attribute NAME="start" VALUE="L115 C2"/>
+<attribute NAME="regexName" VALUE="asdoc"/>
+<attribute NAME="end" VALUE="L117 C5"/>
+<attribute NAME="endChar" VALUE="5" OBJECT="java.lang.Integer|5"/>
+<node TEXT="" ID="ID_1784284098" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="117" OBJECT="java.lang.Integer|117"/>
+<attribute NAME="startChar" VALUE="5" OBJECT="java.lang.Integer|5"/>
+<attribute NAME="startLine" VALUE="115" OBJECT="java.lang.Integer|115"/>
+<attribute NAME="name" VALUE="&#xd;&#xa;&#x9;&#x9; * Don&apos;t remove editors immediately. If there are dirty editors, show save dialog.&#xd;&#xa;&#x9;&#x9; "/>
+<attribute NAME="start" VALUE="L115 C5"/>
+<attribute NAME="end" VALUE="L117 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_549571332" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="118" OBJECT="java.lang.Integer|118"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bfunction\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\(.*?\)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?=(\{?))"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="118" OBJECT="java.lang.Integer|118"/>
+<attribute NAME="name" VALUE="56) operation-function"/>
+<attribute NAME="start" VALUE="L118 C2"/>
+<attribute NAME="regexName" VALUE="operation-function"/>
+<attribute NAME="end" VALUE="L118 C64"/>
+<attribute NAME="endChar" VALUE="64" OBJECT="java.lang.Integer|64"/>
+<node TEXT="" ID="ID_36838342" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="118" OBJECT="java.lang.Integer|118"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="118" OBJECT="java.lang.Integer|118"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L118 C2"/>
+<attribute NAME="end" VALUE="L118 C8"/>
+<attribute NAME="endChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+</node>
+<node TEXT="" ID="ID_1571335158" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="118" OBJECT="java.lang.Integer|118"/>
+<attribute NAME="startChar" VALUE="18" OBJECT="java.lang.Integer|18"/>
+<attribute NAME="startLine" VALUE="118" OBJECT="java.lang.Integer|118"/>
+<attribute NAME="name" VALUE="viewsRemovedHandler"/>
+<attribute NAME="start" VALUE="L118 C18"/>
+<attribute NAME="end" VALUE="L118 C37"/>
+<attribute NAME="endChar" VALUE="37" OBJECT="java.lang.Integer|37"/>
+</node>
+<node TEXT="" ID="ID_1575278353" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="118" OBJECT="java.lang.Integer|118"/>
+<attribute NAME="startChar" VALUE="59" OBJECT="java.lang.Integer|59"/>
+<attribute NAME="startLine" VALUE="118" OBJECT="java.lang.Integer|118"/>
+<attribute NAME="name" VALUE="void"/>
+<attribute NAME="start" VALUE="L118 C59"/>
+<attribute NAME="end" VALUE="L118 C63"/>
+<attribute NAME="endChar" VALUE="63" OBJECT="java.lang.Integer|63"/>
+</node>
+<node TEXT="" ID="ID_283979479" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="118" OBJECT="java.lang.Integer|118"/>
+<attribute NAME="startChar" VALUE="64" OBJECT="java.lang.Integer|64"/>
+<attribute NAME="startLine" VALUE="118" OBJECT="java.lang.Integer|118"/>
+<attribute NAME="name" VALUE="{"/>
+<attribute NAME="start" VALUE="L118 C64"/>
+<attribute NAME="end" VALUE="L118 C65"/>
+<attribute NAME="endChar" VALUE="65" OBJECT="java.lang.Integer|65"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1265537492" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="118" OBJECT="java.lang.Integer|118"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="64" OBJECT="java.lang.Integer|64"/>
+<attribute NAME="startLine" VALUE="118" OBJECT="java.lang.Integer|118"/>
+<attribute NAME="name" VALUE="57) open-bracket"/>
+<attribute NAME="start" VALUE="L118 C64"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L118 C65"/>
+<attribute NAME="endChar" VALUE="65" OBJECT="java.lang.Integer|65"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1583087159" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="119" OBJECT="java.lang.Integer|119"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="29" OBJECT="java.lang.Integer|29"/>
+<attribute NAME="startLine" VALUE="119" OBJECT="java.lang.Integer|119"/>
+<attribute NAME="name" VALUE="58) open-bracket"/>
+<attribute NAME="start" VALUE="L119 C29"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L119 C30"/>
+<attribute NAME="endChar" VALUE="30" OBJECT="java.lang.Integer|30"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_790341478" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="121" OBJECT="java.lang.Integer|121"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+<attribute NAME="startLine" VALUE="121" OBJECT="java.lang.Integer|121"/>
+<attribute NAME="name" VALUE="59) close-bracket"/>
+<attribute NAME="start" VALUE="L121 C3"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L121 C4"/>
+<attribute NAME="endChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_611895830" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="122" OBJECT="java.lang.Integer|122"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bvar\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?"/>
+<attribute NAME="startChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+<attribute NAME="startLine" VALUE="121" OBJECT="java.lang.Integer|121"/>
+<attribute NAME="name" VALUE="60) attribute-var"/>
+<attribute NAME="start" VALUE="L121 C4"/>
+<attribute NAME="regexName" VALUE="attribute-var"/>
+<attribute NAME="end" VALUE="L122 C27"/>
+<attribute NAME="endChar" VALUE="27" OBJECT="java.lang.Integer|27"/>
+<node TEXT="" ID="ID_540096926" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="121" OBJECT="java.lang.Integer|121"/>
+<attribute NAME="startChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+<attribute NAME="startLine" VALUE="121" OBJECT="java.lang.Integer|121"/>
+<attribute NAME="name" VALUE=""/>
+<attribute NAME="start" VALUE="L121 C4"/>
+<attribute NAME="end" VALUE="L121 C4"/>
+<attribute NAME="endChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+</node>
+<node TEXT="" ID="ID_1816697817" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="122" OBJECT="java.lang.Integer|122"/>
+<attribute NAME="startChar" VALUE="7" OBJECT="java.lang.Integer|7"/>
+<attribute NAME="startLine" VALUE="122" OBJECT="java.lang.Integer|122"/>
+<attribute NAME="name" VALUE="nodeRegistries"/>
+<attribute NAME="start" VALUE="L122 C7"/>
+<attribute NAME="end" VALUE="L122 C21"/>
+<attribute NAME="endChar" VALUE="21" OBJECT="java.lang.Integer|21"/>
+</node>
+<node TEXT="" ID="ID_332753226" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="122" OBJECT="java.lang.Integer|122"/>
+<attribute NAME="startChar" VALUE="22" OBJECT="java.lang.Integer|22"/>
+<attribute NAME="startLine" VALUE="122" OBJECT="java.lang.Integer|122"/>
+<attribute NAME="name" VALUE="Array"/>
+<attribute NAME="start" VALUE="L122 C22"/>
+<attribute NAME="end" VALUE="L122 C27"/>
+<attribute NAME="endChar" VALUE="27" OBJECT="java.lang.Integer|27"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_462148407" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="123" OBJECT="java.lang.Integer|123"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bvar\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?"/>
+<attribute NAME="startChar" VALUE="13" OBJECT="java.lang.Integer|13"/>
+<attribute NAME="startLine" VALUE="123" OBJECT="java.lang.Integer|123"/>
+<attribute NAME="name" VALUE="61) attribute-var"/>
+<attribute NAME="start" VALUE="L123 C13"/>
+<attribute NAME="regexName" VALUE="attribute-var"/>
+<attribute NAME="end" VALUE="L123 C28"/>
+<attribute NAME="endChar" VALUE="28" OBJECT="java.lang.Integer|28"/>
+<node TEXT="" ID="ID_625053797" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="123" OBJECT="java.lang.Integer|123"/>
+<attribute NAME="startChar" VALUE="13" OBJECT="java.lang.Integer|13"/>
+<attribute NAME="startLine" VALUE="123" OBJECT="java.lang.Integer|123"/>
+<attribute NAME="name" VALUE=""/>
+<attribute NAME="start" VALUE="L123 C13"/>
+<attribute NAME="end" VALUE="L123 C13"/>
+<attribute NAME="endChar" VALUE="13" OBJECT="java.lang.Integer|13"/>
+</node>
+<node TEXT="" ID="ID_1129200362" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="123" OBJECT="java.lang.Integer|123"/>
+<attribute NAME="startChar" VALUE="17" OBJECT="java.lang.Integer|17"/>
+<attribute NAME="startLine" VALUE="123" OBJECT="java.lang.Integer|123"/>
+<attribute NAME="name" VALUE="view"/>
+<attribute NAME="start" VALUE="L123 C17"/>
+<attribute NAME="end" VALUE="L123 C21"/>
+<attribute NAME="endChar" VALUE="21" OBJECT="java.lang.Integer|21"/>
+</node>
+<node TEXT="" ID="ID_1586478930" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="123" OBJECT="java.lang.Integer|123"/>
+<attribute NAME="startChar" VALUE="22" OBJECT="java.lang.Integer|22"/>
+<attribute NAME="startLine" VALUE="123" OBJECT="java.lang.Integer|123"/>
+<attribute NAME="name" VALUE="Object"/>
+<attribute NAME="start" VALUE="L123 C22"/>
+<attribute NAME="end" VALUE="L123 C28"/>
+<attribute NAME="endChar" VALUE="28" OBJECT="java.lang.Integer|28"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1143229307" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="123" OBJECT="java.lang.Integer|123"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="48" OBJECT="java.lang.Integer|48"/>
+<attribute NAME="startLine" VALUE="123" OBJECT="java.lang.Integer|123"/>
+<attribute NAME="name" VALUE="62) open-bracket"/>
+<attribute NAME="start" VALUE="L123 C48"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L123 C49"/>
+<attribute NAME="endChar" VALUE="49" OBJECT="java.lang.Integer|49"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_109436380" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="124" OBJECT="java.lang.Integer|124"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bvar\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?"/>
+<attribute NAME="startChar" VALUE="49" OBJECT="java.lang.Integer|49"/>
+<attribute NAME="startLine" VALUE="123" OBJECT="java.lang.Integer|123"/>
+<attribute NAME="name" VALUE="63) attribute-var"/>
+<attribute NAME="start" VALUE="L123 C49"/>
+<attribute NAME="regexName" VALUE="attribute-var"/>
+<attribute NAME="end" VALUE="L124 C33"/>
+<attribute NAME="endChar" VALUE="33" OBJECT="java.lang.Integer|33"/>
+<node TEXT="" ID="ID_1764602686" CREATED="1415621437831" MODIFIED="1415621437831">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="123" OBJECT="java.lang.Integer|123"/>
+<attribute NAME="startChar" VALUE="49" OBJECT="java.lang.Integer|49"/>
+<attribute NAME="startLine" VALUE="123" OBJECT="java.lang.Integer|123"/>
+<attribute NAME="name" VALUE=""/>
+<attribute NAME="start" VALUE="L123 C49"/>
+<attribute NAME="end" VALUE="L123 C49"/>
+<attribute NAME="endChar" VALUE="49" OBJECT="java.lang.Integer|49"/>
+</node>
+<node TEXT="" ID="ID_1593693324" CREATED="1415621437846" MODIFIED="1415621437846">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="124" OBJECT="java.lang.Integer|124"/>
+<attribute NAME="startChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+<attribute NAME="startLine" VALUE="124" OBJECT="java.lang.Integer|124"/>
+<attribute NAME="name" VALUE="viewComponent"/>
+<attribute NAME="start" VALUE="L124 C8"/>
+<attribute NAME="end" VALUE="L124 C21"/>
+<attribute NAME="endChar" VALUE="21" OBJECT="java.lang.Integer|21"/>
+</node>
+<node TEXT="" ID="ID_1864678412" CREATED="1415621437846" MODIFIED="1415621437846">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="124" OBJECT="java.lang.Integer|124"/>
+<attribute NAME="startChar" VALUE="22" OBJECT="java.lang.Integer|22"/>
+<attribute NAME="startLine" VALUE="124" OBJECT="java.lang.Integer|124"/>
+<attribute NAME="name" VALUE="UIComponent"/>
+<attribute NAME="start" VALUE="L124 C22"/>
+<attribute NAME="end" VALUE="L124 C33"/>
+<attribute NAME="endChar" VALUE="33" OBJECT="java.lang.Integer|33"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_96080957" CREATED="1415621437846" MODIFIED="1415621437846">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="125" OBJECT="java.lang.Integer|125"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="41" OBJECT="java.lang.Integer|41"/>
+<attribute NAME="startLine" VALUE="125" OBJECT="java.lang.Integer|125"/>
+<attribute NAME="name" VALUE="64) open-bracket"/>
+<attribute NAME="start" VALUE="L125 C41"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L125 C42"/>
+<attribute NAME="endChar" VALUE="42" OBJECT="java.lang.Integer|42"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1800311319" CREATED="1415621437846" MODIFIED="1415621437846">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="128" OBJECT="java.lang.Integer|128"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+<attribute NAME="startLine" VALUE="128" OBJECT="java.lang.Integer|128"/>
+<attribute NAME="name" VALUE="65) close-bracket"/>
+<attribute NAME="start" VALUE="L128 C4"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L128 C5"/>
+<attribute NAME="endChar" VALUE="5" OBJECT="java.lang.Integer|5"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1049294815" CREATED="1415621437846" MODIFIED="1415621437846">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="129" OBJECT="java.lang.Integer|129"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+<attribute NAME="startLine" VALUE="129" OBJECT="java.lang.Integer|129"/>
+<attribute NAME="name" VALUE="66) close-bracket"/>
+<attribute NAME="start" VALUE="L129 C3"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L129 C4"/>
+<attribute NAME="endChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1709337263" CREATED="1415621437846" MODIFIED="1415621437846">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="131" OBJECT="java.lang.Integer|131"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="131" OBJECT="java.lang.Integer|131"/>
+<attribute NAME="name" VALUE="67) close-bracket"/>
+<attribute NAME="start" VALUE="L131 C2"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L131 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_852713335" CREATED="1415621437846" MODIFIED="1415621437846">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="141" OBJECT="java.lang.Integer|141"/>
+<attribute NAME="fullRegex" VALUE="/\*\*(.*?)\*/"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="134" OBJECT="java.lang.Integer|134"/>
+<attribute NAME="name" VALUE="68) asdoc"/>
+<attribute NAME="start" VALUE="L134 C2"/>
+<attribute NAME="regexName" VALUE="asdoc"/>
+<attribute NAME="end" VALUE="L141 C5"/>
+<attribute NAME="endChar" VALUE="5" OBJECT="java.lang.Integer|5"/>
+<node TEXT="" ID="ID_836894321" CREATED="1415621437846" MODIFIED="1415621437846">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="141" OBJECT="java.lang.Integer|141"/>
+<attribute NAME="startChar" VALUE="5" OBJECT="java.lang.Integer|5"/>
+<attribute NAME="startLine" VALUE="134" OBJECT="java.lang.Integer|134"/>
+<attribute NAME="name" VALUE="&#xd;&#xa;&#x9;&#x9; * If at least one dirty resourceNode found, shows the save dialog, else closes the editors OR &#xd;&#xa;&#x9;&#x9; * calls the &lt;code&gt;handler&lt;/code&gt; if not null.&#xd;&#xa;&#x9;&#x9; * &#xd;&#xa;&#x9;&#x9; * @param editors if &lt;code&gt;null&lt;/code&gt;, all workbench editors node registries will be used.&#xd;&#xa;&#x9;&#x9; * @param dirtyResourceNodeIds if &lt;code&gt;null&lt;/code&gt;, all dirty resourceNodes from &lt;code&gt;nodeRegistries&lt;/code&gt; will be used.&#xd;&#xa;&#x9;&#x9; * @param handler Is called before closing the save view. If &lt;code&gt;null&lt;/code&gt;, &lt;code&gt;nodeRegistries&lt;/code&gt; will be removed.&#xd;&#xa;&#x9;&#x9; "/>
+<attribute NAME="start" VALUE="L134 C5"/>
+<attribute NAME="end" VALUE="L141 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_69197861" CREATED="1415621437862" MODIFIED="1415621437862">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="142" OBJECT="java.lang.Integer|142"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bfunction\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\(.*?\)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?=(\{?))"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="142" OBJECT="java.lang.Integer|142"/>
+<attribute NAME="name" VALUE="69) operation-function"/>
+<attribute NAME="start" VALUE="L142 C2"/>
+<attribute NAME="regexName" VALUE="operation-function"/>
+<attribute NAME="end" VALUE="L142 C125"/>
+<attribute NAME="endChar" VALUE="125" OBJECT="java.lang.Integer|125"/>
+<node TEXT="" ID="ID_446912488" CREATED="1415621437862" MODIFIED="1415621437862">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="142" OBJECT="java.lang.Integer|142"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="142" OBJECT="java.lang.Integer|142"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L142 C2"/>
+<attribute NAME="end" VALUE="L142 C8"/>
+<attribute NAME="endChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+</node>
+<node TEXT="" ID="ID_1001302753" CREATED="1415621437862" MODIFIED="1415621437862">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="142" OBJECT="java.lang.Integer|142"/>
+<attribute NAME="startChar" VALUE="18" OBJECT="java.lang.Integer|18"/>
+<attribute NAME="startLine" VALUE="142" OBJECT="java.lang.Integer|142"/>
+<attribute NAME="name" VALUE="showSaveDialog"/>
+<attribute NAME="start" VALUE="L142 C18"/>
+<attribute NAME="end" VALUE="L142 C32"/>
+<attribute NAME="endChar" VALUE="32" OBJECT="java.lang.Integer|32"/>
+</node>
+<node TEXT="" ID="ID_1459829284" CREATED="1415621437862" MODIFIED="1415621437862">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="142" OBJECT="java.lang.Integer|142"/>
+<attribute NAME="startChar" VALUE="120" OBJECT="java.lang.Integer|120"/>
+<attribute NAME="startLine" VALUE="142" OBJECT="java.lang.Integer|142"/>
+<attribute NAME="name" VALUE="void"/>
+<attribute NAME="start" VALUE="L142 C120"/>
+<attribute NAME="end" VALUE="L142 C124"/>
+<attribute NAME="endChar" VALUE="124" OBJECT="java.lang.Integer|124"/>
+</node>
+<node TEXT="" ID="ID_1902107090" CREATED="1415621437862" MODIFIED="1415621437862">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="142" OBJECT="java.lang.Integer|142"/>
+<attribute NAME="startChar" VALUE="125" OBJECT="java.lang.Integer|125"/>
+<attribute NAME="startLine" VALUE="142" OBJECT="java.lang.Integer|142"/>
+<attribute NAME="name" VALUE="{"/>
+<attribute NAME="start" VALUE="L142 C125"/>
+<attribute NAME="end" VALUE="L142 C126"/>
+<attribute NAME="endChar" VALUE="126" OBJECT="java.lang.Integer|126"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1356044871" CREATED="1415621437862" MODIFIED="1415621437862">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="142" OBJECT="java.lang.Integer|142"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="125" OBJECT="java.lang.Integer|125"/>
+<attribute NAME="startLine" VALUE="142" OBJECT="java.lang.Integer|142"/>
+<attribute NAME="name" VALUE="70) open-bracket"/>
+<attribute NAME="start" VALUE="L142 C125"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L142 C126"/>
+<attribute NAME="endChar" VALUE="126" OBJECT="java.lang.Integer|126"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_617482196" CREATED="1415621437862" MODIFIED="1415621437862">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="143" OBJECT="java.lang.Integer|143"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bvar\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?"/>
+<attribute NAME="startChar" VALUE="126" OBJECT="java.lang.Integer|126"/>
+<attribute NAME="startLine" VALUE="142" OBJECT="java.lang.Integer|142"/>
+<attribute NAME="name" VALUE="71) attribute-var"/>
+<attribute NAME="start" VALUE="L142 C126"/>
+<attribute NAME="regexName" VALUE="attribute-var"/>
+<attribute NAME="end" VALUE="L143 C37"/>
+<attribute NAME="endChar" VALUE="37" OBJECT="java.lang.Integer|37"/>
+<node TEXT="" ID="ID_1624597229" CREATED="1415621437862" MODIFIED="1415621437862">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="142" OBJECT="java.lang.Integer|142"/>
+<attribute NAME="startChar" VALUE="126" OBJECT="java.lang.Integer|126"/>
+<attribute NAME="startLine" VALUE="142" OBJECT="java.lang.Integer|142"/>
+<attribute NAME="name" VALUE=""/>
+<attribute NAME="start" VALUE="L142 C126"/>
+<attribute NAME="end" VALUE="L142 C126"/>
+<attribute NAME="endChar" VALUE="126" OBJECT="java.lang.Integer|126"/>
+</node>
+<node TEXT="" ID="ID_1709794793" CREATED="1415621437862" MODIFIED="1415621437862">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="143" OBJECT="java.lang.Integer|143"/>
+<attribute NAME="startChar" VALUE="7" OBJECT="java.lang.Integer|7"/>
+<attribute NAME="startLine" VALUE="143" OBJECT="java.lang.Integer|143"/>
+<attribute NAME="name" VALUE="saveView"/>
+<attribute NAME="start" VALUE="L143 C7"/>
+<attribute NAME="end" VALUE="L143 C15"/>
+<attribute NAME="endChar" VALUE="15" OBJECT="java.lang.Integer|15"/>
+</node>
+<node TEXT="" ID="ID_814952366" CREATED="1415621437862" MODIFIED="1415621437862">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="143" OBJECT="java.lang.Integer|143"/>
+<attribute NAME="startChar" VALUE="16" OBJECT="java.lang.Integer|16"/>
+<attribute NAME="startLine" VALUE="143" OBJECT="java.lang.Integer|143"/>
+<attribute NAME="name" VALUE="ResourceNodesListView"/>
+<attribute NAME="start" VALUE="L143 C16"/>
+<attribute NAME="end" VALUE="L143 C37"/>
+<attribute NAME="endChar" VALUE="37" OBJECT="java.lang.Integer|37"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1872077581" CREATED="1415621437877" MODIFIED="1415621437877">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="156" OBJECT="java.lang.Integer|156"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="156" OBJECT="java.lang.Integer|156"/>
+<attribute NAME="name" VALUE="72) close-bracket"/>
+<attribute NAME="start" VALUE="L156 C2"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L156 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_852420746" CREATED="1415621437877" MODIFIED="1415621437877">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="160" OBJECT="java.lang.Integer|160"/>
+<attribute NAME="fullRegex" VALUE="/\*\*(.*?)\*/"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="158" OBJECT="java.lang.Integer|158"/>
+<attribute NAME="name" VALUE="73) asdoc"/>
+<attribute NAME="start" VALUE="L158 C2"/>
+<attribute NAME="regexName" VALUE="asdoc"/>
+<attribute NAME="end" VALUE="L160 C5"/>
+<attribute NAME="endChar" VALUE="5" OBJECT="java.lang.Integer|5"/>
+<node TEXT="" ID="ID_1510898527" CREATED="1415621437877" MODIFIED="1415621437877">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="160" OBJECT="java.lang.Integer|160"/>
+<attribute NAME="startChar" VALUE="5" OBJECT="java.lang.Integer|5"/>
+<attribute NAME="startLine" VALUE="158" OBJECT="java.lang.Integer|158"/>
+<attribute NAME="name" VALUE="&#xd;&#xa;&#x9;&#x9; * @author Mariana Gheorghe&#xd;&#xa;&#x9;&#x9; "/>
+<attribute NAME="start" VALUE="L158 C5"/>
+<attribute NAME="end" VALUE="L160 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_461950374" CREATED="1415621437877" MODIFIED="1415621437877">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="161" OBJECT="java.lang.Integer|161"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bfunction\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\(.*?\)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?=(\{?))"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="161" OBJECT="java.lang.Integer|161"/>
+<attribute NAME="name" VALUE="74) operation-function"/>
+<attribute NAME="start" VALUE="L161 C2"/>
+<attribute NAME="regexName" VALUE="operation-function"/>
+<attribute NAME="end" VALUE="L161 C96"/>
+<attribute NAME="endChar" VALUE="96" OBJECT="java.lang.Integer|96"/>
+<node TEXT="" ID="ID_1928286461" CREATED="1415621437877" MODIFIED="1415621437877">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="161" OBJECT="java.lang.Integer|161"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="161" OBJECT="java.lang.Integer|161"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L161 C2"/>
+<attribute NAME="end" VALUE="L161 C8"/>
+<attribute NAME="endChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+</node>
+<node TEXT="" ID="ID_1068238629" CREATED="1415621437877" MODIFIED="1415621437877">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="161" OBJECT="java.lang.Integer|161"/>
+<attribute NAME="startChar" VALUE="18" OBJECT="java.lang.Integer|18"/>
+<attribute NAME="startLine" VALUE="161" OBJECT="java.lang.Integer|161"/>
+<attribute NAME="name" VALUE="showReloadDialog"/>
+<attribute NAME="start" VALUE="L161 C18"/>
+<attribute NAME="end" VALUE="L161 C34"/>
+<attribute NAME="endChar" VALUE="34" OBJECT="java.lang.Integer|34"/>
+</node>
+<node TEXT="" ID="ID_1539872315" CREATED="1415621437877" MODIFIED="1415621437877">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="161" OBJECT="java.lang.Integer|161"/>
+<attribute NAME="startChar" VALUE="91" OBJECT="java.lang.Integer|91"/>
+<attribute NAME="startLine" VALUE="161" OBJECT="java.lang.Integer|161"/>
+<attribute NAME="name" VALUE="void"/>
+<attribute NAME="start" VALUE="L161 C91"/>
+<attribute NAME="end" VALUE="L161 C95"/>
+<attribute NAME="endChar" VALUE="95" OBJECT="java.lang.Integer|95"/>
+</node>
+<node TEXT="" ID="ID_1433619976" CREATED="1415621438018" MODIFIED="1415621438018">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="161" OBJECT="java.lang.Integer|161"/>
+<attribute NAME="startChar" VALUE="96" OBJECT="java.lang.Integer|96"/>
+<attribute NAME="startLine" VALUE="161" OBJECT="java.lang.Integer|161"/>
+<attribute NAME="name" VALUE="{"/>
+<attribute NAME="start" VALUE="L161 C96"/>
+<attribute NAME="end" VALUE="L161 C97"/>
+<attribute NAME="endChar" VALUE="97" OBJECT="java.lang.Integer|97"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_213085728" CREATED="1415621438018" MODIFIED="1415621438018">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="161" OBJECT="java.lang.Integer|161"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="96" OBJECT="java.lang.Integer|96"/>
+<attribute NAME="startLine" VALUE="161" OBJECT="java.lang.Integer|161"/>
+<attribute NAME="name" VALUE="75) open-bracket"/>
+<attribute NAME="start" VALUE="L161 C96"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L161 C97"/>
+<attribute NAME="endChar" VALUE="97" OBJECT="java.lang.Integer|97"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1311759713" CREATED="1415621438018" MODIFIED="1415621438018">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="162" OBJECT="java.lang.Integer|162"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bvar\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?"/>
+<attribute NAME="startChar" VALUE="97" OBJECT="java.lang.Integer|97"/>
+<attribute NAME="startLine" VALUE="161" OBJECT="java.lang.Integer|161"/>
+<attribute NAME="name" VALUE="76) attribute-var"/>
+<attribute NAME="start" VALUE="L161 C97"/>
+<attribute NAME="regexName" VALUE="attribute-var"/>
+<attribute NAME="end" VALUE="L162 C30"/>
+<attribute NAME="endChar" VALUE="30" OBJECT="java.lang.Integer|30"/>
+<node TEXT="" ID="ID_755492181" CREATED="1415621438018" MODIFIED="1415621438018">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="161" OBJECT="java.lang.Integer|161"/>
+<attribute NAME="startChar" VALUE="97" OBJECT="java.lang.Integer|97"/>
+<attribute NAME="startLine" VALUE="161" OBJECT="java.lang.Integer|161"/>
+<attribute NAME="name" VALUE=""/>
+<attribute NAME="start" VALUE="L161 C97"/>
+<attribute NAME="end" VALUE="L161 C97"/>
+<attribute NAME="endChar" VALUE="97" OBJECT="java.lang.Integer|97"/>
+</node>
+<node TEXT="" ID="ID_714748077" CREATED="1415621438018" MODIFIED="1415621438018">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="162" OBJECT="java.lang.Integer|162"/>
+<attribute NAME="startChar" VALUE="7" OBJECT="java.lang.Integer|7"/>
+<attribute NAME="startLine" VALUE="162" OBJECT="java.lang.Integer|162"/>
+<attribute NAME="name" VALUE="resourceNodes"/>
+<attribute NAME="start" VALUE="L162 C7"/>
+<attribute NAME="end" VALUE="L162 C20"/>
+<attribute NAME="endChar" VALUE="20" OBJECT="java.lang.Integer|20"/>
+</node>
+<node TEXT="" ID="ID_1701479512" CREATED="1415621438018" MODIFIED="1415621438018">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="162" OBJECT="java.lang.Integer|162"/>
+<attribute NAME="startChar" VALUE="21" OBJECT="java.lang.Integer|21"/>
+<attribute NAME="startLine" VALUE="162" OBJECT="java.lang.Integer|162"/>
+<attribute NAME="name" VALUE="ArrayList"/>
+<attribute NAME="start" VALUE="L162 C21"/>
+<attribute NAME="end" VALUE="L162 C30"/>
+<attribute NAME="endChar" VALUE="30" OBJECT="java.lang.Integer|30"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1429617074" CREATED="1415621438018" MODIFIED="1415621438018">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="163" OBJECT="java.lang.Integer|163"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bvar\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?"/>
+<attribute NAME="startChar" VALUE="13" OBJECT="java.lang.Integer|13"/>
+<attribute NAME="startLine" VALUE="163" OBJECT="java.lang.Integer|163"/>
+<attribute NAME="name" VALUE="77) attribute-var"/>
+<attribute NAME="start" VALUE="L163 C13"/>
+<attribute NAME="regexName" VALUE="attribute-var"/>
+<attribute NAME="end" VALUE="L163 C35"/>
+<attribute NAME="endChar" VALUE="35" OBJECT="java.lang.Integer|35"/>
+<node TEXT="" ID="ID_1181722532" CREATED="1415621438018" MODIFIED="1415621438018">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="163" OBJECT="java.lang.Integer|163"/>
+<attribute NAME="startChar" VALUE="13" OBJECT="java.lang.Integer|13"/>
+<attribute NAME="startLine" VALUE="163" OBJECT="java.lang.Integer|163"/>
+<attribute NAME="name" VALUE=""/>
+<attribute NAME="start" VALUE="L163 C13"/>
+<attribute NAME="end" VALUE="L163 C13"/>
+<attribute NAME="endChar" VALUE="13" OBJECT="java.lang.Integer|13"/>
+</node>
+<node TEXT="" ID="ID_1637736834" CREATED="1415621438018" MODIFIED="1415621438018">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="163" OBJECT="java.lang.Integer|163"/>
+<attribute NAME="startChar" VALUE="17" OBJECT="java.lang.Integer|17"/>
+<attribute NAME="startLine" VALUE="163" OBJECT="java.lang.Integer|163"/>
+<attribute NAME="name" VALUE="resourceSet"/>
+<attribute NAME="start" VALUE="L163 C17"/>
+<attribute NAME="end" VALUE="L163 C28"/>
+<attribute NAME="endChar" VALUE="28" OBJECT="java.lang.Integer|28"/>
+</node>
+<node TEXT="" ID="ID_711605080" CREATED="1415621438018" MODIFIED="1415621438018">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="163" OBJECT="java.lang.Integer|163"/>
+<attribute NAME="startChar" VALUE="29" OBJECT="java.lang.Integer|29"/>
+<attribute NAME="startLine" VALUE="163" OBJECT="java.lang.Integer|163"/>
+<attribute NAME="name" VALUE="String"/>
+<attribute NAME="start" VALUE="L163 C29"/>
+<attribute NAME="end" VALUE="L163 C35"/>
+<attribute NAME="endChar" VALUE="35" OBJECT="java.lang.Integer|35"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1646287424" CREATED="1415621438018" MODIFIED="1415621438018">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="163" OBJECT="java.lang.Integer|163"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="53" OBJECT="java.lang.Integer|53"/>
+<attribute NAME="startLine" VALUE="163" OBJECT="java.lang.Integer|163"/>
+<attribute NAME="name" VALUE="78) open-bracket"/>
+<attribute NAME="start" VALUE="L163 C53"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L163 C54"/>
+<attribute NAME="endChar" VALUE="54" OBJECT="java.lang.Integer|54"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1287793851" CREATED="1415621438018" MODIFIED="1415621438018">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="164" OBJECT="java.lang.Integer|164"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="26" OBJECT="java.lang.Integer|26"/>
+<attribute NAME="startLine" VALUE="164" OBJECT="java.lang.Integer|164"/>
+<attribute NAME="name" VALUE="79) open-bracket"/>
+<attribute NAME="start" VALUE="L164 C26"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L164 C27"/>
+<attribute NAME="endChar" VALUE="27" OBJECT="java.lang.Integer|27"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_45735912" CREATED="1415621438018" MODIFIED="1415621438018">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="164" OBJECT="java.lang.Integer|164"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="69" OBJECT="java.lang.Integer|69"/>
+<attribute NAME="startLine" VALUE="164" OBJECT="java.lang.Integer|164"/>
+<attribute NAME="name" VALUE="80) close-bracket"/>
+<attribute NAME="start" VALUE="L164 C69"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L164 C70"/>
+<attribute NAME="endChar" VALUE="70" OBJECT="java.lang.Integer|70"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_170974118" CREATED="1415621438018" MODIFIED="1415621438018">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="165" OBJECT="java.lang.Integer|165"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+<attribute NAME="startLine" VALUE="165" OBJECT="java.lang.Integer|165"/>
+<attribute NAME="name" VALUE="81) close-bracket"/>
+<attribute NAME="start" VALUE="L165 C3"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L165 C4"/>
+<attribute NAME="endChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_5894692" CREATED="1415621438018" MODIFIED="1415621438018">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="167" OBJECT="java.lang.Integer|167"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bvar\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?"/>
+<attribute NAME="startChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+<attribute NAME="startLine" VALUE="165" OBJECT="java.lang.Integer|165"/>
+<attribute NAME="name" VALUE="82) attribute-var"/>
+<attribute NAME="start" VALUE="L165 C4"/>
+<attribute NAME="regexName" VALUE="attribute-var"/>
+<attribute NAME="end" VALUE="L167 C39"/>
+<attribute NAME="endChar" VALUE="39" OBJECT="java.lang.Integer|39"/>
+<node TEXT="" ID="ID_1256658387" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="165" OBJECT="java.lang.Integer|165"/>
+<attribute NAME="startChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+<attribute NAME="startLine" VALUE="165" OBJECT="java.lang.Integer|165"/>
+<attribute NAME="name" VALUE=""/>
+<attribute NAME="start" VALUE="L165 C4"/>
+<attribute NAME="end" VALUE="L165 C4"/>
+<attribute NAME="endChar" VALUE="4" OBJECT="java.lang.Integer|4"/>
+</node>
+<node TEXT="" ID="ID_77760605" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="167" OBJECT="java.lang.Integer|167"/>
+<attribute NAME="startChar" VALUE="7" OBJECT="java.lang.Integer|7"/>
+<attribute NAME="startLine" VALUE="167" OBJECT="java.lang.Integer|167"/>
+<attribute NAME="name" VALUE="reloadView"/>
+<attribute NAME="start" VALUE="L167 C7"/>
+<attribute NAME="end" VALUE="L167 C17"/>
+<attribute NAME="endChar" VALUE="17" OBJECT="java.lang.Integer|17"/>
+</node>
+<node TEXT="" ID="ID_1858185594" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="167" OBJECT="java.lang.Integer|167"/>
+<attribute NAME="startChar" VALUE="18" OBJECT="java.lang.Integer|18"/>
+<attribute NAME="startLine" VALUE="167" OBJECT="java.lang.Integer|167"/>
+<attribute NAME="name" VALUE="ResourceNodesListView"/>
+<attribute NAME="start" VALUE="L167 C18"/>
+<attribute NAME="end" VALUE="L167 C39"/>
+<attribute NAME="endChar" VALUE="39" OBJECT="java.lang.Integer|39"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_940430747" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="170" OBJECT="java.lang.Integer|170"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="40" OBJECT="java.lang.Integer|40"/>
+<attribute NAME="startLine" VALUE="170" OBJECT="java.lang.Integer|170"/>
+<attribute NAME="name" VALUE="83) open-bracket"/>
+<attribute NAME="start" VALUE="L170 C40"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L170 C41"/>
+<attribute NAME="endChar" VALUE="41" OBJECT="java.lang.Integer|41"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1489888288" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="170" OBJECT="java.lang.Integer|170"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="41" OBJECT="java.lang.Integer|41"/>
+<attribute NAME="startLine" VALUE="170" OBJECT="java.lang.Integer|170"/>
+<attribute NAME="name" VALUE="84) close-bracket"/>
+<attribute NAME="start" VALUE="L170 C41"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L170 C42"/>
+<attribute NAME="endChar" VALUE="42" OBJECT="java.lang.Integer|42"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1130352171" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="177" OBJECT="java.lang.Integer|177"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="177" OBJECT="java.lang.Integer|177"/>
+<attribute NAME="name" VALUE="85) close-bracket"/>
+<attribute NAME="start" VALUE="L177 C2"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L177 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1444158073" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="179" OBJECT="java.lang.Integer|179"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bfunction\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\(.*?\)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?=(\{?))"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="179" OBJECT="java.lang.Integer|179"/>
+<attribute NAME="name" VALUE="86) operation-function"/>
+<attribute NAME="start" VALUE="L179 C2"/>
+<attribute NAME="regexName" VALUE="operation-function"/>
+<attribute NAME="end" VALUE="L179 C77"/>
+<attribute NAME="endChar" VALUE="77" OBJECT="java.lang.Integer|77"/>
+<node TEXT="" ID="ID_383000338" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="179" OBJECT="java.lang.Integer|179"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="179" OBJECT="java.lang.Integer|179"/>
+<attribute NAME="name" VALUE="private"/>
+<attribute NAME="start" VALUE="L179 C2"/>
+<attribute NAME="end" VALUE="L179 C9"/>
+<attribute NAME="endChar" VALUE="9" OBJECT="java.lang.Integer|9"/>
+</node>
+<node TEXT="" ID="ID_265375377" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="179" OBJECT="java.lang.Integer|179"/>
+<attribute NAME="startChar" VALUE="19" OBJECT="java.lang.Integer|19"/>
+<attribute NAME="startLine" VALUE="179" OBJECT="java.lang.Integer|179"/>
+<attribute NAME="name" VALUE="showPopup"/>
+<attribute NAME="start" VALUE="L179 C19"/>
+<attribute NAME="end" VALUE="L179 C28"/>
+<attribute NAME="endChar" VALUE="28" OBJECT="java.lang.Integer|28"/>
+</node>
+<node TEXT="" ID="ID_610076500" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="179" OBJECT="java.lang.Integer|179"/>
+<attribute NAME="startChar" VALUE="72" OBJECT="java.lang.Integer|72"/>
+<attribute NAME="startLine" VALUE="179" OBJECT="java.lang.Integer|179"/>
+<attribute NAME="name" VALUE="void"/>
+<attribute NAME="start" VALUE="L179 C72"/>
+<attribute NAME="end" VALUE="L179 C76"/>
+<attribute NAME="endChar" VALUE="76" OBJECT="java.lang.Integer|76"/>
+</node>
+<node TEXT="" ID="ID_1373867117" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="179" OBJECT="java.lang.Integer|179"/>
+<attribute NAME="startChar" VALUE="77" OBJECT="java.lang.Integer|77"/>
+<attribute NAME="startLine" VALUE="179" OBJECT="java.lang.Integer|179"/>
+<attribute NAME="name" VALUE="{"/>
+<attribute NAME="start" VALUE="L179 C77"/>
+<attribute NAME="end" VALUE="L179 C78"/>
+<attribute NAME="endChar" VALUE="78" OBJECT="java.lang.Integer|78"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1575998472" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="179" OBJECT="java.lang.Integer|179"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="77" OBJECT="java.lang.Integer|77"/>
+<attribute NAME="startLine" VALUE="179" OBJECT="java.lang.Integer|179"/>
+<attribute NAME="name" VALUE="87) open-bracket"/>
+<attribute NAME="start" VALUE="L179 C77"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L179 C78"/>
+<attribute NAME="endChar" VALUE="78" OBJECT="java.lang.Integer|78"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1681340177" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="185" OBJECT="java.lang.Integer|185"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="185" OBJECT="java.lang.Integer|185"/>
+<attribute NAME="name" VALUE="88) close-bracket"/>
+<attribute NAME="start" VALUE="L185 C2"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L185 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_199682433" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="189" OBJECT="java.lang.Integer|189"/>
+<attribute NAME="fullRegex" VALUE="/\*\*(.*?)\*/"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="187" OBJECT="java.lang.Integer|187"/>
+<attribute NAME="name" VALUE="89) asdoc"/>
+<attribute NAME="start" VALUE="L187 C2"/>
+<attribute NAME="regexName" VALUE="asdoc"/>
+<attribute NAME="end" VALUE="L189 C5"/>
+<attribute NAME="endChar" VALUE="5" OBJECT="java.lang.Integer|5"/>
+<node TEXT="" ID="ID_433332174" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="189" OBJECT="java.lang.Integer|189"/>
+<attribute NAME="startChar" VALUE="5" OBJECT="java.lang.Integer|5"/>
+<attribute NAME="startLine" VALUE="187" OBJECT="java.lang.Integer|187"/>
+<attribute NAME="name" VALUE="&#xd;&#xa;&#x9;&#x9; * @return global dirty state for all open editors = saveAll action enablement.&#xd;&#xa;&#x9;&#x9; "/>
+<attribute NAME="start" VALUE="L187 C5"/>
+<attribute NAME="end" VALUE="L189 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1782531104" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="190" OBJECT="java.lang.Integer|190"/>
+<attribute NAME="fullRegex" VALUE="(\w*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\bfunction\b(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*([a-zA-Z_$][\w_$]*)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*\(.*?\)(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?::(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(\*|[a-zA-Z_$][\w_$]*))?(?:\s|/\*.*?\*/|//[^\r^\n]*\r?\n?)*(?=(\{?))"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="190" OBJECT="java.lang.Integer|190"/>
+<attribute NAME="name" VALUE="90) operation-function"/>
+<attribute NAME="start" VALUE="L190 C2"/>
+<attribute NAME="regexName" VALUE="operation-function"/>
+<attribute NAME="end" VALUE="L190 C48"/>
+<attribute NAME="endChar" VALUE="48" OBJECT="java.lang.Integer|48"/>
+<node TEXT="" ID="ID_1935113556" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="190" OBJECT="java.lang.Integer|190"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="190" OBJECT="java.lang.Integer|190"/>
+<attribute NAME="name" VALUE="public"/>
+<attribute NAME="start" VALUE="L190 C2"/>
+<attribute NAME="end" VALUE="L190 C8"/>
+<attribute NAME="endChar" VALUE="8" OBJECT="java.lang.Integer|8"/>
+</node>
+<node TEXT="" ID="ID_727356855" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="190" OBJECT="java.lang.Integer|190"/>
+<attribute NAME="startChar" VALUE="18" OBJECT="java.lang.Integer|18"/>
+<attribute NAME="startLine" VALUE="190" OBJECT="java.lang.Integer|190"/>
+<attribute NAME="name" VALUE="getGlobalDirtyState"/>
+<attribute NAME="start" VALUE="L190 C18"/>
+<attribute NAME="end" VALUE="L190 C37"/>
+<attribute NAME="endChar" VALUE="37" OBJECT="java.lang.Integer|37"/>
+</node>
+<node TEXT="" ID="ID_1559923489" CREATED="1415621438034" MODIFIED="1415621438034">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="190" OBJECT="java.lang.Integer|190"/>
+<attribute NAME="startChar" VALUE="40" OBJECT="java.lang.Integer|40"/>
+<attribute NAME="startLine" VALUE="190" OBJECT="java.lang.Integer|190"/>
+<attribute NAME="name" VALUE="Boolean"/>
+<attribute NAME="start" VALUE="L190 C40"/>
+<attribute NAME="end" VALUE="L190 C47"/>
+<attribute NAME="endChar" VALUE="47" OBJECT="java.lang.Integer|47"/>
+</node>
+<node TEXT="" ID="ID_1314228987" CREATED="1415621438049" MODIFIED="1415621438049">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="190" OBJECT="java.lang.Integer|190"/>
+<attribute NAME="startChar" VALUE="48" OBJECT="java.lang.Integer|48"/>
+<attribute NAME="startLine" VALUE="190" OBJECT="java.lang.Integer|190"/>
+<attribute NAME="name" VALUE="{"/>
+<attribute NAME="start" VALUE="L190 C48"/>
+<attribute NAME="end" VALUE="L190 C49"/>
+<attribute NAME="endChar" VALUE="49" OBJECT="java.lang.Integer|49"/>
+</node>
+</node>
+<node TEXT="" POSITION="right" ID="ID_112651904" CREATED="1415621438049" MODIFIED="1415621438049">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="190" OBJECT="java.lang.Integer|190"/>
+<attribute NAME="fullRegex" VALUE="\{"/>
+<attribute NAME="startChar" VALUE="48" OBJECT="java.lang.Integer|48"/>
+<attribute NAME="startLine" VALUE="190" OBJECT="java.lang.Integer|190"/>
+<attribute NAME="name" VALUE="91) open-bracket"/>
+<attribute NAME="start" VALUE="L190 C48"/>
+<attribute NAME="regexName" VALUE="open-bracket"/>
+<attribute NAME="end" VALUE="L190 C49"/>
+<attribute NAME="endChar" VALUE="49" OBJECT="java.lang.Integer|49"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1564327508" CREATED="1415621438049" MODIFIED="1415621438049">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="192" OBJECT="java.lang.Integer|192"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+<attribute NAME="startLine" VALUE="192" OBJECT="java.lang.Integer|192"/>
+<attribute NAME="name" VALUE="92) close-bracket"/>
+<attribute NAME="start" VALUE="L192 C2"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L192 C3"/>
+<attribute NAME="endChar" VALUE="3" OBJECT="java.lang.Integer|3"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_1989867003" CREATED="1415621438049" MODIFIED="1415621438049">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="194" OBJECT="java.lang.Integer|194"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="1" OBJECT="java.lang.Integer|1"/>
+<attribute NAME="startLine" VALUE="194" OBJECT="java.lang.Integer|194"/>
+<attribute NAME="name" VALUE="93) close-bracket"/>
+<attribute NAME="start" VALUE="L194 C1"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L194 C2"/>
+<attribute NAME="endChar" VALUE="2" OBJECT="java.lang.Integer|2"/>
+</node>
+<node TEXT="" POSITION="right" ID="ID_328170360" CREATED="1415621438049" MODIFIED="1415621438049">
+<attribute NAME="nodeType" VALUE="regexMatch"/>
+<attribute NAME="endLine" VALUE="195" OBJECT="java.lang.Integer|195"/>
+<attribute NAME="fullRegex" VALUE="\}"/>
+<attribute NAME="startChar" VALUE="0" OBJECT="java.lang.Integer|0"/>
+<attribute NAME="startLine" VALUE="195" OBJECT="java.lang.Integer|195"/>
+<attribute NAME="name" VALUE="94) close-bracket"/>
+<attribute NAME="start" VALUE="L195 C0"/>
+<attribute NAME="regexName" VALUE="close-bracket"/>
+<attribute NAME="end" VALUE="L195 C1"/>
+<attribute NAME="endChar" VALUE="1" OBJECT="java.lang.Integer|1"/>
+</node>
+</node>
+</map>

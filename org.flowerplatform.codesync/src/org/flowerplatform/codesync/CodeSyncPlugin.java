@@ -317,13 +317,16 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 					.setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_MODIFIED_RIGHT)
 					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
-			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_CONFLICT).setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_CHILDREN_CONFLICT)
+					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_DIFFS_MODIFIED_LEFT)
 					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor()
 					.setNameAs(MATCH_DIFFS_MODIFIED_RIGHT).setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
-			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_DIFFS_CONFLICT).setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
-			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_BODY_MODIFIED).setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN));
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_DIFFS_CONFLICT)
+					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN))
+			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(MATCH_BODY_MODIFIED)
+					.setReadOnlyAs(true).setTypeAs(PROPERTY_EDITOR_TYPE_BOOLEAN));
 		
 		// TODO test
 		setProjectAccessController(new ProjectAccessController());

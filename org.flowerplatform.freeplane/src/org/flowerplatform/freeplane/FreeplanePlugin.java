@@ -48,7 +48,6 @@ import static org.flowerplatform.mindmap.MindMapConstants.MINDMAP_CONTENT_TYPE;
 import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_CSV_TO_LIST_PREFIX;
 import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_CSV_TO_LIST_SUFFIX;
 import static org.flowerplatform.util.UtilConstants.EXTRA_INFO_VALUE_CONVERTER;
-import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_CSV_TO_LIST;
 import static org.flowerplatform.util.UtilConstants.VALUE_CONVERTER_STRING_HEX_TO_UINT;
 import static org.freeplane.features.url.UrlManager.FREEPLANE_FILE_EXTENSION;
 
@@ -129,8 +128,9 @@ public class FreeplanePlugin extends AbstractFlowerJavaPlugin {
 			.addAdditiveController(PROPERTIES_PROVIDER, new FileSubscribableProvider(FREEPLANE_FILE_EXTENSION, 
 					FREEPLANE_MINDMAP_RESOURCE_KEY, MINDMAP_CONTENT_TYPE, true))
 			.addAdditiveController(ADD_NODE_CONTROLLER, mindMapFileAddNodeController)
+			.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController(".result", "result"))  // TODO delete
 			.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController(".regexMatches", "regexMatches"))  // TODO delete
-			.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController(".regex", "regexConfig"))  // TODO delete
+			.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController(".regex-config", "regexConfig"))  // TODO delete
 			.addAdditiveController(ADD_NODE_CONTROLLER, new MindMapFileAddNodeController(".sdiff", "structureDiff")); // TODO delete
 		
 		CorePlugin.getInstance().getResourceService().addResourceHandler(FREEPLANE_PERSISTENCE_RESOURCE_KEY, fppResourceHandler);

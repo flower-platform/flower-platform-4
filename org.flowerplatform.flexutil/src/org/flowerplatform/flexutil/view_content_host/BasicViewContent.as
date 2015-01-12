@@ -73,6 +73,8 @@ package org.flowerplatform.flexutil.view_content_host {
 		}
 		
 		public function additionalCloseHandler():void {
+			// I think that by doing this, we avoid memory leak; even for inline functions 			
+			okFunction = null;
 		}		
 		
 		protected function initializeHandler(event:FlexEvent):void {

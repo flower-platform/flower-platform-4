@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.tests.js_client.java;
 
+import org.flowerplatform.core.node.remote.NodeWithChildren;
 import org.flowerplatform.js_client.java.node.AbstractServiceInvocator;
 import org.flowerplatform.js_client.java.node.ClientNode;
 import org.mozilla.javascript.Context;
@@ -66,4 +67,30 @@ public final class JSClientJavaTestUtils {
 		return node;
 	}
 	
+	/**
+	 * 
+	 * @param fragment
+	 * @return
+	 */
+	public static NodeWithChildren createClientNodeWithChildren(String fragment) {
+		NodeWithChildren node = new NodeWithChildren();
+		ClientNode cn = new ClientNode();
+		cn.setNodeUri(String.format("scheme:user/repo|%s", fragment));
+		cn.setType("type");
+		node.setNode(cn);
+		return node;
+	}
+
+	/**
+	 * 
+	 * @param fragment
+	 * @return
+	 */
+	public static ClientNode createResourceClientNode(String fragment) {
+		ClientNode node = new ClientNode();
+		node.setNodeUri(String.format("file:user/repo|%s", fragment));
+		node.setType("type");
+		return node;
+	}
+
 }

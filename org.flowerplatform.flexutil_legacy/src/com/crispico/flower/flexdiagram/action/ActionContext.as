@@ -27,6 +27,11 @@ package com.crispico.flower.flexdiagram.action
 	 * 
 	 */ 	
 	public dynamic class ActionContext {
-
+		
+		/**
+		 * When used together with gantt4flex, this class (in fact all classes form .flexdiagram package) exist twice. This is chosen
+		 * over the one from the gantt4flex lib. And it complains that this field is missing (although the class is dynamic).
+		 */
+		public var diagramFigure:Object;
 	}
 }

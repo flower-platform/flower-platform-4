@@ -72,9 +72,9 @@ package org.flowerplatform.flex_client.web {
 			CorePlugin.getInstance().handleLink(ExternalInterface.call("getURL"));
 			
 			// test for embedded IFrame
-			var viewLayoutData:ViewLayoutData = new ViewLayoutData(FlowerIFrameViewProvider.ID, "js_client.core/index.html");
-			viewLayoutData.isEditor = true;
-			FlexUtilGlobals.getInstance().workbench.addEditorView(viewLayoutData, true);
+//			var viewLayoutData:ViewLayoutData = new ViewLayoutData(FlowerIFrameViewProvider.ID, "js_client.core/index.html");
+//			viewLayoutData.isEditor = true;
+//			FlexUtilGlobals.getInstance().workbench.addEditorView(viewLayoutData, true);
 		}
 		
 		override protected function registerMessageBundle():void {
