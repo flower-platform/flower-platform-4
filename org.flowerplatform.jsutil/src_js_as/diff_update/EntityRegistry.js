@@ -248,10 +248,16 @@ EntityRegistry.prototype.setProperties = function(uid, properties) {
 	}
 	
 	var propertiesHolder = this.entityOperationsAdapter.object_getPropertiesHolder(entity);
-	this.entityOperationsAdapter.propertiesMap_iterateProperties(properties, function (key, value) {
+	var this_ = this;
+	this.entityOperationsAdapter.propertiesMap_iterateProperties(properties, function (key, value, isChildrenProperty) {
 		trace("*** EntityRegistry:213 - "+ key + " " + value);
 		if (key == 'data') return;
-		propertiesHolder[key] = value;
+		if (isChildrenProperty) {
+			var children = this_.entityOperationsAdapter.getChildrenList(properties, key); 
+			this_.registerChildrenInternal(uid, key, children);
+		} else {
+			propertiesHolder[key] = value;
+		}
 	});
 	
 	for (var i = 0; i < this.entityChangeListeners.length; i++) {
