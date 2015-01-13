@@ -79,7 +79,13 @@ EntityRegistry.prototype.registerEntityInternal = function(entity, parentUid, ch
 			for (var i in manyToOneProperties) {
 				var property = manyToOneProperties[i];
 				var refUid = this.entityOperationsAdapter.getEntityUid(propertiesHolder[property]);
-				propertiesHolder[property] = this.registry[refUid]; // if the object is not found => null; otherwise risk of infinite loop, and other nasty things
+				var ref = this.registry[refUid]; // if the object is not found => null; otherwise risk of infinite loop, and other nasty things
+				// TODO CS/DU: de fapt cred ca trebuie sa avem un registru per procesare: daca am vizitat un element, sa nu-l mai vizitez inca o data; astfel
+				// nu avem risc de infinit, si putem mereu sa facem register, chiar si la manyToOne
+				if (!ref && this.entityOperationsAdapter.shouldMergeManyToOneProperty(entity, property)) {
+					ref = this.registerEntityInternal(propertiesHolder[property]);
+				}
+				propertiesHolder[property] = ref;
 			}
 		}
 	} else { 
@@ -102,7 +108,11 @@ EntityRegistry.prototype.registerEntityInternal = function(entity, parentUid, ch
 			if (manyToOneProperties && manyToOneProperties[0] == key) { // CS/DU ..[0] is temp
 				// i.e. a many-to-one property
 				var refUid = this_.entityOperationsAdapter.getEntityUid(propertiesHolder[key]);
-				propertiesHolder[key] = this_.registry[refUid]; // see many-to-one case above
+				var ref = this_.registry[refUid]; // see many-to-one case above
+				if (ref == null && this_.entityOperationsAdapter.shouldMergeManyToOneProperty(entity, property)) {
+					ref = this_.registerEntityInternal(propertiesHolder[property]);
+				}
+				propertiesHolder[key] = ref;
 			} else {
 				// i.e. "normal" property
 				oldPropertiesHolder[key] = value;
@@ -158,7 +168,7 @@ EntityRegistry.prototype.registerChildrenInternal = function(parentUid, children
 	var oldChildrenList = this.entityOperationsAdapter.getChildrenList(parent, childrenProperty);
 	var oldChildrenSet;
 	if (oldChildrenList != children) {
-		// this may happen only during new object add; i.e. we recurse on an object and we want to register all
+		// the lists are equal during new object add; i.e. we recurse on an object and we want to register all
 		// children
 		oldChildrenSet = { };
 		var n = this.entityOperationsAdapter.list_getLength(oldChildrenList);
@@ -176,8 +186,9 @@ EntityRegistry.prototype.registerChildrenInternal = function(parentUid, children
 		if (oldChildrenSet) {
 			var childUid = this.entityOperationsAdapter.getEntityUid(child);
 			oldChildrenSet[childUid] = false;
-			this.entityOperationsAdapter.list_setItemAt(children, mergedEntity, i);
 		}
+		// we replace it in both cases: new object/recursive or childrenUpdate
+		this.entityOperationsAdapter.list_setItemAt(children, mergedEntity, i);
 	}
 	if (oldChildrenSet) {
 		for (var uid in oldChildrenSet) {
