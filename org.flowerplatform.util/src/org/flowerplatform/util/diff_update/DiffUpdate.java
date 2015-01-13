@@ -1,11 +1,15 @@
 package org.flowerplatform.util.diff_update;
 
+import java.io.Serializable;
+
 /**
  * 
  * @author Claudiu Matei
  *
  */
-public class DiffUpdate {
+public class DiffUpdate implements Serializable {
+
+	private static final long serialVersionUID = -7517448831349466230L;
 
 	private long id;
 
