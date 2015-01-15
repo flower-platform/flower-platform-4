@@ -85,15 +85,16 @@ EntityRegistryManager.prototype.addDiffUpdateProcessor = function(diffUpdateType
 };
 
 EntityRegistryManager.prototype.processDiffUpdate = function(notificationChannel, diffUpdate) {
-	// TODO CS: throw 1) dc nu gasim updProc; 2) dc id > lastId + 1; ignore if old update is received for processing (this may appear when update timer event occurs at the same time with service method call)
 	var diffUpdateProcessor = this.diffUpdateProcessors[diffUpdate.type];
 	if (!diffUpdateProcessor) {
 		throw "Update processor for type " + diffUpdate.type + " is not registered.";
 	}
 	var entityRegistryEntry = this.entityRegistryEntries[notificationChannel];
 	if (diffUpdate.id <= entityRegistryEntry.lastDiffUpdateId) {
+		// ignore if update was already processed (this case may appear when update timer event occurs at the same time with service method call)
 		return;
 	} else if (entityRegistryEntry.lastDiffUpdateId != -1 && diffUpdate.id > entityRegistryEntry.lastDiffUpdateId + 1) {
+		// throw exception if any updates were skipped 
 		throw "Update id (" + diffUpdate.id + ") is too high. Last processed update id is " + entityRegistryEntry.lastDiffUpdateId + ".";
 	}
 	
@@ -106,7 +107,7 @@ EntityRegistryManager.prototype.processDiffUpdate = function(notificationChannel
 
 EntityRegistryManager.prototype.addListener = function(listener) {
 	this.listeners.push(listener);
-};		
+};
 
 EntityRegistryManager.prototype.removeListener = function(listener) {
 	var i = this.listeners.indexOf(listener);	

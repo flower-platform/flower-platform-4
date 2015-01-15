@@ -18,10 +18,11 @@ public class DiffUpdateService {
 		this.diffUpdateRegistry = new DiffUpdateRegistry();
 	}
 	
-	public void addUpdate(String[] notificationChannels, DiffUpdate update) {
-		for (String notificationChannel : notificationChannels) {
-			diffUpdateRegistry.addUpdate(notificationChannel, update);
-		}
+	/**
+	 * @author see class
+	 */
+	public void addUpdate(String notificationChannel, DiffUpdate update) {
+		diffUpdateRegistry.addUpdate(notificationChannel, update);
 	}
 	
 	/**
@@ -65,7 +66,9 @@ public class DiffUpdateService {
 		diffUpdateRegistry.unregisterNotificationChannel(notificationChannel);
 	}
 
-	
+	/**
+	 * @author see class
+	 */
 	public long getLastUpdateId(String notificationChannel) {
 		return diffUpdateRegistry.getLastUpdateId(notificationChannel);
 	}
