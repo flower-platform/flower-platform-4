@@ -210,8 +210,13 @@ EntityRegistry.prototype.unregisterEntity = function(uid) {
 	if (entity.parentUid) {
 		// remove from parent
 		var parent = this.getEntityByUid(entity.parentUid);
-		var parentChildrenList = this.entityOperationsAdapter.getChildrenList(parent, entity.parentChildrenProperty);
-		this.entityOperationsAdapter.list_removeItem(parentChildrenList, entity);
+		if (parent) {
+			// although uid mai exist, the parent may have just been deleted
+			// TODO CS/DU: sa integram acest caz si in noul design
+			// TODO CS/DU: vad ca ac. cod e si mai jos. Cred ca e gresit/uitat, nu?
+			var parentChildrenList = this.entityOperationsAdapter.getChildrenList(parent, entity.parentChildrenProperty);
+			this.entityOperationsAdapter.list_removeItem(parentChildrenList, entity);
+		}
 	}
 	
 	this.unregisterEntityInternal(uid);
@@ -229,8 +234,11 @@ EntityRegistry.prototype.unregisterEntityInternal = function(uid) {
 	if (entity.parentUid) {
 		// remove from parent
 		var parent = this.getEntityByUid(entity.parentUid);
-		var parentChildrenList = this.entityOperationsAdapter.getChildrenList(parent, entity.parentChildrenProperty);
-		this.entityOperationsAdapter.list_removeItem(parentChildrenList, entity);
+		if (parent) {
+			// although uid mai exist, the parent may have just been deleted
+			var parentChildrenList = this.entityOperationsAdapter.getChildrenList(parent, entity.parentChildrenProperty);
+			this.entityOperationsAdapter.list_removeItem(parentChildrenList, entity);
+		}
 	}
 	delete this.registry[uid];
 	for (var i = 0; i < this.entityChangeListeners.length; i++) {
