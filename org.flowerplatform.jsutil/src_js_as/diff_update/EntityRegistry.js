@@ -82,7 +82,7 @@ EntityRegistry.prototype.registerEntityInternal = function(entity, parentUid, ch
 				var ref = this.registry[refUid]; // if the object is not found => null; otherwise risk of infinite loop, and other nasty things
 				// TODO CS/DU: de fapt cred ca trebuie sa avem un registru per procesare: daca am vizitat un element, sa nu-l mai vizitez inca o data; astfel
 				// nu avem risc de infinit, si putem mereu sa facem register, chiar si la manyToOne
-				if (!ref && this.entityOperationsAdapter.shouldMergeManyToOneProperty(entity, property)) {
+				if ((!ref || ref == null) && this.entityOperationsAdapter.shouldMergeManyToOneProperty(entity, property)) {
 					ref = this.registerEntityInternal(propertiesHolder[property]);
 				}
 				propertiesHolder[property] = ref;
@@ -109,7 +109,7 @@ EntityRegistry.prototype.registerEntityInternal = function(entity, parentUid, ch
 				// i.e. a many-to-one property
 				var refUid = this_.entityOperationsAdapter.getEntityUid(propertiesHolder[key]);
 				var ref = this_.registry[refUid]; // see many-to-one case above
-				if (ref == null && this_.entityOperationsAdapter.shouldMergeManyToOneProperty(entity, property)) {
+				if ((!ref || ref==null) && this_.entityOperationsAdapter.shouldMergeManyToOneProperty(entity, property)) {
 					ref = this_.registerEntityInternal(propertiesHolder[property]);
 				}
 				propertiesHolder[key] = ref;
@@ -190,14 +190,16 @@ EntityRegistry.prototype.registerChildrenInternal = function(parentUid, children
 		// we replace it in both cases: new object/recursive or childrenUpdate
 		this.entityOperationsAdapter.list_setItemAt(children, mergedEntity, i);
 	}
-	if (oldChildrenSet) {
+
+	// TODO CS/DU: chestia asta (if-ul) genereaza memory leak
+	if (oldChildrenSet && this.entityOperationsAdapter.shouldUnregisterChildrenFromRegistry(parent, childrenProperty)) {
 		for (var uid in oldChildrenSet) {
 			if (oldChildrenSet[uid]) {
 				delete this.registry[uid];
 			}
 		}
-		this.entityOperationsAdapter.setChildren(parent, childrenProperty, children);
 	}
+	this.entityOperationsAdapter.setChildren(parent, childrenProperty, children);
 };
 
 // TODO CS: la fel ca mai sus: in anumite cazuri nu am nevoie sa sterg din lista de parinte
@@ -269,7 +271,6 @@ EntityRegistry.prototype.setProperties = function(uid, properties) {
 	var propertiesHolder = this.entityOperationsAdapter.object_getPropertiesHolder(entity);
 	var this_ = this;
 	this.entityOperationsAdapter.propertiesMap_iterateProperties(properties, function (key, value, isChildrenProperty) {
-		trace("*** EntityRegistry:213 - "+ key + " " + value);
 		if (key == 'data') return;
 		if (isChildrenProperty) {
 			var children = this_.entityOperationsAdapter.getChildrenList(properties, key); 
