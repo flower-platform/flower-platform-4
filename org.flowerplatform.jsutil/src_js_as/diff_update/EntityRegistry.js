@@ -107,12 +107,17 @@ EntityRegistry.prototype.registerEntityInternal = function(entity, parentUid, ch
 		this.entityOperationsAdapter.object_iterateProperties(propertiesHolder, function (key, value) {
 			if (manyToOneProperties && manyToOneProperties[0] == key) { // CS/DU ..[0] is temp
 				// i.e. a many-to-one property
-				var refUid = this_.entityOperationsAdapter.getEntityUid(propertiesHolder[key]);
-				var ref = this_.registry[refUid]; // see many-to-one case above
-				if ((!ref || ref==null) && this_.entityOperationsAdapter.shouldMergeManyToOneProperty(entity, property)) {
-					ref = this_.registerEntityInternal(propertiesHolder[property]);
+				if (!value) {
+					oldPropertiesHolder[key] = null;
+				} else {
+					var refUid = this_.entityOperationsAdapter.getEntityUid(value);
+					var ref = this_.registry[refUid]; // see many-to-one case above
+					// TODO CS/DU: sa investigam daca chiar trebuie conditia dubla de mai jos
+					if ((!ref || ref==null) && this_.entityOperationsAdapter.shouldMergeManyToOneProperty(entity, property)) {
+						ref = this_.registerEntityInternal(value);
+					}
+					oldPropertiesHolder[key] = ref;
 				}
-				propertiesHolder[key] = ref;
 			} else {
 				// i.e. "normal" property
 				oldPropertiesHolder[key] = value;
