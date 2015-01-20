@@ -28,7 +28,10 @@ package org.flowerplatform.flexutil.list {
 		
 		protected var lists:Array = [];
 		
-		public function ComposedList(lists:Array) {
+		public function ComposedList(lists:Array = null) {
+			if (lists == null) {
+				return;
+			}
 			for (var i:int = 0; i < lists.length; i++) {
 				var current:IList = lists[i] as IList; 
 				addList(current, false);
@@ -67,6 +70,13 @@ package org.flowerplatform.flexutil.list {
 				}
 			}
 			return null;
+		}
+		
+		public function removeAllLists(shouldDispatchEvent:Boolean = true):void {
+			lists = [];
+			if (shouldDispatchEvent) {
+				childListCollectionChangeHandler(null);
+			}
 		}
 		
 		protected function childListCollectionChangeHandler(event:CollectionEvent):void {

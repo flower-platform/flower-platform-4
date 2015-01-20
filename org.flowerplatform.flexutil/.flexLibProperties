@@ -51,6 +51,8 @@
     <classEntry path="org.flowerplatform.flexutil.list.ParentAwareArrayList"/>
     <classEntry path="org.flowerplatform.flexutil.properties.editor.StringCsvListPropertyEditor"/>
     <classEntry path="org.flowerplatform.flexutil.value_converter.ListToListValueConverter"/>
+    <classEntry path="org.flowerplatform.flexutil.controller.operation.GenericOperation"/>
+    <classEntry path="org.flowerplatform.flexutil.controller.operation.OperationResultCombiner"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
