@@ -181,16 +181,34 @@ public class TypeDescriptorRegistry {
 		return remotes;
 	}
 	
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
+	 */
 	public IController getSingleController(String feature, Object model) {
-		return getExpectedTypeDescriptor(typeProvider.getType(model)).getSingleController(feature, model);
+		String type = typeProvider.getType(model);
+		TypeDescriptor typeDescriptor = getExpectedTypeDescriptor(type);
+		if (typeDescriptor == null) {
+			// this happens when we don't have anything registered for this type
+			// we create an empty one to allow getting controllers from dynamic categories.
+			typeDescriptor = getOrCreateTypeDescriptor(type);			
+		}
+		return typeDescriptor.getSingleController(feature, model);		
 	}
 
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
+	 */
 	public List<? extends IController> getAdditiveControllers(String feature, Object model) {
-		TypeDescriptor typeDescriptor = getExpectedTypeDescriptor(typeProvider.getType(model));
-		if (typeDescriptor != null) {
-			return typeDescriptor.getAdditiveControllers(feature, model);
+		String type = typeProvider.getType(model);
+		TypeDescriptor typeDescriptor = getExpectedTypeDescriptor(type);
+		if (typeDescriptor == null) {
+			// this happens when we don't have anything registered for this type
+			// we create an empty one to allow getting controllers from dynamic categories.
+			typeDescriptor = getOrCreateTypeDescriptor(type);			
 		}
-		return Collections.emptyList();
+		return typeDescriptor.getAdditiveControllers(feature, model);
 	}
 
 }

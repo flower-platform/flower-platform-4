@@ -10,7 +10,9 @@ package org.flowerplatform.flexutil.controller.operation {
 		}
 		
 		override public function combineResult(newResult:Object):void {
-			result += newResult;
+			if (newResult) {
+				result += newResult;
+			}
 		}
 		
 	}
