@@ -12,8 +12,8 @@
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/core.swc" useDefaultLinkType="false"/>
         </excludedEntries>
       </libraryPathEntry>
-      <libraryPathEntry kind="1" linkType="1" path="lib"/>
       <libraryPathEntry kind="3" linkType="2" path="/org.flowerplatform.flexutil/bin/org.flowerplatform.flexutil.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="lib/libs/flexlib/2.5/flexlib-2.5.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
