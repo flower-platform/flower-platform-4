@@ -13,7 +13,7 @@
  * 
  * license-end
  */
-  
+
 var EntityRegistry = function(entityRegistryManager) { 
 	this.entityRegistryManager = entityRegistryManager; 
 	this.entityChangeListeners = [];
@@ -62,6 +62,155 @@ adapter.object_iterateProperties(object, function (key, value) {
 // iterare pe set
 
  */
+EntityRegistry.prototype.mergeEntity = function(entity, indexesInParent) {
+	return mergeEntityInternal(entity, indexesInParent, null, { } );
+}
+
+EntityRegistry.prototype.mergeEntityInternal = function(entity, indexesInParent, manyToOneRef, visitedEntities) {
+	var _this = this;
+	var uid = this.entityOperationsAdapter.getEntityUid(entity);
+	if (visitedEntities[uid]) {
+		return entity; 
+	}
+	visitedEntities[uid] = true;
+	
+	var oldEntity = this.registry[uid];
+	var registeredEntity = oldEntity;
+	var oldPropertiesSet = null;
+
+	if (!oldEntity) {
+		// entity is not in registry
+		this.registry[uid] = entity;
+		registeredEntity = entity;
+	} else {
+		// i.e. an old entity exists; it will be reused (and the new properties, merged into it)
+		if (this.entityOperationsAdapter.object_hasDynamicProperties(entity)) {
+			oldPropertiesSet = {};
+			this.entityOperationsAdapter.object_iterateProperties(oldEntity, function (key, value) {
+				oldPropertiesSet[key] = true;
+			});
+		}
+	}
+	
+	var entityType = this.entityOperationsAdapter.getEntityType(entity);
+	var propertiesFlags = this.entityOperationsAdapter.getPropertyFlagsMap(entityType);
+	
+	this.entityOperationsAdapter.object_iterateProperties(entity, function(property, value) {
+		var propertyInfo = propertiesFlags[property];
+		if (propertyInfo.flags & PROPERTY_FLAG.IGNORE != 0) {
+			return;
+		} else if (propertyInfo.flags & PROPERTY_FLAG.ONE_TO_MANY != 0) { 
+
+			var oldChildrenSet;
+
+			if (oldEntity) {
+				// populate oldChildrenSet with uids of already registered children; will be used to remove the no longer existing children
+				var oldChildrenList = oldEntity[property];
+				var n = this.entityOperationsAdapter.list_getLength(oldChildrenList);
+				for (var i = 0; i < n; i++) {
+					var child = this.entityOperationsAdapter.list_getItemAt(oldChildrenList, i);
+					var childUid = this.entityOperationsAdapter.getEntityUid(child);
+					oldChildrenSet[childUid] = true;
+				}
+			}
+
+			var childrenList = entity[property];
+			var n = this.entityOperationsAdapter.list_getLength(childrenList);
+			for (var i = 0; i < n; i++) {
+				var child = this.entityOperationsAdapter.list_getItemAt(childrenList, i);
+				var registeredChild = this.mergeEntityInternal(child, null, null, visitedEntities);
+				if (oldChildrenSet) {
+					// child exists, so remove it from set of children marked for deletion 
+					var childUid = this.entityOperationsAdapter.getEntityUid(entity);
+					delete oldChildrenSet[childUid];
+				}
+			}
+			
+			if (registeredEntity) {
+				for (var uid in oldChildrenSet) {
+					// TODO CM: review this
+					_this.remove(uid, {});
+				}
+			}
+		} else if (propertyInfo.flags & PROPERTY_FLAG.MANY_TO_ONE != 0) {
+			var parentEntity = _this.mergeEntityInternal(registeredEntity[property], null, null, visitedEntities);
+			registeredEntity[property] = parentEntity;
+			
+			// create children list in parent, if it doesn't exist
+			if (!parentEntity[propertyInfo.oppositeProperty]) {
+				parentEntity[propertyInfo.oppositeProperty] = _this.entityOperationsAdapter.list_create(parentEntity, propertyInfo.oppositeProperty);
+			} 
+			// add child to parent's children list
+			_this.entityOperationsAdapter.addItem(parentEntity[propertyInfo.oppositeProperty], registeredEntity, -1);
+		} 
+	}
+
+	// delete no longer existing properties
+	if (oldPropertiesSet) {
+		for (var property in oldPropertiesSet) {
+			if (oldPropertiesSet[property]) {
+				delete registeredEntity[property];
+			}
+		}
+	}
+
+	return registeredEntity;
+};
+
+EntityRegistry.prototype.remove = function(initialEntity, entity, removeParent, visitedEntities) {
+	var _this = this;
+
+	if (entity.isRootEntity) {
+		return false;
+	}
+
+	var uid = this.entityOperationsAdapter.getEntityUid(entity);
+	if (visitedEntities[uid]) {
+		return true; 
+	}
+	visitedEntities[uid] = true;
+
+	var canRemove = true;
+	this.entityOperationsAdapter.object_iterateProperties(entity, function(property, value) {
+		if (!canRemove) {
+			return;
+		}
+		var propertyInfo = propertiesFlags[property];
+		
+		if (propertyInfo.flags & PROPERTY_FLAG.IGNORE != 0) {
+			return;
+		} else if (propertyInfo.flags & PROPERTY_FLAG_ONE_TO_MANY != 0) {
+			var childrenList = entity[property];
+			var n = this.entityOperationsAdapter.list_getLength(childrenList);
+			for (var i = 0; i < n; i++) {
+				var child = this.entityOperationsAdapter.list_getItemAt(childrenList, i);
+				canRemove = canRemove && _this.remove(initialEntity, child, entity, visitedEntities);
+				if (!canRemove) {
+					return;
+				}
+			}
+		} else if (propertyInfo.flags & PROPERTY_MANY_TO_ONE != 0) {
+			var parent = entity[property];
+			if (parent == removeParent) {
+				return;
+			}
+			var parentChildrenList = parent[propertyInfo.oppositeProperty];
+			canRemove = canRemove && _this.remove(initialEntity, child, null, visitedEntities);
+			if (!canRemove) {
+				return;
+			}
+		}
+	});
+	
+	// when bottom of call stack is reached, remove all visited entities if ok to remove  
+	if ((entity == initialEntity) && canRemove) {
+		for (var uid in visitedEntities) {
+			delete this.registry[uid];
+		}
+	}
+	
+	return canRemove;
+};
 
 EntityRegistry.prototype.registerEntityInternal = function(entity, parentUid, childrenProperty) {
 	var uid = this.entityOperationsAdapter.getEntityUid(entity);
@@ -299,9 +448,9 @@ EntityRegistry.prototype.removeEntityChangeListener = function(listener) {
 };			
 
 EntityRegistry.prototype.printDebugInfo = function() {
-	//java.lang.System.out.println("*** registry ***");
+	java.lang.System.out.println("*** registry ***");
 	for (var prop in this.registry) {
-//		java.lang.System.out.println(prop + " : " + this.registry[prop]);
+		java.lang.System.out.println(prop + " : " + this.registry[prop]);
 	}
 };			
 
@@ -321,3 +470,4 @@ EntityRegistry.prototype.resetEntityProperties = function(entity, newProperties)
 };
 
 */
+var PROPERTY_FLAG = { ONE_TO_MANY = 0x1, MANY_TO_ONE = 0x2, MANY_TO_MANY = 0x4, IGNORE = 0x8 };
