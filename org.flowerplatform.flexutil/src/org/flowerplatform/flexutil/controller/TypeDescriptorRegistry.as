@@ -16,8 +16,8 @@
 package org.flowerplatform.flexutil.controller {
 	import flash.utils.Dictionary;
 	
-	import mx.collections.ArrayList;
 	import mx.collections.ArrayCollection;
+	import mx.collections.ArrayList;
 	import mx.collections.IList;
 	import mx.core.mx_internal;
 	
@@ -128,11 +128,25 @@ package org.flowerplatform.flexutil.controller {
 		}
 		
 		public function getSingleController(feature:String, model:Object):AbstractController {
-			return getExpectedTypeDescriptor(typeProvider.getType(model)).getSingleController(feature, model);
+			var type:String = typeProvider.getType(model);
+			var typeDescriptor:TypeDescriptor = getExpectedTypeDescriptor(type);
+			if (typeDescriptor == null) {
+				// this happens when we don't have anything registered for this type
+				// we create an empty one to allow getting controllers from dynamic categories.
+				typeDescriptor = getOrCreateTypeDescriptor(type);			
+			}
+			return typeDescriptor.getSingleController(feature, model);			
 		}
 	
 		public function getAdditiveControllers(feature:String, model:Object):IList {
-			return getExpectedTypeDescriptor(typeProvider.getType(model)).getAdditiveControllers(feature, model);
+			var type:String = typeProvider.getType(model);
+			var typeDescriptor:TypeDescriptor = getExpectedTypeDescriptor(type);
+			if (typeDescriptor == null) {
+				// this happens when we don't have anything registered for this type
+				// we create an empty one to allow getting controllers from dynamic categories.
+				typeDescriptor = getOrCreateTypeDescriptor(type);			
+			}
+			return typeDescriptor.getAdditiveControllers(feature, model);
 		}
 	}
 }
