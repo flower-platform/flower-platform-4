@@ -47,6 +47,8 @@ public class TypeDescriptorRegistry {
 	 */
 	boolean configurable = true;
 
+	private ITypeProvider typeProvider;
+	
 	/**
 	 * @see TypeDescriptor#additiveControllers
 	 */
@@ -55,6 +57,15 @@ public class TypeDescriptorRegistry {
 	}
 
 	private Map<String, TypeDescriptor> typeDescriptors = new HashMap<String, TypeDescriptor>();
+	
+	public ITypeProvider getTypeProvider() {
+		return typeProvider;
+	}
+
+	public void setTypeProvider(ITypeProvider typeProvider) {
+		this.typeProvider = typeProvider;
+	}
+
 	/**
 	 *@author see class
 	 **/
@@ -62,12 +73,7 @@ public class TypeDescriptorRegistry {
 		if (type.startsWith(UtilConstants.CATEGORY_PREFIX)) {
 			throw new IllegalArgumentException("Please use getOrCreateCategoryTypeDescriptor()");
 		}
-		TypeDescriptor result = typeDescriptors.get(type);
-		if (result == null) {
-			result = new TypeDescriptor(this, type);
-			typeDescriptors.put(type, result);
-		}
-		return result;
+		return getOrCreateTypeDescriptorInternal(type);
 	}
 	
 	/**
@@ -81,9 +87,17 @@ public class TypeDescriptorRegistry {
 		if (!type.startsWith(UtilConstants.CATEGORY_PREFIX)) {
 			throw new IllegalArgumentException("Category type should be prefixed with 'category.'");
 		}
+		return getOrCreateTypeDescriptorInternal(type);
+	}
+	
+	public TypeDescriptor getOrCreateTypeDescriptorInternal(String type) {
 		TypeDescriptor result = typeDescriptors.get(type);
 		if (result == null) {
-			result = new CategoryTypeDescriptor(this, type);
+			if (type.startsWith(UtilConstants.CATEGORY_PREFIX)) {
+				result = new CategoryTypeDescriptor(this, type);
+			} else {
+				result = new TypeDescriptor(this, type);
+			}
 			typeDescriptors.put(type, result);
 		}
 		return result;
@@ -168,4 +182,35 @@ public class TypeDescriptorRegistry {
 		}
 		return remotes;
 	}
+	
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
+	 */
+	public IController getSingleController(String feature, Object model) {
+		String type = typeProvider.getType(model);
+		TypeDescriptor typeDescriptor = getExpectedTypeDescriptor(type);
+		if (typeDescriptor == null) {
+			// this happens when we don't have anything registered for this type
+			// we create an empty one to allow getting controllers from dynamic categories.
+			typeDescriptor = getOrCreateTypeDescriptor(type);			
+		}
+		return typeDescriptor.getSingleController(feature, model);		
+	}
+
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Cristian Spiescu
+	 */
+	public List<? extends IController> getAdditiveControllers(String feature, Object model) {
+		String type = typeProvider.getType(model);
+		TypeDescriptor typeDescriptor = getExpectedTypeDescriptor(type);
+		if (typeDescriptor == null) {
+			// this happens when we don't have anything registered for this type
+			// we create an empty one to allow getting controllers from dynamic categories.
+			typeDescriptor = getOrCreateTypeDescriptor(type);			
+		}
+		return typeDescriptor.getAdditiveControllers(feature, model);
+	}
+
 }

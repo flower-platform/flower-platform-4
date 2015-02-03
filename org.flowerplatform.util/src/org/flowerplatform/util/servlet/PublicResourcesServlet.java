@@ -17,6 +17,7 @@ package org.flowerplatform.util.servlet;
 
 import java.io.BufferedInputStream;
 import java.io.Closeable;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +53,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 	private static final long serialVersionUID = 1L;
 	
     private static final int DEFAULT_BUFFER_SIZE = 10240; // 10KB.
-
+    
     private static void close(Closeable resource) {
         if (resource != null) {
             try {
@@ -193,7 +194,20 @@ public class PublicResourcesServlet extends ResourcesServlet {
 				}
 			}
 				
-			requestedFile = "platform:/plugin" + plugin + "/" + UtilConstants.PUBLIC_RESOURCES_DIR + file;
+//			requestedFile = "platform:/plugin" + plugin + "/" + UtilConstants.PUBLIC_RESOURCES_DIR + file;
+			requestedFile = plugin + "/" + prefix + file;
+			if (useRealPath) {
+				String path = getServletContext().getRealPath(requestedFile);
+				if (!new File(path).exists() && realPathNotFoundFind != null) {
+					// This is useful in XOPS, when the application is served (from within Eclipse/WTP) directly, i.e. without publishing.
+					// In this case, the current dir is WebContent, so we look around for serving the plugins. We do this only if not found,
+					// because we don't have a mechanism to know if we are in PROD (i.e. the above path would apply) or in DEV (i.e. the below
+					// path would apply)
+					path = getServletContext().getRealPath(requestedFile.replaceFirst(realPathNotFoundFind, realPathNotFoundReplace));
+				}
+				requestedFile = path;
+			}
+			requestedFile = protocol + requestedFile;
 			
 			// Get content type by filename from the file or file inside zip
 			String contentType = getServletContext().getMimeType(fileInsideZipArchive != null ? fileInsideZipArchive : file);
@@ -225,7 +239,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 					input = url.openConnection().getInputStream();
 					inputCloseable = input;
 	            } catch (IOException e) {
-					// may fail if the resource is not available
+	            	// may fail if the resource is not available
 	            	send404(request, response);
 					return;
 				}

@@ -29,7 +29,7 @@ NodeRegistry.prototype.getNodeById = function(id) {
 	if (id in this.registry) {
 		return this.registry[id];
 	}
-	return this.registry[id];
+	return null;
 };
 		
 NodeRegistry.prototype.addNodeChangeListener = function(listener) {
@@ -135,23 +135,23 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 		}
 		return;
 	}
-			
-	for (var i = updates.length - 1; i >= 0; i--) {
-		var update = updates.getItemAt(i);
+	var size = this.nodeRegistryManager.hostInvocator.getLength(updates);
+	
+	for (var i = size - 1; i >= 0; i--) {
+		var update = this.nodeRegistryManager.hostInvocator.getItemAt(updates, i);
 		var nodeFromRegistry = this.getNodeById(update.fullNodeId);	
 		if (nodeFromRegistry == null) { // node not registered, probably it isn't visible for this client
 			continue;
 		}
-		
 		switch (String(update.type)) {
 			case Constants.UPDATED:
 				var propertyUpdate = update;
 				
 				if (propertyUpdate.isUnset) {
-					delete this.nodeFromRegistry.properties[propertyUpdate.key];						
+					delete nodeFromRegistry.properties[propertyUpdate.key];
 				} else {
-					this.setPropertyValue(nodeFromRegistry, propertyUpdate.key, propertyUpdate.value);						
-				}	
+					this.setPropertyValue(nodeFromRegistry, propertyUpdate.key, propertyUpdate.value);
+				}
 				break;
 			case Constants.ADDED:
 				var targetNodeInRegistry = this.getNodeById(update.targetNode.nodeUri);	
@@ -164,8 +164,8 @@ NodeRegistry.prototype.processUpdates = function(updates) {
 						if (targetNodeAddedBeforeInRegistry != null) { // exists, get its index in children list
 							index = this.nodeRegistryManager.hostInvocator.getItemIndex(nodeFromRegistry.children, targetNodeAddedBeforeInRegistry);	
 						}
-					}								
-					this.registerNode(update.targetNode, nodeFromRegistry, index);								
+					}
+					this.registerNode(update.targetNode, nodeFromRegistry, index);
 				} else {
 					// child already added, probably after refresh
 					// e.g. I add a children, I expand => I get the list with the new children; when the

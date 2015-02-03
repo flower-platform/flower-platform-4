@@ -29,7 +29,8 @@ public final class Indenter {
 	 */
 	public static String indent(String in) {
 		String out = "";
-		Pattern pattern = Pattern.compile("(.*?\\R)");
+		// line terminator equivalent for jre8: \R
+		Pattern pattern = Pattern.compile("(.*?((\r\n)|(\n)|(\r)))");
 		Matcher matcher = pattern.matcher(in);
 		String ws = null;
 		while (matcher.find()) {

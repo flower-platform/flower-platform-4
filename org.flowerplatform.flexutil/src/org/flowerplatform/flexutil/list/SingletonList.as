@@ -76,23 +76,21 @@ package org.flowerplatform.flexutil.list {
 		}
 		
 		public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
-			throw new Error("Unsupported operation");
 		}
 		
 		public function removeEventListener(type:String, listener:Function, useCapture:Boolean=false):void {
-			throw new Error("Unsupported operation");
 		}
 		
 		public function dispatchEvent(event:Event):Boolean {
-			throw new Error("Unsupported operation");
+			return true;
 		}
 		
 		public function hasEventListener(type:String):Boolean {
-			throw new Error("Unsupported operation");
+			return false;
 		}
 		
 		public function willTrigger(type:String):Boolean {
-			throw new Error("Unsupported operation");
+			return false;
 		}
 	}
 }

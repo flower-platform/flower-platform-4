@@ -220,11 +220,7 @@ package org.flowerplatform.flex_client.core {
 				}
 			);
 
-			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null,
-				function(result:Object):void {
-					nodeTypeDescriptorRegistry.addTypeDescriptorsRemote(ArrayCollection(result));
-				}
-			);
+			serviceLocator.invoke("nodeService.getRegisteredTypeDescriptors", null, nodeTypeDescriptorRegistry.addTypeDescriptorsRemote);
 			
 			nodeTypeDescriptorRegistry.typeProvider = nodeTypeProvider;
 			

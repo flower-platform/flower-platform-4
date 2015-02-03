@@ -15,6 +15,9 @@
  */
 package org.flowerplatform.util.controller;
 
+import javax.xml.bind.annotation.XmlTransient;
+
+
 /**
  * Base class for controllers. A controller, is a class that knows how to handle a specific operation
  * for a type (or several types) of objects (or nodes).
@@ -61,7 +64,7 @@ public abstract class AbstractController implements IController {
 	/**
 	 * @author Claudiu Matei
 	 */
-	protected TypeDescriptor typeDescriptor; 
+	private TypeDescriptor typeDescriptor; 
 	
 	/* (non-Javadoc)
 	 * @see org.flowerplatform.util.controller.IOrderedController#getOrderIndex()
@@ -85,7 +88,12 @@ public abstract class AbstractController implements IController {
 		setOrderIndex(orderIndexParam);
 		return this;
 	}
-	
+			
+	@XmlTransient
+	public TypeDescriptor getTypeDescriptor() {
+		return typeDescriptor;
+	}
+
 	/**
 	 * @author Claudiu Matei
 	 */
@@ -98,6 +106,10 @@ public abstract class AbstractController implements IController {
 		this.typeDescriptor = typeDescriptor;
 	}
 	
+	public boolean isSharedControllerAllowed() {
+		return sharedControllerAllowed;
+	}
+
 	public void setSharedControllerAllowed(boolean sharedControllerAllowed) {
 		this.sharedControllerAllowed = sharedControllerAllowed;
 	}

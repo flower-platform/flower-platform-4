@@ -51,9 +51,9 @@ public class JsClientJavaObjectMapperProvider implements ContextResolver<ObjectM
 		objectMapper.registerModule(module);
 		
 		com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder<?> typer = new TypeResolverBuilder(DefaultTyping.NON_FINAL);
-	    typer = typer.init(JsonTypeInfo.Id.CLASS, null);
-	    typer = typer.inclusion(JsonTypeInfo.As.PROPERTY);
-	    objectMapper.setDefaultTyping(typer);
+		typer = typer.init(JsonTypeInfo.Id.CLASS, null);
+		typer = typer.inclusion(JsonTypeInfo.As.PROPERTY);
+		objectMapper.setDefaultTyping(typer);
 	}
 	
 	@Override

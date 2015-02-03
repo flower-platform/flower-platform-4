@@ -49,6 +49,7 @@ package org.flowerplatform.flexutil.service {
 		}
 		
 		public function fault(info:Object):void {
+			// TODO CS: de ce am facut ac. schimbare de semnatura? Ar trebui sa operam si la metoda simetrica result?
 			serviceLocator.faultHandler(info != null ? FaultEvent(info).fault : null, this);
 		}
 		

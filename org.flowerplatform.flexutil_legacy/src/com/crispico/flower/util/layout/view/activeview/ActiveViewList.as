@@ -17,6 +17,7 @@ package com.crispico.flower.util.layout.view.activeview
 {
 	import com.crispico.flower.util.layout.Workbench;
 	import com.crispico.flower.util.layout.view.LayoutTabNavigator;
+	import com.crispico.flower.util.layout.view.ViewPopupWindow;
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.INavigatorContent;
@@ -77,15 +78,15 @@ package com.crispico.flower.util.layout.view.activeview
 		 * Dispatches an event to notify about changes.
 		 */ 
 		public function setActiveView(newActiveView:UIComponent, setFocusOnNewView:Boolean = true, dispatchActiveViewChangedEvent:Boolean = true, restoreIfMinimized:Boolean = true):void {		
-			if (newActiveView == null) {
+			if (newActiveView == null || newActiveView.parent is ViewPopupWindow) {
 				return;
 			}
 			
 			if (restoreIfMinimized) {
 				// if minimized, restore it
 				var viewLayoutData:ViewLayoutData = ViewLayoutData(workbench.componentToLayoutData[newActiveView]);
-				if (StackLayoutData(viewLayoutData.parent).mrmState == StackLayoutData.USER_MINIMIZED ||
-					StackLayoutData(viewLayoutData.parent).mrmState == StackLayoutData.FORCED_MINIMIZED) {
+				if (viewLayoutData.parent != null && (StackLayoutData(viewLayoutData.parent).mrmState == StackLayoutData.USER_MINIMIZED ||
+					StackLayoutData(viewLayoutData.parent).mrmState == StackLayoutData.FORCED_MINIMIZED)) {
 					workbench.restore(StackLayoutData(viewLayoutData.parent));
 				}
 			}

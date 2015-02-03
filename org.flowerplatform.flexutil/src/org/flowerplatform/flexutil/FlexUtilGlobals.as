@@ -28,10 +28,12 @@ package org.flowerplatform.flexutil {
 	import org.flowerplatform.flexutil.layout.IWorkbench;
 	import org.flowerplatform.flexutil.plugin.FlexPluginManager;
 	import org.flowerplatform.flexutil.popup.IMessageBoxFactory;
+	import org.flowerplatform.flexutil.popup.IPopupHandler;
 	import org.flowerplatform.flexutil.popup.IPopupHandlerFactory;
 	import org.flowerplatform.flexutil.popup.IProgressMonitorFactory;
 	import org.flowerplatform.flexutil.selection.SelectionManager;
 	import org.flowerplatform.flexutil.shortcut.KeyBindings;
+	import org.flowerplatform.flexutil.view_content_host.IViewContent;
 
 	public class FlexUtilGlobals {
 
@@ -96,6 +98,16 @@ package org.flowerplatform.flexutil {
 		 * @author Cristina Contantinescu
 		 */
 		public var imageContentCache:ContentCache;
+		
+		// shortcut functions / start
+		
+		public static function createPopupHandler(viewContent:IViewContent = null):IPopupHandler {
+			var result:IPopupHandler = FlexUtilGlobals.getInstance().popupHandlerFactory.createPopupHandler();
+			result.setViewContent(viewContent);
+			return result;
+		}
+		
+		// shortcut functions / end
 		
 		public function createAbsoluteUrl(url:String):String {
 			if (rootUrl.length > 0) {

@@ -35,6 +35,8 @@ package org.flowerplatform.flexutil.service {
 		
 		protected var remoteObjects:Dictionary = new Dictionary();
 		
+		public var globalFaultHandler:Function = null;
+		
 		public function ServiceLocator(channelSet:ChannelSet) {
 			this.channelSet = channelSet;			
 		}
@@ -60,14 +62,20 @@ package org.flowerplatform.flexutil.service {
 		public function faultHandler(fault:Fault, responder:ServiceResponder):void {
 			if (responder.faultHandler != null) {
 				responder.faultHandler(fault);
+			} else if (globalFaultHandler != null) {
+				globalFaultHandler(fault, responder);
 			} else {
-				FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
-					.setWidth(300)
-					.setHeight(200)
-					.setTitle(FlexUtilAssets.INSTANCE.getMessage("service.fault.title"))
-					.setText(FlexUtilAssets.INSTANCE.getMessage("service.fault.message", [fault.faultString, fault.content]))
-					.showMessageBox();
+				defaultFaultHandler(fault, responder);
 			}			
+		}
+		
+		public function defaultFaultHandler(fault:Fault, responder:ServiceResponder):void {
+			FlexUtilGlobals.getInstance().messageBoxFactory.createMessageBox()
+				.setWidth(300)
+				.setHeight(200)
+				.setTitle(FlexUtilAssets.INSTANCE.getMessage("service.fault.title"))
+				.setText(FlexUtilAssets.INSTANCE.getMessage("service.fault.message", [fault.faultString, fault.faultDetail, fault.content]))
+				.showMessageBox();
 		}
 		
 		public function resultHandler(result:Object, responder:ServiceResponder):void {

@@ -15,6 +15,8 @@
  */
 package org.flowerplatform.flexutil.spinner {
 	import mx.controls.Image;
+	
+	import org.flowerplatform.flexutil.FlexUtilGlobals;
 
 	/**
 	 * Spinner with logo.
@@ -22,9 +24,9 @@ package org.flowerplatform.flexutil.spinner {
 	 */ 
 	public class LogoSpinner extends ModalSpinner {
 	
-		private var logoIcon:Class;
+		private var logoIcon:Object;
 		
-		public function LogoSpinner(logoIcon:Class) {
+		public function LogoSpinner(logoIcon:Object) {
 			this.logoIcon = logoIcon;
 		}
 					
@@ -34,7 +36,10 @@ package org.flowerplatform.flexutil.spinner {
 			spinner.size = 46;
 			
 			var icon:Image = new Image();
-			icon.source = logoIcon;
+			if (logoIcon is String)
+				icon.source = FlexUtilGlobals.getInstance().adjustImageBeforeDisplaying(logoIcon);
+			else
+				icon.source = logoIcon;
 			addChildAt(icon, 0);			
 		}
 		

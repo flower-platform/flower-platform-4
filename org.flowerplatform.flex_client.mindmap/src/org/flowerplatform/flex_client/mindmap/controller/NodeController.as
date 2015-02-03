@@ -77,7 +77,7 @@ package org.flowerplatform.flex_client.mindmap.controller {
 		}
 		
 		private function collapse(context:DiagramShellContext, node:Node):void {
-			CorePlugin.getInstance().nodeRegistryManager.collapse(MindMapEditorDiagramShell(context.diagramShell).nodeRegistry, node, context);
+			CorePlugin.getInstance().nodeRegistryManager.collapse(MindMapEditorDiagramShell(context.diagramShell).nodeRegistry, node);
 		}
 		
 		/**

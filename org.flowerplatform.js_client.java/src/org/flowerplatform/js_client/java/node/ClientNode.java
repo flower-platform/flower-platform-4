@@ -58,5 +58,11 @@ public class ClientNode extends Node {
 	public void setParent(ClientNode parent) {
 		this.parent = parent;
 	}
+	
+	public boolean equals(Object obj) {
+		return (this == obj);
+	}
+	
+	public native int hashCode();
 
 }

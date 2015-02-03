@@ -20,6 +20,7 @@ import org.flowerplatform.tests.controllers.FileSystemControllersTest;
 import org.flowerplatform.tests.core.CommandStackTest;
 import org.flowerplatform.tests.core.CoreTestSuite;
 import org.flowerplatform.tests.freeplane.XmlParserTest;
+import org.flowerplatform.tests.js_client.java.JsClientJavaTestSuite;
 import org.flowerplatform.tests.regex.RegexTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -35,9 +36,10 @@ import org.junit.runners.Suite.SuiteClasses;
 	FileSystemControllersTest.class,
 	CommandStackTest.class,
 	CoreTestSuite.class,
-//	JsClientJavaTestSuite.class,
 	XmlParserTest.class,
+	JsClientJavaTestSuite.class,
 	RegexTestSuite.class
+	
 })
 public class EclipseIndependentTestSuite {
 

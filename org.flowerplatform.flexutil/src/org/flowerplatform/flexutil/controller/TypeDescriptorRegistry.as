@@ -96,19 +96,25 @@ package org.flowerplatform.flexutil.controller {
 		}
 		
 		public function getSingleController(feature:String, model:Object):AbstractController {
-			var descriptor:TypeDescriptor = getExpectedTypeDescriptor(typeProvider.getType(model));
-			if (descriptor != null) {
-				return descriptor.getSingleController(feature, model);
+			var type:String = typeProvider.getType(model);
+			var typeDescriptor:TypeDescriptor = getExpectedTypeDescriptor(type);
+			if (typeDescriptor == null) {
+				// this happens when we don't have anything registered for this type
+				// we create an empty one to allow getting controllers from dynamic categories.
+				typeDescriptor = getOrCreateTypeDescriptor(type);			
 			}
-			return null;
+			return typeDescriptor.getSingleController(feature, model);
 		}
 	
 		public function getAdditiveControllers(feature:String, model:Object):IList {
-			var descriptor:TypeDescriptor = getExpectedTypeDescriptor(typeProvider.getType(model));
-			if (descriptor != null) {
-				return descriptor.getAdditiveControllers(feature, model);
+			var type:String = typeProvider.getType(model);
+			var typeDescriptor:TypeDescriptor = getExpectedTypeDescriptor(type);
+			if (typeDescriptor == null) {
+				// this happens when we don't have anything registered for this type
+				// we create an empty one to allow getting controllers from dynamic categories.
+				typeDescriptor = getOrCreateTypeDescriptor(type);			
 			}
-			return new ArrayList();
+			return typeDescriptor.getAdditiveControllers(feature, model);
 		}
 		
 		/**

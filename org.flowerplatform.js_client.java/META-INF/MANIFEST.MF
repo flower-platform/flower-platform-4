@@ -7,10 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.flowerplatform.util,
  org.eclipse.core.runtime,
  org.flowerplatform.core
-Eclipse-BuddyPolicy: registered
-Eclipse-RegisterBuddy: org.flowerplatform.core
 Export-Package: org.flowerplatform.js_client.java,
- org.glassfish.jersey.client,
  org.flowerplatform.js_client.java.node,
  org.mozilla.javascript
 Bundle-ClassPath: lib-from-maven/aopalliance-repackaged-2.3.0-b05.jar,
