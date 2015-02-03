@@ -16,12 +16,13 @@
 package org.flowerplatform.codesync.template.config_loader;
 
 import java.io.StringWriter;
-import java.util.Vector;
+import java.util.List;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.file.IFileAccessController;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.AbstractController;
 
 /**
@@ -68,12 +69,9 @@ public class TemplatesEngineController extends AbstractController {
 	public String merge(VelocityContext context) {
 		StringWriter writer = new StringWriter();
 		engine.mergeTemplate("base/base.vm", "UTF-8", context, writer);
-		String output = writer.toString();
-		System.out.println(output);
-		return output;
+		return writer.toString();
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private String addToCsv(Object existing, String added) {
 		if (existing == null) {
 			// empty
@@ -83,7 +81,7 @@ public class TemplatesEngineController extends AbstractController {
 			// just one => append
 			return existing + "," + added;
 		}
-		return String.join(",", (Vector) existing) + "," + added;
+		return Utils.joinString(",", (List<?>) existing) + "," + added;
 	}
 
 	private String getMacros(Object location, String relativeLocation) {

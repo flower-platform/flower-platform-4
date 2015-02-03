@@ -41,6 +41,7 @@ import org.flowerplatform.core.file.FileControllerUtils;
 import org.flowerplatform.core.node.NodeService;
 import org.flowerplatform.core.node.remote.Node;
 import org.flowerplatform.core.node.remote.ServiceContext;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.controller.TypeDescriptorRegistry;
 import org.flowerplatform.util.controller.TypeDescriptorRemote;
 
@@ -130,7 +131,7 @@ public class CodeSyncOperationsService {
 		// sort
 		Collections.sort(result);
 		
-		return String.join(",", result);
+		return Utils.joinString(",", result);
 	}
 	
 	/**

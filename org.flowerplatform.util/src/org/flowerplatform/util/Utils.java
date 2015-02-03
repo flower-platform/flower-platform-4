@@ -15,6 +15,7 @@
  */
 package org.flowerplatform.util;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,6 +45,24 @@ public final class Utils {
 			return null;
 		}
 		return source.substring(i + 1);
+	}
+	
+	/**
+	 * @author Cristian Spiescu
+	 */
+	public static String joinString(String separator, List<?> values) {
+		boolean first = true;
+		StringBuffer result = new StringBuffer();
+		for (Object current : values) {
+			if (first) {
+				first = false;
+			} else {
+				result.append(separator);
+			}
+			result.append(current);
+		}
+		
+		return result.toString();
 	}
 	
 	/**
