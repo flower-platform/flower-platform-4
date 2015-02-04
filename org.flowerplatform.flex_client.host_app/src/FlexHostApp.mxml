@@ -110,6 +110,7 @@ license-end
 			import mx.validators.RegExpValidator;
 			import mx.validators.StringValidator;
 			
+			import spark.components.NavigatorContent;
 			import spark.core.ContentCache;
 			import spark.formatters.DateTimeFormatter;
 			import spark.layouts.TileLayout;
@@ -195,6 +196,7 @@ license-end
 			BorderSkin;
 			Linear;
 			Glow;
+			NavigatorContent;
 			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
