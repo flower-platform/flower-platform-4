@@ -332,16 +332,18 @@ public class NodeModelAdapter extends AbstractModelAdapter {
 	 **/
 	protected void processContainmentFeatureAfterActionPerformed(Node node, Object feature, ActionResult result, Match match) {
 		NodeService service = CorePlugin.getInstance().getNodeService();
+		ServiceContext<NodeService> context = new ServiceContext<NodeService>(service);
+		context.getContext().put(CodeSyncConstants.SYNC_IN_PROGRESS, true);
 		Object child = findChild(match, feature, result.childAdded, result.childMatchKey);
 		if (child != null && child instanceof Node) {
 			Node childNode = (Node) child;
 			if (result.childAdded) {
 				if (childNode.getProperties().containsKey(ADDED)) {
-					service.unsetProperty(childNode, ADDED, new ServiceContext<NodeService>(service));
+					service.unsetProperty(childNode, ADDED, context);
 				}
 			} else {
 				if (childNode.getProperties().containsKey(REMOVED)) {
-					service.removeChild(node, childNode, new ServiceContext<NodeService>(service));
+					service.removeChild(node, childNode, context);
 				}
 			}
 		}

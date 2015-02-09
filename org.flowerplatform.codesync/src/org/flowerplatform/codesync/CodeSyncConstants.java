@@ -53,6 +53,8 @@ public final class CodeSyncConstants {
 		return "." + extension;
 	}
 	
+	public static final String CATEGORY_CONTAINER = UtilConstants.CATEGORY_PREFIX + CODESYNC + "Container";
+	
 	public static final String FOLDER = "codesyncFolder";
 	public static final String FILE = "codesyncFile";
 	

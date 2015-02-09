@@ -17,6 +17,7 @@ package org.flowerplatform.codesync;
 
 import static org.flowerplatform.codesync.CodeSyncConstants.BASE_DIR;
 import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_CODESYNC;
+import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_CONTAINER;
 import static org.flowerplatform.codesync.CodeSyncConstants.CATEGORY_MODEL;
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC;
 import static org.flowerplatform.codesync.CodeSyncConstants.CODESYNC_FILE;
@@ -25,6 +26,8 @@ import static org.flowerplatform.codesync.CodeSyncConstants.CODE_SYNC_CONFIG_EXT
 import static org.flowerplatform.codesync.CodeSyncConstants.CODE_SYNC_CONFIG_PROPERTY_DIRS;
 import static org.flowerplatform.codesync.CodeSyncConstants.DIAGRAM;
 import static org.flowerplatform.codesync.CodeSyncConstants.DIAGRAM_EXTENSION;
+import static org.flowerplatform.codesync.CodeSyncConstants.FILE;
+import static org.flowerplatform.codesync.CodeSyncConstants.FOLDER;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_BODY_MODIFIED;
 import static org.flowerplatform.codesync.CodeSyncConstants.MATCH_CHILDREN_CONFLICT;
@@ -307,10 +310,15 @@ public class CodeSyncPlugin extends AbstractFlowerJavaPlugin {
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateTypeDescriptor(SRC_DIR)
 			.addCategory(CATEGORY_CODESYNC)
+			.addCategory(CATEGORY_CONTAINER)
 			.addCategory(CATEGORY_MODEL)
 			.addAdditiveController(PROPERTIES_PROVIDER, new ConstantValuePropertyProvider(ICONS, 
 					ResourcesPlugin.getInstance().getResourceUrl("images/codesync/SrcDirPackage.gif")))
 			.addAdditiveController(FEATURE_PROPERTY_DESCRIPTORS, new PropertyDescriptor().setNameAs(SRC_DIR_TECHNOLOGIES));
+	
+		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CATEGORY_CONTAINER)
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FOLDER))
+			.addAdditiveController(ADD_CHILD_DESCRIPTOR, new AddChildDescriptor().setChildTypeAs(FILE));
 		
 		CorePlugin.getInstance().getNodeTypeDescriptorRegistry().getOrCreateCategoryTypeDescriptor(CodeSyncConstants.CATEGORY_CODESYNC)
 			.addAdditiveController(ADD_NODE_CONTROLLER, new CodeSyncAddNodeController().setOrderIndexAs(10000))

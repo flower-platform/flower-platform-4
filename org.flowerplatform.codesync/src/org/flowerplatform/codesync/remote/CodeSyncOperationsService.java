@@ -108,10 +108,12 @@ public class CodeSyncOperationsService {
 	}
 	
 	/**
+	 * Relativize paths to base directory and sort configuration directories paths.
 	 * 
-	 * @param codeSyncConfigDirs
-	 * @param baseDir
-	 * @return
+	 * @param codeSyncConfigDirs comma-separated string of the paths of the configuration directories;
+	 * as written by the user in the root node of the model
+	 * @param baseDir base directory that serves as the root for all the configuration directories
+	 * @return a comma-separated string of the relativized and sorted paths
 	 */
 	public String getCodeSyncConfigDirsKey(String codeSyncConfigDirs, String baseDir) {
 		List<String> result = null;
@@ -152,8 +154,17 @@ public class CodeSyncOperationsService {
 	}
 
 	/**
-	 * @param nodeUri
-	 *            The nodeUri corresponding to the given file
+	 * Perform synchronization for a source directory. First generate the match, and if 
+	 * <code>oneStepSync</code> is <code>true</code>, also apply the synchronization actions.
+	 * 
+	 * @param nodeUri the node URI of the source directory in the model file
+	 * @param file the source directory as a file on disk
+	 * @param technology the technology for this source directory
+	 * @param oneStepSync a boolean flag; <code>true</code> to also apply sync actions
+	 * @return the match tree for the synchronization
+	 * 
+	 * @see #generateMatch(String, Object, String, boolean)
+	 * @see #performSync(Match)
 	 */
 	public Match synchronize(String nodeUri, Object file, String technology, boolean oneStepSync) {
 		Match match = generateMatch(nodeUri, file, technology, oneStepSync);
@@ -165,8 +176,9 @@ public class CodeSyncOperationsService {
 	}
 
 	/**
-	 * @author Valentina Bojan
-	 **/
+	 * Perform a 3-way compare (ancestor: initial model, left: current model, right: AST), and generate
+	 * the match tree.
+	 */
 	public Match generateMatch(String nodeUri, Object file, String technology, boolean oneStepSync) {
 		Node srcDir = CorePlugin.getInstance().getResourceService().getNode(nodeUri);
 
@@ -201,6 +213,8 @@ public class CodeSyncOperationsService {
 	}
 
 	/**
+	 * Apply the default sync actions for this match tree.
+	 * 
 	 * @author Mariana Gheorghe
 	 **/
 	public Match performSync(Match match) {
@@ -210,10 +224,7 @@ public class CodeSyncOperationsService {
 	}
 	
 	/**
-	 * 
-	 * @param node
-	 * @param relativePath
-	 * @return
+	 * @see #getPathFromResourceNode(Node, String)
 	 */
 	public String getPath(Node node, String relativePath) {
 		Node resourceNode = CorePlugin.getInstance().getResourceService().getResourceNode(node.getNodeUri());
@@ -222,10 +233,12 @@ public class CodeSyncOperationsService {
 	}
 	
 	/**
+	 * Find the base directory of this model file, and append the <code>relativePath</code>.
 	 * 
-	 * @param resourceNode
-	 * @param relativePath
-	 * @return
+	 * @param resourceNode the root of the model file; contains the {@link CodeSyncConstants#BASE_DIR} property
+	 * (a path relative to the location of the model file)
+	 * @param relativePath relative to the base directory
+	 * @return the path (relative to the workspace root), formed from the base directory and relative path
 	 */
 	public String getPathFromResourceNode(Node resourceNode, String relativePath) {
 		IPath path = getResourceNodeLocation(resourceNode);

@@ -24,6 +24,7 @@ package org.flowerplatform.flex_client.codesync {
 	import org.flowerplatform.flex_client.core.CoreConstants;
 	import org.flowerplatform.flex_client.core.CorePlugin;
 	import org.flowerplatform.flex_client.core.editor.action.ActionDescriptor;
+	import org.flowerplatform.flex_client.core.editor.action.RemoveNodeAction;
 	import org.flowerplatform.flex_client.core.plugin.AbstractFlowerFlexPlugin;
 	import org.flowerplatform.flex_client.mindmap.controller.NodeRendererController;
 	import org.flowerplatform.flexdiagram.FlexDiagramConstants;
@@ -63,7 +64,8 @@ package org.flowerplatform.flex_client.codesync {
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateCategoryTypeDescriptor(CodeSyncConstants.CATEGORY_CODESYNC)
 				.addAdditiveController(FlexUtilConstants.TYPE_DESCRIPTOR_REGISTRY_PROVIDER, new CodeSyncConfigTypeDescriptorRegistryProvider())
 				.addSingleController(FlexDiagramConstants.RENDERER_CONTROLLER, AbstractController(new NodeRendererController(new ClassFactoryWithConstructor(CodeSyncNodeRenderer, -10000))))
-				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(SynchronizeAction.ID));
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(SynchronizeAction.ID))
+				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(RemoveNodeAction.ID));
 			
 			CorePlugin.getInstance().nodeTypeDescriptorRegistry.getOrCreateTypeDescriptor(CodeSyncConstants.CODE_SYNC_CONFIG_ROOT)
 				.addAdditiveController(CoreConstants.ACTION_DESCRIPTOR, new ActionDescriptor(ReloadConfigurationAction.ID));

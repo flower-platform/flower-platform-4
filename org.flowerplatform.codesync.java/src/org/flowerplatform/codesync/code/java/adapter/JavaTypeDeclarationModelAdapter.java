@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
@@ -33,6 +34,7 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
 import org.flowerplatform.codesync.FilteredIterable;
 import org.flowerplatform.codesync.adapter.IModelAdapterSet;
+import org.flowerplatform.codesync.adapter.file.CodeSyncFile;
 import org.flowerplatform.codesync.code.java.CodeSyncJavaConstants;
 import org.flowerplatform.core.CoreConstants;
 
@@ -163,25 +165,43 @@ public class JavaTypeDeclarationModelAdapter extends JavaAbstractAstNodeModelAda
 		super.setValueFeatureValue(element, feature, value, codeSyncAlgorithm);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild, IModelAdapterSet modelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
 		// declared as containment by JavaFeatureProvider 
 		if (CodeSyncJavaConstants.TYPE_MEMBERS.equals(feature)) {
-			AbstractTypeDeclaration type = (AbstractTypeDeclaration) parent;
-			AST ast = type.getAST();
+			ASTNode actualParent = getParentType(parent);
+			AST ast = actualParent.getAST();
 			ASTNode child = createCorrespondingModelElement(ast, modelAdapterSet.getType(correspondingChild, codeSyncAlgorithm));
-			type.bodyDeclarations().add(child);
+			addToParentType(actualParent, child);
 			return child;
 		}
 
 		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, modelAdapterSet, codeSyncAlgorithm);
 	}
 	
-	/**
-	 *@author Mariana Gheorghe
-	 **/
-	protected ASTNode createCorrespondingModelElement(AST ast, String type) {
+	private ASTNode getParentType(Object parent) {
+		if (parent instanceof CodeSyncFile) {
+			// creating a top-level declaration
+			CodeSyncFile file = (CodeSyncFile) parent;
+			CompilationUnit cu = (CompilationUnit) file.getFileInfo();
+			return cu;
+		} else if (parent instanceof AbstractTypeDeclaration) {
+			return (AbstractTypeDeclaration) parent;
+		} else {
+			throw new RuntimeException("Cannot add Java type to " + parent);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void addToParentType(ASTNode parent, ASTNode child) {
+		if (parent instanceof CompilationUnit) {
+			((CompilationUnit) parent).types().add(child);
+		} else if (parent instanceof AbstractTypeDeclaration) {
+			((AbstractTypeDeclaration) parent).bodyDeclarations().add(child);
+		}
+	}
+	
+	private ASTNode createCorrespondingModelElement(AST ast, String type) {
 		ASTNode child = null;
 		if (CodeSyncJavaConstants.CLASS.equals(type)) {
 			child = ast.newTypeDeclaration();

@@ -16,9 +16,13 @@
 package org.flowerplatform.codesync.adapter.file;
 
 import org.flowerplatform.codesync.CodeSyncAlgorithm;
+import org.flowerplatform.codesync.CodeSyncConstants;
 import org.flowerplatform.codesync.CodeSyncPlugin;
 import org.flowerplatform.codesync.adapter.DelegatingModelAdapter;
 import org.flowerplatform.codesync.adapter.IModelAdapter;
+import org.flowerplatform.codesync.adapter.IModelAdapterSet;
+import org.flowerplatform.core.CoreConstants;
+import org.flowerplatform.core.node.remote.Node;
 
 /**
  * Registered for all {@link FileModelAdapterSet}s. Delegates to
@@ -44,6 +48,21 @@ public class FileModelAdapter extends DelegatingModelAdapter {
 			return new UnknownFileModelAdapter();
 		}
 		return CodeSyncPlugin.getInstance().getModelAdapterSet(technology).getFileModelAdapterDelegate();
+	}
+
+	@Override
+	public Object createChildOnContainmentFeature(Object parent, Object feature, Object correspondingChild,
+			IModelAdapterSet modelAdapterSet, CodeSyncAlgorithm codeSyncAlgorithm) {
+		if (CodeSyncConstants.CHILDREN.equals(feature)) {
+			// TODO should not cast to node
+			Node node = (Node) correspondingChild;
+			String name = (String) node.getPropertyValue(CoreConstants.NAME);
+			Object newFile = codeSyncAlgorithm.getFileAccessController().getFile(
+					((CodeSyncFile) parent).getFile(), name);
+			return new CodeSyncFile(newFile, false);
+		}
+		return super.createChildOnContainmentFeature(parent, feature, correspondingChild, modelAdapterSet,
+				codeSyncAlgorithm);
 	}
 	
 }

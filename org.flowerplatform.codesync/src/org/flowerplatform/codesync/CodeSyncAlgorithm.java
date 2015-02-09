@@ -41,7 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *@author Mariana Gheorghe
+ * @author Mariana Gheorghe
  **/
 public class CodeSyncAlgorithm {
 	
@@ -96,7 +96,7 @@ public class CodeSyncAlgorithm {
 	}
 	
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public void initializeFeatureProvider(Side side) {
 		featureProviderSide = side;
@@ -151,9 +151,9 @@ public class CodeSyncAlgorithm {
 		}
 		
 		// iterate over containment features
-		Pair<Boolean, Boolean> conflictSyncPair;
 		for (Object feature : featureProvider.getContainmentFeatures()) {
-			conflictSyncPair = processContainmentFeature(feature, match, !performLater && performAction);
+			Pair<Boolean, Boolean> conflictSyncPair = processContainmentFeature(feature, match,
+					!performLater && performAction);
 			isChildrenConflict = isChildrenConflict || conflictSyncPair.a;
 			isChildrenSync = isChildrenSync && conflictSyncPair.b;
 		}
@@ -452,16 +452,16 @@ public class CodeSyncAlgorithm {
 	}
 	
 	/**
-	 *@author Valentina Bojan
+	 * @author Valentina Bojan
 	 **/
 	public boolean synchronize(Match match) {
 		return synchronize(match, null);
 	}
 	
 	/**
-	 *@author Valentina Bojan
+	 * Perform the <code>action</code> for the <code>match</code>.
 	 **/
-	public boolean synchronize(Match match, DiffAction action) {
+	protected boolean synchronize(Match match, DiffAction action) {
 		boolean isSync = true;
 
 		if (match.isConflict() || match.isChildrenConflict()) {
@@ -525,7 +525,9 @@ public class CodeSyncAlgorithm {
 	}
 	
 	/**
-	 *@author Mariana Gheorghe
+	 * Find the default action to apply for this match.
+	 * 
+	 * @author Mariana Gheorghe
 	 **/
 	protected DiffAction getDiffActionToApplyForMatch(Match match) {
 		if (Match.MatchType._1MATCH_LEFT.equals(match.getMatchType())) {
@@ -543,7 +545,7 @@ public class CodeSyncAlgorithm {
 	}
 	
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public void save(Match match, boolean shouldRecurse) {
 		boolean saveSubMatches = false;
@@ -569,7 +571,7 @@ public class CodeSyncAlgorithm {
 	}
 	
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public String getElementTypeForMatch(Match match) {
 		if (match.getLeft() != null) {
@@ -582,7 +584,7 @@ public class CodeSyncAlgorithm {
 	}
 	
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public FeatureProvider getFeatureProvider(Match match) {
 		if (featureProviderSide == null) {
@@ -658,28 +660,28 @@ public class CodeSyncAlgorithm {
 	}
 	
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public IModelAdapter getRightModelAdapter(Object right) {
 		return modelAdapterSetRight.getModelAdapter(right, this);
 	}
 	
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public IModelAdapter getAncestorModelAdapter(Object ancestor) {
 		return modelAdapterSetAncestor.getModelAdapter(ancestor, this);
 	}
 
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public IModelAdapter getLeftModelAdapter(Object left) {
 		return modelAdapterSetLeft.getModelAdapter(left, this);
 	}
 	
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	public enum Side {
 		LEFT, 
