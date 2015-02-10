@@ -20,6 +20,13 @@ public class DiffUpdateRegistry {
 	
 	private Map<String, List<DiffUpdate>> updatesMap = new ConcurrentHashMap<String, List<DiffUpdate>>();
 	
+	// TODO CC: temporary code
+	public void clearDiffUpdates() {
+		for(Map.Entry<String, List<DiffUpdate>> entry : updatesMap.entrySet()) {
+			entry.setValue(new ArrayList<DiffUpdate>());
+		}
+	}
+
 	/**
 	 * 
 	 * @param update
