@@ -5,5 +5,7 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry excluding="**/resources/" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="lib" path="F:/Flower/Eclipse_4.3.1_modeling_x64/plugins/org.eclipse.wst.jsdt.debug.rhino.debugger_1.0.301.v201208171701.jar"/>
+	<classpathentry kind="lib" path="F:/Flower/Eclipse_4.3.1_modeling_x64/plugins/org.eclipse.wst.jsdt.debug.transport_1.0.101.v201208171701.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

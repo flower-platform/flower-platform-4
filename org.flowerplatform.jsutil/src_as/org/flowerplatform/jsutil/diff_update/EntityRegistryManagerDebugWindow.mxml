@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+ @author Cristian Spiescu
+ -->
+<ns:BasicViewContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					 xmlns:s="library://ns.adobe.com/flex/spark" 
+					 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="org.flowerplatform.flexutil.view_content_host.*"
+					 creationComplete="refreshClickHandler()">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.collections.IList;
+			import mx.collections.Sort;
+			import mx.collections.SortField;
+			
+			import org.apache.flex.collections.VectorList;
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			
+			
+			
+			public var entityRegistryManager:*;
+			
+			[Bindable]
+			public var notificationChannelsDataProvider:IList;
+			
+			[Bindable]
+			public var entityRegistryAsList:IList;
+			
+			public function show(entityRegistryManager:*):void {
+				this.entityRegistryManager = entityRegistryManager;
+				this.closeOnOk = true;
+				FlexUtilGlobals.createPopupHandler(this).setWidth(600).setHeight(600).show(false);
+			}
+		
+			protected function refreshClickHandler():void {
+				var result:IList = new VectorList();
+				for (var notificationChannel:String in entityRegistryManager.entityRegistryEntries) {
+					var entry:* = entityRegistryManager.entityRegistryEntries[notificationChannel];
+					result.addItem({ 
+						notificationChannel: entry.notificationChannel,
+						entityRegistries: new ArrayList(entry.entityRegistries)
+					});
+				}
+				notificationChannelsDataProvider = result;
+				callLater(function ():void {
+					selectEntityRegistry(entityRegistries.selectedItem);					
+				});
+			}
+			
+			protected function selectEntityRegistry(entityRegistry:*):void {
+				if (!entityRegistry) {
+					entityRegistryAsList = null;
+					return;
+				}
+				var result:ArrayCollection = new ArrayCollection();
+				var dataSortField:SortField = new SortField();
+				dataSortField.name = "uid";
+				dataSortField.numeric = false;
+				var dataSort:Sort = new Sort();
+				dataSort.fields = [dataSortField];
+				result.sort = dataSort;
+				
+				for (var uid:String in entityRegistry.registry) {
+					var object:* = entityRegistry.registry[uid];
+					result.addItem({
+						uid: uid,
+						instanceId: object.hasOwnProperty("instanceId") ? object.instanceId : null,
+						object: object
+					});
+				}
+				result.refresh();
+				
+				entityRegistryAsList = result;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Button label="Refresh" click="refreshClickHandler()"/>
+	<s:TabBar id="notificationChannels" dataProvider="{notificationChannelsDataProvider}" labelField="notificationChannel" change="selectEntityRegistry(entityRegistries.selectedItem)"/>
+	<s:TabBar id="entityRegistries" dataProvider="{notificationChannels.selectedItem.entityRegistries}" change="selectEntityRegistry(entityRegistries.selectedItem)"/>
+	<s:DataGrid width="100%" height="100%" dataProvider="{entityRegistryAsList}">
+		<s:columns>
+			<s:ArrayList>
+				<s:GridColumn dataField="uid" sortable="false"/>
+				<s:GridColumn dataField="instanceId" sortable="false"/>
+				<s:GridColumn dataField="object" sortable="false"/>
+			</s:ArrayList>
+		</s:columns>
+	</s:DataGrid>
+</ns:BasicViewContent>

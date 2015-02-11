@@ -1,9 +1,8 @@
 package org.flowerplatform.jsutil {
-	import com.crispico.xops.util.EntityOperationsAdapter;
 	
 	public class EntityRegistryManagerFactory {
-		public static function createEntityRegistryManager():* {
-			var entityRegistryManager:* = new EntityRegistryManager(new EntityOperationsAdapter());
+		public static function createEntityRegistryManager(entityOperationsAdapter:*):* {
+			var entityRegistryManager:* = new EntityRegistryManager(entityOperationsAdapter	);
 			
 			entityRegistryManager.addDiffUpdateProcessor(Constants.ADDED, new AddEntityDiffUpdateProcessor());
 			entityRegistryManager.addDiffUpdateProcessor(Constants.UPDATED, new PropertiesDiffUpdateProcessor());

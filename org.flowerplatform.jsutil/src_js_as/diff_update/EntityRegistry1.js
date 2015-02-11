@@ -216,32 +216,6 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 	}
 };
 
-EntityRegistry.prototype.remove = function(entity) {
-	var status = { nonRemovableFound: false };
-	var nonRemovableEntities = { };
-	var linksToRemove;
-	var visitedEntities;
-	
-	do {
-		visitedEntities = { };
-		linksToRemove = [];
-		status.nonRemovableFound = false;
-		this.findNonRemovable(entity, nonRemovableEntities, visitedEntities, status, linksToRemove);
-	} while (status.nonRemovableFound);
-	
-	for (var uid in visitedEntities) {
-		delete this.registry[uid];
-	}
-	for (var link in linksToRemove) {
-		if (link.unlinkedEntity == null) { // many to one relationship 
-			link.entity[link.property] = null;
-		} else { // one to many relationship (i.e. list of linked entities)
-			this.entityOperationsAdapter.removeItem(link.entity[link.property], link.unlinkedEntity);
-		}
-	}
-
-};
-
 /**
  * TODO CS: update dupa refactor
  * Tries to remove an entity. This mission doesn't unlink references. It processes recursively the object,
@@ -253,17 +227,25 @@ EntityRegistry.prototype.remove = function(entity) {
  * 		used during merge.
  * @returns false if this will not be removed. I.e. it is still referenced from a graph starting with the rootObject
  */
-EntityRegistry.prototype.findNonRemovable = function(entity, nonRemovableEntities, visitedEntities, status, linksToRemove) {
-	var uid = this.entityOperationsAdapter.getEntityUid(entity);
-	
-	if (this.entityOperationsAdapter.isRootEntity(entity) || nonRemovableEntities[uid]) {
+EntityRegistry.prototype.remove = function(initialEntity, entity, visitedEntities) {
+	if (!entity) {
+		entity = initialEntity;
+	}
+
+	if (this.entityOperationsAdapter.isRootEntity(entity)) {
 		return false;
 	}
 
+	if (!visitedEntities) {
+		visitedEntities = { };
+	}
+
+	var uid = this.entityOperationsAdapter.getEntityUid(entity);
+	// java.lang.System.out.println(entity + ": uid: " + uid);
 	if (visitedEntities[uid]) {
 		return true; 
 	}
-	visitedEntities[uid] = true;
+	visitedEntities[uid] = { };
 
 	var entityType = this.entityOperationsAdapter.getEntityType(entity);
 
@@ -288,16 +270,9 @@ EntityRegistry.prototype.findNonRemovable = function(entity, nonRemovableEntitie
 			var n = _this.entityOperationsAdapter.list_getLength(childrenList);
 			for (var i = 0; i < n; i++) {
 				var child = _this.entityOperationsAdapter.list_getItemAt(childrenList, i);
-				var oppositePropertyInfo = _this.entityOperationsAdapter.getPropertyInfo(child, propertyInfo.oppositeProperty);
-				var canRemoveOpposite = _this.remove(child, nonRemovableEntities, visitedEntities, status, linksToRemove);
-				if (!canRemoveOpposite) {
-					if (oppositePropertyInfo.flags & PROPERTY_FLAG_NAVIGABLE) {
-						canRemove = false;
-						nonRemovableEntities[uid] = true;
-						status.nonRemovableFound = true;
-						return;
-					}
-					linksToRemove.push({ entity: child, property: oppositePropertyInfo.property });
+				canRemove = canRemove && _this.remove(initialEntity, child, visitedEntities);
+				if (!canRemove) {
+					return;
 				}
 			}
 		} else if (propertyInfo.flags & PROPERTY_FLAG_MANY_TO_ONE) {
@@ -305,19 +280,23 @@ EntityRegistry.prototype.findNonRemovable = function(entity, nonRemovableEntitie
 			if (!parent) {
 				return;
 			}
-			var canRemoveOpposite = _this.remove(parent, nonRemovableEntities, visitedEntities, status, linksToRemove);
-			var oppositePropertyInfo = _this.entityOperationsAdapter.getPropertyInfo(parent, propertyInfo.oppositeProperty);
-			if (!canRemoveOpposite) {
-				if (oppositePropertyInfo.flags & PROPERTY_FLAG_NAVIGABLE) {
-					canRemove = false;
-					nonRemovableEntities[uid] = true;
-					status.nonRemovableFound = true;
-					return;
-				}
-				linksToRemove.push({ entity: parent, property: oppositePropertyInfo.property, unlinkedEntity: entity });
+			canRemove = canRemove && _this.remove(initialEntity, parent, visitedEntities);
+			if (!canRemove) {
+				return;
 			}
 		}
 	});
+	
+	// TODO CS: daca avem o prop uni-directionala, si sunt pe capatul navigabil: trebuie sa sterg din parinte referinta "locala"
+	// asta e facuta de apeolant doar pentru primul obiect. De asemenea iteram si pe ob. referentat, dar daca ne da false, nu dam
+	// veto la toata operatia
+	
+	// when control is back to the bottom of the call stack, remove all visited entities if ok to remove  
+	if ((entity == initialEntity) && canRemove) {
+		for (var uid in visitedEntities) {
+			delete this.registry[uid];
+		}
+	}
 	
 	return canRemove;
 };

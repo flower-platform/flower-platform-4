@@ -29,9 +29,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
-import org.flowerplatform.core.CorePlugin;
 import org.flowerplatform.core.node.NodeService;
-import org.flowerplatform.resources.ResourcesPlugin;
 import org.flowerplatform.util.plugin.AbstractFlowerJavaPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -56,15 +54,16 @@ public class EclipseIndependentTestBase {
 		// populated from FlowerFrameworkLauncher in the servlet container
 		FrameworkProperties.getProperties().put("FLOWER_PLATFORM_HOME", new File("").getAbsolutePath());
 		
-		startPlugin(new ResourcesPlugin());
-		startPlugin(new CorePlugin());
-		nodeService = CorePlugin.getInstance().getNodeService();
+		// TODO CM: temporarily disabled
+//		startPlugin(new ResourcesPlugin());
+//		startPlugin(new CorePlugin());
+//		nodeService = CorePlugin.getInstance().getNodeService();
 		
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		HttpSession session = mock(HttpSession.class);
 		when(req.getSession()).thenReturn(session);
 		when(session.getId()).thenReturn(sessionId);
-		CorePlugin.getInstance().getRequestThreadLocal().set(req);
+//		CorePlugin.getInstance().getRequestThreadLocal().set(req);
 	}
 	
 	/**

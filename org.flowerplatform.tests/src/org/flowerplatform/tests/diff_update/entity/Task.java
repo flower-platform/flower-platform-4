@@ -9,6 +9,8 @@ import java.util.List;
  *
  */
 public class Task extends AbstractEntity {
+	
+	public boolean isRootEntity = true;
 
 	public Task(int id) {
 		super(id);

@@ -10,8 +10,10 @@ import java.util.List;
  */
 public class Mission extends AbstractEntity {
 
-	private HumanResourceSchedule humanResourceSchedule; 
+	public boolean isRootEntity = true;
 
+	private HumanResourceSchedule humanResourceSchedule; 
+	
 	public Mission(int id) {
 		super(id);
 	}
@@ -26,11 +28,9 @@ public class Mission extends AbstractEntity {
 		this.objectActionGroups = objectActionGroups;
 	}
 
-
 	public HumanResourceSchedule getHumanResourceSchedule() {
 		return humanResourceSchedule;
 	}
-
 	
 	public void setHumanResourceSchedule(HumanResourceSchedule humanResourceSchedule) {
 		this.humanResourceSchedule = humanResourceSchedule;

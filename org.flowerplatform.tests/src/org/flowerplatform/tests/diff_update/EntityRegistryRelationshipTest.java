@@ -20,6 +20,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SerializationUtils;
+import org.eclipse.wst.jsdt.debug.rhino.debugger.RhinoDebugger;
 import org.flowerplatform.js_client.java.JsClientJavaUtils;
 import org.flowerplatform.tests.EclipseIndependentTestBase;
 import org.flowerplatform.tests.diff_update.entity.HumanResource;
@@ -32,6 +34,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 
@@ -53,12 +56,19 @@ public class EntityRegistryRelationshipTest extends EclipseIndependentTestBase {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		ctx = Context.enter();
-		scope = ctx.initStandardObjects();	
-		String pathToJsFolder = FileUtils.getFile("src/").getAbsolutePath() + "/../../org.flowerplatform.jsutil/src_js_as/diff_update";
-		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(pathToJsFolder + "/EntityRegistry.js"), StandardCharsets.UTF_8), null, 1, null);
+	    String rhino = "transport=socket,suspend=y,address=9000";
+	    RhinoDebugger debugger = new RhinoDebugger(rhino);
+	    debugger.start();
+	    
+	    ContextFactory factory = new ContextFactory();
+	    factory.addListener(debugger);
+	    ctx = factory.enterContext();		
+	    scope = ctx.initStandardObjects();	
+		
+	    String pathToJsFolder = FileUtils.getFile("src/").getAbsolutePath() + "/../../org.flowerplatform.jsutil/src_js_as/diff_update";
 		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(pathToJsFolder + "/EntityRegistryManager.js"), StandardCharsets.UTF_8), null, 1, null);
 		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(pathToJsFolder + "/DiffUpdateProcessors.js"), StandardCharsets.UTF_8), null, 1, null);
+		ctx.evaluateReader(scope, Files.newBufferedReader(Paths.get(pathToJsFolder + "/EntityRegistry.js"), StandardCharsets.UTF_8), null, 1, null);
 	}
 	
 	@Before
@@ -92,7 +102,23 @@ public class EntityRegistryRelationshipTest extends EclipseIndependentTestBase {
 		objectActionGroup201.getObjectActions().add(objectAction402);
 		objectActionGroup202.getObjectActions().add(objectAction403);
 		
-		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", mission101);
+		mission101.getObjectActionGroups().add(objectActionGroup201);
+		mission101.getObjectActionGroups().add(objectActionGroup202);
+		
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", SerializationUtils.clone(mission101));
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", SerializationUtils.clone(task301));
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
+		
+		// remove objectActionGroup201 from task
+		task301.getObjectActionGroups().remove(objectActionGroup201);
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", SerializationUtils.clone(task301));
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
+
+		// remove objectActionGroup201 from mission
+		mission101.getObjectActionGroups().remove(objectActionGroup201);
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", SerializationUtils.clone(mission101));
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
+
 		
 //		EntityChangeListener listener = mock(EntityChangeListener.class);					
 //		JsClientJavaUtils.invokeJsFunction(entityRegistry, "addEntityChangeListener", listener);

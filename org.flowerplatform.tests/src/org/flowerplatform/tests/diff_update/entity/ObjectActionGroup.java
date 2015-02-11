@@ -11,6 +11,8 @@ import java.util.List;
 public class ObjectActionGroup extends AbstractEntity {
 
 	private Task task;
+
+	private Mission mission;
 	
 	public ObjectActionGroup(int id) {
 		super(id);
@@ -25,15 +27,23 @@ public class ObjectActionGroup extends AbstractEntity {
 	public void setObjectActions(List<ObjectAction> objectActions) {
 		this.objectActions = objectActions;
 	}
-
 	
 	public Task getTask() {
 		return task;
 	}
-
 	
 	public void setTask(Task task) {
 		this.task = task;
 	}
 
+
+	public Mission getMission() {
+		return mission;
+	}
+
+	
+	public void setMission(Mission mission) {
+		this.mission = mission;
+	}
+	
 }

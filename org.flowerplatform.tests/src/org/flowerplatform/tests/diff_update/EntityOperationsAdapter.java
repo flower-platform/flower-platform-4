@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.flowerplatform.tests.diff_update.entity.AbstractEntity;
 import org.flowerplatform.tests.diff_update.entity.HumanResource;
 import org.flowerplatform.tests.diff_update.entity.HumanResourceSchedule;
 import org.flowerplatform.tests.diff_update.entity.Mission;
@@ -29,7 +30,7 @@ public class EntityOperationsAdapter {
 
 	public static final int PROPERTY_FLAG_MANY_TO_ONE = 0x2;
 
-	public static final int PROPERTY_FLAG_MANY_TO_MANY = 0x2;
+	public static final int PROPERTY_FLAG_MANY_TO_MANY = 0x4;
 
 	public static final int PROPERTY_FLAG_IGNORE = 0x8;
 	
@@ -40,19 +41,27 @@ public class EntityOperationsAdapter {
 	}
 	
 	private void addOneToManyRelation(Class<?> parentType, String parentChildrenProperty, Class<?> childType, String childParentProperty) {
-		Map<String, NativeObject> parentProperties = propertyFlagsMap.get(parentType);
 		NativeObject relationInfo;
 		
+		Map<String, NativeObject> parentProperties = propertyFlagsMap.get(parentType);
+		if (parentProperties == null) {
+			parentProperties = new HashMap<String, NativeObject>();
+			propertyFlagsMap.put(parentType, parentProperties);
+		}
 		relationInfo = new NativeObject();
-		relationInfo.put("oppositeProperty", childParentProperty);
-		relationInfo.put("flags", new Integer(PROPERTY_FLAG_ONE_TO_MANY));
+		relationInfo.defineProperty("oppositeProperty", childParentProperty, NativeObject.READONLY);
+		relationInfo.defineProperty("flags", new Integer(PROPERTY_FLAG_ONE_TO_MANY), NativeObject.READONLY);
 		parentProperties.put(parentChildrenProperty, relationInfo);
 
 		Map<String, NativeObject> childProperties = propertyFlagsMap.get(childType);
+		if (childProperties == null) {
+			childProperties = new HashMap<String, NativeObject>();
+			propertyFlagsMap.put(childType, childProperties);
+		}
 		relationInfo = new NativeObject();
-		relationInfo.put("oppositeProperty", parentChildrenProperty);
-		relationInfo.put("flags", new Integer(PROPERTY_FLAG_MANY_TO_ONE));
-		childProperties.put(parentChildrenProperty, relationInfo);
+		relationInfo.defineProperty("oppositeProperty", parentChildrenProperty, NativeObject.READONLY);
+		relationInfo.defineProperty("flags", new Integer(PROPERTY_FLAG_MANY_TO_ONE), NativeObject.READONLY);
+		childProperties.put(childParentProperty, relationInfo);
 		
 	}
 	
@@ -62,11 +71,6 @@ public class EntityOperationsAdapter {
 		}
 		
 		propertyFlagsMap = new HashMap<Class<?>, Map<String, NativeObject>>();
-		propertyFlagsMap.put(Mission.class, new HashMap<String, NativeObject>());
-		propertyFlagsMap.put(Task.class, new HashMap<String, NativeObject>());
-		propertyFlagsMap.put(ObjectActionGroup.class, new HashMap<String, NativeObject>());
-		propertyFlagsMap.put(HumanResourceSchedule.class, new HashMap<String, NativeObject>());
-		propertyFlagsMap.put(ObjectAction.class, new HashMap<String, NativeObject>());
 
 		addOneToManyRelation(Mission.class, "objectActionGroups", ObjectActionGroup.class, "mission");
 		addOneToManyRelation(Mission.class, "resources", HumanResource.class, "mission");
@@ -78,7 +82,16 @@ public class EntityOperationsAdapter {
 		return propertyFlagsMap;
 		
 	}
-	
+
+	public Map<String, NativeObject> getPropertyFlagsMap(Class<?> entityType) {
+		Map<String, NativeObject> result = getPropertyFlagsMap().get(entityType);
+		return result;
+	}
+
+	public NativeObject getPropertyInfo(Class<?> entityType, String property) {
+		return getPropertyFlagsMap().get(entityType).get(property);
+	}
+
 	/**
 	 * @author See class.
 	 */
@@ -125,18 +138,6 @@ public class EntityOperationsAdapter {
 			return new String[] { "subdetails" };
 		}
 		return null;
-	}
-	
-	/**
-	 * @author See class.
-	 */
-	public Object createEntity(String entityType, Map<String, Object> properties) throws InstantiationException, IllegalAccessException, 
-			ClassNotFoundException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
-		Object entity = Class.forName(entityType).newInstance();
-		for (Entry<String, Object> entry : properties.entrySet()) {
-			new PropertyDescriptor(entry.getKey(), entity.getClass()).getWriteMethod().invoke(entity, entry.getValue());
-		}
-		return entity;
 	}
 	
 	/**
@@ -239,15 +240,15 @@ public class EntityOperationsAdapter {
         }
 	}
 
-
 	public void propertiesMap_iterateProperties(Map<String, Object> properties, IteratePropertiesCallback ipc) throws ReflectiveOperationException, IllegalArgumentException, IntrospectionException {
 		for (Entry<String, Object> entry : properties.entrySet()) {
         	ipc.callback(entry.getKey(), entry.getValue());
 		}
 	}
-
+	
 }
 
 interface IteratePropertiesCallback {
     public void callback(String key, Object value);
 }
+
