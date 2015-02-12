@@ -15,6 +15,8 @@
 			import mx.collections.Sort;
 			import mx.collections.SortField;
 			
+			import spark.events.GridSelectionEvent;
+			
 			import org.apache.flex.collections.VectorList;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			
@@ -27,6 +29,12 @@
 			
 			[Bindable]
 			public var entityRegistryAsList:IList;
+
+			[Bindable]
+			public var entityPropertiesAsList:IList;
+
+			[Bindable]
+			public var entityOperationsAdapter:EntityOperationsAdapter = new EntityOperationsAdapter();
 			
 			public function show(entityRegistryManager:*):void {
 				this.entityRegistryManager = entityRegistryManager;
@@ -55,6 +63,8 @@
 					return;
 				}
 				var result:ArrayCollection = new ArrayCollection();
+				
+				// settings for sorting
 				var dataSortField:SortField = new SortField();
 				dataSortField.name = "uid";
 				dataSortField.numeric = false;
@@ -75,18 +85,59 @@
 				entityRegistryAsList = result;
 			}
 			
+			protected function selectionChangeHandler(event:GridSelectionEvent):void {
+				var properties:IList = new ArrayList();
+				var entity:Object = gridRegistry.selectedItem.object;
+				entityOperationsAdapter.object_iterateProperties(entity, function(property:*, value:*):void {
+					var propertyInfo:* = entityOperationsAdapter.object_getPropertyInfo(entity, property);
+					if (propertyInfo != null) {
+						if (propertyInfo.flags & EntityOperationsAdapter.PROPERTY_FLAG_ONE_TO_MANY) {
+							var s:String= "[";
+							var children:IList = IList(value);
+							for (var i:int = 0; i < children.length; i++) {
+								var child:AbstractEntity = AbstractEntity(children.getItemAt(i));
+								s += entityOperationsAdapter.object_getEntityUid(child) + " / " + child.instanceId + " / " + String(child) + ", ";
+							}
+							if (s.length > 1) {
+								s = s.substr(0, s.length-2);
+							}
+							s += "]";
+							properties.addItem({ property: property, value: s });
+						} else if (propertyInfo.flags & EntityOperationsAdapter.PROPERTY_FLAG_MANY_TO_ONE) {
+							var parent = AbstractEntity(value);
+							var s:String = "";
+							if (parent != null) {
+								s = entityOperationsAdapter.object_getEntityUid(parent) + " / " + parent.instanceId + " / " + String(parent);
+							}
+							properties.addItem({ property: property, value: s });
+						}
+					} else {
+						properties.addItem({property: property, value: value});
+					}
+				});
+				entityPropertiesAsList = properties;
+			}
+			
 		]]>
 	</fx:Script>
 	
 	<s:Button label="Refresh" click="refreshClickHandler()"/>
-	<s:TabBar id="notificationChannels" dataProvider="{notificationChannelsDataProvider}" labelField="notificationChannel" change="selectEntityRegistry(entityRegistries.selectedItem)"/>
+	<s:TabBar id="notificationChannels" dataProvider="{notificationChannelsDataProvider}" labelField="notificationChannel" change="selectEntityRegistry(entityRegistries.selectedItem)" />
 	<s:TabBar id="entityRegistries" dataProvider="{notificationChannels.selectedItem.entityRegistries}" change="selectEntityRegistry(entityRegistries.selectedItem)"/>
-	<s:DataGrid width="100%" height="100%" dataProvider="{entityRegistryAsList}">
+	<s:DataGrid id="gridRegistry" width="100%" height="100%" dataProvider="{entityRegistryAsList}" selectionChange="selectionChangeHandler(event)" >
 		<s:columns>
 			<s:ArrayList>
 				<s:GridColumn dataField="uid" sortable="false"/>
 				<s:GridColumn dataField="instanceId" sortable="false"/>
 				<s:GridColumn dataField="object" sortable="false"/>
+			</s:ArrayList>
+		</s:columns>
+	</s:DataGrid>
+	<s:DataGrid width="100%" height="100%" dataProvider="{entityPropertiesAsList}"  variableRowHeight="true" >
+		<s:columns>
+			<s:ArrayList>
+				<s:GridColumn dataField="property" sortable="false"/>
+				<s:GridColumn dataField="value" sortable="false"/>
 			</s:ArrayList>
 		</s:columns>
 	</s:DataGrid>
