@@ -18,7 +18,7 @@ var EntityRegistry = function(entityRegistryManager) {
 	this.entityRegistryManager = entityRegistryManager; 
 	this.entityChangeListeners = [];
 	// key = uid; value = entity
-	this.registry = {};
+	this.registry = { };
 	this.entityOperationsAdapter = this.entityRegistryManager.entityOperationsAdapter;
 };
 
@@ -34,7 +34,7 @@ EntityRegistry.prototype.mergeEntity = function(entity) {
 	var entitiesToRemove = [];
 	this.mergeEntityInternal(entity, null, { }, entitiesToRemove);
 	for (var i in entitiesToRemove) {
-		this.remove(entitiesToRemove[i]);
+		this.removeInternal(entitiesToRemove[i]);
 	}
 };
 
@@ -50,6 +50,7 @@ EntityRegistry.prototype.mergeEntity = function(entity) {
  * @param indexesInParent - Not used
  * @param visitedEntities - Internal map, used to know if an entity has been processed (i.e. to avoid
  * 		infinite recursion for bi-directionnal relations
+ * @param entitiesToRemove - list of entities that are candidates for removal after merge
  * 
  * @returns The entity from the registry (same instance, if was not in registry)
  */
@@ -152,6 +153,7 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 			var child = this.entityOperationsAdapter.list_getItemAt(childrenList, i);
 			var childUid = this.entityOperationsAdapter.object_getEntityUid(child);
 			var registeredChild = this.mergeEntityInternal(child, null, visitedEntities, entitiesToRemove);
+			this.entityOperationsAdapter.list_setItemAt(childrenList, registeredChild, i);
 			
 			// TODO CS: cred ca tr sa fac si posibila scoatere a vechiului (remove) ***
 			// We compare UIDs because there might be a different instance of the entity, but the same entity uid
@@ -193,7 +195,7 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 
 		// i.e. a "single" reference
 		var parentEntity = value;
-		// TODO CS: lipseste setarea la null
+		// TODO CS: lipseste setarea la null ***
 		if (parentEntity) { // new entity has parent
 			parentEntity = this.mergeEntityInternal(parentEntity, null, visitedEntities, entitiesToRemove);
 			
@@ -208,7 +210,7 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 				this.entityOperationsAdapter.list_addItem(parentEntity[propertyInfo.oppositeProperty], registeredEntity, -1);
 			}
 			
-		} else if (oldEntity && oldEntity[property] && (propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE)) { // new entity has no parent, but old entity has;
+		} else if (oldEntity && oldEntity[property] && (propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE)) { // new entity has no parent, but old entity has
 			registeredEntity[property] = null;
 			entitiesToRemove.push(oldEntity[property]);
 		}
@@ -217,7 +219,48 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 	}
 };
 
-EntityRegistry.prototype.remove = function(entity) {
+/**
+ * Removes entity from registry, breaks all its links and attempts to remove all entities referenced by the removed entity
+ */
+EntityRegistry.prototype.remove = function(entityUid) {
+	var entity = this.getEntityByUid(entityUid);
+	if (!entity) {
+		return;
+	}
+	var _this = this;
+	var entitiesToRemove = [];
+	this.entityOperationsAdapter.object_iterateProperties(entity, function(property, value) {
+		var propertyInfo = _this.entityOperationsAdapter.object_getPropertyInfo(entity, property);
+		if (!propertyInfo || (propertyInfo.flags & PROPERTY_FLAG_IGNORE)) {
+			return;
+		}
+		if (propertyInfo.flags & PROPERTY_FLAG_ONE_TO_MANY) {
+			var n = _this.entityOperationsAdapter.list_getLength(value);
+			for (var i = 0; i < n; i++) {
+				var oppositeEntity = _this.entityOperationsAdapter.list_getItemAt(value, i);
+				oppositeEntity[propertyInfo.oppositeProperty] = null;
+				if (propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE) {
+					entitiesToRemove.push(oppositeEntity);
+				}
+			}
+		} else if (propertyInfo.flags & PROPERTY_FLAG_MANY_TO_ONE) {
+			_this.entityOperationsAdapter.list_remove(value[propertyInfo.oppositeProperty], entity);
+			if (propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE) {
+				entitiesToRemove.push(value);
+			}
+		}
+	});
+	delete this.registry[this.entityOperationsAdapter.object_getEntityUid(entity)];
+	for (var i in entitiesToRemove) {
+		this.removeInternal(entitiesToRemove[i]);
+	}
+};
+
+/**
+ * Attempts to remove the entity and all subsequent entities which are indirectly referenced by root only through it. 
+ * 
+ */
+EntityRegistry.prototype.removeInternal = function(entity) {
 	var entityUid = this.entityOperationsAdapter.object_getEntityUid(entity);
 	if (!this.registry[entityUid]) {
 		return;
@@ -232,7 +275,7 @@ EntityRegistry.prototype.remove = function(entity) {
 		visitedEntities = { };
 		linksToRemove = [];
 		status.nonRemovableFound = false;
-		this.findNonRemovable(entity, nonRemovableEntities, visitedEntities, status, linksToRemove);
+		this.findNonRemovableEntities(entity, nonRemovableEntities, visitedEntities, status, linksToRemove);
 	} while (status.nonRemovableFound);
 	
 	for (var uid in visitedEntities) {
@@ -250,16 +293,16 @@ EntityRegistry.prototype.remove = function(entity) {
 
 /**
  * TODO CS: update dupa refactor
- * Tries to remove an entity. This mission doesn't unlink references. It processes recursively the object,
- * trying to see if rootObject references the object graph. If yes => we cannot remove. Otherwise, we remove.
+ * Discovers non removable entities (i.e. entities which are referenced by other non removable entities), starting from the given entity.
+ * It does not guarantee the discovery of all non removable entities (due to possible cyclic model), so it must be called until no new removable entities are found. 
  * 
  * @param initialEntity - The entity that we want to remove
  * @param entity - For the first call, same param as previous
- * @param visitedEntities - The entities visited during the removel session; not the same with the other param
+ * @param visitedEntities - The entities visited during the removal session; not the same with the other param
  * 		used during merge.
  * @returns false if this will not be removed. I.e. it is still referenced from a graph starting with the rootObject
  */
-EntityRegistry.prototype.findNonRemovable = function(entity, nonRemovableEntities, visitedEntities, status, linksToRemove) {
+EntityRegistry.prototype.findNonRemovableEntities = function(entity, nonRemovableEntities, visitedEntities, status, linksToRemove) {
 	var uid = this.entityOperationsAdapter.object_getEntityUid(entity);
 	
 	if (this.entityOperationsAdapter.object_isRoot(entity) || nonRemovableEntities[uid]) {
@@ -294,7 +337,7 @@ EntityRegistry.prototype.findNonRemovable = function(entity, nonRemovableEntitie
 			for (var i = 0; i < n; i++) {
 				var child = _this.entityOperationsAdapter.list_getItemAt(childrenList, i);
 				var oppositePropertyInfo = _this.entityOperationsAdapter.object_getPropertyInfo(child, propertyInfo.oppositeProperty);
-				var canRemoveOpposite = _this.findNonRemovable(child, nonRemovableEntities, visitedEntities, status, linksToRemove);
+				var canRemoveOpposite = _this.findNonRemovableEntities(child, nonRemovableEntities, visitedEntities, status, linksToRemove);
 				if (!canRemoveOpposite) {
 					if (oppositePropertyInfo.flags & PROPERTY_FLAG_NAVIGABLE) {
 						canRemove = false;
@@ -310,7 +353,7 @@ EntityRegistry.prototype.findNonRemovable = function(entity, nonRemovableEntitie
 			if (!parent) {
 				return;
 			}
-			var canRemoveOpposite = _this.findNonRemovable(parent, nonRemovableEntities, visitedEntities, status, linksToRemove);
+			var canRemoveOpposite = _this.findNonRemovableEntities(parent, nonRemovableEntities, visitedEntities, status, linksToRemove);
 			var oppositePropertyInfo = _this.entityOperationsAdapter.object_getPropertyInfo(parent, propertyInfo.oppositeProperty);
 			if (!canRemoveOpposite) {
 				if (oppositePropertyInfo.flags & PROPERTY_FLAG_NAVIGABLE) {

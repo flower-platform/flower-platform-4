@@ -24,7 +24,7 @@ AddEntityDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegistry
 
 var RemoveEntityDiffUpdateProcessor = function() { };
 RemoveEntityDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegistry, diffUpdate) {
-	entityRegistry.unregisterEntity(diffUpdate.entityUid);
+	entityRegistry.remove(diffUpdate.entityUid);
 };
 
 var PropertiesDiffUpdateProcessor = function() { };
