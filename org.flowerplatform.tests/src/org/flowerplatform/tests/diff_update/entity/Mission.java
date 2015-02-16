@@ -10,12 +10,14 @@ import java.util.List;
  */
 public class Mission extends AbstractEntity {
 
-	public boolean isRootEntity = true;
-
 	private HumanResourceSchedule humanResourceSchedule; 
 	
 	public Mission(int id) {
 		super(id);
+	}
+	
+	public boolean isRoot() {
+		return true;
 	}
 	
 	private List<ObjectActionGroup> objectActionGroups = new ArrayList<>();

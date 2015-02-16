@@ -20,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.SerializationUtils;
 import org.eclipse.wst.jsdt.debug.rhino.debugger.RhinoDebugger;
 import org.flowerplatform.js_client.java.JsClientJavaUtils;
 import org.flowerplatform.tests.EclipseIndependentTestBase;
@@ -54,6 +53,14 @@ public class EntityRegistryRelationshipTest extends EclipseIndependentTestBase {
 	
 	private Scriptable entityRegistryManager; 
 
+	private Mission mission101;
+	private Task task301;
+	private ObjectActionGroup objectActionGroup201, objectActionGroup202;
+	private HumanResource humanResource501;
+	private HumanResourceSchedule humanResourceSchedule601;
+	private ObjectAction objectAction401, objectAction402, objectAction403;
+
+	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	    String rhino = "transport=socket,suspend=y,address=9000";
@@ -76,27 +83,18 @@ public class EntityRegistryRelationshipTest extends EclipseIndependentTestBase {
 		entityOperationsAdapter = new EntityOperationsAdapter();
 		entityRegistryManager = ctx.newObject(scope, "EntityRegistryManager", new Object[] { entityOperationsAdapter });
 		scope.put("_entityRegistryManager", scope, entityRegistryManager);
+		resetModel();
 	}
-	
-	@Test
-	public void testRegisterEntity() {
-		NativeObject entityRegistry = (NativeObject) JsClientJavaUtils.invokeJsFunction(entityRegistryManager, "createEntityRegistry", "testChannel");
 
-		Mission mission101 = new Mission(101);
-		Task task301 = new Task(301);
-		ObjectActionGroup objectActionGroup201 = new ObjectActionGroup(201);
-		ObjectActionGroup objectActionGroup202 = new ObjectActionGroup(202);
-		task301.getObjectActionGroups().add(objectActionGroup201);
-		task301.getObjectActionGroups().add(objectActionGroup202);
+	private void resetModel() {
+		mission101 = new Mission(101); 
+		task301 = new Task(301);
+		objectActionGroup201 = new ObjectActionGroup(201);
+		objectActionGroup202 = new ObjectActionGroup(202);
 		
-		HumanResource humanResource = new HumanResource(501);
-		HumanResourceSchedule humanResourceSchedule601 = new HumanResourceSchedule(601);
-		humanResourceSchedule601.getMissions().add(mission101);
-		humanResourceSchedule601.setHumanResource(humanResource);
-		
-		ObjectAction objectAction401 = new ObjectAction(401);
-		ObjectAction objectAction402 = new ObjectAction(402);
-		ObjectAction objectAction403 = new ObjectAction(403);
+		objectAction401 = new ObjectAction(401);
+		objectAction402 = new ObjectAction(402);
+		objectAction403 = new ObjectAction(403);
 		
 		objectActionGroup201.getObjectActions().add(objectAction401);
 		objectActionGroup201.getObjectActions().add(objectAction402);
@@ -104,20 +102,37 @@ public class EntityRegistryRelationshipTest extends EclipseIndependentTestBase {
 		
 		mission101.getObjectActionGroups().add(objectActionGroup201);
 		mission101.getObjectActionGroups().add(objectActionGroup202);
-		
-		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", SerializationUtils.clone(mission101));
-		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", SerializationUtils.clone(task301));
-		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
-		
-		// remove objectActionGroup201 from task
-		task301.getObjectActionGroups().remove(objectActionGroup201);
-		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", SerializationUtils.clone(task301));
-		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
+		task301.getObjectActionGroups().add(objectActionGroup202);
 
-		// remove objectActionGroup201 from mission
-		mission101.getObjectActionGroups().remove(objectActionGroup201);
-		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", SerializationUtils.clone(mission101));
+		humanResource501 = new HumanResource(501);
+		humanResourceSchedule601 = new HumanResourceSchedule(601);
+		humanResourceSchedule601.getMissions().add(mission101);
+		humanResourceSchedule601.setHumanResource(humanResource501);
+		
+	}
+
+	
+	@Test
+	public void testMerge() {
+		NativeObject entityRegistry = (NativeObject) JsClientJavaUtils.invokeJsFunction(entityRegistryManager, "createEntityRegistry", "testChannel");
+
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", mission101);
+
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
+		
+		
+//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", task301);
+//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
+//		
+//		// remove objectActionGroup201 from task
+//		task301.getObjectActionGroups().remove(objectActionGroup201);
+//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", task301);
+//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
+//
+//		// remove objectActionGroup201 from mission
+//		mission101.getObjectActionGroups().remove(objectActionGroup201);
+//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", SerializationUtils.clone(mission101));
+//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
 
 		
 //		EntityChangeListener listener = mock(EntityChangeListener.class);					

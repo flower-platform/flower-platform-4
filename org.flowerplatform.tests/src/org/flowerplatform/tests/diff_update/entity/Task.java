@@ -9,11 +9,13 @@ import java.util.List;
  *
  */
 public class Task extends AbstractEntity {
-	
-	public boolean isRootEntity = true;
 
 	public Task(int id) {
 		super(id);
+	}
+
+	public boolean isRoot() {
+		return true;
 	}
 	
 	private List<ObjectActionGroup> objectActionGroups = new ArrayList<>();

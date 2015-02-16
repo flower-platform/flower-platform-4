@@ -36,11 +36,9 @@ public class ObjectActionGroup extends AbstractEntity {
 		this.task = task;
 	}
 
-
 	public Mission getMission() {
 		return mission;
 	}
-
 	
 	public void setMission(Mission mission) {
 		this.mission = mission;

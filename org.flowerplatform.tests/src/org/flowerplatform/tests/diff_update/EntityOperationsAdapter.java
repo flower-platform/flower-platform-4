@@ -34,139 +34,34 @@ public class EntityOperationsAdapter {
 
 	public static final int PROPERTY_FLAG_IGNORE = 0x8;
 	
+	public static final int PROPERTY_FLAG_NAVIGABLE = 0x10;
+	
 	private Map<Class<?>, Map<String, NativeObject>> propertyFlagsMap;
 	
-	public Class<?> getEntityType(Object entity) {
-		return entity.getClass();
-	}
 	
-	private void addOneToManyRelation(Class<?> parentType, String parentChildrenProperty, Class<?> childType, String childParentProperty) {
-		NativeObject relationInfo;
-		
-		Map<String, NativeObject> parentProperties = propertyFlagsMap.get(parentType);
-		if (parentProperties == null) {
-			parentProperties = new HashMap<String, NativeObject>();
-			propertyFlagsMap.put(parentType, parentProperties);
-		}
-		relationInfo = new NativeObject();
-		relationInfo.defineProperty("oppositeProperty", childParentProperty, NativeObject.READONLY);
-		relationInfo.defineProperty("flags", new Integer(PROPERTY_FLAG_ONE_TO_MANY), NativeObject.READONLY);
-		parentProperties.put(parentChildrenProperty, relationInfo);
-
-		Map<String, NativeObject> childProperties = propertyFlagsMap.get(childType);
-		if (childProperties == null) {
-			childProperties = new HashMap<String, NativeObject>();
-			propertyFlagsMap.put(childType, childProperties);
-		}
-		relationInfo = new NativeObject();
-		relationInfo.defineProperty("oppositeProperty", parentChildrenProperty, NativeObject.READONLY);
-		relationInfo.defineProperty("flags", new Integer(PROPERTY_FLAG_MANY_TO_ONE), NativeObject.READONLY);
-		childProperties.put(childParentProperty, relationInfo);
-		
-	}
-	
-	public Map<Class<?>, Map<String, NativeObject>> getPropertyFlagsMap() {
-		if (propertyFlagsMap != null) {
-			return propertyFlagsMap;
-		}
+	public EntityOperationsAdapter() {
 		
 		propertyFlagsMap = new HashMap<Class<?>, Map<String, NativeObject>>();
 
-		addOneToManyRelation(Mission.class, "objectActionGroups", ObjectActionGroup.class, "mission");
-		addOneToManyRelation(Mission.class, "resources", HumanResource.class, "mission");
-		addOneToManyRelation(Task.class, "objectActionGroups", ObjectActionGroup.class, "task");
-		addOneToManyRelation(ObjectActionGroup.class, "objectActions", ObjectAction.class, "objectActionGroup");
-		addOneToManyRelation(HumanResourceSchedule.class, "missions", Mission.class, "humanResourceSchedule");
-		addOneToManyRelation(HumanResource.class, "humanResourceSchedules", HumanResourceSchedule.class, "humanResource");
+		addOneToManyRelation(Mission.class, "objectActionGroups", true, ObjectActionGroup.class, "mission", false);
+		addOneToManyRelation(Mission.class, "resources", true, HumanResource.class, "mission", false);
+		addOneToManyRelation(Task.class, "objectActionGroups", true, ObjectActionGroup.class, "task", false);
+		addOneToManyRelation(ObjectActionGroup.class, "objectActions", true, ObjectAction.class, "objectActionGroup", false);
+		addOneToManyRelation(HumanResourceSchedule.class, "missions", true, Mission.class, "humanResourceSchedule", false);
+		addOneToManyRelation(HumanResource.class, "humanResourceSchedules", false, HumanResourceSchedule.class, "humanResource", true);
 		
-		return propertyFlagsMap;
-		
-	}
-
-	public Map<String, NativeObject> getPropertyFlagsMap(Class<?> entityType) {
-		Map<String, NativeObject> result = getPropertyFlagsMap().get(entityType);
-		return result;
-	}
-
-	public NativeObject getPropertyInfo(Class<?> entityType, String property) {
-		return getPropertyFlagsMap().get(entityType).get(property);
-	}
-
-	/**
-	 * @author See class.
-	 */
-	public String getEntityUid(Object entity) {
-		String uid = entity.getClass().getSimpleName() + ":" + ((AbstractEntity) entity).getId();
-		return uid;
-	}
-	
-	/**
-	 * @author See class.
-	 */
-	public void setChildren(Object entity, String childrenProperty, List<Object> children) {
-		if (entity instanceof MasterEntity) {
-			((MasterEntity) entity).setDetails(children);
-		} else if (entity instanceof DetailEntity) {
-			((DetailEntity) entity).setSubdetails(children);
-		}
-
+		ignoreProperty(Mission.class, "instanceId");
+		ignoreProperty(Task.class, "instanceId");
+		ignoreProperty(ObjectActionGroup.class, "instanceId");
+		ignoreProperty(ObjectAction.class, "instanceId");
+		ignoreProperty(HumanResourceSchedule.class, "instanceId");
+		ignoreProperty(HumanResource.class, "instanceId");
 		
 	}
-	
-	/**
-	 * @author See class.
-	 */
-	public void setParent(Object entity, String parentUid, String parentChildrenProperty) {
-		if (entity instanceof DetailEntity) {
-			DetailEntity detailEntity = (DetailEntity) entity;
-			detailEntity.setParentUid(parentUid);
-			detailEntity.setParentChildrenProperty(parentChildrenProperty);
-		} else if (entity instanceof SubdetailEntity) {
-			SubdetailEntity subdetailEntity = (SubdetailEntity) entity;
-			subdetailEntity.setParentUid(parentUid);
-			subdetailEntity.setParentChildrenProperty(parentChildrenProperty);
-		}
-	}
 
-	/**
-	 * @author See class.
-	 */
-	public String[] getChildrenProperties(Object entity) {
-		if (entity instanceof MasterEntity) {
-			return new String[] { "details" };
-		} else if (entity instanceof DetailEntity) {
-			return new String[] { "subdetails" };
-		}
-		return null;
-	}
-	
-	/**
-	 * @author See class.
-	 */
-	public List<?>[] getChildrenLists(Object entity) {
-		List<?>[] lists;
-		if (entity instanceof MasterEntity) {
-			lists = new List<?>[1];
-			lists[0] = ((MasterEntity) entity).getDetails();
-		}else if (entity instanceof DetailEntity) {
-			lists = new List<?>[1];
-			lists[0] = ((DetailEntity) entity).getSubdetails();
-		}
-
-		return new List<?>[0];
-	}
-
-	/**
-	 * @author See class.
-	 */
-	public List<?> getChildrenList(Object entity, String property) {
-		if (entity instanceof MasterEntity) {
-			return ((MasterEntity) entity).getDetails();
-		} else if (entity instanceof DetailEntity) {
-			return ((DetailEntity) entity).getSubdetails();
-		}
-		return null;
-	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Operations on list
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * @author See class.
@@ -225,6 +120,63 @@ public class EntityOperationsAdapter {
 		return list.get(index);
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Operations on object
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean object_isRoot(AbstractEntity rootOrEntity) {
+		return rootOrEntity.isRoot();
+	}
+
+	/**
+	 * @author See class.
+	 */
+	public String object_getEntityUid(Object entity) {
+		String uid = entity.getClass().getSimpleName() + ":" + ((AbstractEntity) entity).getId();
+		return uid;
+	}
+	
+	private void addOneToManyRelation(Class<?> parentType, String parentChildrenProperty, boolean navigableFromParent, Class<?> childType, String childParentProperty, boolean navigableFromChild) {
+		NativeObject relationInfo;
+		
+		Map<String, NativeObject> parentProperties = propertyFlagsMap.get(parentType);
+		if (parentProperties == null) {
+			parentProperties = new HashMap<String, NativeObject>();
+			propertyFlagsMap.put(parentType, parentProperties);
+		}
+		relationInfo = new NativeObject();
+		relationInfo.defineProperty("oppositeProperty", childParentProperty, NativeObject.READONLY);
+		relationInfo.defineProperty("flags", new Integer(PROPERTY_FLAG_ONE_TO_MANY | (navigableFromParent ? PROPERTY_FLAG_NAVIGABLE : 0)), NativeObject.READONLY);
+		parentProperties.put(parentChildrenProperty, relationInfo);
+
+		Map<String, NativeObject> childProperties = propertyFlagsMap.get(childType);
+		if (childProperties == null) {
+			childProperties = new HashMap<String, NativeObject>();
+			propertyFlagsMap.put(childType, childProperties);
+		}
+		relationInfo = new NativeObject();
+		relationInfo.defineProperty("oppositeProperty", parentChildrenProperty, NativeObject.READONLY);
+		relationInfo.defineProperty("flags", new Integer(PROPERTY_FLAG_MANY_TO_ONE | (navigableFromChild ? PROPERTY_FLAG_NAVIGABLE : 0)), NativeObject.READONLY);
+		childProperties.put(childParentProperty, relationInfo);
+		
+	}
+	
+	private void ignoreProperty(Class<?> type, String property) {
+		Map<String, NativeObject> properties = propertyFlagsMap.get(type);
+		if (properties == null) {
+			properties = new HashMap<String, NativeObject>();
+			propertyFlagsMap.put(type, properties);
+		}
+
+		NativeObject relationInfo = new NativeObject();
+		relationInfo.defineProperty("property", property, NativeObject.READONLY);
+		relationInfo.defineProperty("flags", PROPERTY_FLAG_IGNORE, NativeObject.READONLY);
+		properties.put("property", relationInfo);
+	}
+
+	public NativeObject getPropertyInfo(Object entity, String property) {
+		return propertyFlagsMap.get(entity.getClass()).get(property);
+	}
 	
 	public boolean object_hasDynamicProperties(Object entity) {
 		return false;

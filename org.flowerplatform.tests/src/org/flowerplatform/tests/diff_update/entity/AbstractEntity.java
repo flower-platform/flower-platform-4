@@ -25,4 +25,8 @@ public class AbstractEntity implements Serializable {
 		this.id = id;
 	}
 
+	public boolean isRoot() {
+		return false;
+	}
+	
 }
