@@ -73,4 +73,9 @@ public class DiffUpdateService {
 		return diffUpdateRegistry.getLastUpdateId(notificationChannel);
 	}
 	
+	// TODO CC: temporary code
+	public void clearDiffUpdateRegistry() {
+		diffUpdateRegistry.clearDiffUpdates();
+	}
+	
 }
