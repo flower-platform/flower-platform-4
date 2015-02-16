@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" initialize="init()">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.crispico.flower.util.popup.PopupHandlerFactory;
+			import com.crispico.flower.util.popup.ProgressMonitorDialogHandlerFactory;
+			
+			import mx.collections.ArrayList;
+			
+			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			import org.flowerplatform.flexutil.popup.AlertPopupMessageBoxFactory;
+			import org.flowerplatform.jsutil.EntityRegistryManagerFactory;
+			import org.flowerplatform.jsutil.diff_update.EntityRegistryManagerDebugWindow;
+			
+			
+			
+			
+			protected var entityOperationsAdapter:EntityOperationsAdapter = new EntityOperationsAdapter();
+			
+			protected var entityRegistryManager:* = EntityRegistryManagerFactory.createEntityRegistryManager(entityOperationsAdapter);
+			
+			protected var entityRegistry:* = entityRegistryManager.createEntityRegistry("testChannel");
+			
+			protected var mission101:Mission, task301:Task, objectActionGroup201:ObjectActionGroup, objectActionGroup202:ObjectActionGroup, humanResource501:HumanResource, humanResourceSchedule601:HumanResourceSchedule;
+			protected var objectAction401:ObjectAction, objectAction402:ObjectAction, objectAction403:ObjectAction;
+			
+			protected function resetEntities():void {
+				mission101 = Mission(new Mission().setIdAs(101)); 
+				task301 = Task(new Task().setIdAs(301));
+				objectActionGroup201 = ObjectActionGroup(new ObjectActionGroup().setIdAs(201));
+				objectActionGroup202 = ObjectActionGroup(new ObjectActionGroup().setIdAs(202));
+				task301.objectActionGroups.addItem(objectActionGroup202);
+				
+				humanResource501 = HumanResource(new HumanResource().setIdAs(501));
+				humanResourceSchedule601 = HumanResourceSchedule(new HumanResourceSchedule().setIdAs(601));
+				humanResourceSchedule601.missions.addItem(mission101);
+				humanResourceSchedule601.humanResource = humanResource501;
+				
+				objectAction401 = ObjectAction(new ObjectAction().setIdAs(401));
+				objectAction402 = ObjectAction(new ObjectAction().setIdAs(402));
+				objectAction403 = ObjectAction(new ObjectAction().setIdAs(403));
+				
+				objectActionGroup201.objectActions.addItem(objectAction401);
+				objectActionGroup201.objectActions.addItem(objectAction402);
+				objectActionGroup202.objectActions.addItem(objectAction403);
+				
+				mission101.objectActionGroups.addItem(objectActionGroup201);
+				mission101.objectActionGroups.addItem(objectActionGroup202);
+				
+			}
+			
+			protected function button1_clickHandler(event:MouseEvent):void {
+				// stuff for serialization (no longer needed)
+//				flash.net.registerClassAlias("Mission", Mission);
+//				flash.net.registerClassAlias("ObjectActionGroup", ObjectActionGroup);
+//				flash.net.registerClassAlias("Task", Task);
+//				flash.net.registerClassAlias("humanResource", HumanResource);
+//				flash.net.registerClassAlias("humanResourceSchedule", HumanResourceSchedule);
+//				flash.net.registerClassAlias("objectAction", ObjectAction);
+				
+	
+				resetEntities();
+				entityRegistry.mergeEntity(mission101);
+				
+				resetEntities();
+				entityRegistry.mergeEntity(task301);
+				
+//				resetEntities();
+//				task301.objectActionGroups.removeItemAt(0);
+//				entityRegistry.mergeEntity(task301);
+//				
+//				resetEntities();
+//				mission101.objectActionGroups.removeItemAt(0);
+//				entityRegistry.mergeEntity(mission101);
+//
+				resetEntities();
+				var propsMission101:Dictionary = new Dictionary();
+				propsMission101["objectActionGroups"] = new ArrayList();
+				propsMission101["objectActionGroups"].addItem(objectActionGroup201);
+				entityRegistry.setProperties("Mission:101", propsMission101);
+
+				propsMission101["objectActionGroups"] = new ArrayList();
+				entityRegistry.setProperties("Mission:101", propsMission101);
+
+//				resetEntities();
+//				objectActionGroup201 = ObjectActionGroup(new ObjectActionGroup().setIdAs(201));
+//				objectActionGroup201.objectActions.addItem(objectAction401);
+//				objectActionGroup201.objectActions.addItem(objectAction402);
+//				entityRegistry.mergeEntity(objectActionGroup201);
+
+//				entityRegistry.remove(entityOperationsAdapter.object_getEntityUid(task301));
+				
+			}
+			
+			protected function init():void {
+				FlexUtilGlobals.getInstance().messageBoxFactory = new AlertPopupMessageBoxFactory();
+				FlexUtilGlobals.getInstance().popupHandlerFactory = new PopupHandlerFactory();
+				FlexUtilGlobals.getInstance().progressMonitorHandlerFactory = new ProgressMonitorDialogHandlerFactory();
+//				FlexUtilGlobals.getInstance().contextMenuManager = new ContextMenuManager();
+			}
+			
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<s:Button label="test" click="button1_clickHandler(event)"/>
+	<s:Button label="HC/ERM Debug" click="new EntityRegistryManagerDebugWindow().show(entityRegistryManager)"/>
+
+</s:Application>
