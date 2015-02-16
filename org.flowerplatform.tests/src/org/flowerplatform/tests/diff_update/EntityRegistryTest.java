@@ -91,7 +91,7 @@ public class EntityRegistryTest extends EclipseIndependentTestBase {
 
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "registerEntity", masterEntity);
 		
-		MasterEntity jsMasterEntity = (MasterEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.getEntityUid(masterEntity));
+		MasterEntity jsMasterEntity = (MasterEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.object_getEntityUid(masterEntity));
 		assertEquals("Entity was added to the registry", masterEntity, jsMasterEntity);
 		verify(listener).entityRegistered(masterEntity);
 		verify(listener).entityRegistered(detailEntity);
@@ -153,20 +153,20 @@ public class EntityRegistryTest extends EclipseIndependentTestBase {
 		
 //		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
 
-		MasterEntity jsMasterEntity = (MasterEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.getEntityUid(masterEntity));
+		MasterEntity jsMasterEntity = (MasterEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.object_getEntityUid(masterEntity));
 		assertEquals("Master entity instance was kept", masterEntity, jsMasterEntity);
 
 		assertEquals("Master entity property was changed", "new name", jsMasterEntity.getName());
 
 		assertEquals("Master entity 'name' property was changed to the new value", "new name", jsMasterEntity.getName());
 		
-		DetailEntity jsDetailEntity = (DetailEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.getEntityUid(detailEntity1));
+		DetailEntity jsDetailEntity = (DetailEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.object_getEntityUid(detailEntity1));
 
 		assertNull("Detail entity 1 was removed from registry", jsDetailEntity);
 		
 		assertEquals("Detail entity 2 instance was kept", detailEntity, jsMasterEntity.getDetails().get(0));
 
-		SubdetailEntity jsSubdetailEntity = (SubdetailEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.getEntityUid(subdetailEntity));
+		SubdetailEntity jsSubdetailEntity = (SubdetailEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.object_getEntityUid(subdetailEntity));
 
 		assertEquals("Subdetail entity 'value' property was changed to the new value", 250, jsSubdetailEntity.getValue());
 		
@@ -186,12 +186,12 @@ public class EntityRegistryTest extends EclipseIndependentTestBase {
 		details.add(detailEntity);
 		
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "registerEntity", masterEntity);
-		String masterUid = entityOperationsAdapter.getEntityUid(masterEntity);
+		String masterUid = entityOperationsAdapter.object_getEntityUid(masterEntity);
 
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "registerChildren", masterUid, "details", details);
 		
-		MasterEntity jsMasterEntity = (MasterEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.getEntityUid(masterEntity));
-		DetailEntity jsDetailEntity = (DetailEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.getEntityUid(detailEntity));
+		MasterEntity jsMasterEntity = (MasterEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.object_getEntityUid(masterEntity));
+		DetailEntity jsDetailEntity = (DetailEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.object_getEntityUid(detailEntity));
 		assertEquals("Child entity was added to registry", detailEntity, jsDetailEntity);
 		
 		List<Object> jsDetails =  jsMasterEntity.getDetails();
@@ -211,7 +211,7 @@ public class EntityRegistryTest extends EclipseIndependentTestBase {
 		masterEntity.setId(145);
 
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "registerEntity", masterEntity);
-		String masterUid = entityOperationsAdapter.getEntityUid(masterEntity);
+		String masterUid = entityOperationsAdapter.object_getEntityUid(masterEntity);
 
 		DetailEntity detailEntity = new DetailEntity();
 		detailEntity.setId(1);
@@ -224,8 +224,8 @@ public class EntityRegistryTest extends EclipseIndependentTestBase {
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "registerEntity", detailEntity, masterUid, "details", 0);
 
 		
-		MasterEntity jsMasterEntity = (MasterEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.getEntityUid(masterEntity));
-		DetailEntity jsDetailEntity = (DetailEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.getEntityUid(detailEntity));
+		MasterEntity jsMasterEntity = (MasterEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.object_getEntityUid(masterEntity));
+		DetailEntity jsDetailEntity = (DetailEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.object_getEntityUid(detailEntity));
 		assertEquals("Child entity was added to registry", detailEntity, jsDetailEntity);
 		
 		List<Object> jsDetails =  jsMasterEntity.getDetails();
@@ -254,7 +254,7 @@ public class EntityRegistryTest extends EclipseIndependentTestBase {
 		details.add(detailEntity);
 		
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "registerEntity", masterEntity);
-		String masterUid = entityOperationsAdapter.getEntityUid(masterEntity);
+		String masterUid = entityOperationsAdapter.object_getEntityUid(masterEntity);
 
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "registerChildren", masterUid, "details", details);
 
@@ -266,10 +266,10 @@ public class EntityRegistryTest extends EclipseIndependentTestBase {
 		verify(listener).entityUnregistered(detailEntity);
 		
 		
-		MasterEntity jsMasterEntity = (MasterEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.getEntityUid(masterEntity));
+		MasterEntity jsMasterEntity = (MasterEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.object_getEntityUid(masterEntity));
 		assertNull("Root entity was removed from registry", jsMasterEntity);
 
-		DetailEntity jsDetailEntity = (DetailEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.getEntityUid(detailEntity));
+		DetailEntity jsDetailEntity = (DetailEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.object_getEntityUid(detailEntity));
 		assertNull("Detail entity was removed from registry", jsDetailEntity);
 		
 	}
@@ -288,13 +288,13 @@ public class EntityRegistryTest extends EclipseIndependentTestBase {
 		details.add(detailEntity);
 		
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "registerEntity", masterEntity);
-		String masterUid = entityOperationsAdapter.getEntityUid(masterEntity);
+		String masterUid = entityOperationsAdapter.object_getEntityUid(masterEntity);
 
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "registerChildren", masterUid, "details", details);
 
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "unregisterChildren", masterUid, "details");
 
-		DetailEntity jsDetailEntity = (DetailEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.getEntityUid(detailEntity));
+		DetailEntity jsDetailEntity = (DetailEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.object_getEntityUid(detailEntity));
 		assertNull("Detail entity was removed from registry", jsDetailEntity);
 		
 	}
@@ -313,19 +313,19 @@ public class EntityRegistryTest extends EclipseIndependentTestBase {
 		details.add(detailEntity);
 		
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "registerEntity", masterEntity);
-		String masterUid = entityOperationsAdapter.getEntityUid(masterEntity);
+		String masterUid = entityOperationsAdapter.object_getEntityUid(masterEntity);
 
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "registerChildren", masterUid, "details", details);
-		String detailUid = entityOperationsAdapter.getEntityUid(detailEntity);
+		String detailUid = entityOperationsAdapter.object_getEntityUid(detailEntity);
 
 //		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
 
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "unregisterEntity", detailUid);
 
-		DetailEntity jsDetailEntity = (DetailEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.getEntityUid(detailEntity));
+		DetailEntity jsDetailEntity = (DetailEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.object_getEntityUid(detailEntity));
 		assertNull("Detail entity was removed from registry", jsDetailEntity);
 
-		MasterEntity jsMasterEntity = (MasterEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.getEntityUid(masterEntity));
+		MasterEntity jsMasterEntity = (MasterEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.object_getEntityUid(masterEntity));
 		assertEquals("Detail entity was removed from root's children list", 0, jsMasterEntity.getDetails().size());
 
 //		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");

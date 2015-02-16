@@ -16,7 +16,7 @@
  
 var EntityOperationsAdapter = function() { };
 
-EntityOperationsAdapter.prototype.getEntityUid = function(entity) {
+EntityOperationsAdapter.prototype.object_getEntityUid = function(entity) {
 	return entity.entityUid;
 };
 

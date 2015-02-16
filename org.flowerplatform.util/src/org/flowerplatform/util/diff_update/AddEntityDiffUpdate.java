@@ -13,6 +13,8 @@ import java.util.Map;
  */
 public class AddEntityDiffUpdate extends PropertiesDiffUpdate {
 	
+	private static final long serialVersionUID = 5568878998274135710L;
+
 	private String parentUid;
 
 	private String parentChildrenProperty;
@@ -53,7 +55,7 @@ public class AddEntityDiffUpdate extends PropertiesDiffUpdate {
 	 */
 	public Map<String, Object> getProperties() {
 		// TODO CS/DU: sa facem asta cumva la constructie; caci astfel, la toString se va apela din nou; dar de fapt: daca trimitem tot obiectul, de ce mai e nevoie de asta?
-		Map<String, Object> properties = new HashMap<>();
+		Map<String, Object> properties = new HashMap<String, Object>();
 		try {
 			BeanInfo beanInfo = Introspector.getBeanInfo(entity.getClass());
 	        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();

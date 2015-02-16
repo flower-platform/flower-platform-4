@@ -10,7 +10,9 @@ import java.util.Map;
  */
 public class PropertiesDiffUpdate extends DiffUpdate {
 
-	private Map<String, Object> properties = new HashMap<>();
+	private static final long serialVersionUID = -3256240093556452543L;
+
+	private Map<String, Object> properties = new HashMap<String, Object>();
 
 	public Map<String, Object> getProperties() {
 		return properties;

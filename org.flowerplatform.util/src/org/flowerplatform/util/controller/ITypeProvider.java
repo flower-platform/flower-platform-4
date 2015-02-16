@@ -5,6 +5,9 @@ package org.flowerplatform.util.controller;
  */
 public interface ITypeProvider {
 	
+	/**
+	 * @author see class 
+	 */
 	String getType(Object model);
 	
 }
