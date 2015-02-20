@@ -13,11 +13,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.flowerplatform.tests.diff_update.entity.AbstractEntity;
+import org.flowerplatform.tests.diff_update.entity.DetailEntity;
 import org.flowerplatform.tests.diff_update.entity.HumanResource;
 import org.flowerplatform.tests.diff_update.entity.HumanResourceSchedule;
+import org.flowerplatform.tests.diff_update.entity.MasterEntity;
 import org.flowerplatform.tests.diff_update.entity.Mission;
 import org.flowerplatform.tests.diff_update.entity.ObjectAction;
 import org.flowerplatform.tests.diff_update.entity.ObjectActionGroup;
+import org.flowerplatform.tests.diff_update.entity.SubdetailEntity;
 import org.flowerplatform.tests.diff_update.entity.Task;
 import org.mozilla.javascript.NativeObject;
 
@@ -43,6 +46,9 @@ public class EntityOperationsAdapter {
 		
 		propertyFlagsMap = new HashMap<Class<?>, Map<String, NativeObject>>();
 
+		addOneToManyRelation(MasterEntity.class, "details", true, DetailEntity.class, "masterEntity", false);
+		addOneToManyRelation(DetailEntity.class, "subdetails", true, SubdetailEntity.class, "detailEntity", false);
+		
 		addOneToManyRelation(Mission.class, "objectActionGroups", true, ObjectActionGroup.class, "mission", false);
 		addOneToManyRelation(Mission.class, "resources", true, HumanResource.class, "mission", false);
 		addOneToManyRelation(Task.class, "objectActionGroups", true, ObjectActionGroup.class, "task", false);
@@ -71,7 +77,7 @@ public class EntityOperationsAdapter {
 	 * @throws IllegalAccessException 
 	 */
 	public void list_create(Object entity, String property) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
-		new PropertyDescriptor(property, entity.getClass()).getWriteMethod().invoke(entity, new ArrayList<Object>());
+		new PropertyDescriptor(property, entity.getClass()).getWriteMethod().invoke(entity, new ArrayList<AbstractEntity>());
 	}
 	
 	/**
@@ -145,6 +151,7 @@ public class EntityOperationsAdapter {
 			propertyFlagsMap.put(parentType, parentProperties);
 		}
 		relationInfo = new NativeObject();
+		relationInfo.defineProperty("oppositeType", childType, NativeObject.READONLY);
 		relationInfo.defineProperty("oppositeProperty", childParentProperty, NativeObject.READONLY);
 		relationInfo.defineProperty("flags", new Integer(PROPERTY_FLAG_ONE_TO_MANY | (navigableFromParent ? PROPERTY_FLAG_NAVIGABLE : 0)), NativeObject.READONLY);
 		parentProperties.put(parentChildrenProperty, relationInfo);
@@ -155,6 +162,7 @@ public class EntityOperationsAdapter {
 			propertyFlagsMap.put(childType, childProperties);
 		}
 		relationInfo = new NativeObject();
+		relationInfo.defineProperty("oppositeType", parentType, NativeObject.READONLY);
 		relationInfo.defineProperty("oppositeProperty", parentChildrenProperty, NativeObject.READONLY);
 		relationInfo.defineProperty("flags", new Integer(PROPERTY_FLAG_MANY_TO_ONE | (navigableFromChild ? PROPERTY_FLAG_NAVIGABLE : 0)), NativeObject.READONLY);
 		childProperties.put(childParentProperty, relationInfo);
@@ -174,8 +182,12 @@ public class EntityOperationsAdapter {
 		properties.put("property", relationInfo);
 	}
 
-	public NativeObject getPropertyInfo(Object entity, String property) {
-		return propertyFlagsMap.get(entity.getClass()).get(property);
+	public NativeObject object_getPropertyInfo(Object entity, String property) {
+		Map<String, NativeObject> properties = propertyFlagsMap.get(entity.getClass());
+		if (properties == null) {
+			return null;
+		}
+		return properties.get(property);
 	}
 	
 	public boolean object_hasDynamicProperties(Object entity) {
@@ -186,18 +198,18 @@ public class EntityOperationsAdapter {
 		BeanInfo beanInfo = Introspector.getBeanInfo(entity.getClass());
         PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-        	if (propertyDescriptor.getWriteMethod() != null && !propertyDescriptor.getName().equals("details") && !propertyDescriptor.getName().equals("subdetails")) {
+        	if (propertyDescriptor.getWriteMethod() != null) {
             	ipc.callback(propertyDescriptor.getName(), propertyDescriptor.getReadMethod().invoke(entity));
         	}
         }
 	}
-
+	
 	public void propertiesMap_iterateProperties(Map<String, Object> properties, IteratePropertiesCallback ipc) throws ReflectiveOperationException, IllegalArgumentException, IntrospectionException {
 		for (Entry<String, Object> entry : properties.entrySet()) {
         	ipc.callback(entry.getKey(), entry.getValue());
 		}
 	}
-	
+
 }
 
 interface IteratePropertiesCallback {

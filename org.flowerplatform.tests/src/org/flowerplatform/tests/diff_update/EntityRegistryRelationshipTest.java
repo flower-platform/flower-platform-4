@@ -20,15 +20,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.wst.jsdt.debug.rhino.debugger.RhinoDebugger;
 import org.flowerplatform.js_client.java.JsClientJavaUtils;
 import org.flowerplatform.tests.EclipseIndependentTestBase;
+import org.flowerplatform.tests.diff_update.entity.AbstractEntity;
 import org.flowerplatform.tests.diff_update.entity.HumanResource;
 import org.flowerplatform.tests.diff_update.entity.HumanResourceSchedule;
 import org.flowerplatform.tests.diff_update.entity.Mission;
 import org.flowerplatform.tests.diff_update.entity.ObjectAction;
 import org.flowerplatform.tests.diff_update.entity.ObjectActionGroup;
 import org.flowerplatform.tests.diff_update.entity.Task;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,24 +52,24 @@ public class EntityRegistryRelationshipTest extends EclipseIndependentTestBase {
 	
 	private EntityOperationsAdapter entityOperationsAdapter;
 	
-	private Scriptable entityRegistryManager; 
+	private Scriptable entityRegistryManager, entityRegistry; 
 
 	private Mission mission101;
 	private Task task301;
 	private ObjectActionGroup objectActionGroup201, objectActionGroup202;
-	private HumanResource humanResource501;
-	private HumanResourceSchedule humanResourceSchedule601;
+	private HumanResource humanResource501, humanResource502;
+	private HumanResourceSchedule humanResourceSchedule601, humanResourceSchedule602;
 	private ObjectAction objectAction401, objectAction402, objectAction403;
 
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-	    String rhino = "transport=socket,suspend=y,address=9000";
-	    RhinoDebugger debugger = new RhinoDebugger(rhino);
-	    debugger.start();
+//	    String rhino = "transport=socket,suspend=y,address=9000";
+//	    RhinoDebugger debugger = new RhinoDebugger(rhino);
+//	    debugger.start();
 	    
 	    ContextFactory factory = new ContextFactory();
-	    factory.addListener(debugger);
+//	    factory.addListener(debugger);
 	    ctx = factory.enterContext();		
 	    scope = ctx.initStandardObjects();	
 		
@@ -83,6 +84,7 @@ public class EntityRegistryRelationshipTest extends EclipseIndependentTestBase {
 		entityOperationsAdapter = new EntityOperationsAdapter();
 		entityRegistryManager = ctx.newObject(scope, "EntityRegistryManager", new Object[] { entityOperationsAdapter });
 		scope.put("_entityRegistryManager", scope, entityRegistryManager);
+		entityRegistry = (NativeObject) JsClientJavaUtils.invokeJsFunction(entityRegistryManager, "createEntityRegistry", "testChannel");
 		resetModel();
 	}
 
@@ -105,45 +107,96 @@ public class EntityRegistryRelationshipTest extends EclipseIndependentTestBase {
 		task301.getObjectActionGroups().add(objectActionGroup202);
 
 		humanResource501 = new HumanResource(501);
+		humanResource502 = new HumanResource(502);
+
 		humanResourceSchedule601 = new HumanResourceSchedule(601);
 		humanResourceSchedule601.getMissions().add(mission101);
 		humanResourceSchedule601.setHumanResource(humanResource501);
-		
+
+		humanResourceSchedule602 = new HumanResourceSchedule(602);
+
+	}
+	
+	private AbstractEntity getEntityFromRegistry(String uid) {
+		AbstractEntity entity = (AbstractEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", uid);
+		return entity;
+	}
+	
+	private boolean isInRegistry(AbstractEntity entity) {
+		Object registeredEntity = JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.object_getEntityUid(entity));
+		return registeredEntity != null;
 	}
 
-	
 	@Test
-	public void testMerge() {
-		NativeObject entityRegistry = (NativeObject) JsClientJavaUtils.invokeJsFunction(entityRegistryManager, "createEntityRegistry", "testChannel");
-
+	public void testMergeInstances() {
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", mission101);
 
-		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
+		Mission missionInstance = mission101;
+		ObjectActionGroup objectActionGroup = objectActionGroup201;
+		ObjectAction objectAction = objectAction401;
 		
-		
-//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", task301);
-//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
-//		
-//		// remove objectActionGroup201 from task
-//		task301.getObjectActionGroups().remove(objectActionGroup201);
-//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", task301);
-//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
-//
-//		// remove objectActionGroup201 from mission
-//		mission101.getObjectActionGroups().remove(objectActionGroup201);
-//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", SerializationUtils.clone(mission101));
-//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
+		resetModel();
 
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", mission101);
+		Assert.assertTrue("Mission:101 instance was kept", getEntityFromRegistry(entityOperationsAdapter.object_getEntityUid(mission101)) == missionInstance);
+		Assert.assertTrue("ObjectActionGroup:201 instance was kept", getEntityFromRegistry(entityOperationsAdapter.object_getEntityUid(objectActionGroup201)) == objectActionGroup);
+		Assert.assertTrue("ObjectAction:401 instance was kept", getEntityFromRegistry(entityOperationsAdapter.object_getEntityUid(objectAction401)) == objectAction);
+
+	}
+	
+	@Test
+	public void testMergeWithRemove() {
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", mission101);
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", task301);
+
+		Assert.assertTrue("Mission:101 was registered", isInRegistry(mission101));
+		Assert.assertTrue("Task:301 was registered", isInRegistry(task301));
+		Assert.assertTrue("ObjectActionGroup:201 was registered", isInRegistry(objectActionGroup201));
+		Assert.assertTrue("ObjectActionGroup:202 was registered", isInRegistry(objectActionGroup202));
+		Assert.assertTrue("ObjectAction:401 was registered", isInRegistry(objectAction401));
+		Assert.assertTrue("ObjectAction:402 was registered", isInRegistry(objectAction402));
+		Assert.assertTrue("ObjectAction:403 was registered", isInRegistry(objectAction403));
 		
-//		EntityChangeListener listener = mock(EntityChangeListener.class);					
-//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "addEntityChangeListener", listener);
-//
-//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "registerEntity", masterEntity);
-//		
-//		MasterEntity jsMasterEntity = (MasterEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.getEntityUid(masterEntity));
-//		assertEquals("Entity was added to the registry", masterEntity, jsMasterEntity);
-//		verify(listener).entityRegistered(masterEntity);
-//		verify(listener).entityRegistered(detailEntity);
+		// remove objectActionGroup201 from task
+		resetModel();
+		task301.getObjectActionGroups().remove(objectActionGroup202);
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", task301);
+		Assert.assertTrue("ObjectActionGroup:202 was kept", isInRegistry(objectActionGroup202));
+		
+		// remove objectActionGroup201 from mission
+		mission101.getObjectActionGroups().remove(objectActionGroup202);
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", mission101);
+		Assert.assertFalse("ObjectActionGroup:202 was removed", isInRegistry(objectActionGroup202));
+	}
+
+	@Test
+	public void testMemoryLeak() {
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", humanResourceSchedule601);
+		
+		HumanResource humanResource = (HumanResource) getEntityFromRegistry(entityOperationsAdapter.object_getEntityUid(humanResource501));
+		HumanResourceSchedule humanResourceSchedule = (HumanResourceSchedule) getEntityFromRegistry(entityOperationsAdapter.object_getEntityUid(humanResourceSchedule601));
+		
+		Assert.assertTrue("HumanResourceSchedule:601 was added to (HumanResource:501).humanResourceSchedules", 
+				humanResource.getHumanResourceSchedules().contains(humanResourceSchedule) && humanResource.getHumanResourceSchedules().size() == 1);
+		
+		resetModel();
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", humanResourceSchedule601);
+		
+		Assert.assertTrue("HumanResourceSchedule:601 was not added twice to (HumanResource:501).humanResourceSchedules", 
+				humanResource.getHumanResourceSchedules().contains(humanResourceSchedule) && humanResource.getHumanResourceSchedules().size() == 1);
+		
+		resetModel();
+		humanResourceSchedule601.setHumanResource(humanResource502);
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", humanResourceSchedule601);
+		
+		Assert.assertTrue("HumanResourceSchedule:601 was removed from (HumanResource:501).humanResourceSchedules", 
+				!humanResource.getHumanResourceSchedules().contains(humanResourceSchedule602) && humanResource.getHumanResourceSchedules().size() == 0);
+
+		humanResource = (HumanResource) getEntityFromRegistry(entityOperationsAdapter.object_getEntityUid(humanResource502));
+		
+		Assert.assertTrue("HumanResourceSchedule:601 was added to (HumanResource:502).humanResourceSchedules", 
+				humanResource.getHumanResourceSchedules().contains(humanResourceSchedule) && humanResource.getHumanResourceSchedules().size() == 1);
+
 	}
 	
 }

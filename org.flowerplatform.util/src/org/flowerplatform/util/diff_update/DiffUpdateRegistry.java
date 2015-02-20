@@ -22,7 +22,7 @@ public class DiffUpdateRegistry {
 	
 	// TODO CC: temporary code
 	public void clearDiffUpdates() {
-		for(Map.Entry<String, List<DiffUpdate>> entry : updatesMap.entrySet()) {
+		for (Map.Entry<String, List<DiffUpdate>> entry : updatesMap.entrySet()) {
 			entry.setValue(new ArrayList<DiffUpdate>());
 		}
 	}
