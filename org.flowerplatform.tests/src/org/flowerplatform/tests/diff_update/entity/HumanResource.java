@@ -11,12 +11,16 @@ public class HumanResource extends AbstractEntity {
 	
 	private Mission mission; 
 	
-	private List<HumanResourceSchedule> humanResourceSchedules;
+	private List<AbstractEntity> humanResourceSchedules;
 	
 	public HumanResource(int id) {
 		super(id);
 	}
 
+	public boolean isRoot() {
+		return true;
+	}
+	
 	public Mission getMission() {
 		return mission;
 	}
@@ -25,12 +29,12 @@ public class HumanResource extends AbstractEntity {
 		this.mission = mission;
 	}
 
-	public List<HumanResourceSchedule> getHumanResourceSchedules() {
+	public List<AbstractEntity> getHumanResourceSchedules() {
 		return humanResourceSchedules;
 	}
 
-	public void setHumanResourceSchedules(List<HumanResourceSchedule> humanResourceSchedules) {
+	public void setHumanResourceSchedules(List<AbstractEntity> humanResourceSchedules) {
 		this.humanResourceSchedules = humanResourceSchedules;
 	}
-	
+
 }

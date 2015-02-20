@@ -16,7 +16,6 @@
 
 var EntityRegistry = function(entityRegistryManager) { 
 	this.entityRegistryManager = entityRegistryManager; 
-	this.entityChangeListeners = [];
 	// key = uid; value = entity
 	this.registry = { };
 	this.entityOperationsAdapter = this.entityRegistryManager.entityOperationsAdapter;
@@ -33,6 +32,7 @@ var EntityRegistry = function(entityRegistryManager) {
 EntityRegistry.prototype.mergeEntity = function(entity) {
 	var entitiesToRemove = [];
 	this.mergeEntityInternal(entity, null, { }, entitiesToRemove);
+
 	for (var i in entitiesToRemove) {
 		this.removeInternal(entitiesToRemove[i]);
 	}
@@ -128,13 +128,13 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 	} else if (propertyInfo.flags & PROPERTY_FLAG_ONE_TO_MANY) { 
 		// i.e. a list of references
 		
-		// TODO CS: daca e non navigabila => sar de tot ***
+		// property is non-navigable => there is nothing to process (field is null)
 		if (!(propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE)) {
 			return;
 		}
 			
 		var oldChildrenSet;
-		if (propertyInfo.flags && oldEntity && oldEntity[property]) {
+		if (oldEntity && oldEntity[property]) {
 			oldChildrenSet = { };
 			// iterate old list; populate oldChildrenSet with uids of already registered children; will be used to remove the no longer existing children
 			var oldChildrenList = oldEntity[property];
@@ -148,72 +148,92 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 
 		// iterate new list
 		var childrenList = value;
-		var n = this.entityOperationsAdapter.list_getLength(childrenList);
+		var n = childrenList ? this.entityOperationsAdapter.list_getLength(childrenList) : 0;
 		for (var i = 0; i < n; i++) {
 			var child = this.entityOperationsAdapter.list_getItemAt(childrenList, i);
 			var childUid = this.entityOperationsAdapter.object_getEntityUid(child);
 			var registeredChild = this.mergeEntityInternal(child, null, visitedEntities, entitiesToRemove);
+			
 			this.entityOperationsAdapter.list_setItemAt(childrenList, registeredChild, i);
 			
-			// TODO CS: cred ca tr sa fac si posibila scoatere a vechiului (remove) ***
+			// If child's parent changed, try to remove former parent.
 			// We compare UIDs because there might be a different instance of the entity, but the same entity uid
 			if (registeredChild[propertyInfo.oppositeProperty] && this.entityOperationsAdapter.object_getEntityUid(registeredChild[propertyInfo.oppositeProperty]) != this.entityOperationsAdapter.object_getEntityUid(registeredEntity)) {
 				entitiesToRemove.push(registeredChild[propertyInfo.oppositeProperty]);
 			}
 			registeredChild[propertyInfo.oppositeProperty] = registeredEntity;
 			
-			if (oldEntity) {
+			if (oldEntity && oldChildrenSet) {
 				// child exists, so remove it from set of children marked for deletion 
 				delete oldChildrenSet[childUid];
 			}
 		}
 		
+		var modified = false;
 		if (oldChildrenSet) {
-			var modified = false;
 			for (var uid in oldChildrenSet) {
 				if (!modified) {
 					modified = true;
 				}
 				var oldChild = this.registry[uid];
-				if (oldChild[propertyInfo.oppositeProperty] == registeredEntity) {
+				if (this.entityOperationsAdapter.object_getEntityUid(oldChild[propertyInfo.oppositeProperty]) == this.entityOperationsAdapter.object_getEntityUid(registeredEntity)) {
 					// we need this test for the case when the referenced entity still exists, but it has been "moved"
 					// to another entity. E.g. an object has been moved from a flight to another flight. And the other
 					// flight has been processed before, i.e. we don't need to break the link.
+					// We shouldn't have to compare the uids of the 2 objects, we should only compare the actual instances. 
+					// However, this instance equality test doesn't work with Rhino in this scenario, so we need to compare the uids.
 					oldChild[propertyInfo.oppositeProperty] = null;
 				}
 				entitiesToRemove.push(oldChild);
 			}
-			if (modified || this.entityOperationsAdapter.list_getLength(oldEntity[property]) != this.entityOperationsAdapter.list_getLength(value)) {
-				oldEntity[property] = value;
-			}
+		}
+		var oldChildrenListSize = oldEntity && oldEntity[property] ? this.entityOperationsAdapter.list_getLength(oldEntity[property]) : 0; 
+		if (modified || oldChildrenListSize != this.entityOperationsAdapter.list_getLength(value)) {
+			registeredEntity[property] = value;
 		}
 	} else if (propertyInfo.flags & PROPERTY_FLAG_MANY_TO_ONE) {
+		// i.e. a "single" reference
 
+
+		// process references only when this entity is the navigable end of a unidirectional relationship  
 		if (!(propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE)) {
 			return;
 		}
-
-		// i.e. a "single" reference
-		var parentEntity = value;
-		// TODO CS: lipseste setarea la null ***
-		if (parentEntity) { // new entity has parent
-			parentEntity = this.mergeEntityInternal(parentEntity, null, visitedEntities, entitiesToRemove);
-			
-			// TODO CS: fac asta doar daca este cap navig al rel uni-directionala ***
-			var parentPropertyInfo = this.entityOperationsAdapter.object_getPropertyInfo(parentEntity, propertyInfo.oppositeProperty);
-			if ((propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE) && !(parentPropertyInfo.flags & PROPERTY_FLAG_NAVIGABLE)) {
-				// create children list in parent, if it doesn't exist
-				if (!parentEntity[propertyInfo.oppositeProperty]) {
-					parentEntity[propertyInfo.oppositeProperty] = this.entityOperationsAdapter.list_create(parentEntity, propertyInfo.oppositeProperty);
-				} 
-				// add child to parent's children list
-				this.entityOperationsAdapter.list_addItem(parentEntity[propertyInfo.oppositeProperty], registeredEntity, -1);
+		
+		if (!value) { // new entity has no referenced entity
+			if (oldEntity && oldEntity[property]) { // but old entity references an entity
+				this.entityOperationsAdapter.list_removeItem(oldEntity[property][propertyInfo.oppositeProperty], oldEntity); // remove old entity from formerly referenced entity's list
+				entitiesToRemove.push(oldEntity[property]); // try to remove the formerly referenced entity
 			}
-			
-		} else if (oldEntity && oldEntity[property] && (propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE)) { // new entity has no parent, but old entity has
 			registeredEntity[property] = null;
-			entitiesToRemove.push(oldEntity[property]);
+			return;
 		}
+
+		var oppositeEntity = this.mergeEntityInternal(value, null, visitedEntities, entitiesToRemove);
+		var parentPropertyInfo = this.entityOperationsAdapter.object_getPropertyInfo(oppositeEntity, propertyInfo.oppositeProperty);
+		
+		if (!(parentPropertyInfo.flags & PROPERTY_FLAG_NAVIGABLE)) {
+			// this entity is the navigable end of a unidirectional relationship
+
+			var parentPropertyInfo = this.entityOperationsAdapter.object_getPropertyInfo(oppositeEntity, propertyInfo.oppositeProperty);
+
+			// create list in parent, if it doesn't exist
+			if (!oppositeEntity[propertyInfo.oppositeProperty]) {
+				this.entityOperationsAdapter.list_create(oppositeEntity, propertyInfo.oppositeProperty);
+			}
+
+			if (!oldEntity || (oldEntity[property] && oppositeEntity != oldEntity[property])) { // if there is no old entity or the reference has changed
+				// add registered entity to new opposite entity's list
+				this.entityOperationsAdapter.list_addItem(oppositeEntity[propertyInfo.oppositeProperty], registeredEntity, -1);
+				if (oldEntity) { // if old reference has changed
+					// remove entity from former parent's children list
+					this.entityOperationsAdapter.list_removeItem(oldEntity[property][propertyInfo.oppositeProperty], oldEntity);
+				}
+			}
+
+			registeredEntity[property] = oppositeEntity;
+		}
+		
 	} else if (oldEntity) {
 		oldEntity[property] = value;
 	}
@@ -234,6 +254,9 @@ EntityRegistry.prototype.remove = function(entityUid) {
 		if (!propertyInfo || (propertyInfo.flags & PROPERTY_FLAG_IGNORE)) {
 			return;
 		}
+		if (value == null) {
+			return;
+		}
 		if (propertyInfo.flags & PROPERTY_FLAG_ONE_TO_MANY) {
 			var n = _this.entityOperationsAdapter.list_getLength(value);
 			for (var i = 0; i < n; i++) {
@@ -244,7 +267,7 @@ EntityRegistry.prototype.remove = function(entityUid) {
 				}
 			}
 		} else if (propertyInfo.flags & PROPERTY_FLAG_MANY_TO_ONE) {
-			_this.entityOperationsAdapter.list_remove(value[propertyInfo.oppositeProperty], entity);
+			_this.entityOperationsAdapter.list_removeItem(value[propertyInfo.oppositeProperty], entity);
 			if (propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE) {
 				entitiesToRemove.push(value);
 			}
@@ -404,21 +427,10 @@ EntityRegistry.prototype.getEntityByUid = function(uid) {
 	return null;
 };
 
-EntityRegistry.prototype.addEntityChangeListener = function(listener) {
-	this.entityChangeListeners.push(listener);
-};
-		
-EntityRegistry.prototype.removeEntityChangeListener = function(listener) {
-	var i = this.entityChangeListeners.indexOf(listener);	
-	if(i != -1) {		
-		this.entityChangeListeners.splice(i, 1);		
-	}
-};			
-
 EntityRegistry.prototype.printDebugInfo = function() {
-	// java.lang.System.out.println("*** registry ***");
+	 java.lang.System.out.println("*** registry ***");
 	for (var prop in this.registry) {
-		// java.lang.System.out.println(prop + " : " + this.registry[prop]);
+		 java.lang.System.out.println(prop + " : " + this.registry[prop]);
 	}
 };			
 

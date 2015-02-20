@@ -17,8 +17,6 @@ package org.flowerplatform.tests.diff_update;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -27,6 +25,8 @@ import java.nio.file.Paths;
 import org.apache.commons.io.FileUtils;
 import org.flowerplatform.js_client.java.JsClientJavaUtils;
 import org.flowerplatform.tests.EclipseIndependentTestBase;
+import org.flowerplatform.tests.diff_update.entity.DetailEntity;
+import org.flowerplatform.tests.diff_update.entity.MasterEntity;
 import org.flowerplatform.util.diff_update.AddEntityDiffUpdate;
 import org.flowerplatform.util.diff_update.PropertiesDiffUpdate;
 import org.flowerplatform.util.diff_update.RemoveEntityDiffUpdate;
@@ -81,8 +81,7 @@ public class DiffUpdateTest extends EclipseIndependentTestBase {
 	public void testAddRootEntity() {
 		NativeObject entityRegistry = (NativeObject) JsClientJavaUtils.invokeJsFunction(entityRegistryManager, "createEntityRegistry", "testChannel1");
 		
-		MasterEntity masterEntity = new MasterEntity();
-		masterEntity.setId(145);
+		MasterEntity masterEntity = new MasterEntity(145);
 		masterEntity.setName("entity1");
 		
 		AddEntityDiffUpdate update = new AddEntityDiffUpdate();
@@ -99,8 +98,7 @@ public class DiffUpdateTest extends EclipseIndependentTestBase {
 	public void testAddChildEntity() {
 		NativeObject entityRegistry = (NativeObject) JsClientJavaUtils.invokeJsFunction(entityRegistryManager, "createEntityRegistry", "testChannel2");
 		
-		MasterEntity masterEntity = new MasterEntity();
-		masterEntity.setId(145);
+		MasterEntity masterEntity = new MasterEntity(145);
 		masterEntity.setName("entity1");
 		
 		AddEntityDiffUpdate update = new AddEntityDiffUpdate();
@@ -108,8 +106,7 @@ public class DiffUpdateTest extends EclipseIndependentTestBase {
 		update.setEntity(masterEntity);
 		JsClientJavaUtils.invokeJsFunction(entityRegistryManager, "processDiffUpdate", "testChannel2", update);
 
-		DetailEntity detailEntity = new DetailEntity();
-		detailEntity.setId(1);
+		DetailEntity detailEntity = new DetailEntity(1);
 		detailEntity.setValue(10);
 		
 		update = new AddEntityDiffUpdate();
@@ -129,10 +126,9 @@ public class DiffUpdateTest extends EclipseIndependentTestBase {
 	public void testRemoveRootEntity() {
 		NativeObject entityRegistry = (NativeObject) JsClientJavaUtils.invokeJsFunction(entityRegistryManager, "createEntityRegistry", "testChannel3");
 
-		MasterEntity masterEntity  = new MasterEntity();
-		masterEntity.setId(150);
+		MasterEntity masterEntity  = new MasterEntity(150);
 		
-		JsClientJavaUtils.invokeJsFunction(entityRegistry, "registerEntity", masterEntity);
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", masterEntity);
 		
 		RemoveEntityDiffUpdate update = new RemoveEntityDiffUpdate();
 		update.setId(1);
@@ -147,22 +143,16 @@ public class DiffUpdateTest extends EclipseIndependentTestBase {
 	public void testSetProperties() {
 		NativeObject entityRegistry = (NativeObject) JsClientJavaUtils.invokeJsFunction(entityRegistryManager, "createEntityRegistry", "testChannel4");
 
-		MasterEntity masterEntity  = new MasterEntity();
-		masterEntity.setId(150);
+		MasterEntity masterEntity  = new MasterEntity(150);
 		masterEntity.setName("entity");
 		
-		JsClientJavaUtils.invokeJsFunction(entityRegistry, "registerEntity", masterEntity);
-
-		EntityChangeListener listener = mock(EntityChangeListener.class);					
-		JsClientJavaUtils.invokeJsFunction(entityRegistry, "addEntityChangeListener", listener);
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", masterEntity);
 
 		PropertiesDiffUpdate update = new PropertiesDiffUpdate();
 		update.setId(1);
 		update.setEntityUid(entityOperationsAdapter.object_getEntityUid(masterEntity));
 		update.addProperty("name", "entity3");
 		JsClientJavaUtils.invokeJsFunction(entityRegistryManager, "processDiffUpdate", "testChannel4", update);
-		verify(listener).entityUpdated(masterEntity);
-
 		
 		MasterEntity jsMasterEntity = (MasterEntity) JsClientJavaUtils.invokeJsFunction(entityRegistry, "getEntityByUid", entityOperationsAdapter.object_getEntityUid(masterEntity));
 		assertEquals("Entity name was changed to \"entity3\"", "entity3", jsMasterEntity.getName());
