@@ -134,7 +134,7 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 		}
 			
 		var oldChildrenSet;
-		if (propertyInfo.flags && oldEntity && oldEntity[property]) {
+		if (oldEntity && oldEntity[property]) {
 			oldChildrenSet = { };
 			// iterate old list; populate oldChildrenSet with uids of already registered children; will be used to remove the no longer existing children
 			var oldChildrenList = oldEntity[property];
@@ -148,7 +148,7 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 
 		// iterate new list
 		var childrenList = value;
-		var n = this.entityOperationsAdapter.list_getLength(childrenList);
+		var n = childrenList ? this.entityOperationsAdapter.list_getLength(childrenList) : 0;
 		for (var i = 0; i < n; i++) {
 			var child = this.entityOperationsAdapter.list_getItemAt(childrenList, i);
 			var childUid = this.entityOperationsAdapter.object_getEntityUid(child);
@@ -162,14 +162,14 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 			}
 			registeredChild[propertyInfo.oppositeProperty] = registeredEntity;
 			
-			if (oldEntity) {
+			if (oldEntity && oldChildrenSet) {
 				// child exists, so remove it from set of children marked for deletion 
 				delete oldChildrenSet[childUid];
 			}
 		}
 		
+		var modified = false;
 		if (oldChildrenSet) {
-			var modified = false;
 			for (var uid in oldChildrenSet) {
 				if (!modified) {
 					modified = true;
@@ -183,9 +183,10 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 				}
 				entitiesToRemove.push(oldChild);
 			}
-			if (modified || this.entityOperationsAdapter.list_getLength(oldEntity[property]) != this.entityOperationsAdapter.list_getLength(value)) {
-				oldEntity[property] = value;
-			}
+		}
+		var oldChildrenListSize = oldEntity && oldEntity[property] ? this.entityOperationsAdapter.list_getLength(oldEntity[property]) : 0; 
+		if (modified || oldChildrenListSize != this.entityOperationsAdapter.list_getLength(value)) {
+			registeredEntity[property] = value;
 		}
 	} else if (propertyInfo.flags & PROPERTY_FLAG_MANY_TO_ONE) {
 
@@ -204,7 +205,7 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 			if ((propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE) && !(parentPropertyInfo.flags & PROPERTY_FLAG_NAVIGABLE)) {
 				// create children list in parent, if it doesn't exist
 				if (!parentEntity[propertyInfo.oppositeProperty]) {
-					parentEntity[propertyInfo.oppositeProperty] = this.entityOperationsAdapter.list_create(parentEntity, propertyInfo.oppositeProperty);
+					this.entityOperationsAdapter.list_create(parentEntity, propertyInfo.oppositeProperty);
 				} 
 				// add child to parent's children list
 				this.entityOperationsAdapter.list_addItem(parentEntity[propertyInfo.oppositeProperty], registeredEntity, -1);
@@ -234,6 +235,9 @@ EntityRegistry.prototype.remove = function(entityUid) {
 		if (!propertyInfo || (propertyInfo.flags & PROPERTY_FLAG_IGNORE)) {
 			return;
 		}
+		if (value == null) {
+			return;
+		}
 		if (propertyInfo.flags & PROPERTY_FLAG_ONE_TO_MANY) {
 			var n = _this.entityOperationsAdapter.list_getLength(value);
 			for (var i = 0; i < n; i++) {
@@ -244,7 +248,7 @@ EntityRegistry.prototype.remove = function(entityUid) {
 				}
 			}
 		} else if (propertyInfo.flags & PROPERTY_FLAG_MANY_TO_ONE) {
-			_this.entityOperationsAdapter.list_remove(value[propertyInfo.oppositeProperty], entity);
+			_this.entityOperationsAdapter.list_removeItem(value[propertyInfo.oppositeProperty], entity);
 			if (propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE) {
 				entitiesToRemove.push(value);
 			}

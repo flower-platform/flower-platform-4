@@ -14,22 +14,23 @@
  * license-end
  */
   
-var AddEntityDiffUpdateProcessor = function() { 
-	
-};
+var AddEntityDiffUpdateProcessor = function() { };
 AddEntityDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegistry, diffUpdate) {
 	var entity = diffUpdate.entity;
 	entityRegistry.mergeEntity(entity);
+	entityRegistry.entityOperationsAdapter.postProcessUpdate(entityRegistry, diffUpdate);
 };
 
 var RemoveEntityDiffUpdateProcessor = function() { };
 RemoveEntityDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegistry, diffUpdate) {
 	entityRegistry.remove(diffUpdate.entityUid);
+	entityRegistry.entityOperationsAdapter.postProcessUpdate(entityRegistry, diffUpdate);
 };
 
 var PropertiesDiffUpdateProcessor = function() { };
 PropertiesDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegistry, diffUpdate) {
 	entityRegistry.setProperties(diffUpdate.entityUid, diffUpdate.properties);
+	entityRegistry.entityOperationsAdapter.postProcessUpdate(entityRegistry, diffUpdate);
 };
 
 var InitialInfoDiffUpdateProcessor = function() { };
