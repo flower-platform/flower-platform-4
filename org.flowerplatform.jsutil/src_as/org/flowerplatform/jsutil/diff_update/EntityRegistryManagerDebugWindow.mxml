@@ -9,18 +9,16 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.crispico.xops.util.EntityOperationsAdapter;
-			
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
 			import mx.collections.Sort;
 			import mx.collections.SortField;
 			
+			import spark.events.GridSelectionEvent;
+			
 			import org.apache.flex.collections.VectorList;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
-			
-			import spark.events.GridSelectionEvent;
 			
 			
 			
