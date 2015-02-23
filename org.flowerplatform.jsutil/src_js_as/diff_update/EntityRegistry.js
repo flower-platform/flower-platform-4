@@ -23,9 +23,9 @@ var EntityRegistry = function(entityRegistryManager) {
 
 /* mai e de facut: 
 
-* relatii unidirectionale
-* many-to-many
-* adaugarea in parinte la index stabilit (indexesInParent)
+* relatii unidirectionale *** terminat
+* many-to-many *** nu facem momentan
+* adaugarea in parinte la index stabilit (indexesInParent) 
 
 */
 
@@ -156,9 +156,10 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 			
 			this.entityOperationsAdapter.list_setItemAt(childrenList, registeredChild, i);
 			
-			// If child's parent changed, try to remove former parent.
+			// If child's parent changed, remove child from former parent's list and try to remove former parent.
 			// We compare UIDs because there might be a different instance of the entity, but the same entity uid
 			if (registeredChild[propertyInfo.oppositeProperty] && this.entityOperationsAdapter.object_getEntityUid(registeredChild[propertyInfo.oppositeProperty]) != this.entityOperationsAdapter.object_getEntityUid(registeredEntity)) {
+				this.entityOperationsAdapter.list_removeItem(registeredChild[propertyInfo.oppositeProperty][property], registeredChild);
 				entitiesToRemove.push(registeredChild[propertyInfo.oppositeProperty]);
 			}
 			registeredChild[propertyInfo.oppositeProperty] = registeredEntity;
@@ -193,7 +194,6 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 		}
 	} else if (propertyInfo.flags & PROPERTY_FLAG_MANY_TO_ONE) {
 		// i.e. a "single" reference
-
 
 		// process references only when this entity is the navigable end of a unidirectional relationship  
 		if (!(propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE)) {
@@ -428,9 +428,9 @@ EntityRegistry.prototype.getEntityByUid = function(uid) {
 };
 
 EntityRegistry.prototype.printDebugInfo = function() {
-	 java.lang.System.out.println("*** registry ***");
+//	java.lang.System.out.println("*** registry ***");
 	for (var prop in this.registry) {
-		 java.lang.System.out.println(prop + " : " + this.registry[prop]);
+//		java.lang.System.out.println(prop + " : " + this.registry[prop]);
 	}
 };			
 

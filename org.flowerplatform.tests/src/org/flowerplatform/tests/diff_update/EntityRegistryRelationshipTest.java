@@ -54,7 +54,7 @@ public class EntityRegistryRelationshipTest extends EclipseIndependentTestBase {
 	
 	private Scriptable entityRegistryManager, entityRegistry; 
 
-	private Mission mission101;
+	private Mission mission101, mission102;
 	private Task task301;
 	private ObjectActionGroup objectActionGroup201, objectActionGroup202;
 	private HumanResource humanResource501, humanResource502;
@@ -90,6 +90,7 @@ public class EntityRegistryRelationshipTest extends EclipseIndependentTestBase {
 
 	private void resetModel() {
 		mission101 = new Mission(101); 
+		mission102 = new Mission(102); 
 		task301 = new Task(301);
 		objectActionGroup201 = new ObjectActionGroup(201);
 		objectActionGroup202 = new ObjectActionGroup(202);
@@ -170,7 +171,39 @@ public class EntityRegistryRelationshipTest extends EclipseIndependentTestBase {
 	}
 
 	@Test
-	public void testMemoryLeak() {
+	public void testOneToManyUnidirectionalNavigable() {
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", mission101);
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", mission102);
+		
+		Mission mission = (Mission) getEntityFromRegistry(entityOperationsAdapter.object_getEntityUid(mission101));
+		ObjectActionGroup objectActionGroup = (ObjectActionGroup) getEntityFromRegistry(entityOperationsAdapter.object_getEntityUid(objectActionGroup201));
+		
+		Assert.assertTrue("ObjectActionGroup:201 was added to (Mission:101).objectActionGroups", 
+				mission.getObjectActionGroups().contains(objectActionGroup) && mission.getObjectActionGroups().size() == 2);
+		
+		resetModel();
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", mission101);
+		
+		Assert.assertTrue("ObjectActionGroup:201 was not added twice to (Mission:101).objectActionGroups", 
+				mission.getObjectActionGroups().contains(objectActionGroup) && mission.getObjectActionGroups().size() == 2);
+		
+		resetModel();
+
+		mission102.getObjectActionGroups().add(objectActionGroup201);
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", mission102);
+		
+		Assert.assertTrue("ObjectActionGroup:201 was removed from (Mission:101).objectActionGroups", 
+				!mission.getObjectActionGroups().contains(objectActionGroup201) && mission.getObjectActionGroups().size() == 1);
+
+		mission = (Mission) getEntityFromRegistry(entityOperationsAdapter.object_getEntityUid(mission102));
+		
+		Assert.assertTrue("ObjectActionGroup:201 was added to (Mission:102).objectActionGroups", 
+				mission.getObjectActionGroups().contains(objectActionGroup) && mission.getObjectActionGroups().size() == 1);
+		
+	}
+
+	@Test
+	public void testManyToOneUnidirectionalNavigable() {
 		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", humanResourceSchedule601);
 		
 		HumanResource humanResource = (HumanResource) getEntityFromRegistry(entityOperationsAdapter.object_getEntityUid(humanResource501));

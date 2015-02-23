@@ -24,11 +24,12 @@
 			
 			protected var entityRegistry:* = entityRegistryManager.createEntityRegistry("testChannel");
 			
-			protected var mission101:Mission, task301:Task, objectActionGroup201:ObjectActionGroup, objectActionGroup202:ObjectActionGroup, humanResource501:HumanResource, humanResourceSchedule601:HumanResourceSchedule;
+			protected var mission101:Mission, mission102:Mission, task301:Task, objectActionGroup201:ObjectActionGroup, objectActionGroup202:ObjectActionGroup, humanResource501:HumanResource, humanResourceSchedule601:HumanResourceSchedule;
 			protected var objectAction401:ObjectAction, objectAction402:ObjectAction, objectAction403:ObjectAction;
 			
 			protected function resetEntities():void {
-				mission101 = Mission(new Mission().setIdAs(101)); 
+				mission101 = Mission(new Mission().setIdAs(101));
+				mission102 = Mission(new Mission().setIdAs(102));
 				task301 = Task(new Task().setIdAs(301));
 				objectActionGroup201 = ObjectActionGroup(new ObjectActionGroup().setIdAs(201));
 				objectActionGroup202 = ObjectActionGroup(new ObjectActionGroup().setIdAs(202));
@@ -52,6 +53,18 @@
 				
 			}
 			
+			protected function testOneToManyUnidirectionalNavigable() {
+				resetEntities();
+				entityRegistry.mergeEntity(mission101);
+				entityRegistry.mergeEntity(mission102);
+				
+				resetEntities();
+				mission102.objectActionGroups.addItem(objectActionGroup201);
+				entityRegistry.mergeEntity(mission102);
+				
+				
+			}
+			
 			protected function button1_clickHandler(event:MouseEvent):void {
 				// stuff for serialization (no longer needed)
 //				flash.net.registerClassAlias("Mission", Mission);
@@ -61,12 +74,13 @@
 //				flash.net.registerClassAlias("humanResourceSchedule", HumanResourceSchedule);
 //				flash.net.registerClassAlias("objectAction", ObjectAction);
 				
+				testOneToManyUnidirectionalNavigable();
 	
-				resetEntities();
-				entityRegistry.mergeEntity(mission101);
-				
-				resetEntities();
-				entityRegistry.mergeEntity(task301);
+//				resetEntities();
+//				entityRegistry.mergeEntity(mission101);
+//				
+//				resetEntities();
+//				entityRegistry.mergeEntity(task301);
 				
 //				resetEntities();
 //				task301.objectActionGroups.removeItemAt(0);
@@ -76,14 +90,14 @@
 //				mission101.objectActionGroups.removeItemAt(0);
 //				entityRegistry.mergeEntity(mission101);
 //
-				resetEntities();
-				var propsMission101:Dictionary = new Dictionary();
-				propsMission101["objectActionGroups"] = new ArrayList();
-				propsMission101["objectActionGroups"].addItem(objectActionGroup201);
-				entityRegistry.setProperties("Mission:101", propsMission101);
-
-				propsMission101["objectActionGroups"] = new ArrayList();
-				entityRegistry.setProperties("Mission:101", propsMission101);
+//				resetEntities();
+//				var propsMission101:Dictionary = new Dictionary();
+//				propsMission101["objectActionGroups"] = new ArrayList();
+//				propsMission101["objectActionGroups"].addItem(objectActionGroup201);
+//				entityRegistry.setProperties("Mission:101", propsMission101);
+//
+//				propsMission101["objectActionGroups"] = new ArrayList();
+//				entityRegistry.setProperties("Mission:101", propsMission101);
 
 //				resetEntities();
 //				objectActionGroup201 = ObjectActionGroup(new ObjectActionGroup().setIdAs(201));
