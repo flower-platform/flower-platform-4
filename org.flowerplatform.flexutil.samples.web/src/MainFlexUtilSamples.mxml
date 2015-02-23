@@ -33,6 +33,10 @@
 				FlexUtilGlobals.getInstance().popupHandlerFactory = new PopupHandlerFactory();
 			}
 			
+			protected function callJsFunction(event:MouseEvent):void {
+				customFrame.callGetCurrentDate();				
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -55,7 +59,12 @@
 				<text:AutoGrowTextInputSample top="10" />
 			</s:NavigatorContent>
 			<s:NavigatorContent label="IFrame" width="100%" height="100%">
-				<iframe:FlowerIFrame top="10" source="http://www.w3schools.com" width="100%" height="100%"/>
+				<s:HGroup  width="100%" height="100%">
+					<iframe:FlowerIFrame top="10" source="http://www.w3schools.com" width="600" height="800"/>					
+					<cf:CustomFrame id="customFrame" xmlns:cf="org.flowerplatform.flexutil.samples.jsframe.*" top="10" source="jsSample.html" width="600" height="800"/>
+					<s:Button label="CallJsFunction" click="callJsFunction(event)"/>
+				</s:HGroup>
+				
 			</s:NavigatorContent>
 			<layout1:LayoutSample label="Layout/Workbench Framework"/>
 			<s:NavigatorContent label="Modal Spinner" width="100%" height="100%">

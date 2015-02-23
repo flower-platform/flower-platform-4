@@ -120,5 +120,3 @@ var EntityRegistryEntry = function() {
 	this.entityRegistries = [];
 	this.lastDiffUpdateId = -1;
 }
-
-var Constants = { UPDATED: "updated", ADDED: "added", REMOVED: "removed", EMPTY: "empty", REQUEST_REFRESH: "requestRefresh", INITIAL_INFO: "initialInfo" };

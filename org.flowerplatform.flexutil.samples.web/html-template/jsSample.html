@@ -1,0 +1,31 @@
+<html>
+
+<head>
+</head>
+
+<body>
+
+<script type="text/javascript">
+
+function callFlexFunction() {
+	// look into index.template.html  
+	// this is in an iframe, so we look for the swf in the parent doc
+	var myObj = window.parent.document.getElementById('MainFlexUtilSamples');
+	
+	if(myObj.callItFromJS) {
+	   myObj.callItFromJS("data from js");
+	}
+}
+
+function getCurrentDate() {
+    var  currentDate=new  Date();
+    return currentDate.getDate() + "/" + (currentDate.getMonth()+1) + "/" + currentDate.getFullYear();
+}
+</script>
+
+<h3>This is a sample Javascript application</h3>
+
+<input id="clickMe" type="button" value="Call Flex Function" onclick="callFlexFunction();" />
+
+</body>
+</html>

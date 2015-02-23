@@ -428,10 +428,10 @@ EntityRegistry.prototype.getEntityByUid = function(uid) {
 };
 
 EntityRegistry.prototype.printDebugInfo = function() {
-//	java.lang.System.out.println("*** registry ***");
-	for (var prop in this.registry) {
-//		java.lang.System.out.println(prop + " : " + this.registry[prop]);
-	}
+//	 java.lang.System.out.println("*** registry ***");
+//	for (var prop in this.registry) {
+//		 java.lang.System.out.println(prop + " : " + this.registry[prop]);
+//	}
 };			
 
 var PROPERTY_FLAG_ONE_TO_MANY = 0x1;

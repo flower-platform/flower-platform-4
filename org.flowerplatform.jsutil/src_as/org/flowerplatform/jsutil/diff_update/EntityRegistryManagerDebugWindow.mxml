@@ -9,16 +9,18 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.crispico.xops.util.EntityOperationsAdapter;
+			
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
 			import mx.collections.Sort;
 			import mx.collections.SortField;
 			
-			import spark.events.GridSelectionEvent;
-			
 			import org.apache.flex.collections.VectorList;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
+			
+			import spark.events.GridSelectionEvent;
 			
 			
 			
@@ -95,7 +97,7 @@
 							var s:String= "[";
 							var children:IList = IList(value);
 							for (var i:int = 0; i < children.length; i++) {
-								var child:AbstractEntity = AbstractEntity(children.getItemAt(i));
+								var child:Object = children.getItemAt(i);
 								s += entityOperationsAdapter.object_getEntityUid(child) + " / " + child.instanceId + " / " + String(child) + ", ";
 							}
 							if (s.length > 1) {
@@ -104,7 +106,7 @@
 							s += "]";
 							properties.addItem({ property: property, value: s });
 						} else if (propertyInfo.flags & EntityOperationsAdapter.PROPERTY_FLAG_MANY_TO_ONE) {
-							var parent = AbstractEntity(value);
+							var parent:Object = value;
 							var s:String = "";
 							if (parent != null) {
 								s = entityOperationsAdapter.object_getEntityUid(parent) + " / " + parent.instanceId + " / " + String(parent);
