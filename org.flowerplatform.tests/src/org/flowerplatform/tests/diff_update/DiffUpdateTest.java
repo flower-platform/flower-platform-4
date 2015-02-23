@@ -66,9 +66,9 @@ public class DiffUpdateTest extends EclipseIndependentTestBase {
 		entityRegistryManager = ctx.newObject(scope, "EntityRegistryManager", new Object[] { entityOperationsAdapter });
 		scope.put("_entityRegistryManager", scope, entityRegistryManager);
 		
-		ctx.evaluateString(scope, "_entityRegistryManager.addDiffUpdateProcessor(Constants.ADDED, new AddEntityDiffUpdateProcessor());", null, 1, null); 
-		ctx.evaluateString(scope, "_entityRegistryManager.addDiffUpdateProcessor(Constants.REMOVED, new RemoveEntityDiffUpdateProcessor());", null, 1, null); 
-		ctx.evaluateString(scope, "_entityRegistryManager.addDiffUpdateProcessor(Constants.UPDATED, new PropertiesDiffUpdateProcessor());", null, 1, null); 
+		ctx.evaluateString(scope, "_entityRegistryManager.addDiffUpdateProcessor('added', new AddEntityDiffUpdateProcessor());", null, 1, null); 
+		ctx.evaluateString(scope, "_entityRegistryManager.addDiffUpdateProcessor('removed', new RemoveEntityDiffUpdateProcessor());", null, 1, null); 
+		ctx.evaluateString(scope, "_entityRegistryManager.addDiffUpdateProcessor('updated', new PropertiesDiffUpdateProcessor());", null, 1, null); 
 
 		
 	}

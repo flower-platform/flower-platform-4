@@ -7,8 +7,6 @@ package org.flowerplatform.tests.diff_update.entity;
  */
 public class SubdetailEntity extends AbstractEntity {
 
-	private static final long serialVersionUID = 8304395885397108406L;
-
 	public SubdetailEntity(int id) {
 		super(id);
 	}

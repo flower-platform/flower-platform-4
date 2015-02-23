@@ -114,7 +114,7 @@ EntityRegistry.prototype.mergeEntityInternal = function(entity, indexesInParent,
  * @param oldEntity - may be null (for a newly added entity)
  */
 EntityRegistry.prototype.processProperty = function(property, value, propertyInfo, oldEntity, registeredEntity, visitedEntities, entitiesToRemove) {
-	
+
 	if (!propertyInfo) {
 		// not a special property  
 		if (oldEntity) {
@@ -148,12 +148,13 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 
 		// iterate new list
 		var childrenList = value;
+
 		var n = childrenList ? this.entityOperationsAdapter.list_getLength(childrenList) : 0;
 		for (var i = 0; i < n; i++) {
 			var child = this.entityOperationsAdapter.list_getItemAt(childrenList, i);
 			var childUid = this.entityOperationsAdapter.object_getEntityUid(child);
 			var registeredChild = this.mergeEntityInternal(child, null, visitedEntities, entitiesToRemove);
-			
+
 			this.entityOperationsAdapter.list_setItemAt(childrenList, registeredChild, i);
 			
 			// If child's parent changed, remove child from former parent's list and try to remove former parent.
@@ -304,11 +305,13 @@ EntityRegistry.prototype.removeInternal = function(entity) {
 	for (var uid in visitedEntities) {
 		delete this.registry[uid];
 	}
-	for (var link in linksToRemove) {
-		if (link.unlinkedEntity == null) { // many to one relationship 
+
+	for (var i in linksToRemove) {
+		var link = linksToRemove[i];
+		if (!link.unlinkedEntity) { // many to one relationship 
 			link.entity[link.property] = null;
 		} else { // one to many relationship (i.e. list of linked entities)
-			this.entityOperationsAdapter.removeItem(link.entity[link.property], link.unlinkedEntity);
+			this.entityOperationsAdapter.list_removeItem(link.entity[link.property], link.unlinkedEntity);
 		}
 	}
 
@@ -327,7 +330,7 @@ EntityRegistry.prototype.removeInternal = function(entity) {
  */
 EntityRegistry.prototype.findNonRemovableEntities = function(entity, nonRemovableEntities, visitedEntities, status, linksToRemove) {
 	var uid = this.entityOperationsAdapter.object_getEntityUid(entity);
-	
+
 	if (this.entityOperationsAdapter.object_isRoot(entity) || nonRemovableEntities[uid]) {
 		return false;
 	}
@@ -336,7 +339,6 @@ EntityRegistry.prototype.findNonRemovableEntities = function(entity, nonRemovabl
 		return true; 
 	}
 	visitedEntities[uid] = true;
-
 
 	var _this = this;
 	var canRemove = true;
@@ -359,16 +361,16 @@ EntityRegistry.prototype.findNonRemovableEntities = function(entity, nonRemovabl
 			var n = _this.entityOperationsAdapter.list_getLength(childrenList);
 			for (var i = 0; i < n; i++) {
 				var child = _this.entityOperationsAdapter.list_getItemAt(childrenList, i);
-				var oppositePropertyInfo = _this.entityOperationsAdapter.object_getPropertyInfo(child, propertyInfo.oppositeProperty);
 				var canRemoveOpposite = _this.findNonRemovableEntities(child, nonRemovableEntities, visitedEntities, status, linksToRemove);
+				var oppositePropertyInfo = _this.entityOperationsAdapter.object_getPropertyInfo(child, propertyInfo.oppositeProperty);
 				if (!canRemoveOpposite) {
 					if (oppositePropertyInfo.flags & PROPERTY_FLAG_NAVIGABLE) {
 						canRemove = false;
 						nonRemovableEntities[uid] = true;
 						status.nonRemovableFound = true;
 						return;
-					}
-					linksToRemove.push({ entity: child, property: oppositePropertyInfo.property });
+					} 
+					linksToRemove.push({ entity: child, property: propertyInfo.oppositeProperty });
 				}
 			}
 		} else if (propertyInfo.flags & PROPERTY_FLAG_MANY_TO_ONE) {
@@ -385,7 +387,7 @@ EntityRegistry.prototype.findNonRemovableEntities = function(entity, nonRemovabl
 					status.nonRemovableFound = true;
 					return;
 				}
-				linksToRemove.push({ entity: parent, property: oppositePropertyInfo.property, unlinkedEntity: entity });
+				linksToRemove.push({ entity: parent, property: propertyInfo.oppositeProperty, unlinkedEntity: entity });
 			}
 		}
 	});

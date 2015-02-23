@@ -37,3 +37,4 @@ var InitialInfoDiffUpdateProcessor = function() { };
 InitialInfoDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegistry, diffUpdate) {
 	
 };
+

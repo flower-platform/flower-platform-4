@@ -22,6 +22,14 @@ import org.flowerplatform.tests.diff_update.entity.ObjectAction;
 import org.flowerplatform.tests.diff_update.entity.ObjectActionGroup;
 import org.flowerplatform.tests.diff_update.entity.SubdetailEntity;
 import org.flowerplatform.tests.diff_update.entity.Task;
+import org.flowerplatform.tests.diff_update.entity.unnamed.E1;
+import org.flowerplatform.tests.diff_update.entity.unnamed.E2;
+import org.flowerplatform.tests.diff_update.entity.unnamed.E3;
+import org.flowerplatform.tests.diff_update.entity.unnamed.E4;
+import org.flowerplatform.tests.diff_update.entity.unnamed.E5;
+import org.flowerplatform.tests.diff_update.entity.unnamed.E6;
+import org.flowerplatform.tests.diff_update.entity.unnamed.E7;
+import org.flowerplatform.util.diff_update.DiffUpdate;
 import org.mozilla.javascript.NativeObject;
 
 /**
@@ -49,6 +57,8 @@ public class EntityOperationsAdapter {
 		addOneToManyRelation(MasterEntity.class, "details", true, DetailEntity.class, "masterEntity", false);
 		addOneToManyRelation(DetailEntity.class, "subdetails", true, SubdetailEntity.class, "detailEntity", false);
 		
+		/****************************************************************************************************************/
+		
 		addOneToManyRelation(Mission.class, "objectActionGroups", true, ObjectActionGroup.class, "mission", false);
 		addOneToManyRelation(Mission.class, "resources", true, HumanResource.class, "mission", false);
 		addOneToManyRelation(Task.class, "objectActionGroups", true, ObjectActionGroup.class, "task", false);
@@ -62,9 +72,23 @@ public class EntityOperationsAdapter {
 		ignoreProperty(ObjectAction.class, "instanceId");
 		ignoreProperty(HumanResourceSchedule.class, "instanceId");
 		ignoreProperty(HumanResource.class, "instanceId");
+
+		/****************************************************************************************************************/
 		
+		addOneToManyRelation(E1.class, "e2List", true, E2.class, "e1Ref", false);
+		addOneToManyRelation(E7.class, "e1List", false, E1.class, "e7Ref", true);
+		addOneToManyRelation(E2.class, "e3List", true, E3.class, "e2Ref", false);
+		addOneToManyRelation(E5.class, "e2List", true, E2.class, "e5Ref", false);
+		addOneToManyRelation(E4.class, "e3List", true, E3.class, "e4Ref", true);
+		addOneToManyRelation(E4.class, "e5List", true, E5.class, "e4Ref", false);
+		addOneToManyRelation(E5.class, "e6List", false, E6.class, "e5Ref", true);
+		addOneToManyRelation(E6.class, "e7List", false, E7.class, "e6Ref", true);
 	}
 
+	public void postProcessUpdate(NativeObject entityRegistry, DiffUpdate update) {
+		
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Operations on list
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
