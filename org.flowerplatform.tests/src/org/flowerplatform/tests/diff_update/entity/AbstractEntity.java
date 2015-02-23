@@ -1,15 +1,12 @@
 package org.flowerplatform.tests.diff_update.entity;
 
-import java.io.Serializable;
 
 /**
  * 
  * @author Claudiu Matei
  *
  */
-public class AbstractEntity implements Serializable {
-
-	private static final long serialVersionUID = -4157157986919984554L;
+public class AbstractEntity {
 
 	private int id;
 

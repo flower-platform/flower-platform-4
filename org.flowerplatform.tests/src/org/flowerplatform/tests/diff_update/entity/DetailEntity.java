@@ -10,8 +10,6 @@ import java.util.List;
  */
 public class DetailEntity extends AbstractEntity {
 	
-	private static final long serialVersionUID = -5687750535569814667L;
-
 	private List<Object> subdetails = new ArrayList<>();
 
 	private int value;
