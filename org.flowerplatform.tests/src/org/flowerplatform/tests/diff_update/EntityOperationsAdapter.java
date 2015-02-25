@@ -29,6 +29,7 @@ import org.flowerplatform.tests.diff_update.entity.unnamed.E4;
 import org.flowerplatform.tests.diff_update.entity.unnamed.E5;
 import org.flowerplatform.tests.diff_update.entity.unnamed.E6;
 import org.flowerplatform.tests.diff_update.entity.unnamed.E7;
+import org.flowerplatform.tests.diff_update.entity.unnamed.E8;
 import org.flowerplatform.util.diff_update.DiffUpdate;
 import org.mozilla.javascript.NativeObject;
 
@@ -83,8 +84,52 @@ public class EntityOperationsAdapter {
 		addOneToManyRelation(E4.class, "e5List", true, E5.class, "e4Ref", false);
 		addOneToManyRelation(E5.class, "e6List", false, E6.class, "e5Ref", true);
 		addOneToManyRelation(E6.class, "e7List", false, E7.class, "e6Ref", true);
+		
+		addOneToManyRelation(E8.class, "e3List", true, E3.class, "e8Ref", true);
+		addOneToManyRelation(E8.class, "e5List", false, E5.class, "e8Ref", true);
+		
 	}
 
+	private void addOneToManyRelation(Class<?> parentType, String parentChildrenProperty, boolean navigableFromParent, Class<?> childType, String childParentProperty, boolean navigableFromChild) {
+		NativeObject relationInfo;
+		
+		Map<String, NativeObject> parentProperties = propertyFlagsMap.get(parentType);
+		if (parentProperties == null) {
+			parentProperties = new HashMap<String, NativeObject>();
+			propertyFlagsMap.put(parentType, parentProperties);
+		}
+		relationInfo = new NativeObject();
+		relationInfo.defineProperty("oppositeType", childType, NativeObject.READONLY);
+		relationInfo.defineProperty("oppositeProperty", childParentProperty, NativeObject.READONLY);
+		relationInfo.defineProperty("flags", new Integer(PROPERTY_FLAG_ONE_TO_MANY | (navigableFromParent ? PROPERTY_FLAG_NAVIGABLE : 0)), NativeObject.READONLY);
+		parentProperties.put(parentChildrenProperty, relationInfo);
+
+		Map<String, NativeObject> childProperties = propertyFlagsMap.get(childType);
+		if (childProperties == null) {
+			childProperties = new HashMap<String, NativeObject>();
+			propertyFlagsMap.put(childType, childProperties);
+		}
+		relationInfo = new NativeObject();
+		relationInfo.defineProperty("oppositeType", parentType, NativeObject.READONLY);
+		relationInfo.defineProperty("oppositeProperty", parentChildrenProperty, NativeObject.READONLY);
+		relationInfo.defineProperty("flags", new Integer(PROPERTY_FLAG_MANY_TO_ONE | (navigableFromChild ? PROPERTY_FLAG_NAVIGABLE : 0)), NativeObject.READONLY);
+		childProperties.put(childParentProperty, relationInfo);
+		
+	}
+	
+	private void ignoreProperty(Class<?> type, String property) {
+		Map<String, NativeObject> properties = propertyFlagsMap.get(type);
+		if (properties == null) {
+			properties = new HashMap<String, NativeObject>();
+			propertyFlagsMap.put(type, properties);
+		}
+
+		NativeObject relationInfo = new NativeObject();
+		relationInfo.defineProperty("property", property, NativeObject.READONLY);
+		relationInfo.defineProperty("flags", PROPERTY_FLAG_IGNORE, NativeObject.READONLY);
+		properties.put("property", relationInfo);
+	}
+	
 	public void postProcessUpdate(NativeObject entityRegistry, DiffUpdate update) {
 		
 	}
@@ -164,46 +209,6 @@ public class EntityOperationsAdapter {
 	public String object_getEntityUid(Object entity) {
 		String uid = entity.getClass().getSimpleName() + ":" + ((AbstractEntity) entity).getId();
 		return uid;
-	}
-	
-	private void addOneToManyRelation(Class<?> parentType, String parentChildrenProperty, boolean navigableFromParent, Class<?> childType, String childParentProperty, boolean navigableFromChild) {
-		NativeObject relationInfo;
-		
-		Map<String, NativeObject> parentProperties = propertyFlagsMap.get(parentType);
-		if (parentProperties == null) {
-			parentProperties = new HashMap<String, NativeObject>();
-			propertyFlagsMap.put(parentType, parentProperties);
-		}
-		relationInfo = new NativeObject();
-		relationInfo.defineProperty("oppositeType", childType, NativeObject.READONLY);
-		relationInfo.defineProperty("oppositeProperty", childParentProperty, NativeObject.READONLY);
-		relationInfo.defineProperty("flags", new Integer(PROPERTY_FLAG_ONE_TO_MANY | (navigableFromParent ? PROPERTY_FLAG_NAVIGABLE : 0)), NativeObject.READONLY);
-		parentProperties.put(parentChildrenProperty, relationInfo);
-
-		Map<String, NativeObject> childProperties = propertyFlagsMap.get(childType);
-		if (childProperties == null) {
-			childProperties = new HashMap<String, NativeObject>();
-			propertyFlagsMap.put(childType, childProperties);
-		}
-		relationInfo = new NativeObject();
-		relationInfo.defineProperty("oppositeType", parentType, NativeObject.READONLY);
-		relationInfo.defineProperty("oppositeProperty", parentChildrenProperty, NativeObject.READONLY);
-		relationInfo.defineProperty("flags", new Integer(PROPERTY_FLAG_MANY_TO_ONE | (navigableFromChild ? PROPERTY_FLAG_NAVIGABLE : 0)), NativeObject.READONLY);
-		childProperties.put(childParentProperty, relationInfo);
-		
-	}
-	
-	private void ignoreProperty(Class<?> type, String property) {
-		Map<String, NativeObject> properties = propertyFlagsMap.get(type);
-		if (properties == null) {
-			properties = new HashMap<String, NativeObject>();
-			propertyFlagsMap.put(type, properties);
-		}
-
-		NativeObject relationInfo = new NativeObject();
-		relationInfo.defineProperty("property", property, NativeObject.READONLY);
-		relationInfo.defineProperty("flags", PROPERTY_FLAG_IGNORE, NativeObject.READONLY);
-		properties.put("property", relationInfo);
 	}
 
 	public NativeObject object_getPropertyInfo(Object entity, String property) {

@@ -22,6 +22,8 @@ public class E5 extends AbstractEntity {
 		super(id);
 	}
 
+	public E8 e8Ref;
+
 	public List<E2> getE2List() {
 		return e2List;
 	}
@@ -44,6 +46,14 @@ public class E5 extends AbstractEntity {
 
 	public void setE6List(List<E6> e6List) {
 		this.e6List = e6List;
+	}
+
+	public E8 getE8Ref() {
+		return e8Ref;
+	}
+
+	public void setE8Ref(E8 e8Ref) {
+		this.e8Ref = e8Ref;
 	}
 	
 }

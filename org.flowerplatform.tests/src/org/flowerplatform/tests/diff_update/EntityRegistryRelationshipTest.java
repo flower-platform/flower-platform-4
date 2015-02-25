@@ -39,6 +39,7 @@ import org.flowerplatform.tests.diff_update.entity.unnamed.E4;
 import org.flowerplatform.tests.diff_update.entity.unnamed.E5;
 import org.flowerplatform.tests.diff_update.entity.unnamed.E6;
 import org.flowerplatform.tests.diff_update.entity.unnamed.E7;
+import org.flowerplatform.tests.diff_update.entity.unnamed.E8;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -242,7 +243,7 @@ public class EntityRegistryRelationshipTest extends EclipseIndependentTestBase {
 	}
 	
 	@Test
-	public void testComplexRemove() {
+	public void testComplexRemove1() {
 		E1 e1 = new E1(1);
 		E2 e2 = new E2(2);
 		E3 e3 = new E3(3);
@@ -280,5 +281,45 @@ public class EntityRegistryRelationshipTest extends EclipseIndependentTestBase {
 		assertFalse("E7 is not in registry", isInRegistry(e7));
 		
 	}
-	
+
+	@Test
+	public void testComplexRemove2() {
+		E1 e1 = new E1(1);
+		E2 e2 = new E2(2);
+		E3 e3 = new E3(3);
+		E8 e8 = new E8(8);
+		E5 e5 = new E5(5);
+		E6 e6 = new E6(6);
+		E7 e7 = new E7(7);
+		
+		e1.e2List.add(e2);
+		e1.e7Ref = e7;
+		e2.e3List.add(e3);
+		e3.e8Ref = e8;
+		e8.e3List.add(e3);
+		e5.e8Ref = e8;
+		e5.e2List.add(e2);
+		e6.e5Ref = e5;
+		e7.e6Ref = e6;
+		
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", e1);
+//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
+		
+		// determine removal of E7 
+		e1 = new E1(1);
+		e1.e2List.add(e2); 
+
+		JsClientJavaUtils.invokeJsFunction(entityRegistry, "mergeEntity", e1);
+//		JsClientJavaUtils.invokeJsFunction(entityRegistry, "printDebugInfo");
+
+		assertTrue("E1 is in registry", isInRegistry(e1));
+		assertTrue("E2 is in registry", isInRegistry(e2));
+		assertTrue("E3 is in registry", isInRegistry(e3));
+		assertTrue("E8 is in registry", isInRegistry(e8));
+		assertFalse("E5 is not in registry", isInRegistry(e5));
+		assertFalse("E6 is not in registry", isInRegistry(e6));
+		assertFalse("E7 is not in registry", isInRegistry(e7));
+		
+	}
+
 }

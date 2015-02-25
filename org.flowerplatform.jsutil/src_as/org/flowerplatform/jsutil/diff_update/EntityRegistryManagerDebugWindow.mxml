@@ -9,8 +9,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.crispico.xops.util.EntityOperationsAdapter;
-			
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
@@ -36,10 +34,11 @@
 			public var entityPropertiesAsList:IList;
 
 			[Bindable]
-			public var entityOperationsAdapter:EntityOperationsAdapter = new EntityOperationsAdapter();
+			public var entityOperationsAdapter:*;
 			
 			public function show(entityRegistryManager:*):void {
 				this.entityRegistryManager = entityRegistryManager;
+				this.entityOperationsAdapter = entityRegistryManager.entityOperationsAdapter;
 				this.closeOnOk = true;
 				FlexUtilGlobals.createPopupHandler(this).setWidth(600).setHeight(600).show(false);
 			}

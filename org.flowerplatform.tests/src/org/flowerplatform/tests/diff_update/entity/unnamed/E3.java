@@ -12,6 +12,8 @@ public class E3 extends AbstractEntity {
 	public E2 e2Ref;
 
 	public E4 e4Ref;
+
+	public E8 e8Ref;
 	
 	public E3(int id) {
 		super(id);
@@ -32,5 +34,14 @@ public class E3 extends AbstractEntity {
 	public void setE4Ref(E4 e4Ref) {
 		this.e4Ref = e4Ref;
 	}
+
+	public E8 getE8Ref() {
+		return e8Ref;
+	}
+
+	public void setE8Ref(E8 e8Ref) {
+		this.e8Ref = e8Ref;
+	}
+	
 	
 }
