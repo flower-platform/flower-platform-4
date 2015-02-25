@@ -30,7 +30,9 @@ var EntityRegistry = function(entityRegistryManager) {
 */
 
 EntityRegistry.prototype.mergeEntity = function(entity, shallowProcessing) {
+	//trace("********* mergeEntity " + entity + " " + shallowProcessing);
 	var entitiesToRemove = [];
+
 	this.mergeEntityInternal(entity, null, { }, entitiesToRemove, shallowProcessing);
 
 	for (var i in entitiesToRemove) {
@@ -61,6 +63,8 @@ EntityRegistry.prototype.mergeEntityInternal = function(entity, indexesInParent,
 		return this.registry[uid]; 
 	}
 	
+	//trace("mergeInternal " + uid + " " + shallowProcessing);
+	
 	var oldEntity = this.registry[uid];
 	var registeredEntity = oldEntity;
 	var oldPropertiesSet = null;
@@ -89,7 +93,7 @@ EntityRegistry.prototype.mergeEntityInternal = function(entity, indexesInParent,
 			delete oldPropertiesSet[property];
 		}
 		var propertyInfo = _this.entityOperationsAdapter.object_getPropertyInfo(entity, property);
-		_this.processProperty(property, value, propertyInfo, oldEntity, registeredEntity, visitedEntities, entitiesToRemove);
+		_this.processProperty(property, value, propertyInfo, oldEntity, registeredEntity, visitedEntities, entitiesToRemove, shallowProcessing);
 	});
 	
 	
@@ -165,7 +169,7 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 			
 			// If child's parent changed, remove child from former parent's list and try to remove former parent.
 			// We compare UIDs because there might be a different instance of the entity, but the same entity uid
-			if (!shallowProcessing && !(propertyInfo.flags & PROPERTY_FLAG_DONT_REMOVE_FROM_OPPOSITE) && registeredChild[propertyInfo.oppositeProperty] && this.entityOperationsAdapter.object_getEntityUid(registeredChild[propertyInfo.oppositeProperty]) != this.entityOperationsAdapter.object_getEntityUid(registeredEntity)) {
+			if (!(propertyInfo.flags & PROPERTY_FLAG_DONT_REMOVE_FROM_OPPOSITE) && registeredChild[propertyInfo.oppositeProperty] && this.entityOperationsAdapter.object_getEntityUid(registeredChild[propertyInfo.oppositeProperty]) != this.entityOperationsAdapter.object_getEntityUid(registeredEntity)) {
 				this.entityOperationsAdapter.list_removeItem(registeredChild[propertyInfo.oppositeProperty][property], registeredChild);
 				entitiesToRemove.push(registeredChild[propertyInfo.oppositeProperty]);
 			}
@@ -207,7 +211,7 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 		}
 
 		if (!value) { // new entity has no referenced entity
-			if (!shallowProcessing && oldEntity && oldEntity[property]) { // but old entity references an entity
+			if (oldEntity && oldEntity[property]) { // but old entity references an entity
 				this.entityOperationsAdapter.list_removeItem(oldEntity[property][propertyInfo.oppositeProperty], oldEntity); // remove old entity from formerly referenced entity's list
 				entitiesToRemove.push(oldEntity[property]); // try to remove the formerly referenced entity
 			}
@@ -220,24 +224,22 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 
 		var parentPropertyInfo = this.entityOperationsAdapter.object_getPropertyInfo(oppositeEntity, propertyInfo.oppositeProperty);
 		
-		if (!(parentPropertyInfo.flags & PROPERTY_FLAG_NAVIGABLE)) {
+		if (!(parentPropertyInfo.flags & PROPERTY_FLAG_NAVIGABLE) || shallowProcessing) {
 			// this entity is the navigable end of a unidirectional relationship
 
 			var parentPropertyInfo = this.entityOperationsAdapter.object_getPropertyInfo(oppositeEntity, propertyInfo.oppositeProperty);
 
-			if (!shallowProcessing) {
-				// create list in parent, if it doesn't exist
-				if (!oppositeEntity[propertyInfo.oppositeProperty]) {
-					this.entityOperationsAdapter.list_create(oppositeEntity, propertyInfo.oppositeProperty);
-				}
+			// create list in parent, if it doesn't exist
+			if (!oppositeEntity[propertyInfo.oppositeProperty]) {
+				this.entityOperationsAdapter.list_create(oppositeEntity, propertyInfo.oppositeProperty);
+			}
 
-				if (!oldEntity || (oldEntity[property] && oppositeEntity != oldEntity[property])) { // if there is no old entity or the reference has changed
-					// add registered entity to new opposite entity's list
-					this.entityOperationsAdapter.list_addItem(oppositeEntity[propertyInfo.oppositeProperty], registeredEntity, -1);
-					if (oldEntity) { // if old reference has changed
-						// remove entity from former parent's children list
-						this.entityOperationsAdapter.list_removeItem(oldEntity[property][propertyInfo.oppositeProperty], oldEntity);
-					}
+			if (!oldEntity || (oldEntity[property] && oppositeEntity != oldEntity[property])) { // if there is no old entity or the reference has changed
+				// add registered entity to new opposite entity's list
+				this.entityOperationsAdapter.list_addItem(oppositeEntity[propertyInfo.oppositeProperty], registeredEntity, -1);
+				if (oldEntity) { // if old reference has changed
+					// remove entity from former parent's children list
+					this.entityOperationsAdapter.list_removeItem(oldEntity[property][propertyInfo.oppositeProperty], oldEntity);
 				}
 			}
 			registeredEntity[property] = oppositeEntity;
@@ -402,7 +404,7 @@ EntityRegistry.prototype.findNonRemovableEntities = function(entity, nonRemovabl
 	return canRemove;
 };
 
-EntityRegistry.prototype.setProperties = function(uid, properties) {
+EntityRegistry.prototype.setProperties = function(uid, properties, shallowProcessing) {
 	var _this = this;
 	var entity = this.getEntityByUid(uid);
 
@@ -419,7 +421,7 @@ EntityRegistry.prototype.setProperties = function(uid, properties) {
 		
 		var propertyInfo = _this.entityOperationsAdapter.object_getPropertyInfo(entity, property);
 		
-		_this.processProperty(property, value, propertyInfo, entity, entity, visitedEntities, entitiesToRemove);
+		_this.processProperty(property, value, propertyInfo, entity, entity, visitedEntities, entitiesToRemove, shallowProcessing);
 		
 	});
 

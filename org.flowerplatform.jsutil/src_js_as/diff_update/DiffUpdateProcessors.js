@@ -17,7 +17,7 @@
 var AddEntityDiffUpdateProcessor = function() { };
 AddEntityDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegistry, diffUpdate) {
 	var entity = diffUpdate.entity;
-	entityRegistry.mergeEntity(entity);
+	entityRegistry.mergeEntity(entity, true);
 	entityRegistry.entityOperationsAdapter.postProcessUpdate(entityRegistry, diffUpdate);
 };
 
@@ -29,7 +29,7 @@ RemoveEntityDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegis
 
 var PropertiesDiffUpdateProcessor = function() { };
 PropertiesDiffUpdateProcessor.prototype.applyDiffUpdate = function(entityRegistry, diffUpdate) {
-	entityRegistry.setProperties(diffUpdate.entityUid, diffUpdate.properties);
+	entityRegistry.setProperties(diffUpdate.entityUid, diffUpdate.properties, true);
 	entityRegistry.entityOperationsAdapter.postProcessUpdate(entityRegistry, diffUpdate);
 };
 
