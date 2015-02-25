@@ -9,6 +9,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.crispico.xops.util.EntityOperationsAdapter;
+			
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.collections.IList;
