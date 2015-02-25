@@ -29,9 +29,9 @@ var EntityRegistry = function(entityRegistryManager) {
 
 */
 
-EntityRegistry.prototype.mergeEntity = function(entity) {
+EntityRegistry.prototype.mergeEntity = function(entity, shallowProcessing) {
 	var entitiesToRemove = [];
-	this.mergeEntityInternal(entity, null, { }, entitiesToRemove);
+	this.mergeEntityInternal(entity, null, { }, entitiesToRemove, shallowProcessing);
 
 	for (var i in entitiesToRemove) {
 		this.removeInternal(entitiesToRemove[i]);
@@ -51,10 +51,11 @@ EntityRegistry.prototype.mergeEntity = function(entity) {
  * @param visitedEntities - Internal map, used to know if an entity has been processed (i.e. to avoid
  * 		infinite recursion for bi-directionnal relations
  * @param entitiesToRemove - list of entities that are candidates for removal after merge
+ * @param shallowProcessing - If this is true, merge recursively only when the referenced entities are not in the registry
  * 
  * @returns The entity from the registry (same instance, if was not in registry)
  */
-EntityRegistry.prototype.mergeEntityInternal = function(entity, indexesInParent, visitedEntities, entitiesToRemove) {
+EntityRegistry.prototype.mergeEntityInternal = function(entity, indexesInParent, visitedEntities, entitiesToRemove, shallowProcessing) {
 	var uid = this.entityOperationsAdapter.object_getEntityUid(entity);
 	if (visitedEntities[uid]) {
 		return this.registry[uid]; 
@@ -113,7 +114,7 @@ EntityRegistry.prototype.mergeEntityInternal = function(entity, indexesInParent,
  * 
  * @param oldEntity - may be null (for a newly added entity)
  */
-EntityRegistry.prototype.processProperty = function(property, value, propertyInfo, oldEntity, registeredEntity, visitedEntities, entitiesToRemove) {
+EntityRegistry.prototype.processProperty = function(property, value, propertyInfo, oldEntity, registeredEntity, visitedEntities, entitiesToRemove, shallowProcessing) {
 
 	if (!propertyInfo) {
 		// not a special property  
@@ -154,7 +155,8 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 		for (var i = 0; i < n; i++) {
 			var child = this.entityOperationsAdapter.list_getItemAt(childrenList, i);
 			var childUid = this.entityOperationsAdapter.object_getEntityUid(child);
-			var registeredChild = this.mergeEntityInternal(child, null, visitedEntities, entitiesToRemove);
+			var regInstance = this.registry[childUid];
+			var registeredChild = shallowProcessing && regInstance ? regInstance : this.mergeEntityInternal(child, null, visitedEntities, entitiesToRemove, shallowProcessing);
 
 			if (child != registeredChild) {
 				childrenListModified = true;
@@ -163,7 +165,7 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 			
 			// If child's parent changed, remove child from former parent's list and try to remove former parent.
 			// We compare UIDs because there might be a different instance of the entity, but the same entity uid
-			if (!(propertyInfo.flags & PROPERTY_FLAG_DONT_REMOVE_FROM_OPPOSITE) && registeredChild[propertyInfo.oppositeProperty] && this.entityOperationsAdapter.object_getEntityUid(registeredChild[propertyInfo.oppositeProperty]) != this.entityOperationsAdapter.object_getEntityUid(registeredEntity)) {
+			if (!shallowProcessing && !(propertyInfo.flags & PROPERTY_FLAG_DONT_REMOVE_FROM_OPPOSITE) && registeredChild[propertyInfo.oppositeProperty] && this.entityOperationsAdapter.object_getEntityUid(registeredChild[propertyInfo.oppositeProperty]) != this.entityOperationsAdapter.object_getEntityUid(registeredEntity)) {
 				this.entityOperationsAdapter.list_removeItem(registeredChild[propertyInfo.oppositeProperty][property], registeredChild);
 				entitiesToRemove.push(registeredChild[propertyInfo.oppositeProperty]);
 			}
@@ -203,9 +205,9 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 		if (!(propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE)) {
 			return;
 		}
-		
+
 		if (!value) { // new entity has no referenced entity
-			if (oldEntity && oldEntity[property]) { // but old entity references an entity
+			if (!shallowProcessing && oldEntity && oldEntity[property]) { // but old entity references an entity
 				this.entityOperationsAdapter.list_removeItem(oldEntity[property][propertyInfo.oppositeProperty], oldEntity); // remove old entity from formerly referenced entity's list
 				entitiesToRemove.push(oldEntity[property]); // try to remove the formerly referenced entity
 			}
@@ -213,7 +215,9 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 			return;
 		}
 
-		var oppositeEntity = this.mergeEntityInternal(value, null, visitedEntities, entitiesToRemove);
+		var regInstance = this.registry[this.entityOperationsAdapter.object_getEntityUid(value)];
+		var oppositeEntity = shallowProcessing && regInstance ? regInstance : this.mergeEntityInternal(value, null, visitedEntities, entitiesToRemove, shallowProcessing);
+
 		var parentPropertyInfo = this.entityOperationsAdapter.object_getPropertyInfo(oppositeEntity, propertyInfo.oppositeProperty);
 		
 		if (!(parentPropertyInfo.flags & PROPERTY_FLAG_NAVIGABLE)) {
@@ -221,20 +225,21 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 
 			var parentPropertyInfo = this.entityOperationsAdapter.object_getPropertyInfo(oppositeEntity, propertyInfo.oppositeProperty);
 
-			// create list in parent, if it doesn't exist
-			if (!oppositeEntity[propertyInfo.oppositeProperty]) {
-				this.entityOperationsAdapter.list_create(oppositeEntity, propertyInfo.oppositeProperty);
-			}
+			if (!shallowProcessing) {
+				// create list in parent, if it doesn't exist
+				if (!oppositeEntity[propertyInfo.oppositeProperty]) {
+					this.entityOperationsAdapter.list_create(oppositeEntity, propertyInfo.oppositeProperty);
+				}
 
-			if (!oldEntity || (oldEntity[property] && oppositeEntity != oldEntity[property])) { // if there is no old entity or the reference has changed
-				// add registered entity to new opposite entity's list
-				this.entityOperationsAdapter.list_addItem(oppositeEntity[propertyInfo.oppositeProperty], registeredEntity, -1);
-				if (oldEntity) { // if old reference has changed
-					// remove entity from former parent's children list
-					this.entityOperationsAdapter.list_removeItem(oldEntity[property][propertyInfo.oppositeProperty], oldEntity);
+				if (!oldEntity || (oldEntity[property] && oppositeEntity != oldEntity[property])) { // if there is no old entity or the reference has changed
+					// add registered entity to new opposite entity's list
+					this.entityOperationsAdapter.list_addItem(oppositeEntity[propertyInfo.oppositeProperty], registeredEntity, -1);
+					if (oldEntity) { // if old reference has changed
+						// remove entity from former parent's children list
+						this.entityOperationsAdapter.list_removeItem(oldEntity[property][propertyInfo.oppositeProperty], oldEntity);
+					}
 				}
 			}
-
 			registeredEntity[property] = oppositeEntity;
 		}
 		
