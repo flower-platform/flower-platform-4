@@ -53,7 +53,7 @@ EntityRegistry.prototype.mergeEntity = function(entity, shallowProcessing) {
  * @param visitedEntities - Internal map, used to know if an entity has been processed (i.e. to avoid
  * 		infinite recursion for bi-directionnal relations
  * @param entitiesToRemove - list of entities that are candidates for removal after merge
- * @param shallowProcessing - Only merge recursively 
+ * @param shallowProcessing - If this is true, merge recursively only when the referenced entities are not in the registry
  * 
  * @returns The entity from the registry (same instance, if was not in registry)
  */
