@@ -148,18 +148,22 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 
 		// iterate new list
 		var childrenList = value;
-
+		var childrenListModified = false;
+		
 		var n = childrenList ? this.entityOperationsAdapter.list_getLength(childrenList) : 0;
 		for (var i = 0; i < n; i++) {
 			var child = this.entityOperationsAdapter.list_getItemAt(childrenList, i);
 			var childUid = this.entityOperationsAdapter.object_getEntityUid(child);
 			var registeredChild = this.mergeEntityInternal(child, null, visitedEntities, entitiesToRemove);
 
-			this.entityOperationsAdapter.list_setItemAt(childrenList, registeredChild, i);
+			if (child != registeredChild) {
+				childrenListModified = true;
+				this.entityOperationsAdapter.list_setItemAt(childrenList, registeredChild, i);
+			}
 			
 			// If child's parent changed, remove child from former parent's list and try to remove former parent.
 			// We compare UIDs because there might be a different instance of the entity, but the same entity uid
-			if (registeredChild[propertyInfo.oppositeProperty] && this.entityOperationsAdapter.object_getEntityUid(registeredChild[propertyInfo.oppositeProperty]) != this.entityOperationsAdapter.object_getEntityUid(registeredEntity)) {
+			if (!(propertyInfo.flags & PROPERTY_FLAG_DONT_REMOVE_FROM_OPPOSITE) && registeredChild[propertyInfo.oppositeProperty] && this.entityOperationsAdapter.object_getEntityUid(registeredChild[propertyInfo.oppositeProperty]) != this.entityOperationsAdapter.object_getEntityUid(registeredEntity)) {
 				this.entityOperationsAdapter.list_removeItem(registeredChild[propertyInfo.oppositeProperty][property], registeredChild);
 				entitiesToRemove.push(registeredChild[propertyInfo.oppositeProperty]);
 			}
@@ -171,11 +175,10 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 			}
 		}
 		
-		var modified = false;
 		if (oldChildrenSet) {
 			for (var uid in oldChildrenSet) {
-				if (!modified) {
-					modified = true;
+				if (!childrenListModified) {
+					childrenListModified = true;
 				}
 				var oldChild = this.registry[uid];
 				if (this.entityOperationsAdapter.object_getEntityUid(oldChild[propertyInfo.oppositeProperty]) == this.entityOperationsAdapter.object_getEntityUid(registeredEntity)) {
@@ -190,7 +193,7 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 			}
 		}
 		var oldChildrenListSize = oldEntity && oldEntity[property] ? this.entityOperationsAdapter.list_getLength(oldEntity[property]) : 0; 
-		if (modified || oldChildrenListSize != this.entityOperationsAdapter.list_getLength(value)) {
+		if (childrenListModified || oldChildrenListSize != this.entityOperationsAdapter.list_getLength(value)) {
 			registeredEntity[property] = value;
 		}
 	} else if (propertyInfo.flags & PROPERTY_FLAG_MANY_TO_ONE) {
@@ -445,3 +448,5 @@ var PROPERTY_FLAG_MANY_TO_MANY = 0x4;
 var PROPERTY_FLAG_IGNORE = 0x8;
 
 var PROPERTY_FLAG_NAVIGABLE = 0x10;
+
+var PROPERTY_FLAG_DONT_REMOVE_FROM_OPPOSITE = 0x20;
