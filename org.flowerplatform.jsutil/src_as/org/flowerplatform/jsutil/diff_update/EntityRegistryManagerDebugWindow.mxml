@@ -91,9 +91,10 @@
 				var entity:Object = gridRegistry.selectedItem.object;
 				entityOperationsAdapter.object_iterateProperties(entity, function(property:*, value:*):void {
 					var propertyInfo:* = entityOperationsAdapter.object_getPropertyInfo(entity, property);
+					var s:String = "";
 					if (propertyInfo != null) {
-						if (propertyInfo.flags & EntityOperationsAdapter.PROPERTY_FLAG_ONE_TO_MANY) {
-							var s:String= "[";
+						if (propertyInfo.flags & entityOperationsAdapter.PROPERTY_FLAG_ONE_TO_MANY) {
+							s = "[";
 							var children:IList = IList(value);
 							for (var i:int = 0; i < children.length; i++) {
 								var child:Object = children.getItemAt(i);
@@ -104,9 +105,8 @@
 							}
 							s += "]";
 							properties.addItem({ property: property, value: s });
-						} else if (propertyInfo.flags & EntityOperationsAdapter.PROPERTY_FLAG_MANY_TO_ONE) {
+						} else if (propertyInfo.flags & entityOperationsAdapter.PROPERTY_FLAG_MANY_TO_ONE) {
 							var parent:Object = value;
-							var s:String = "";
 							if (parent != null) {
 								s = entityOperationsAdapter.object_getEntityUid(parent) + " / " + parent.instanceId + " / " + String(parent);
 							}

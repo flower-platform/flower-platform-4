@@ -30,6 +30,7 @@ import org.flowerplatform.tests.diff_update.entity.unnamed.E5;
 import org.flowerplatform.tests.diff_update.entity.unnamed.E6;
 import org.flowerplatform.tests.diff_update.entity.unnamed.E7;
 import org.flowerplatform.tests.diff_update.entity.unnamed.E8;
+import org.flowerplatform.util.Utils;
 import org.flowerplatform.util.diff_update.DiffUpdate;
 import org.mozilla.javascript.NativeObject;
 
@@ -209,6 +210,10 @@ public class EntityOperationsAdapter {
 	public String object_getEntityUid(Object entity) {
 		String uid = entity.getClass().getSimpleName() + ":" + ((AbstractEntity) entity).getId();
 		return uid;
+	}
+
+	public boolean object_equals(Object obj1, Object obj2) {
+		return Utils.safeEquals(obj1, obj2);
 	}
 
 	public NativeObject object_getPropertyInfo(Object entity, String property) {

@@ -1,18 +1,18 @@
 /* license-start
- * 
- * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation version 3.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
- * 
- * license-end
- */
+* 
+* Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+* 
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation version 3.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+* 
+* license-end
+*/
 
 var EntityRegistry = function(entityRegistryManager) { 
 	this.entityRegistryManager = entityRegistryManager; 
@@ -23,18 +23,19 @@ var EntityRegistry = function(entityRegistryManager) {
 
 /* mai e de facut: 
 
-* relatii unidirectionale *** terminat
-* many-to-many *** nu facem momentan
 * adaugarea in parinte la index stabilit (indexesInParent) 
 
 */
 
 EntityRegistry.prototype.mergeEntity = function(entity, shallowProcessing) {
-	//trace("********* mergeEntity " + entity + " " + shallowProcessing);
+//	trace("********* mergeEntity start " + entity + " " + shallowProcessing);
 	var entitiesToRemove = [];
-
+	
+	var t;
+	t = new Date().getMilliseconds();
 	this.mergeEntityInternal(entity, null, { }, entitiesToRemove, shallowProcessing);
-
+//	trace("********* mergeEntity end " + entity + " " + (new Date().getMilliseconds() - t));
+	
 	for (var i in entitiesToRemove) {
 		this.removeInternal(entitiesToRemove[i]);
 	}
@@ -63,12 +64,12 @@ EntityRegistry.prototype.mergeEntityInternal = function(entity, indexesInParent,
 		return this.registry[uid]; 
 	}
 	
-	//trace("mergeInternal " + uid + " " + shallowProcessing);
+//	trace("mergeInternal " + uid + " " + shallowProcessing);
 	
 	var oldEntity = this.registry[uid];
 	var registeredEntity = oldEntity;
 	var oldPropertiesSet = null;
-
+	
 	if (!oldEntity) {
 		// entity is not in registry
 		this.registry[uid] = entity;
@@ -84,7 +85,7 @@ EntityRegistry.prototype.mergeEntityInternal = function(entity, indexesInParent,
 			});
 		}
 	}
-
+	
 	visitedEntities[uid] = true;
 	
 	var _this = this;
@@ -105,7 +106,7 @@ EntityRegistry.prototype.mergeEntityInternal = function(entity, indexesInParent,
 			}
 		}
 	}
-
+	
 	return registeredEntity;
 };
 
@@ -119,15 +120,16 @@ EntityRegistry.prototype.mergeEntityInternal = function(entity, indexesInParent,
  * @param oldEntity - may be null (for a newly added entity)
  */
 EntityRegistry.prototype.processProperty = function(property, value, propertyInfo, oldEntity, registeredEntity, visitedEntities, entitiesToRemove, shallowProcessing) {
-
+	
 	if (!propertyInfo) {
 		// not a special property  
-		if (oldEntity) {
+		if (oldEntity && !this.entityOperationsAdapter.object_equals(oldEntity[property], value)) {
+//			trace("property set 0 - entity:" + oldEntity + " property:" + property + " oldValue:"+oldEntity[property]+ " newValue:" + value);
 			oldEntity[property] = value;
 		}
 		return;
 	}
-
+	
 	if (propertyInfo.flags & PROPERTY_FLAG_IGNORE) {
 		return;
 	} else if (propertyInfo.flags & PROPERTY_FLAG_ONE_TO_MANY) { 
@@ -137,7 +139,7 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 		if (!(propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE)) {
 			return;
 		}
-			
+		
 		var oldChildrenSet;
 		if (oldEntity && oldEntity[property]) {
 			oldChildrenSet = { };
@@ -150,7 +152,7 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 				oldChildrenSet[childUid] = true;
 			}
 		}
-
+		
 		// iterate new list
 		var childrenList = value;
 		var childrenListModified = false;
@@ -161,11 +163,12 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 			var childUid = this.entityOperationsAdapter.object_getEntityUid(child);
 			var regInstance = this.registry[childUid];
 			var registeredChild = shallowProcessing && regInstance ? regInstance : this.mergeEntityInternal(child, null, visitedEntities, entitiesToRemove, shallowProcessing);
-
-			if (child != registeredChild) {
+			
+			if (!regInstance) {
+//				trace("childrenListModified " + registeredChild.instanceId + " " + child.instanceId);
 				childrenListModified = true;
-				this.entityOperationsAdapter.list_setItemAt(childrenList, registeredChild, i);
 			}
+			this.entityOperationsAdapter.list_setItemAt(childrenList, registeredChild, i);
 			
 			// If child's parent changed, remove child from former parent's list and try to remove former parent.
 			// We compare UIDs because there might be a different instance of the entity, but the same entity uid
@@ -173,7 +176,11 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 				this.entityOperationsAdapter.list_removeItem(registeredChild[propertyInfo.oppositeProperty][property], registeredChild);
 				entitiesToRemove.push(registeredChild[propertyInfo.oppositeProperty]);
 			}
-			registeredChild[propertyInfo.oppositeProperty] = registeredEntity;
+			
+			if (registeredChild[propertyInfo.oppositeProperty] != registeredEntity) {
+//				trace("property set 2 - entity:" + registeredChild + " property:" + propertyInfo.oppositeProperty + " oldValue:"+registeredChild[propertyInfo.oppositeProperty]+ " newValue:" + registeredEntity);
+				registeredChild[propertyInfo.oppositeProperty] = registeredEntity;
+			}
 			
 			if (oldEntity && oldChildrenSet) {
 				// child exists, so remove it from set of children marked for deletion 
@@ -199,17 +206,18 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 			}
 		}
 		var oldChildrenListSize = oldEntity && oldEntity[property] ? this.entityOperationsAdapter.list_getLength(oldEntity[property]) : 0; 
-		if (childrenListModified || oldChildrenListSize != this.entityOperationsAdapter.list_getLength(value)) {
+		if (childrenListModified || (oldEntity && oldChildrenListSize != this.entityOperationsAdapter.list_getLength(value))) {
+//			trace("property set 1 - entity:" + registeredEntity + " property:" + property + " oldValue:"+registeredEntity[property]+ " newValue:" + value);
 			registeredEntity[property] = value;
 		}
 	} else if (propertyInfo.flags & PROPERTY_FLAG_MANY_TO_ONE) {
 		// i.e. a "single" reference
-
+		
 		// process references only when this entity is the navigable end of a unidirectional relationship  
 		if (!(propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE)) {
 			return;
 		}
-
+		
 		if (!value) { // new entity has no referenced entity
 			if (oldEntity && oldEntity[property]) { // but old entity references an entity
 				this.entityOperationsAdapter.list_removeItem(oldEntity[property][propertyInfo.oppositeProperty], oldEntity); // remove old entity from formerly referenced entity's list
@@ -218,22 +226,22 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 			registeredEntity[property] = null;
 			return;
 		}
-
+		
 		var regInstance = this.registry[this.entityOperationsAdapter.object_getEntityUid(value)];
 		var oppositeEntity = shallowProcessing && regInstance ? regInstance : this.mergeEntityInternal(value, null, visitedEntities, entitiesToRemove, shallowProcessing);
-
+		
 		var parentPropertyInfo = this.entityOperationsAdapter.object_getPropertyInfo(oppositeEntity, propertyInfo.oppositeProperty);
 		
 		if (!(parentPropertyInfo.flags & PROPERTY_FLAG_NAVIGABLE) || shallowProcessing) {
 			// this entity is the navigable end of a unidirectional relationship
-
+			
 			var parentPropertyInfo = this.entityOperationsAdapter.object_getPropertyInfo(oppositeEntity, propertyInfo.oppositeProperty);
-
+			
 			// create list in parent, if it doesn't exist
 			if (!oppositeEntity[propertyInfo.oppositeProperty]) {
 				this.entityOperationsAdapter.list_create(oppositeEntity, propertyInfo.oppositeProperty);
 			}
-
+			
 			if (!oldEntity || (oldEntity[property] && oppositeEntity != oldEntity[property])) { // if there is no old entity or the reference has changed
 				// add registered entity to new opposite entity's list
 				this.entityOperationsAdapter.list_addItem(oppositeEntity[propertyInfo.oppositeProperty], registeredEntity, -1);
@@ -245,7 +253,8 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 			registeredEntity[property] = oppositeEntity;
 		}
 		
-	} else if (oldEntity) {
+	} else if (oldEntity && oldEntity[property] != value) {
+//		trace("property set 3 - entity:" + oldEntity + " property:" + property + " oldValue:"+oldEntity[property]+ " newValue:" + value);
 		oldEntity[property] = value;
 	}
 };
@@ -315,7 +324,7 @@ EntityRegistry.prototype.removeInternal = function(entity) {
 	for (var uid in visitedEntities) {
 		delete this.registry[uid];
 	}
-
+	
 	for (var i in linksToRemove) {
 		var link = linksToRemove[i];
 		if (!link.unlinkedEntity) { // many to one relationship 
@@ -324,7 +333,7 @@ EntityRegistry.prototype.removeInternal = function(entity) {
 			this.entityOperationsAdapter.list_removeItem(link.entity[link.property], link.unlinkedEntity);
 		}
 	}
-
+	
 };
 
 /**
@@ -340,16 +349,16 @@ EntityRegistry.prototype.removeInternal = function(entity) {
  */
 EntityRegistry.prototype.findNonRemovableEntities = function(entity, nonRemovableEntities, visitedEntities, status, linksToRemove) {
 	var uid = this.entityOperationsAdapter.object_getEntityUid(entity);
-
+	
 	if (this.entityOperationsAdapter.object_isRoot(entity) || nonRemovableEntities[uid]) {
 		return false;
 	}
-
+	
 	if (visitedEntities[uid]) {
 		return true; 
 	}
 	visitedEntities[uid] = true;
-
+	
 	var _this = this;
 	var canRemove = true;
 	this.entityOperationsAdapter.object_iterateProperties(entity, function(property, value) {
@@ -407,14 +416,14 @@ EntityRegistry.prototype.findNonRemovableEntities = function(entity, nonRemovabl
 EntityRegistry.prototype.setProperties = function(uid, properties, shallowProcessing) {
 	var _this = this;
 	var entity = this.getEntityByUid(uid);
-
+	
 	if (entity == null) {
 		return;
 	}
-
+	
 	var visitedEntities = { };
 	visitedEntities[uid] = true;
-
+	
 	var entitiesToRemove = [];
 	this.entityOperationsAdapter.propertiesMap_iterateProperties(properties, function (property, value) {
 		if (property == 'data') return;
@@ -424,11 +433,11 @@ EntityRegistry.prototype.setProperties = function(uid, properties, shallowProces
 		_this.processProperty(property, value, propertyInfo, entity, entity, visitedEntities, entitiesToRemove, shallowProcessing);
 		
 	});
-
+	
 	for (var i in entitiesToRemove) {
 		this.remove(entitiesToRemove[i]);
 	}
-
+	
 };
 
 EntityRegistry.prototype.getEntityByUid = function(uid) {
@@ -440,10 +449,10 @@ EntityRegistry.prototype.getEntityByUid = function(uid) {
 };
 
 EntityRegistry.prototype.printDebugInfo = function() {
-//	 java.lang.System.out.println("*** registry ***");
-//	for (var prop in this.registry) {
-//		 java.lang.System.out.println(prop + " : " + this.registry[prop]);
-//	}
+	//	 java.lang.System.out.println("*** registry ***");
+	//	for (var prop in this.registry) {
+	//		 java.lang.System.out.println(prop + " : " + this.registry[prop]);
+	//	}
 };			
 
 var PROPERTY_FLAG_ONE_TO_MANY = 0x1;
