@@ -32,7 +32,7 @@ EntityRegistry.prototype.mergeEntity = function(entity, shallowProcessing) {
 	var entitiesToRemove = [];
 	
 	var t;
-	t = new Date().getMilliseconds();
+//	t = new Date().getMilliseconds();
 	this.mergeEntityInternal(entity, null, { }, entitiesToRemove, shallowProcessing);
 //	trace("********* mergeEntity end " + entity + " " + (new Date().getMilliseconds() - t));
 	
@@ -168,7 +168,10 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 //				trace("childrenListModified " + registeredChild.instanceId + " " + child.instanceId);
 				childrenListModified = true;
 			}
-			this.entityOperationsAdapter.list_setItemAt(childrenList, registeredChild, i);
+			
+//			if (child != registeredChild) {
+				this.entityOperationsAdapter.list_setItemAt(childrenList, registeredChild, i);
+//			}
 			
 			// If child's parent changed, remove child from former parent's list and try to remove former parent.
 			// We compare UIDs because there might be a different instance of the entity, but the same entity uid
