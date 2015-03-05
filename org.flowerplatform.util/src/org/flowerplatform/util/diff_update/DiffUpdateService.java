@@ -10,12 +10,24 @@ import java.util.List;
 public class DiffUpdateService {
 	
 	private INotificationChannelProvider notificationChannelProvider;	
-	
+
 	private DiffUpdateRegistry diffUpdateRegistry;
+	
+	public DiffUpdateService() {
+		this.diffUpdateRegistry = new DiffUpdateRegistry();
+	}
 	
 	public DiffUpdateService(INotificationChannelProvider notificationChannelProvider) {
 		this.notificationChannelProvider = notificationChannelProvider;
 		this.diffUpdateRegistry = new DiffUpdateRegistry();
+	}
+	
+	public INotificationChannelProvider getNotificationChannelProvider() {
+		return notificationChannelProvider;
+	}
+
+	public void setNotificationChannelProvider(INotificationChannelProvider notificationChannelProvider) {
+		this.notificationChannelProvider = notificationChannelProvider;
 	}
 	
 	/**

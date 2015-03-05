@@ -130,7 +130,7 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 		return;
 	}
 	
-	if (propertyInfo.flags & PROPERTY_FLAG_IGNORE) {
+	if (this.entityOperationsAdapter.shouldIgnoreProperty(value, propertyInfo)) { 
 		return;
 	} else if (propertyInfo.flags & PROPERTY_FLAG_ONE_TO_MANY) { 
 		// i.e. a list of references
@@ -194,7 +194,7 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 					childrenListModified = true;
 				}
 				var oldChild = this.registry[uid];
-				if (this.entityOperationsAdapter.object_getEntityUid(oldChild[propertyInfo.oppositeProperty]) == this.entityOperationsAdapter.object_getEntityUid(registeredEntity)) {
+				if (oldChild && this.entityOperationsAdapter.object_getEntityUid(oldChild[propertyInfo.oppositeProperty]) == this.entityOperationsAdapter.object_getEntityUid(registeredEntity)) {
 					// we need this test for the case when the referenced entity still exists, but it has been "moved"
 					// to another entity. E.g. an object has been moved from a flight to another flight. And the other
 					// flight has been processed before, i.e. we don't need to break the link.
@@ -271,7 +271,8 @@ EntityRegistry.prototype.remove = function(entityUid) {
 	var entitiesToRemove = [];
 	this.entityOperationsAdapter.object_iterateProperties(entity, function(property, value) {
 		var propertyInfo = _this.entityOperationsAdapter.object_getPropertyInfo(entity, property);
-		if (!propertyInfo || (propertyInfo.flags & PROPERTY_FLAG_IGNORE)) {
+				
+		if (_this.entityOperationsAdapter.shouldIgnoreProperty(value, propertyInfo)) {
 			return;
 		}
 		if (value == null) {
@@ -369,8 +370,8 @@ EntityRegistry.prototype.findNonRemovableEntities = function(entity, nonRemovabl
 		if (!propertyInfo) {
 			return;
 		}
-		
-		if (propertyInfo.flags & PROPERTY_FLAG_IGNORE) {
+				
+		if (_this.entityOperationsAdapter.shouldIgnoreProperty(value, propertyInfo)) {
 			return;
 		} else if (propertyInfo.flags & PROPERTY_FLAG_ONE_TO_MANY) {
 			var childrenList = value;

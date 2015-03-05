@@ -1,10 +1,5 @@
 package org.flowerplatform.util.diff_update;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 
@@ -53,7 +48,7 @@ public class AddEntityDiffUpdate extends PropertiesDiffUpdate {
 	/**
 	 * @author Claudiu Matei
 	 */
-	public Map<String, Object> getProperties() {
+/*	public Map<String, Object> getProperties() {
 		// TODO CS/DU: sa facem asta cumva la constructie; caci astfel, la toString se va apela din nou; dar de fapt: daca trimitem tot obiectul, de ce mai e nevoie de asta?
 		Map<String, Object> properties = new HashMap<String, Object>();
 		try {
@@ -69,7 +64,7 @@ public class AddEntityDiffUpdate extends PropertiesDiffUpdate {
 			throw new RuntimeException(e);
 		}
         return properties;
-	}
+	}*/
 
 	public String getParentChildrenProperty() {
 		return parentChildrenProperty;
