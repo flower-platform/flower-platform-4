@@ -13,6 +13,8 @@ public class DiffUpdate implements Serializable {
 
 	private long id;
 
+	private long timestamp = System.currentTimeMillis();
+	
 	private String type;
 	
 	private String entityUid; 
@@ -45,6 +47,10 @@ public class DiffUpdate implements Serializable {
 	public String toString() {
 		return "DiffUpdate[type=" + type + ", id=" + id + ", entityUid="
 				+ entityUid + "]";
+	}
+	
+	public long getTimestamp() {
+		return timestamp;
 	}
 	
 }

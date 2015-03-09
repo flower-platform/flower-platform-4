@@ -2,6 +2,7 @@ package org.flowerplatform.util.diff_update;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,13 +18,26 @@ import org.slf4j.LoggerFactory;
 public class DiffUpdateRegistry {
 
 	protected static final Logger LOGGER = LoggerFactory.getLogger(DiffUpdateRegistry.class);
+
+	private static final long UPDATE_MAX_AGE = 3600 * 1000L; // 1 hour
 	
 	private Map<String, List<DiffUpdate>> updatesMap = new ConcurrentHashMap<String, List<DiffUpdate>>();
 	
-	// TODO CC: temporary code
+	/**
+	 * @author Cristina Constantinescu
+	 * @author Claudiu Matei
+	 */
 	public void clearDiffUpdates() {
+		long tMin = System.currentTimeMillis() - UPDATE_MAX_AGE;
 		for (Map.Entry<String, List<DiffUpdate>> entry : updatesMap.entrySet()) {
-			entry.setValue(new ArrayList<DiffUpdate>());
+			List<DiffUpdate> updates = entry.getValue();
+			synchronized (updates) {
+				Iterator<DiffUpdate> it = updates.iterator();
+				DiffUpdate update = it.next();
+				if (update.getTimestamp() < tMin) {
+					it.remove();
+				}
+			}
 		}
 	}
 
