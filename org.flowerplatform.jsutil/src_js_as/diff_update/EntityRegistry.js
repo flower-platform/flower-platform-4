@@ -169,9 +169,9 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 				childrenListModified = true;
 			}
 			
-//			if (child != registeredChild) {
+			if (child != registeredChild) {
 				this.entityOperationsAdapter.list_setItemAt(childrenList, registeredChild, i);
-//			}
+			}
 			
 			// If child's parent changed, remove child from former parent's list and try to remove former parent.
 			// We compare UIDs because there might be a different instance of the entity, but the same entity uid
