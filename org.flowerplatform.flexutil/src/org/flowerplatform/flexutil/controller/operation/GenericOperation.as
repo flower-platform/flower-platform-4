@@ -28,6 +28,9 @@ package org.flowerplatform.flexutil.controller.operation {
 			for (var i:int = 0; i < operations.length; i++) {
 				var current:GenericOperation = operations.getItemAt(i) as GenericOperation; 
 				operationResultCombiner.combineResult(current.run.apply(null, args));
+				if (operationResultCombiner is FirstNotNullOperationResultCombiner && operationResultCombiner.result != null) {
+					break;
+				}
 			}
 			return operationResultCombiner.result; 
 		}
