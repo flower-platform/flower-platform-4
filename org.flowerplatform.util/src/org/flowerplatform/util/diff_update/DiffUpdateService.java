@@ -85,7 +85,9 @@ public class DiffUpdateService {
 		return diffUpdateRegistry.getLastUpdateId(notificationChannel);
 	}
 	
-	// TODO CC: temporary code
+	/**
+	 * @author Cristina Constantinescu
+	 */
 	public void clearDiffUpdateRegistry() {
 		diffUpdateRegistry.clearDiffUpdates();
 	}
