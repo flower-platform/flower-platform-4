@@ -2,6 +2,7 @@ package org.flowerplatform.util.diff_update;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 
@@ -38,6 +39,21 @@ public class PropertiesDiffUpdate extends DiffUpdate {
 	@Override
 	public String toString() {
 		return super.toString() + "[properties=" + properties + "]";
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof PropertiesDiffUpdate)) {
+			return false;
+		}
+		PropertiesDiffUpdate otherUpdate = (PropertiesDiffUpdate) obj;
+		return Objects.equals(getType(), otherUpdate.getType()) && Objects.equals(getEntityUid(), otherUpdate.getEntityUid())
+				&& Objects.equals(getProperties(), otherUpdate.getProperties());
+	}
+	
+	@Override
+	public int hashCode() {
+		return getType().hashCode() + 3 * getEntityUid().hashCode() + 7 * getProperties().hashCode(); 
 	}
 	
 }

@@ -1,6 +1,7 @@
 package org.flowerplatform.util.diff_update;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * 
@@ -51,6 +52,17 @@ public class DiffUpdate implements Serializable {
 	
 	public long getTimestamp() {
 		return timestamp;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		DiffUpdate otherUpdate = (DiffUpdate) obj;
+		return Objects.equals(type, otherUpdate.type) && Objects.equals(entityUid, otherUpdate.entityUid);
+	}
+	
+	@Override
+	public int hashCode() {
+		return type.hashCode() + 3 * entityUid.hashCode(); 
 	}
 	
 }
