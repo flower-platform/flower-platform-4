@@ -93,7 +93,7 @@
 					var propertyInfo:* = entityOperationsAdapter.object_getPropertyInfo(entity, property);
 					var s:String = "";
 					if (propertyInfo != null) {
-						if (propertyInfo.flags & entityOperationsAdapter.PROPERTY_FLAG_ONE_TO_MANY) {
+						if (propertyInfo.flags & 0x1) {
 							s = "[";
 							var children:IList = IList(value);
 							for (var i:int = 0; i < children.length; i++) {
@@ -105,7 +105,7 @@
 							}
 							s += "]";
 							properties.addItem({ property: property, value: s });
-						} else if (propertyInfo.flags & entityOperationsAdapter.PROPERTY_FLAG_MANY_TO_ONE) {
+						} else if (propertyInfo.flags & 0x2) {
 							var parent:Object = value;
 							if (parent != null) {
 								s = entityOperationsAdapter.object_getEntityUid(parent) + " / " + parent.instanceId + " / " + String(parent);

@@ -61,9 +61,17 @@ package org.flowerplatform.jsutil.service {
 			for (var channel:String in updates) {
 				var channelUpdates:IList = updates[channel];
 				for (var i:int = 0; i < channelUpdates.length; i++) {
-					var update = channelUpdates.getItemAt(i);
+					var update:* = channelUpdates.getItemAt(i);
+//					var date:Date = new Date();
+//					trace("U" + update.type + " " + update.entityUid);
+//					if (update.properties) {
+//						for(var key:* in update.properties) {
+//							trace(key + " " + update.properties[key]);
+//						}
+//					}
 					XopsPlugin.instance.entityRegistryManager.processDiffUpdate(channel, update);
-				}
+//					trace("U" + (new Date().getTime() - date.getTime()));
+				}	
 			}
 		}
 		

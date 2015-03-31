@@ -90,6 +90,12 @@ EntityRegistryManager.prototype.processDiffUpdate = function(notificationChannel
 		throw "Update processor for type " + diffUpdate.type + " is not registered.";
 	}
 	var entityRegistryEntry = this.entityRegistryEntries[notificationChannel];
+	
+	// ignore subsequent initialInfo updates
+	if (diffUpdate.type == 'initialInfo' && this.entityRegistryEntries[notificationChannel].lastDiffUpdateId != -1) {
+		return;
+	}
+
 	if (diffUpdate.id <= entityRegistryEntry.lastDiffUpdateId) {
 		// ignore if update was already processed (this case may appear when update timer event occurs at the same time with service method call)
 		return;
