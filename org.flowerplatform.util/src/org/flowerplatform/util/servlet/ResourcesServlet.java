@@ -31,83 +31,56 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *@author Mariana Gheorghe
+ * @author Mariana Gheorghe
  **/
 public abstract class ResourcesServlet extends HttpServlet {
-	
-	private static final long serialVersionUID = 5438373882820622871L;
+
+	private static final long serialVersionUID = 1L;
 
 	protected static Map<String, String> tempFilesMap = new HashMap<String, String>();
-	
+
 	protected static int counter = 0;
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesServlet.class);
-		
-	protected boolean useFilesFromTemporaryDirectory = false; 
-	
-	protected static final String PROTOCOL = "protocol";
-	
-	protected static final String PREFIX = "prefix";
-	
-	protected static final String USE_REAL_PATH = "useRealPath";
-	
-	protected String protocol;
-	
-	protected String prefix;
-	
-	protected boolean useRealPath;
-	protected String realPathNotFoundFind = null;
-	protected String realPathNotFoundReplace = null;
-		
+
+	protected boolean useFilesFromTemporaryDirectory = false;
+
 	/**
 	 * @author Cristina Constantinescu
 	 */
 	@Override
-	public void init(ServletConfig config) throws ServletException {		
+	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		ServletUtils.addAllAdditionalAttributesToServletContext(getServletContext());	
-		
+		ServletUtils.addAllAdditionalAttributesToServletContext(getServletContext());
+
 		useFilesFromTemporaryDirectory = Boolean.valueOf((String) getServletContext().getAttribute(ServletUtils.PROP_USE_FILES_FROM_TEMPORARY_DIRECTORY));
-	
-		protocol = config.getInitParameter(PROTOCOL);
-		if (protocol == null) {
-			protocol = "platform:/plugin";
-		}
-		prefix = config.getInitParameter(PREFIX);
-		if (prefix == null) {
-			prefix = UtilConstants.PUBLIC_RESOURCES_DIR;
-		}
-		useRealPath = Boolean.parseBoolean(config.getInitParameter(USE_REAL_PATH));
-		if (useRealPath) {
-			realPathNotFoundFind = config.getInitParameter("realPathNotFoundFind");
-			realPathNotFoundReplace = config.getInitParameter("realPathNotFoundReplace");
-		}
 	}
+
 	/**
-	 *@author Mariana Gheorghe
+	 * @author Mariana Gheorghe
 	 **/
 	protected void send404(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404.
-			//CHECKSTYLE:OFF
+			// CHECKSTYLE:OFF
 		} catch (IOException e) {
 			// do nothing
-			//CHECKSTYLE:ON
+			// CHECKSTYLE:ON
 		}
 		LOGGER.warn("Resource not found; sending 404: {}", request.getPathInfo());
 	}
-	
+
 	/**
-	* @author Sebastian Solomon
-	*/
+	 * @author Sebastian Solomon
+	 */
 	protected String getTempFilePath(String tempFileName) {
-		return UtilConstants.TEMP_FOLDER + "\\" + tempFileName; 
+		return UtilConstants.TEMP_FOLDER + "\\" + tempFileName;
 	}
-	
+
 	/**
-	* @author Sebastian Solomon
-	*/
+	 * @author Sebastian Solomon
+	 */
 	protected File getTempFile(String tempFileName) {
-		return new File(UtilConstants.TEMP_FOLDER, tempFileName); 
+		return new File(UtilConstants.TEMP_FOLDER, tempFileName);
 	}
 }

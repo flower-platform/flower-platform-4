@@ -26,9 +26,13 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -52,9 +56,26 @@ public class PublicResourcesServlet extends ResourcesServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-    private static final int DEFAULT_BUFFER_SIZE = 10240; // 10KB.
+   private static final int DEFAULT_BUFFER_SIZE = 10240; // 10KB.
+
+ 	protected static final String PROTOCOL = "protocol";
+
+ 	protected static final String PREFIX = "prefix";
+
+ 	protected static final String USE_REAL_PATH = "useRealPath";
+
+ 	protected static final String REAL_PATH_BASE_DIR = "realPathBaseDir";
+
+ 	protected String protocol;
+ 	protected String realPathBaseDir;
+ 	protected String prefix;
+
+ 	protected boolean useRealPath;
+
+ 	protected String realPathNotFoundFind = null;
+ 	protected String realPathNotFoundReplace = null;
     
-    private static void close(Closeable resource) {
+   private static void close(Closeable resource) {
         if (resource != null) {
             try {
                 resource.close();
@@ -64,8 +85,30 @@ public class PublicResourcesServlet extends ResourcesServlet {
             	//CHECKSTYLE:ON
             }
         }
-    }
-    /**
+   }
+   
+   @Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+
+		protocol = config.getInitParameter(PROTOCOL);
+		if (protocol == null) {
+			protocol = "platform:/plugin";
+		}
+		prefix = config.getInitParameter(PREFIX);
+		if (prefix == null) {
+			prefix = UtilConstants.PUBLIC_RESOURCES_DIR;
+		}
+		useRealPath = Boolean.parseBoolean(config.getInitParameter(USE_REAL_PATH));
+		if (useRealPath) {
+			realPathNotFoundFind = config.getInitParameter("realPathNotFoundFind");
+			realPathNotFoundReplace = config.getInitParameter("realPathNotFoundReplace");
+		}
+
+		realPathBaseDir = config.getInitParameter(REAL_PATH_BASE_DIR);
+	}
+
+	/**
 	 *@author see class
 	 **/
 	protected Pair<InputStream, Closeable> getInputStreamForFileWithinZip(final InputStream fileInputStream, String fileWithinZip) throws IOException {
@@ -193,20 +236,37 @@ public class PublicResourcesServlet extends ResourcesServlet {
 					}
 				}
 			}
-				
-//			requestedFile = "platform:/plugin" + plugin + "/" + UtilConstants.PUBLIC_RESOURCES_DIR + file;
+					
 			requestedFile = plugin + "/" + prefix + file;
+
 			if (useRealPath) {
-				String path = getServletContext().getRealPath(requestedFile);
-				if (!new File(path).exists() && realPathNotFoundFind != null) {
-					// This is useful in XOPS, when the application is served (from within Eclipse/WTP) directly, i.e. without publishing.
-					// In this case, the current dir is WebContent, so we look around for serving the plugins. We do this only if not found,
-					// because we don't have a mechanism to know if we are in PROD (i.e. the above path would apply) or in DEV (i.e. the below
-					// path would apply)
-					path = getServletContext().getRealPath(requestedFile.replaceFirst(realPathNotFoundFind, realPathNotFoundReplace));
+				String path;
+				if (realPathBaseDir != null) {
+					// maybe we have a variable (e.g. $XOPS_HOME/mypath). In this case, we replace with
+					// the real value
+					Matcher m = Pattern.compile("\\$(\\w)*").matcher(realPathBaseDir);
+					while (m.find()) {
+						String match = m.group(0);
+						String environment = System.getenv(match.replace("$", ""));
+						if (environment == null) {
+							throw new IllegalArgumentException("Configuration issue. Variable not found for realPathBaseDir = " + realPathBaseDir);
+						}
+						realPathBaseDir = realPathBaseDir.replace(match, environment);
+					}
+					path = realPathBaseDir + requestedFile;
+				} else {
+					path = getServletContext().getRealPath(requestedFile);
+					if (!new File(path).exists() && realPathNotFoundFind != null) {
+						// This is useful in XOPS, when the application is served (from within Eclipse/WTP) directly, i.e. without
+						// publishing. In this case, the current dir is WebContent, so we look around for serving the plugins.
+						// We do this only if not found, because we don't have a mechanism to know if we are in PROD
+						// (i.e. the above path would apply) or in DEV (i.e. the below path would apply)
+						path = getServletContext().getRealPath(requestedFile.replaceFirst(realPathNotFoundFind, realPathNotFoundReplace));
+					}
 				}
 				requestedFile = path;
 			}
+
 			requestedFile = protocol + requestedFile;
 			
 			// Get content type by filename from the file or file inside zip
