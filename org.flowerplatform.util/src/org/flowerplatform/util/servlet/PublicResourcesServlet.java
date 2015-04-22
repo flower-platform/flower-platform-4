@@ -247,7 +247,7 @@ public class PublicResourcesServlet extends ResourcesServlet {
 					Matcher m = Pattern.compile("\\$(\\w)*").matcher(realPathBaseDir);
 					while (m.find()) {
 						String match = m.group(0);
-						String environment = System.getenv(match.replace("$", ""));
+						String environment = System.getProperty(match.replace("$", ""));
 						if (environment == null) {
 							throw new IllegalArgumentException("Configuration issue. Variable not found for realPathBaseDir = " + realPathBaseDir);
 						}
