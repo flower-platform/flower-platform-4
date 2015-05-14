@@ -69,6 +69,8 @@ license-end
 			import mx.controls.ComboBox;
 			import mx.controls.DataGrid;
 			import mx.controls.DateField;
+			import mx.controls.HSlider;
+			import mx.controls.NumericStepper;
 			import mx.controls.RadioButton;
 			import mx.controls.TextArea;
 			import mx.core.FlexGlobals;
@@ -101,6 +103,7 @@ license-end
 			import mx.messaging.messages.RemotingMessage;
 			import mx.messaging.messages.SOAPMessage;
 			import mx.preloaders.DownloadProgressBar;
+			import mx.printing.FlexPrintJob;
 			import mx.rpc.AsyncResponder;
 			import mx.rpc.remoting.mxml.RemoteObject;
 			import mx.skins.spark.BorderSkin;
@@ -197,6 +200,9 @@ license-end
 			Linear;
 			Glow;
 			NavigatorContent;
+			NumericStepper;
+			FlexPrintJob;
+			HSlider;
 			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:

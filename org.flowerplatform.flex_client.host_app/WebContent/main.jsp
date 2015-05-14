@@ -11,7 +11,7 @@
     Learn more about Flex at http://flex.org 
     // -->
     <head>
-        <title>Flower Platform</title>
+        <title><%= System.getProperty("flower.app.title") != null ? System.getProperty("flower.app.title") : "Flower Platform"%></title>
          <link rel="SHORTCUT ICON" href="favicon.ico"/>
         <meta name="google" value="notranslate" />         
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -40,6 +40,7 @@
             var flashvars = {};  
             flashvars.rootUrl = getURL();
             flashvars.version = "<%= System.getProperty("flower.version")%>";
+            flashvars.spinnerIcon = "<%= System.getProperty("flower.app.preloader") != null ? System.getProperty("flower.app.preloader") : null%>";
         </script>
         <script type="text/javascript" src='flexHostAppConfig.js?version=<%= System.getProperty("flower.version")%>'></script> 
             
