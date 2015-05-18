@@ -243,7 +243,7 @@ license-end
 				
 				// INITIALIZATION SPINNER START
 				var spinnerIconSource:String = FlexGlobals.topLevelApplication.parameters.spinnerIcon;
-				if (spinnerIconSource != null)
+				if (spinnerIconSource != null && spinnerIconSource != "null")
 					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(spinnerIconSource));
 				else
 					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(FlexUtilAssets.logoFlower));
