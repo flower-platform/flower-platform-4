@@ -96,9 +96,11 @@
 						if (propertyInfo.flags & 0x1) {
 							s = "[";
 							var children:IList = IList(value);
-							for (var i:int = 0; i < children.length; i++) {
-								var child:Object = children.getItemAt(i);
-								s += entityOperationsAdapter.object_getEntityUid(child) + " / " + child.instanceId + " / " + String(child) + ", ";
+							if (children != null) {
+								for (var i:int = 0; i < children.length; i++) {
+									var child:Object = children.getItemAt(i);
+									s += entityOperationsAdapter.object_getEntityUid(child) + " / " + child.instanceId + " / " + String(child) + ", ";
+								}
 							}
 							if (s.length > 1) {
 								s = s.substr(0, s.length-2);
