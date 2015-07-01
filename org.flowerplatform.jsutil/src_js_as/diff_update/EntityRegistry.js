@@ -429,9 +429,7 @@ EntityRegistry.prototype.setProperties = function(uid, properties, shallowProces
 	visitedEntities[uid] = true;
 	
 	var entitiesToRemove = [];
-	this.entityOperationsAdapter.propertiesMap_iterateProperties(properties, function (property, value) {
-		if (property == 'data') return;
-		
+	this.entityOperationsAdapter.propertiesMap_iterateProperties(properties, function (property, value) {	
 		var propertyInfo = _this.entityOperationsAdapter.object_getPropertyInfo(entity, property);
 		
 		_this.processProperty(property, value, propertyInfo, entity, entity, visitedEntities, entitiesToRemove, shallowProcessing);

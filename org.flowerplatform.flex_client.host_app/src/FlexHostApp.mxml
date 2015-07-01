@@ -74,6 +74,7 @@ license-end
 			import mx.controls.RadioButton;
 			import mx.controls.TextArea;
 			import mx.core.FlexGlobals;
+			import mx.core.Repeater;
 			import mx.effects.Glow;
 			import mx.effects.easing.Linear;
 			import mx.events.FlexEvent;
@@ -203,6 +204,9 @@ license-end
 			NumericStepper;
 			FlexPrintJob;
 			HSlider;
+			Repeater;
+			RepeatableBinding;
+			RepeaterItemWatcher;
 			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
