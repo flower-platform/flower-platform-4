@@ -148,6 +148,9 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 			var n = this.entityOperationsAdapter.list_getLength(oldChildrenList);
 			for (var i = 0; i < n; i++) {
 				var child = this.entityOperationsAdapter.list_getItemAt(oldChildrenList, i);
+				if (child == null) { //TODO CM: modificare rapida pt. ONET
+					continue;
+				}
 				var childUid = this.entityOperationsAdapter.object_getEntityUid(child);
 				oldChildrenSet[childUid] = true;
 			}
@@ -160,6 +163,9 @@ EntityRegistry.prototype.processProperty = function(property, value, propertyInf
 		var n = childrenList ? this.entityOperationsAdapter.list_getLength(childrenList) : 0;
 		for (var i = 0; i < n; i++) {
 			var child = this.entityOperationsAdapter.list_getItemAt(childrenList, i);
+			if (child == null) { //TODO CM: modificare rapida pt. ONET
+				continue;
+			}
 			var childUid = this.entityOperationsAdapter.object_getEntityUid(child);
 			var regInstance = this.registry[childUid];
 			var registeredChild = shallowProcessing && regInstance ? regInstance : this.mergeEntityInternal(child, null, visitedEntities, entitiesToRemove, shallowProcessing);
@@ -285,6 +291,9 @@ EntityRegistry.prototype.remove = function(entityUid) {
 			var n = _this.entityOperationsAdapter.list_getLength(value);
 			for (var i = 0; i < n; i++) {
 				var oppositeEntity = _this.entityOperationsAdapter.list_getItemAt(value, i);
+				if (oppositeEntity == null) { //TODO CM: modificare rapida pt. ONET
+					continue;
+				}
 				oppositeEntity[propertyInfo.oppositeProperty] = null;
 				if (propertyInfo.flags & PROPERTY_FLAG_NAVIGABLE) {
 					entitiesToRemove.push(oppositeEntity);
@@ -384,6 +393,9 @@ EntityRegistry.prototype.findNonRemovableEntities = function(entity, nonRemovabl
 			var n = _this.entityOperationsAdapter.list_getLength(childrenList);
 			for (var i = 0; i < n; i++) {
 				var child = _this.entityOperationsAdapter.list_getItemAt(childrenList, i);
+				if (child == null) { //TODO CM: modificare rapida pt. ONET
+					continue;
+				}
 				var canRemoveOpposite = _this.findNonRemovableEntities(child, nonRemovableEntities, visitedEntities, status, linksToRemove);
 				var oppositePropertyInfo = _this.entityOperationsAdapter.object_getPropertyInfo(child, propertyInfo.oppositeProperty);
 				if (!canRemoveOpposite) {
