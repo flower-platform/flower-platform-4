@@ -61,12 +61,9 @@ public final class LogUtil {
 
 		@Override
 		protected String getForegroundColorCode(ILoggingEvent event) {
-			String value = super.getForegroundColorCode(event);				
-			if (ANSIConstants.DEFAULT_FG.equals(value)) {
-				return ANSIConstants.YELLOW_FG;
-			} else {
-				return value;
-			}
+			// in XOPS, yellow is not visible on white background; although there is something fishy: the colors become vivide after init;
+			// with the default "non-vivid" version, yellow would have been visible as well I guess
+			return ANSIConstants.MAGENTA_FG;
 		}
 		
 	}	
