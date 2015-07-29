@@ -84,6 +84,14 @@ package org.flowerplatform.jsutil.service {
 			
 			var headers:Dictionary = new Dictionary();
 			headers["diffUpdatesRequest"] = new DiffUpdatesRequest(XopsPlugin.instance.entityRegistryManager.getNotificationChannelsData() as Array);
+			
+			if (XopsPlugin.instance.realTimeDtoRoot != null) {
+				headers["diffUpdatesRequestNew"] = new DiffUpdatesRequest([{ 
+					notificationChannel: "missionDtos", 
+					lastDiffUpdateId: XopsPlugin.instance.diffUpdateProcessor.lastReceivedDiffUpdateId
+				}]);
+			}
+			
 			operation.messageHeaders = headers;
 			
 			return operation;
@@ -92,6 +100,11 @@ package org.flowerplatform.jsutil.service {
 		override public function resultHandler(result:Object, responder:ServiceResponder):void {
 			if (result.hasOwnProperty("updates")) { // updates exists, process them
 				processDiffUpdates(result.updates);
+			}
+			
+			if (XopsPlugin.instance.realTimeDtoRoot != null && result.hasOwnProperty("updatesNew")) {
+				var channelUpdates:IList = result["updatesNew"]["missionDtos"];
+				XopsPlugin.instance.diffUpdateProcessor.processDiffUpdates(channelUpdates, XopsPlugin.instance.realTimeDtoRoot, false);	
 			}
 			
 			// get message invocation result and send it to be processed by resultHandler
