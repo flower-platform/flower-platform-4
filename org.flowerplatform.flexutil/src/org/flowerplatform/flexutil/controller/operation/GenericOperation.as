@@ -1,5 +1,7 @@
 package org.flowerplatform.flexutil.controller.operation {
 	import mx.collections.IList;
+	import mx.core.FlexGlobals;
+	import mx.core.UIComponent;
 	
 	import org.flowerplatform.flexutil.controller.AbstractController;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
@@ -21,16 +23,24 @@ package org.flowerplatform.flexutil.controller.operation {
 		}
 		
 		public static function runOperations(typeDescriptorRegistry:TypeDescriptorRegistry, feature:String, model:Object, operationResultCombiner:OperationResultCombiner, ... args):Object {
-			if (operationResultCombiner == null) {
-				operationResultCombiner = new FirstNotNullOperationResultCombiner();
-			}
-			var operations:IList = typeDescriptorRegistry.getAdditiveControllers(feature, model);
-			for (var i:int = 0; i < operations.length; i++) {
-				var current:GenericOperation = operations.getItemAt(i) as GenericOperation; 
-				operationResultCombiner.combineResult(current.run.apply(null, args));
-				if (operationResultCombiner is FirstNotNullOperationResultCombiner && operationResultCombiner.result != null) {
-					break;
+			try {
+				if (operationResultCombiner == null) {
+					operationResultCombiner = new FirstNotNullOperationResultCombiner();
 				}
+				var operations:IList = typeDescriptorRegistry.getAdditiveControllers(feature, model);
+				for (var i:int = 0; i < operations.length; i++) {
+					var current:GenericOperation = operations.getItemAt(i) as GenericOperation; 
+					operationResultCombiner.combineResult(current.run.apply(null, args));
+					if (operationResultCombiner is FirstNotNullOperationResultCombiner && operationResultCombiner.result != null) {
+						break;
+					}
+				}
+			} catch (error:Error) {
+				UIComponent(FlexGlobals.topLevelApplication).callLater(function ():void {
+					// we let the algorithm continue and throw at the end (so that we can
+					// receive the exception on the server side
+					throw new Error("Redispatching error with callLater; original:\n" + error.message + "\n" + error.getStackTrace());
+				});
 			}
 			return operationResultCombiner.result; 
 		}
