@@ -36,10 +36,11 @@ package org.flowerplatform.flexutil.controller.operation {
 					}
 				}
 			} catch (error:Error) {
+				var err:Error = error;
 				UIComponent(FlexGlobals.topLevelApplication).callLater(function ():void {
 					// we let the algorithm continue and throw at the end (so that we can
 					// receive the exception on the server side
-					throw new Error("Redispatching error with callLater; original:\n" + error.message + "\n" + error.getStackTrace());
+					throw new Error("Redispatching error with callLater; original:\n" + err.message + "\n" + err.getStackTrace());
 				});
 			}
 			return operationResultCombiner.result; 
