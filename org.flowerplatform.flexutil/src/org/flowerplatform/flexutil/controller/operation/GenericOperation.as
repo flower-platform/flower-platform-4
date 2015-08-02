@@ -24,6 +24,7 @@ package org.flowerplatform.flexutil.controller.operation {
 		
 		public static function runOperations(typeDescriptorRegistry:TypeDescriptorRegistry, feature:String, model:Object, operationResultCombiner:OperationResultCombiner, ... args):Object {
 			try {
+				// trace("Invoking operation for feature = " + feature);
 				if (operationResultCombiner == null) {
 					operationResultCombiner = new FirstNotNullOperationResultCombiner();
 				}

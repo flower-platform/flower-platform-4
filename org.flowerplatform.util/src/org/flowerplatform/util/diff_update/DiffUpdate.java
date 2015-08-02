@@ -20,6 +20,11 @@ public class DiffUpdate implements Serializable {
 	
 	private String entityUid; 
 	
+	/**
+	 * Non-conventional getter/setter so that it's not serialized to client
+	 */
+	private Object entity;
+	
 	public long getId() {
 		return id;
 	}
@@ -42,6 +47,20 @@ public class DiffUpdate implements Serializable {
 
 	public void setEntityUid(String entityUid) {
 		this.entityUid = entityUid;
+	}
+
+	/**
+	 * @see #entity
+	 */
+	public Object entity() {
+		return entity;
+	}
+
+	/**
+	 * @see #entity
+	 */
+	public void entity(Object entity) {
+		this.entity = entity;
 	}
 
 	@Override

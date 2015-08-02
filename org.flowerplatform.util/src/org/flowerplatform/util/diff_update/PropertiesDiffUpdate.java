@@ -15,18 +15,28 @@ public class PropertiesDiffUpdate extends DiffUpdate {
 
 	private Map<String, Object> properties = new HashMap<String, Object>();
 
+	private Map<String, Object> oldProperties = new HashMap<String, Object>();
+
 	public Map<String, Object> getProperties() {
 		return properties;
 	}
 
-	public PropertiesDiffUpdate() {
-		setType("updated");
+	public Map<String, Object> getOldProperties() {
+		return oldProperties;
 	}
 	
 	public void setProperties(Map<String, Object> properties) {
 		this.properties = properties;
 	}
 	
+	public void setOldProperties(Map<String, Object> oldProperties) {
+		this.oldProperties = oldProperties;
+	}
+
+	public PropertiesDiffUpdate() {
+		setType("updated");
+	}
+
 	/**
 	 * 
 	 * @author see class
