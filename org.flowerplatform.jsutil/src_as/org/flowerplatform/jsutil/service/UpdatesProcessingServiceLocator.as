@@ -15,7 +15,7 @@
  */
 package org.flowerplatform.jsutil.service {
 	
-	import com.crispico.xops.XopsPlugin;
+	import com.crispico.xopsOld.XopsPlugin;
 	
 	import flash.utils.Dictionary;
 	

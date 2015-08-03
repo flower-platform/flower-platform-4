@@ -3,6 +3,7 @@ package org.flowerplatform.flexutil.controller.operation {
 	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
 	
+	import org.flowerplatform.flexutil.Utils;
 	import org.flowerplatform.flexutil.controller.AbstractController;
 	import org.flowerplatform.flexutil.controller.TypeDescriptorRegistry;
 	
@@ -37,12 +38,7 @@ package org.flowerplatform.flexutil.controller.operation {
 					}
 				}
 			} catch (error:Error) {
-				var err:Error = error;
-				UIComponent(FlexGlobals.topLevelApplication).callLater(function ():void {
-					// we let the algorithm continue and throw at the end (so that we can
-					// receive the exception on the server side
-					throw new Error("Redispatching error with callLater; original:\n" + err.message + "\n" + err.getStackTrace());
-				});
+				Utils.throwErrorWithCallLater(new Error("Redispatching error with callLater; original:\n" + error.message + "\n" + error.getStackTrace()));
 			}
 			return operationResultCombiner.result; 
 		}

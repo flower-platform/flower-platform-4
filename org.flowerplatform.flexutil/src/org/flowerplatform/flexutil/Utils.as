@@ -20,7 +20,9 @@ package org.flowerplatform.flexutil {
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	
+	import mx.core.FlexGlobals;
 	import mx.core.ITextInput;
+	import mx.core.UIComponent;
 	
 	import spark.components.TextInput;
 	import spark.components.supportClasses.SkinnableTextBase;
@@ -313,6 +315,19 @@ package org.flowerplatform.flexutil {
 			} else {
 				return url.substr(0, index + 1) + paramToString + "&" + url.substr(index + 1);
 			}
+		}
+		
+		public static function throwErrorWithCallLater(error:Error, message:String = null):void {
+			if (message == null) {
+				message = "";
+			} else {
+				message += "\n";
+			}
+			UIComponent(FlexGlobals.topLevelApplication).callLater(function ():void {
+				// we let the algorithm continue and throw at the end (so that we can
+				// receive the exception on the server side
+				throw new Error(message + "(Re)dispatching error with callLater; original:\n" + error.message + "\n" + error.getStackTrace());
+			});
 		}
 		
 	}
