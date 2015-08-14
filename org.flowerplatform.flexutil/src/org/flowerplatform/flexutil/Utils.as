@@ -339,8 +339,11 @@ package org.flowerplatform.flexutil {
 			}
 			var properties:Array = dotSeparatedProperties.split(".");
 			var current:Object = object;
-			for each (var item in properties) {
+			for each (var item:String in properties) {
 				current = current[item];
+				if (!current) {
+					return object;
+				}
 			}
 			return current;
 		}
