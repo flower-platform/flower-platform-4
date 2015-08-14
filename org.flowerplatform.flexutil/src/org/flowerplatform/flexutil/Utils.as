@@ -1,18 +1,18 @@
 /* license-start
- * 
- * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation version 3.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
- * 
- * license-end
- */
+* 
+* Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+* 
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation version 3.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+* 
+* license-end
+*/
 package org.flowerplatform.flexutil {
 	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
@@ -114,7 +114,7 @@ package org.flowerplatform.flexutil {
 		public static function getClass(obj:Object):Class {			
 			return Class(getDefinitionByName(getQualifiedClassName(obj)));
 		}
-			
+		
 		public static function defaultIfNull(str:String, defaultStr:String = ""):String {
 			return str == null ? defaultStr : str;
 		}
@@ -123,7 +123,7 @@ package org.flowerplatform.flexutil {
 			var lastIndexOfSlash:int = path.lastIndexOf("/");
 			var baseNameWithExtension:String = path.substring(lastIndexOfSlash + 1);
 			var lastIndexOfDot:int = baseNameWithExtension.lastIndexOf(".");
-				
+			
 			return baseNameWithExtension.substring(0, lastIndexOfDot);			
 		}
 		
@@ -259,9 +259,9 @@ package org.flowerplatform.flexutil {
 			
 //			text = text.replace(/<p(\s*.*?\s?)font-weight:\s*(.*?\s*)[;"](\s*.*?\s*)>(\s*.*?\s*)<\/p>/g, "<p$1$3><b>$4<\/b><\/p>");
 //			text = text.replace(/<p(\s*.*?\s?)font-style:\s*(.*?\s*)[;"](\s*.*?\s*)>(\s*.*?\s*)<\/p>/g, "<p$1$3><i>$4<\/i><\/p>");
-
+			
 			text = text.replace(/<p(\s*.*?\s?)style=['"]{0,2}(.*?)["']{0,2}(\s*.*?\s*)>(\s*.*?\s*)<(\s*.*?\s*)\/p>/g, "<p$1$3><font $2>$4$5<\/font><\/p>");
-
+			
 			// add here other replacements
 			
 			return text;
@@ -328,6 +328,21 @@ package org.flowerplatform.flexutil {
 				// receive the exception on the server side
 				throw new Error(message + "(Re)dispatching error with callLater; original:\n" + error.message + "\n" + error.getStackTrace());
 			});
+		}
+		
+		public static function getNestedPropertyValue(object:Object, dotSeparatedProperties:String):Object {
+			if (object == null) {
+				return null;
+			}
+			else if (dotSeparatedProperties == null) {
+				return object;
+			}
+			var properties:Array = dotSeparatedProperties.split(".");
+			var current:Object = object;
+			for each (var item in properties) {
+				current = current[item];
+			}
+			return current;
 		}
 		
 	}
