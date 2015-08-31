@@ -24,7 +24,8 @@ license-end
 <s:Application applicationComplete="applicationCompleteHandler(event), dispatchEvent(new FlexEvent(FlexEvent.INITIALIZE))"
 			   xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:layout="com.crispico.flower.util.layout.*">
+			   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:layout="com.crispico.flower.util.layout.*" 			  
+			   preloader="org.flowerplatform.flexutil.popup.manager.CustomPreloader">
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
 		@namespace mx "library://ns.adobe.com/flex/mx";
@@ -58,7 +59,6 @@ license-end
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
-			import com.crispico.flower.util.layout.Workbench;
 			import com.crispico.flower.util.popup.PopupHandlerFactory;
 			import com.crispico.flower.util.popup.ProgressMonitorDialogHandlerFactory;
 			
@@ -79,8 +79,6 @@ license-end
 			import mx.effects.easing.Linear;
 			import mx.events.FlexEvent;
 			import mx.graphics.ImageSnapshot;
-			import mx.managers.BrowserManager;
-			import mx.managers.IBrowserManager;
 			import mx.messaging.channels.AMFChannel;
 			import mx.messaging.config.ConfigMap;
 			import mx.messaging.management.Attribute;
@@ -126,6 +124,7 @@ license-end
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.context_menu.ContextMenuManager;
 			import org.flowerplatform.flexutil.popup.AlertPopupMessageBoxFactory;
+			import org.flowerplatform.flexutil.popup.manager.CustomPreloader;
 			import org.flowerplatform.flexutil.spinner.LogoSpinner;
 			import org.flowerplatform.flexutil.spinner.ModalSpinner;
 			
@@ -207,6 +206,7 @@ license-end
 			Repeater;
 			RepeatableBinding;
 			RepeaterItemWatcher;
+			CustomPreloader;
 			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
@@ -251,13 +251,14 @@ license-end
 					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(spinnerIconSource));
 				else
 					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(FlexUtilAssets.logoFlower));
-				
+								
 				var pluginUrls:Array = pluginUrlsAsString.split(",");
 				for (var i:int = 0; i < pluginUrls.length; i++) {
 					pluginUrls[i] = FlexUtilGlobals.getInstance().flexPluginManager.appendVersionToUrl(pluginUrls[i], FlexGlobals.topLevelApplication.parameters.version);
 				}				
 				FlexUtilGlobals.getInstance().flexPluginManager.loadPlugins(new ArrayCollection(pluginUrls));
 			}
+			
 		]]>
 	</fx:Script>
 	

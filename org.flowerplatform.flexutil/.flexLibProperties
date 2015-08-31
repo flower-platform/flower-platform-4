@@ -54,6 +54,7 @@
     <classEntry path="org.flowerplatform.flexutil.controller.operation.GenericOperation"/>
     <classEntry path="org.flowerplatform.flexutil.controller.operation.OperationResultCombiner"/>
     <classEntry path="org.flowerplatform.flexutil.DebugWeakReferenceCounter"/>
+    <classEntry path="org.flowerplatform.flexutil.popup.manager.IPopUpManagerListener"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
