@@ -195,7 +195,7 @@
 			}
 			
 			
-			private function getIndexFromState(stateName:String):int {
+			protected function getIndexFromState(stateName:String):int {
 				if (getIndexForStateFunction != null) {					
 					var index:int = getIndexForStateFunction(stateName);
 					getIdToStateMap()[index] = stateName;
@@ -204,7 +204,7 @@
 				return parseInt(stateName);
 			}
 			
-			private function getStateFromIndex(index:int):String {
+			protected function getStateFromIndex(index:int):String {
 				if (getIndexForStateFunction != null) {
 					return getIdToStateMap()[index];
 				}
