@@ -1,19 +1,21 @@
 /* license-start
- * 
- * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation version 3.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
- * 
- * license-end
- */
+* 
+* Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+* 
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation version 3.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+* 
+* license-end
+*/
 package org.flowerplatform.flexutil.mobile.view_content_host {
+	import flash.display.DisplayObject;
+	
 	import mx.core.FlexGlobals;
 	import mx.core.IVisualElement;
 	import mx.core.UIComponent;
@@ -22,7 +24,7 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 	import org.flowerplatform.flexutil.layout.ViewLayoutData;
 	import org.flowerplatform.flexutil.popup.IPopupHandler;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
-		
+	
 	/**
 	 * @author Cristian Spiescu
 	 */ 
@@ -40,6 +42,10 @@ package org.flowerplatform.flexutil.mobile.view_content_host {
 		}
 		
 		public function setIcon(value:Object):IPopupHandler {
+			return this;
+		}
+		
+		public function setParentScreen(value:DisplayObject):IPopupHandler {
 			return this;
 		}
 		

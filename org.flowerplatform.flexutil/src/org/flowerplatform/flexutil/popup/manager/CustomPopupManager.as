@@ -1,6 +1,9 @@
 package org.flowerplatform.flexutil.popup.manager {
+	import flash.display.DisplayObject;
+	
 	import mx.collections.ArrayCollection;
 	import mx.core.IFlexDisplayObject;
+	import mx.core.IFlexModuleFactory;
 	import mx.managers.PopUpManagerImpl;
 	
 	/**
@@ -21,7 +24,7 @@ package org.flowerplatform.flexutil.popup.manager {
 			}
 			return instance;
 		};
-				
+		
 		public function addListener(listener:IPopUpManagerListener):void {
 			if (listeners == null) {
 				listeners = new ArrayCollection();
@@ -34,7 +37,7 @@ package org.flowerplatform.flexutil.popup.manager {
 				listeners.removeItem(listener);
 			}
 		}
-			
+		
 		override public function removePopUp(popUp:IFlexDisplayObject):void {		
 			if (listeners != null) {
 				for (var i:int = 0; i < listeners.length; i++) {
@@ -57,6 +60,16 @@ package org.flowerplatform.flexutil.popup.manager {
 			if (!preventDefault) {
 				super.centerPopUp(popUp);
 			}			
+		}
+		
+		override public function addPopUp(popup:IFlexDisplayObject, setParent:DisplayObject, modal:Boolean = false, childList:String = null, moduleFactory:IFlexModuleFactory = null):void {
+			var parent:DisplayObject = setParent;
+			if (listeners != null) {
+				for (var i:int = 0; i < listeners.length; i++) {
+					parent = IPopUpManagerListener(listeners.getItemAt(i)).getParentOnPopupAdd(setParent);
+				}
+			}
+			super.addPopUp(popup, parent, modal, childList, moduleFactory);
 		}
 		
 	}

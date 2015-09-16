@@ -1,22 +1,23 @@
 /* license-start
- * 
- * Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation version 3.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
- * 
- * license-end
- */
+* 
+* Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+* 
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation version 3.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+* 
+* license-end
+*/
 package com.crispico.flower.util.popup {
 	
 	import com.crispico.flower.util.layout.Workbench;
 	
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.FocusEvent;
 	import flash.events.MouseEvent;
@@ -32,18 +33,19 @@ package com.crispico.flower.util.popup {
 	import org.flowerplatform.flexutil.spinner.ModalSpinner;
 	import org.flowerplatform.flexutil.spinner.ModalSpinnerViewHost;
 	import org.flowerplatform.flexutil.view_content_host.IViewContent;
-
+	
 	/**
 	 * @author Cristina Constantinescu
 	 */ 
 	public class PopupHandler implements IPopupHandler {
-				
+		
 		private var _height:Number;
 		private var _width:Number;
 		private var _title:String;
 		private var _icon:Object;
 		private var _viewContent:IViewContent;
 		private var _viewIdInWorkbench:String;
+		private var _parentScreen:DisplayObject;
 		
 		public function setHeight(value:Number):IPopupHandler {
 			_height = value;
@@ -69,9 +71,14 @@ package com.crispico.flower.util.popup {
 			_viewContent = value;
 			return this;
 		}
-			
+		
 		public function setViewIdInWorkbench(value:String):IPopupHandler {
 			_viewIdInWorkbench = value;
+			return this;
+		}
+		
+		public function setParentScreen(value:DisplayObject):IPopupHandler {
+			_parentScreen = value;
 			return this;
 		}
 		
@@ -99,7 +106,7 @@ package com.crispico.flower.util.popup {
 				if (workbench != null) {
 					popup.addEventListener(MouseEvent.CLICK, gainFocusHandler);
 				}
-				workbench.addViewInPopupWindow(_viewIdInWorkbench, NaN, NaN, _width, _height, false, component, popup);					
+				workbench.addViewInPopupWindow(_viewIdInWorkbench, NaN, NaN, _width, _height, false, component, popup, _parentScreen);					
 			} else {				
 				var resizablePopup:ResizablePopupWindowViewHost = new ResizablePopupWindowViewHost(_viewContent);
 				
@@ -111,7 +118,7 @@ package com.crispico.flower.util.popup {
 				if (!isNaN(_width)) {
 					resizablePopup.width = _width;
 				}						
-				resizablePopup.showPopup(NaN, NaN, null, modal);
+				resizablePopup.showPopup(NaN, NaN, _parentScreen, modal);
 				if (workbench != null) {
 					resizablePopup.addEventListener(MouseEvent.CLICK, gainFocusHandler);
 				}

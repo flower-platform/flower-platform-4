@@ -1,6 +1,8 @@
 package org.flowerplatform.flexutil.popup.manager {
+	import flash.display.DisplayObject;
+	
 	import mx.core.IFlexDisplayObject;
-
+	
 	/**
 	 * Note: For the moment it is implemented in XOPS.
 	 * @see CustomPopupManager
@@ -13,5 +15,6 @@ package org.flowerplatform.flexutil.popup.manager {
 		
 		function onPopupCenter(popUp:IFlexDisplayObject):Boolean;
 		
+		function getParentOnPopupAdd(setParent:DisplayObject):DisplayObject;
 	}
 }
