@@ -66,7 +66,7 @@ package org.flowerplatform.flexutil.popup.manager {
 			var parent:DisplayObject = setParent;
 			if (listeners != null) {
 				for (var i:int = 0; i < listeners.length; i++) {
-					parent = IPopUpManagerListener(listeners.getItemAt(i)).getParentOnPopupAdd(setParent);
+					parent = IPopUpManagerListener(listeners.getItemAt(i)).getParentOnPopupAdd(popup, setParent);
 				}
 			}
 			super.addPopUp(popup, parent, modal, childList, moduleFactory);

@@ -15,6 +15,6 @@ package org.flowerplatform.flexutil.popup.manager {
 		
 		function onPopupCenter(popUp:IFlexDisplayObject):Boolean;
 		
-		function getParentOnPopupAdd(setParent:DisplayObject):DisplayObject;
+		function getParentOnPopupAdd(popUp:IFlexDisplayObject, setParent:DisplayObject):DisplayObject;
 	}
 }
