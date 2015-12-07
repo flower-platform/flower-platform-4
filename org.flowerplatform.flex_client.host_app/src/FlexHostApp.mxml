@@ -26,7 +26,7 @@ license-end
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:layout="com.crispico.flower.util.layout.*" 			  
 			   preloader="org.flowerplatform.flexutil.popup.manager.CustomPreloader">
-	<fx:Style>
+		<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
 		@namespace mx "library://ns.adobe.com/flex/mx";
 		
@@ -65,6 +65,7 @@ license-end
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.containers.Accordion;
+			import mx.controls.Alert;
 			import mx.controls.CheckBox;
 			import mx.controls.ComboBox;
 			import mx.controls.DataGrid;
@@ -107,6 +108,7 @@ license-end
 			import mx.rpc.remoting.mxml.RemoteObject;
 			import mx.skins.spark.BorderSkin;
 			import mx.states.AddChild;
+			import mx.utils.Base64Decoder;
 			import mx.utils.ObjectProxy;
 			import mx.utils.RpcClassAliasInitializer;
 			import mx.validators.RegExpValidator;
@@ -141,7 +143,7 @@ license-end
 			RemoteObject;
 			FunctionReturnWatcher;
 			AsyncResponder;
-
+			
 			// needed by .properties
 			NumberValidator;
 			RegExpValidator;
@@ -217,6 +219,18 @@ license-end
 				// The flex app is not in the root dir; that's why we use the value below
 				// (that comes from JS) instead of FlexGlobals.topLevelApplication.url
 				var appDirUrl:String = FlexGlobals.topLevelApplication.parameters.rootUrl;
+				var usernameInBase64:String = FlexGlobals.topLevelApplication.parameters.username;
+				var passwordInBase64:String = FlexGlobals.topLevelApplication.parameters.password;
+				var autoSendMissionsGanttSheet:String = FlexGlobals.topLevelApplication.parameters.autoSendMissionsGanttSheet;
+				
+				if(usernameInBase64&&passwordInBase64) {
+					var base64Decoder:Base64Decoder = new Base64Decoder();
+					base64Decoder.decode(usernameInBase64);
+					var username:String = base64Decoder.toByteArray().toString();
+					base64Decoder.decode(passwordInBase64);
+					var password:String = base64Decoder.toByteArray().toString();
+				}
+				
 				var indexOfQuestionMark:int = appDirUrl.indexOf("?");
 				if (indexOfQuestionMark >= 0) {
 					// remove ? and what follows it 
@@ -226,7 +240,11 @@ license-end
 				var lastIndexOfSlash:int = appDirUrl.lastIndexOf("/");
 				appDirUrl = appDirUrl.substr(0, lastIndexOfSlash + 1);
 				FlexUtilGlobals.getInstance().rootUrl = appDirUrl;
-
+				
+				FlexUtilGlobals.getInstance().username = username;
+				FlexUtilGlobals.getInstance().password = password;
+				FlexUtilGlobals.getInstance().autoSendMissionsGanttSheet = autoSendMissionsGanttSheet;
+				
 				var imageContentCache:ContentCache = new ContentCache();
 				imageContentCache.enableCaching = true;
 				imageContentCache.maxCacheEntries = 300;
@@ -234,7 +252,7 @@ license-end
 				
 				FlexUtilGlobals.getInstance().workbench = workbench;
 				workbench.viewProvider = FlexUtilGlobals.getInstance().composedViewProvider;
-	
+				
 				FlexUtilGlobals.getInstance().messageBoxFactory = new AlertPopupMessageBoxFactory();
 				FlexUtilGlobals.getInstance().popupHandlerFactory = new PopupHandlerFactory();
 				FlexUtilGlobals.getInstance().progressMonitorHandlerFactory = new ProgressMonitorDialogHandlerFactory();
@@ -251,7 +269,7 @@ license-end
 					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(spinnerIconSource));
 				else
 					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(FlexUtilAssets.logoFlower));
-								
+				
 				var pluginUrls:Array = pluginUrlsAsString.split(",");
 				for (var i:int = 0; i < pluginUrls.length; i++) {
 					pluginUrls[i] = FlexUtilGlobals.getInstance().flexPluginManager.appendVersionToUrl(pluginUrls[i], FlexGlobals.topLevelApplication.parameters.version);

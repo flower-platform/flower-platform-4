@@ -41,6 +41,9 @@
             flashvars.rootUrl = getURL();
             flashvars.version = "<%= System.getProperty("flower.version") %>";
             flashvars.spinnerIcon = "<%= System.getProperty("flower.app.preloader") != null ? System.getProperty("flower.app.preloader") : null %>";
+            flashvars.autoSendMissionsGanttSheet = "<%= request.getParameter("autoSendMissionsGanttSheet") %>";
+            flashvars.username = "<%= request.getParameter("username") %>";
+            flashvars.password = "<%= request.getParameter("password") %>";
             <%= System.getProperty("flower.additionalFlashVars") != null ? System.getProperty("flower.additionalFlashVars") : "" %>
         </script>
         <script type="text/javascript" src='flexHostAppConfig.js?version=<%= System.getProperty("flower.version") %>'></script> 
