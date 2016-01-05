@@ -507,7 +507,8 @@ package  com.crispico.flower.flexdiagram.contextmenu {
 					if (event.type == "rightClick" && newActiveViewer != null) {
 						rightClickContentPosition = activeViewer.globalToContent(new Point(event.stageX, event.stageY));
 						//rightClickCMPositionRelativeToContent = activeViewer.localToContent(new Point(event.stageX, event.stageY));
-						refresh(viewerToNotifier[activeViewer], RIGHT_CLICK_CM);
+						//the callLater was added in order to display actions menu for multiple selection
+						activeViewer.callLater(refresh, [viewerToNotifier[activeViewer], RIGHT_CLICK_CM]);
 					}				
 				}
 			}
