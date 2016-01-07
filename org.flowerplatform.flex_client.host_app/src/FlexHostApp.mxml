@@ -107,6 +107,7 @@ license-end
 			import mx.rpc.remoting.mxml.RemoteObject;
 			import mx.skins.spark.BorderSkin;
 			import mx.states.AddChild;
+			import mx.utils.Base64Decoder;
 			import mx.utils.ObjectProxy;
 			import mx.utils.RpcClassAliasInitializer;
 			import mx.validators.RegExpValidator;
@@ -207,6 +208,7 @@ license-end
 			RepeatableBinding;
 			RepeaterItemWatcher;
 			CustomPreloader;
+			Base64Decoder;
 			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
