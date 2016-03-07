@@ -377,6 +377,7 @@ license-end
 			RepeaterItemWatcher;
 			CustomPreloader;
 			Base64Decoder;
+			AdvancedDataGrid;
 			
 			// because of this BUG: https://issues.apache.org/jira/browse/FLEX-34422
 			AdvancedDataGrid;
