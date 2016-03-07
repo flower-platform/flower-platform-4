@@ -65,6 +65,7 @@ license-end
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.containers.Accordion;
+			import mx.controls.AdvancedDataGrid;
 			import mx.controls.CheckBox;
 			import mx.controls.ComboBox;
 			import mx.controls.DataGrid;
@@ -209,6 +210,7 @@ license-end
 			RepeaterItemWatcher;
 			CustomPreloader;
 			Base64Decoder;
+			AdvancedDataGrid;
 			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
