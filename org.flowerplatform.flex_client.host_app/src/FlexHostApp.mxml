@@ -26,6 +26,8 @@ license-end
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:layout="com.crispico.flower.util.layout.*" 			  
 			   preloader="org.flowerplatform.flexutil.popup.manager.CustomPreloader">
+	
+		
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
 		@namespace mx "library://ns.adobe.com/flex/mx";
@@ -53,6 +55,169 @@ license-end
 		global {
 			modalTransparencyDuration: 200;
 		}		
+		
+		/*
+		///////////////////////////////////////////////////////////////////////////////
+		//
+		//  Copyright ("C") 2003-2005 Macromedia, Inc. All Rights Reserved.
+		//  The following is Sample Code and is subject to all restrictions
+		//  on such code as contained in the End User License Agreement
+		//  accompanying this product.
+		//
+		///////////////////////////////////////////////////////////////////////////////
+		*/
+		
+		/*
+		//------------------------------
+		//  AdvancedDataGrid
+		//------------------------------
+		*/
+		
+		mx|AdvancedDataGrid
+		{
+			alternatingItemColors: #F7F7F7, #FFFFFF;
+			columnDropIndicatorSkin: ClassReference("mx.skins.halo.DataGridColumnDropIndicator");
+			columnResizeSkin: ClassReference("mx.skins.halo.DataGridColumnResizeSkin");
+			headerColors: #FFFFFF, #E6E6E6;
+			headerDragProxyStyleName: "headerDragProxyStyle";
+			headerBackgroundSkin: ClassReference("mx.skins.halo.DataGridHeaderBackgroundSkin");
+			headerSeparatorSkin: ClassReference("mx.skins.halo.DataGridHeaderSeparator");
+			headerHorizontalSeparatorSkin: ClassReference("mx.skins.halo.AdvancedDataGridHeaderHorizontalSeparator");
+			headerStyleName: "advancedDataGridStyles";
+			sortArrowSkin: ClassReference("mx.skins.halo.DataGridSortArrow");
+			stretchCursor: Embed(source="Assets.swf",symbol="cursorStretch");
+			verticalGridLineColor: #CCCCCC;
+			disclosureClosedIcon: Embed(source="Assets.swf",symbol="TreeDisclosureClosed");
+			disclosureOpenIcon: Embed(source="Assets.swf",symbol="TreeDisclosureOpen");
+			defaultLeafIcon: Embed(source="Assets.swf",symbol="TreeNodeIcon");
+			folderClosedIcon: Embed(source="Assets.swf",symbol="TreeFolderClosed");
+			folderOpenIcon: Embed(source="Assets.swf",symbol="TreeFolderOpen");
+			paddingLeft: 2;
+			paddingRight: 0;
+			/* sort item renderer's font styles */
+			sortFontFamily: "Verdana";
+			sortFontSize: 10;
+			sortFontStyle: "normal";
+			sortFontWeight: "normal";
+		}
+		
+		/*
+		//------------------------------
+		//  AdvancedDataGridItemRenderer
+		//------------------------------
+		*/
+		
+		mx|AdvancedDataGridItemRenderer
+		{
+			paddingLeft: 5;
+		}
+		
+		/*
+		//------------------------------
+		//  AdvancedDataGridSortItemRenderer
+		//------------------------------
+		*/
+		mx|AdvancedDataGridSortItemRenderer
+		{
+			paddingTop: 0;
+			paddingBottom: 0;
+			paddingLeft: 0;
+			paddingRight: 0;
+			horizontalGap: 0;
+			
+			color: #0B333C;
+			icon: ClassReference("mx.skins.halo.DataGridSortArrow");
+		}
+		
+		/*
+		//------------------------------
+		//  AdvancedDataGridHeaderRenderer
+		//------------------------------
+		*/
+		mx|AdvancedDataGridHeaderRenderer
+		{
+			paddingTop: 0;
+			paddingBottom: 0;
+			paddingLeft: 2;
+			paddingRight: 2;
+			horizontalGap: 0;
+			horizontalAlign:center;
+			verticalAlign:middle;
+			
+			color: #0B333C;
+			
+			backgroundColor: #FFFFFF;
+			backgroundAlpha: 0.0;
+		}
+		
+		/*
+		//------------------------------
+		//  .advancedDataGridStyles
+		//------------------------------
+		*/
+		
+		.advancedDataGridStyles
+		{
+			fontWeight: "bold";
+		}
+		
+		/*
+		//------------------------------
+		//  AdvancedListBase
+		//------------------------------
+		*/
+		mx|AdvancedListBase
+		{
+			backgroundColor: #FFFFFF;
+			backgroundDisabledColor: #DDDDDD;
+			borderStyle: "solid";
+			dropIndicatorSkin: ClassReference("mx.skins.halo.ListDropIndicator");
+			paddingBottom: 2;
+			paddingLeft: 2;
+			paddingRight: 0;
+			paddingTop: 2;
+		}
+		
+		/*
+		//------------------------------
+		//  PrintAdvancedDataGrid
+		//------------------------------
+		*/
+		
+		mx|PrintAdvancedDataGrid
+		{
+			alternatingItemColors: #FFFFFF, #FFFFFF;
+			borderColor: 0;
+			columnResizeSkin: ClassReference("mx.skins.halo.DataGridColumnResizeSkin");
+			headerColors: #FFFFFF, #FFFFFF;
+			headerSeparatorSkin: ClassReference("mx.skins.halo.DataGridHeaderSeparator");
+			headerStyleName: "advancedDataGridStyles";
+			horizontalGridLineColor: 0;
+			horizontalGridLines: true;
+			sortArrowSkin: ClassReference("mx.skins.halo.DataGridSortArrow");
+			stretchCursor: Embed(source="Assets.swf",symbol="cursorStretch");
+			verticalGridLineColor: #000000;
+		}
+		
+		/*
+		//------------------------------
+		//  PrintOLAPDataGrid
+		//------------------------------
+		*/
+		
+		mx|PrintOLAPDataGrid
+		{
+			alternatingItemColors: #FFFFFF, #FFFFFF;
+			borderColor: 0;
+			columnResizeSkin: ClassReference("mx.skins.halo.DataGridColumnResizeSkin");
+			headerColors: #FFFFFF, #FFFFFF;
+			headerSeparatorSkin: ClassReference("mx.skins.halo.DataGridHeaderSeparator");
+			headerStyleName: "advancedDataGridStyles";
+			horizontalGridLineColor: 0;
+			horizontalGridLines: true;
+			stretchCursor: Embed(source="Assets.swf",symbol="cursorStretch");
+			verticalGridLineColor: #000000;
+		}
 	</fx:Style>
 	<s:layout>
 		<s:VerticalLayout/>
@@ -65,6 +230,7 @@ license-end
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.containers.Accordion;
+			import mx.controls.AdvancedDataGrid;
 			import mx.controls.CheckBox;
 			import mx.controls.ComboBox;
 			import mx.controls.DataGrid;
@@ -103,6 +269,8 @@ license-end
 			import mx.messaging.messages.SOAPMessage;
 			import mx.preloaders.DownloadProgressBar;
 			import mx.printing.FlexPrintJob;
+			import mx.printing.PrintAdvancedDataGrid;
+			import mx.printing.PrintOLAPDataGrid;
 			import mx.rpc.AsyncResponder;
 			import mx.rpc.remoting.mxml.RemoteObject;
 			import mx.skins.spark.BorderSkin;
@@ -209,6 +377,11 @@ license-end
 			RepeaterItemWatcher;
 			CustomPreloader;
 			Base64Decoder;
+			
+			// because of this BUG: https://issues.apache.org/jira/browse/FLEX-34422
+			AdvancedDataGrid;
+			PrintAdvancedDataGrid;
+			PrintOLAPDataGrid;
 			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
