@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <actionScriptProperties analytics="false" mainApplicationPath="org.flowerplatform.flexutil_legacy.as" projectUUID="20af3be9-2602-428d-aabc-d25d6f0efdaa" version="11">
-  <compiler additionalCompilerArguments="-keep-as3-metadata+=Embed  -keep-as3-metadata+=ResourceBundle -theme=${flexlib}/themes/Halo/halo.swc -swf-version=15" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" useFlashSDK="false" verifyDigests="true" warn="true">
+  <compiler additionalCompilerArguments="-keep-as3-metadata+=Embed  -keep-as3-metadata+=ResourceBundle -theme=${flexlib}/themes/Halo/halo.swc -swf-version=15 -locale en_US fr_FR -allow-source-path-overlap=true" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" useFlashSDK="false" verifyDigests="true" warn="true">
     <compilerSourcePath>
       <compilerSourcePathEntry kind="1" linkType="1" path="icons"/>
-      <compilerSourcePathEntry kind="1" linkType="1" path="messages"/>
+      <compilerSourcePathEntry kind="1" linkType="1" path="messages/locale/{locale}"/>
     </compilerSourcePath>
     <libraryPath defaultLinkType="0">
       <libraryPathEntry kind="4" path="">
