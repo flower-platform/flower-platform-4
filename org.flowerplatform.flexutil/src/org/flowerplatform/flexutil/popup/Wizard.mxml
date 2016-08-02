@@ -1,62 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
-	license-start
- 
-	Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
-	
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation version 3.
-	 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-	
-	license-end
+license-start
+
+Copyright (C) 2008 - 2014 Crispico Software, <http://www.crispico.com/>.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+
+license-end
 -->
 <!--
- -
- Base class for wizard style dialogs. It is recommended to have MXML subclasses of this class,
- that use the old/Flex 3 namespace (i.e. xmlns:mx="http://www.adobe.com/2006/mxml") and not the new
- one/Flex 4 (i.e. xmlns:fx="http://ns.adobe.com/mxml/2009"), in order to be able to use the old
- state syntax, which is more appropriate in this case.
- 
- <p>
- Subclasses should define one or several states. <br>
- An execution order for these states must be provided in order to work properly. <b>
- This can be done in 2 ways:
- <ul>
- 	<li> name each state using only numbers (e.g. "0", "1", etc.) and this numbers should be consecutive. 
-	<li> provide a <code>getIndexForStateFunction</code> function with the following signature:
-		<pre> function getIndexForState(stateName:String):int </pre>
-		The function should return -1 if no index is provided for given state name.
-	</li>	
- </ul>
+-
+Base class for wizard style dialogs. It is recommended to have MXML subclasses of this class,
+that use the old/Flex 3 namespace (i.e. xmlns:mx="http://www.adobe.com/2006/mxml") and not the new
+one/Flex 4 (i.e. xmlns:fx="http://ns.adobe.com/mxml/2009"), in order to be able to use the old
+state syntax, which is more appropriate in this case.
 
- <p>
- Each state (i.e. wizard page) will probably use overrides for one/several/all of the following:
- 
- <ul>
- 	<li><code>wizardTitle.text</code>;
- 	<li><code>wizardDescription.text</code>;
- 	<li><code>contentArea</code> - to add the main UI component(s) of the wizard page;
- 	<li><code>back(or next or finish).enabled</code> - to add custom enablement logic, if needed.
- 		Data binding is supported;
- </ul>
- 
- Besides the above, some interesting "global" elements (i.e. per wizard):
- 
- <ul>
- 	<li>override <code>finishClickHandler</code>;
- 	<li><code>title</code>, <code>titleIconURL</code>, <code>wizardImage.source</code>,
- 		<code>titleArea.height</code>;
- </ul>
- 
- @author Cristi
- @author Cristina
+<p>
+Subclasses should define one or several states. <br>
+An execution order for these states must be provided in order to work properly. <b>
+This can be done in 2 ways:
+<ul>
+<li> name each state using only numbers (e.g. "0", "1", etc.) and this numbers should be consecutive. 
+<li> provide a <code>getIndexForStateFunction</code> function with the following signature:
+<pre> function getIndexForState(stateName:String):int </pre>
+The function should return -1 if no index is provided for given state name.
+</li>	
+</ul>
 
- 
+<p>
+Each state (i.e. wizard page) will probably use overrides for one/several/all of the following:
+
+<ul>
+<li><code>wizardTitle.text</code>;
+<li><code>wizardDescription.text</code>;
+<li><code>contentArea</code> - to add the main UI component(s) of the wizard page;
+<li><code>back(or next or finish).enabled</code> - to add custom enablement logic, if needed.
+Data binding is supported;
+</ul>
+
+Besides the above, some interesting "global" elements (i.e. per wizard):
+
+<ul>
+<li>override <code>finishClickHandler</code>;
+<li><code>title</code>, <code>titleIconURL</code>, <code>wizardImage.source</code>,
+<code>titleArea.height</code>;
+</ul>
+
+@author Cristi
+@author Cristina
+
+
 -->
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
@@ -76,7 +76,7 @@
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
 			import org.flowerplatform.flexutil.action.IAction;
 			import org.flowerplatform.flexutil.view_content_host.IViewHost;
-		
+			
 			[Bindable]
 			public var wizardTitle:String;
 			
@@ -223,7 +223,7 @@
 				}
 				return idToStateMap;
 			}		
-						
+			
 			/**
 			 * Comes back to the previous step (state).
 			 */
@@ -269,7 +269,7 @@
 			
 		]]>
 	</fx:Script>
-
+	
 	<fx:Declarations>
 		<s:HGroup id="desktopTitleArea" width="100%" height="66" >
 			<s:VGroup id="titleArea" width="100%" gap="0">
@@ -292,15 +292,15 @@
 				</s:CalloutButton>
 			</s:HGroup>			
 		</s:HGroup>
-				
+		
 		<s:HGroup id="buttonBar" width="100%" horizontalAlign="right" verticalAlign="middle" >
-			<s:Button id="back" label="&#60; Back" width="75" click="backClickHandler()" />
-			<s:Button id="next" label="Next &#62;" width="75" click="nextClickHandler()" />
-			<s:Button id="finish" label="Finish" width="75" click="finishClickHandler()" />
-			<s:Button id="cancel" label="Cancel" width="75" click="cancelClickHandler()"/>		
+			<s:Button id="back" label="{FlexUtilAssets.INSTANCE.getMessage('wizard.back')}" width="75" click="backClickHandler()" />
+			<s:Button id="next" label="{FlexUtilAssets.INSTANCE.getMessage('wizard.next')}" width="75" click="nextClickHandler()" />
+			<s:Button id="finish" label="{FlexUtilAssets.INSTANCE.getMessage('wizard.finish')}" width="75" click="finishClickHandler()" />
+			<s:Button id="cancel" label="{FlexUtilAssets.INSTANCE.getMessage('wizard.cancel')}" width="75" click="cancelClickHandler()"/>		
 		</s:HGroup>
 	</fx:Declarations>
-			
+	
 	<s:layout>
 		<s:VerticalLayout horizontalAlign="center" gap="5"/>
 	</s:layout>
@@ -308,7 +308,7 @@
 	<!-- First element will be desktopTitleArea/mobileTitleArea-->
 	
 	<mx:HRule width="100%"/>
-
+	
 	<mx:VBox id="contentArea" width="100%" height="100%" borderVisible="false"
 			 horizontalAlign="center" paddingLeft="5" paddingRight="5"
 			 paddingTop="5" >
