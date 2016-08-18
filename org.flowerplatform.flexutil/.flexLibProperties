@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
+    <classEntry path="org.flowerplatform.flexutil.DebugWeakReferenceCounter"/>
     <classEntry path="org.flowerplatform.flexutil.FlexUtilGlobals"/>
-    <classEntry path="org.flowerplatform.flexutil.list.FlowerArrayList"/>
     <classEntry path="org.flowerplatform.flexutil.action.ComposedActionProvider"/>
     <classEntry path="org.flowerplatform.flexutil.action.IComposedActionProviderProcessor"/>
     <classEntry path="org.flowerplatform.flexutil.action.VectorActionProvider"/>
@@ -12,49 +12,48 @@
     <classEntry path="org.flowerplatform.flexutil.content_assist.ContentAssistListTextAreaSkin"/>
     <classEntry path="org.flowerplatform.flexutil.content_assist.IContentAssistProvider"/>
     <classEntry path="org.flowerplatform.flexutil.controller.NullController"/>
+    <classEntry path="org.flowerplatform.flexutil.controller.operation.GenericOperation"/>
+    <classEntry path="org.flowerplatform.flexutil.controller.operation.OperationResultCombiner"/>
     <classEntry path="org.flowerplatform.flexutil.dialog.SelectObjListPopup"/>
+    <classEntry path="org.flowerplatform.flexutil.flexdiagram.RendererController"/>
+    <classEntry path="org.flowerplatform.flexutil.flexdiagram.StandAloneSequentialLayoutVisualChildrenController"/>
+    <classEntry path="org.flowerplatform.flexutil.flexdiagram.VisualChildrenController"/>
+    <classEntry path="org.flowerplatform.flexutil.iframe.FlowerIFrameViewProvider"/>
+    <classEntry path="org.flowerplatform.flexutil.iframe.IFlowerIFrame"/>
+    <classEntry path="org.flowerplatform.flexutil.iframe.IFrameOpenUrlView"/>
     <classEntry path="org.flowerplatform.flexutil.layout.AbstractViewProvider"/>
     <classEntry path="org.flowerplatform.flexutil.layout.ITitleDecorator"/>
     <classEntry path="org.flowerplatform.flexutil.layout.IViewProvider"/>
     <classEntry path="org.flowerplatform.flexutil.layout.IWorkbench"/>
     <classEntry path="org.flowerplatform.flexutil.layout.LayoutData"/>
     <classEntry path="org.flowerplatform.flexutil.layout.ViewLayoutData"/>
+    <classEntry path="org.flowerplatform.flexutil.list.FlowerArrayList"/>
+    <classEntry path="org.flowerplatform.flexutil.list.LinkedListWrapper"/>
+    <classEntry path="org.flowerplatform.flexutil.list.ParentAwareArrayList"/>
     <classEntry path="org.flowerplatform.flexutil.popup.IMessageBox"/>
     <classEntry path="org.flowerplatform.flexutil.popup.IPopupHandler"/>
     <classEntry path="org.flowerplatform.flexutil.popup.IPopupHandlerFactory"/>
     <classEntry path="org.flowerplatform.flexutil.popup.ScreenSizeAwarePopup"/>
+    <classEntry path="org.flowerplatform.flexutil.popup.manager.IPopUpManagerListener"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.DelegatingPropertyCommitController"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.PropertiesForm"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.PropertiesHelper"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.PropertyCommitController"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.PropertyEntry"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.PropertyEntryRenderer"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.PropertyEntryRendererController"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.editor.BooleanPropertyEditor"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.editor.IPropertyEditor"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.editor.StringCsvListPropertyEditor"/>
+    <classEntry path="org.flowerplatform.flexutil.properties.editor.StringPropertyEditor"/>
     <classEntry path="org.flowerplatform.flexutil.tree.HierarchicalModelWrapper"/>
     <classEntry path="org.flowerplatform.flexutil.tree.IHierarchicalModelAdapter"/>
+    <classEntry path="org.flowerplatform.flexutil.value_converter.AbstractValueConverter"/>
+    <classEntry path="org.flowerplatform.flexutil.value_converter.ListToListValueConverter"/>
+    <classEntry path="org.flowerplatform.flexutil.value_converter.StringHexToUintValueConverter"/>
     <classEntry path="org.flowerplatform.flexutil.view_content_host.BasicViewContent"/>
     <classEntry path="org.flowerplatform.flexutil.view_content_host.ICachedActionsAndSelectionProvider"/>
     <classEntry path="org.flowerplatform.flexutil.view_content_host.IViewHostAware"/>
-    <classEntry path="org.flowerplatform.flexutil.iframe.IFrameOpenUrlView"/>
-    <classEntry path="org.flowerplatform.flexutil.iframe.IFlowerIFrame"/>
-    <classEntry path="org.flowerplatform.flexutil.iframe.FlowerIFrameViewProvider"/>
-    <classEntry path="org.flowerplatform.flexutil.value_converter.AbstractValueConverter"/>
-    <classEntry path="org.flowerplatform.flexutil.value_converter.StringHexToUintValueConverter"/>
-    <classEntry path="org.flowerplatform.flexutil.properties.PropertiesHelper"/>
-    <classEntry path="org.flowerplatform.flexutil.properties.PropertyEntry"/>
-    <classEntry path="org.flowerplatform.flexutil.list.LinkedListWrapper"/>
-    <classEntry path="org.flowerplatform.flexutil.properties.PropertyEntryRenderer"/>
-    <classEntry path="org.flowerplatform.flexutil.properties.editor.StringPropertyEditor"/>
-    <classEntry path="org.flowerplatform.flexutil.properties.PropertyCommitController"/>
-    <classEntry path="org.flowerplatform.flexutil.properties.DelegatingPropertyCommitController"/>
-    <classEntry path="org.flowerplatform.flexutil.properties.IRendererControllerAware"/>
-    <classEntry path="org.flowerplatform.flexutil.properties.editor.BooleanPropertyEditor"/>
-    <classEntry path="org.flowerplatform.flexutil.properties.PropertiesForm"/>
-    <classEntry path="org.flowerplatform.flexutil.flexdiagram.RendererController"/>
-    <classEntry path="org.flowerplatform.flexutil.flexdiagram.VisualChildrenController"/>
-    <classEntry path="org.flowerplatform.flexutil.flexdiagram.StandAloneSequentialLayoutVisualChildrenController"/>
-    <classEntry path="org.flowerplatform.flexutil.properties.PropertyEntryRendererController"/>
-    <classEntry path="org.flowerplatform.flexutil.properties.editor.IPropertyEditor"/>
-    <classEntry path="org.flowerplatform.flexutil.list.ParentAwareArrayList"/>
-    <classEntry path="org.flowerplatform.flexutil.properties.editor.StringCsvListPropertyEditor"/>
-    <classEntry path="org.flowerplatform.flexutil.value_converter.ListToListValueConverter"/>
-    <classEntry path="org.flowerplatform.flexutil.controller.operation.GenericOperation"/>
-    <classEntry path="org.flowerplatform.flexutil.controller.operation.OperationResultCombiner"/>
-    <classEntry path="org.flowerplatform.flexutil.DebugWeakReferenceCounter"/>
-    <classEntry path="org.flowerplatform.flexutil.popup.manager.IPopUpManagerListener"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

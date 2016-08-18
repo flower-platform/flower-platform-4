@@ -78,7 +78,11 @@
 					<extensions>true</extensions>
 					<configuration>
 						<!-- include .properties file -->
-						<localesSourcePath>messages</localesSourcePath>
+						<localesSourcePath>messages/locale/{locale}</localesSourcePath>
+						<compiledLocales>
+							<locale>en_US</locale>
+							<locale>fr_FR</locale>
+						</compiledLocales>
 					</configuration>
 				</plugin>
 			</plugins>
