@@ -227,6 +227,8 @@ license-end
 			import com.crispico.flower.util.popup.PopupHandlerFactory;
 			import com.crispico.flower.util.popup.ProgressMonitorDialogHandlerFactory;
 			
+			import mx.charts.Legend;
+			import mx.charts.LegendItem;
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.containers.Accordion;
@@ -378,6 +380,8 @@ license-end
 			CustomPreloader;
 			Base64Decoder;
 			AdvancedDataGrid;
+			LegendItem;
+			Legend;
 			
 			// because of this BUG: https://issues.apache.org/jira/browse/FLEX-34422
 			AdvancedDataGrid;
