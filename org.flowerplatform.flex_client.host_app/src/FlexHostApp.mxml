@@ -27,8 +27,8 @@ license-end
 			   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:layout="com.crispico.flower.util.layout.*" 			  
 			   preloader="org.flowerplatform.flexutil.popup.manager.CustomPreloader">
 	
-		
-	<fx:Style>
+	
+		<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
 		@namespace mx "library://ns.adobe.com/flex/mx";
 		
@@ -227,8 +227,8 @@ license-end
 			import com.crispico.flower.util.popup.PopupHandlerFactory;
 			import com.crispico.flower.util.popup.ProgressMonitorDialogHandlerFactory;
 			
-			import mx.charts.Legend;
-			import mx.charts.LegendItem;
+			import mx.charts.LineChart;
+			import mx.charts.series.LineSeries;
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.containers.Accordion;
@@ -283,13 +283,6 @@ license-end
 			import mx.validators.RegExpValidator;
 			import mx.validators.StringValidator;
 			
-			import spark.components.NavigatorContent;
-			import spark.core.ContentCache;
-			import spark.formatters.DateTimeFormatter;
-			import spark.layouts.TileLayout;
-			import spark.utils.DataItem;
-			import spark.validators.NumberValidator;
-			
 			import org.flowerplatform.flex_client.resources.Resources;
 			import org.flowerplatform.flexutil.FlexUtilAssets;
 			import org.flowerplatform.flexutil.FlexUtilGlobals;
@@ -298,6 +291,13 @@ license-end
 			import org.flowerplatform.flexutil.popup.manager.CustomPreloader;
 			import org.flowerplatform.flexutil.spinner.LogoSpinner;
 			import org.flowerplatform.flexutil.spinner.ModalSpinner;
+			
+			import spark.components.NavigatorContent;
+			import spark.core.ContentCache;
+			import spark.formatters.DateTimeFormatter;
+			import spark.layouts.TileLayout;
+			import spark.utils.DataItem;
+			import spark.validators.NumberValidator;
 			
 			// Classes from Flex framework, used by plugins. We put them here, to force them to
 			// be linked into this app. Otherwise, the compiler wouldn't include them in this app
@@ -312,7 +312,7 @@ license-end
 			RemoteObject;
 			FunctionReturnWatcher;
 			AsyncResponder;
-
+			
 			// needed by .properties
 			NumberValidator;
 			RegExpValidator;
@@ -380,13 +380,15 @@ license-end
 			CustomPreloader;
 			Base64Decoder;
 			AdvancedDataGrid;
-			LegendItem;
-			Legend;
 			
 			// because of this BUG: https://issues.apache.org/jira/browse/FLEX-34422
 			AdvancedDataGrid;
 			PrintAdvancedDataGrid;
 			PrintOLAPDataGrid;
+			
+			//because of this BUG: https://issues.apache.org/jira/browse/FLEX-34118
+			LineChart;
+			LineSeries;
 			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
@@ -406,7 +408,7 @@ license-end
 				var lastIndexOfSlash:int = appDirUrl.lastIndexOf("/");
 				appDirUrl = appDirUrl.substr(0, lastIndexOfSlash + 1);
 				FlexUtilGlobals.getInstance().rootUrl = appDirUrl;
-
+				
 				var imageContentCache:ContentCache = new ContentCache();
 				imageContentCache.enableCaching = true;
 				imageContentCache.maxCacheEntries = 300;
@@ -414,7 +416,7 @@ license-end
 				
 				FlexUtilGlobals.getInstance().workbench = workbench;
 				workbench.viewProvider = FlexUtilGlobals.getInstance().composedViewProvider;
-	
+				
 				FlexUtilGlobals.getInstance().messageBoxFactory = new AlertPopupMessageBoxFactory();
 				FlexUtilGlobals.getInstance().popupHandlerFactory = new PopupHandlerFactory();
 				FlexUtilGlobals.getInstance().progressMonitorHandlerFactory = new ProgressMonitorDialogHandlerFactory();
@@ -431,7 +433,7 @@ license-end
 					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(spinnerIconSource));
 				else
 					ModalSpinner.addGlobalModalSpinner(Resources.getMessage("spinner.initialize"), new LogoSpinner(FlexUtilAssets.logoFlower));
-								
+				
 				var pluginUrls:Array = pluginUrlsAsString.split(",");
 				for (var i:int = 0; i < pluginUrls.length; i++) {
 					pluginUrls[i] = FlexUtilGlobals.getInstance().flexPluginManager.appendVersionToUrl(pluginUrls[i], FlexGlobals.topLevelApplication.parameters.version);
