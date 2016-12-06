@@ -464,6 +464,9 @@ package com.crispico.flower.util.popup {
 			fade.duration = 200;
 			fade.play([this]);
 			fade.addEventListener(EffectEvent.EFFECT_END, fadeOutEffectEndHandler);
+			
+			// used to notice the content about close event (by example to reset entity)
+			dispatchEvent(new Event("closeWindow"));
 		}
 		
 		protected function fadeOutEffectEndHandler(event:EffectEvent):void {
