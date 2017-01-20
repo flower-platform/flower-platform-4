@@ -231,6 +231,7 @@ license-end
 			import mx.charts.LegendItem;
 			import mx.charts.LineChart;
 			import mx.charts.chartClasses.LegendData;
+			import mx.charts.renderers.CircleItemRenderer;
 			import mx.charts.series.LineSeries;
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
@@ -395,6 +396,7 @@ license-end
 			//because of this BUG: https://issues.apache.org/jira/browse/FLEX-34118
 			LineChart;
 			LineSeries;
+			CircleItemRenderer;
 			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
