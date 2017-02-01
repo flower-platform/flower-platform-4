@@ -227,9 +227,15 @@ license-end
 			import com.crispico.flower.util.popup.PopupHandlerFactory;
 			import com.crispico.flower.util.popup.ProgressMonitorDialogHandlerFactory;
 			
+			import mx.charts.AxisRenderer;
+			import mx.charts.BarChart;
+			import mx.charts.ColumnChart;
 			import mx.charts.Legend;
 			import mx.charts.LegendItem;
 			import mx.charts.LineChart;
+			import mx.charts.chartClasses.CartesianChart;
+			import mx.charts.chartClasses.CartesianDataCanvas;
+			import mx.charts.chartClasses.IAxis;
 			import mx.charts.chartClasses.LegendData;
 			import mx.charts.renderers.CircleItemRenderer;
 			import mx.charts.series.LineSeries;
@@ -397,7 +403,12 @@ license-end
 			LineChart;
 			LineSeries;
 			CircleItemRenderer;
-			
+			AxisRenderer;
+			BarChart;
+			ColumnChart;		
+			CartesianChart;
+			IAxis
+			CartesianDataCanvas;
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
 				// The channels are puzzled by a query string that has slashes,
