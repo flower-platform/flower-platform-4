@@ -233,6 +233,7 @@ license-end
 			import mx.charts.Legend;
 			import mx.charts.LegendItem;
 			import mx.charts.LineChart;
+			import mx.charts.PieChart;
 			import mx.charts.chartClasses.CartesianChart;
 			import mx.charts.chartClasses.CartesianDataCanvas;
 			import mx.charts.chartClasses.IAxis;
@@ -409,6 +410,8 @@ license-end
 			CartesianChart;
 			IAxis
 			CartesianDataCanvas;
+			PieChart;
+			
 			protected function applicationCompleteHandler(event:FlexEvent):void	{
 				// NOTE 1:
 				// The channels are puzzled by a query string that has slashes,
