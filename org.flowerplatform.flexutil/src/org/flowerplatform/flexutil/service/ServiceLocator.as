@@ -74,7 +74,7 @@ package org.flowerplatform.flexutil.service {
 				.setWidth(300)
 				.setHeight(200)
 				.setTitle(FlexUtilAssets.INSTANCE.getMessage("service.fault.title"))
-				.setText(FlexUtilAssets.INSTANCE.getMessage("service.fault.message", [fault.faultString, fault.faultDetail, fault.content]))
+				.setText(FlexUtilAssets.INSTANCE.getMessage("service.fault.message", [fault.faultCode, fault.faultString, fault.faultDetail, fault.content]))
 				.showMessageBox();
 		}
 		

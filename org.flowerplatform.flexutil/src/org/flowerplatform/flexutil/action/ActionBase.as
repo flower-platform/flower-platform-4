@@ -55,6 +55,8 @@ package org.flowerplatform.flexutil.action {
 		 */
 		private var _isToggleAction:Boolean = false;
 		
+		private var _objectForFunctionDelegate:Object;
+		
 		public function get id():String {
 			if (_id == null) {
 				// try to get id from each class (static attribute ID), if not found, use qualified class name
@@ -156,8 +158,9 @@ package org.flowerplatform.flexutil.action {
 			_functionDelegate = value;
 		}
 		
-		public function setFunctionDelegate(value:Function):ActionBase {
+		public function setFunctionDelegate(value:Function, objectForFunctionDelegate:Object = null):ActionBase {
 			functionDelegate = value;
+			this.objectForFunctionDelegate = objectForFunctionDelegate;
 			return this;
 		}
 		
@@ -236,6 +239,14 @@ package org.flowerplatform.flexutil.action {
 			isSelected = false;
 		}
 		
+		public function get objectForFunctionDelegate():Object {
+			return _objectForFunctionDelegate;
+		}
+		
+		public function set objectForFunctionDelegate(value:Object):void {
+			_objectForFunctionDelegate = value;
+		}
+		
 		/**
 		 * Use functionDelegate, if any exists.
 		 * 
@@ -246,7 +257,11 @@ package org.flowerplatform.flexutil.action {
 		public function run():void {
 			// if we have a functionDelegate than execute that
 			if (functionDelegate != null) {
-				functionDelegate();
+				if (objectForFunctionDelegate) {
+					functionDelegate(objectForFunctionDelegate);
+				} else {
+					functionDelegate();
+				}
 			}
 			if (isToggleAction) {
 				isSelected = !isSelected;
