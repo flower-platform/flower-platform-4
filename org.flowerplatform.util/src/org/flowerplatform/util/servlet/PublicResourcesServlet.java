@@ -237,7 +237,8 @@ public class PublicResourcesServlet extends ResourcesServlet {
 				}
 			}
 					
-			requestedFile = plugin + "/" + prefix + file;
+			// getClass().getResource() is confused by double slashes, so try to avoid them
+			requestedFile = plugin + ((prefix + file).startsWith("/") ? "" : "/") + prefix + file;
 
 			if (useRealPath) {
 				String path;
@@ -256,6 +257,13 @@ public class PublicResourcesServlet extends ResourcesServlet {
 					path = realPathBaseDir + requestedFile;
 				} else {
 					path = getServletContext().getRealPath(requestedFile);
+					if (path == null) {
+						// check to see if it can be found as resource
+						URL url = getClass().getResource(requestedFile);
+						if (url != null) {
+							path = url.toExternalForm();
+						}
+					}
 					if (!new File(path).exists() && realPathNotFoundFind != null) {
 						// This is useful in XOPS, when the application is served (from within Eclipse/WTP) directly, i.e. without
 						// publishing. In this case, the current dir is WebContent, so we look around for serving the plugins.
@@ -267,7 +275,11 @@ public class PublicResourcesServlet extends ResourcesServlet {
 				requestedFile = path;
 			}
 
-			requestedFile = protocol + requestedFile;
+			// in case we request inside a jar, no need for the file: protocol
+			// (URL knows how to treat jar: protocol)
+			if (!requestedFile.startsWith("jar")) {
+				requestedFile = protocol + requestedFile;
+			}
 			
 			// Get content type by filename from the file or file inside zip
 			String contentType = getServletContext().getMimeType(fileInsideZipArchive != null ? fileInsideZipArchive : file);
